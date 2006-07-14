@@ -1,0 +1,2 @@
+content	avim jar:chrome/avim.jar!/content/
+overlay	chrome://browser/content/browser.xul	chrome://avim/content/avim.xul

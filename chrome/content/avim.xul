@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<overlay id="sample" 
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<statusbar id="status-bar">
+		<radiogroup id="AVIM" orient="horizontal">
+			<radio id="him_auto" label="AUTO" name="viet_method" oncommand="setMethod(0);"/>
+			<radio id="him_telex" label="TELEX" name="viet_method" oncommand="setMethod(1);"/>
+			<radio id="him_vni" label="VNI" name="viet_method" oncommand="setMethod(2);"/>
+			<radio id="him_viqr" label="VIQR" name="viet_method" oncommand="setMethod(3);"/>
+			<radio id="him_viqr2" label="VIQR*" name="viet_method" oncommand="setMethod(4);"/>
+			<radio id="him_off" label="OFF" name="viet_method" oncommand="setMethod(-1);"/>
+		</radiogroup>
+		<checkbox id="him_ckspell" label="Check Spell" name="viet_method" oncommand="setSpell(this);"/>
+		<checkbox id="him_daucu" label="Old Accent" name="viet_method" oncommand="setDauCu(this);"/>
+	</statusbar>
+ 	<script src="avim.js"/>
+</overlay>
