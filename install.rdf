@@ -3,7 +3,7 @@
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}</em:id>
 		<em:name>AVIM</em:name>
-		<em:version>20060714</em:version>
+		<em:version>20061001</em:version>
 		<em:description>Advanced Vietnamese Input Method (AVIM)</em:description>
 		<em:creator>Hieu Tran Dang</em:creator>
 		<em:homepageURL>http://hdang.co.uk</em:homepageURL>
@@ -16,7 +16,7 @@
 			<Description>
 			<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 			<em:minVersion>1.5</em:minVersion>
-			<em:maxVersion>3.0a1</em:maxVersion>
+			<em:maxVersion>2.0.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 	</Description>

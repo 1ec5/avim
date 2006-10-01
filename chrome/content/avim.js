@@ -1,7 +1,7 @@
 ﻿/*
- *  AVIM JavaScript Vietnamese Input Method Firefox Extension Source File dated 13-07-2006
+ *  AVIM JavaScript Vietnamese Input Method Firefox Extension Source File dated 01-10-2006
  *
- *	Copyright (C) 2004 Hieu Tran Dang <lt2hieu2004 (at) users (dot) sf (dot) net>
+ *	Copyright (C) 2006 Hieu Tran Dang <lt2hieu2004 (at) users (dot) sf (dot) net>
  *	Website:	http://hdang.co.uk
  *				http://hieu.acunett.com
  *
@@ -517,8 +517,13 @@ document.onkeypress=function(e) {
 	var el=e.target,code=e.which; if(e.ctrlKey) return; if((e.altKey)&&(code!=92)&&(code!=126)) return
 	if(el.id=='searchbar') {
 		el = document.getAnonymousNodes(el)
-		el = document.getAnonymousNodes(el[el.length - 1])
-		el = el[0].lastChild
+		if(el[1].getAttribute('type')=='autocomplete') {
+			el = document.getAnonymousNodes(el[1])
+			el = el[0].lastChild
+		} else {
+			el = el[1].firstChild
+			el = el.lastChild
+		}
 		el = document.getAnonymousElementByAttribute(el, "anonid", "input")
 	}
 	if(((el.type!='textarea')&&(el.type!='text'))||checkCode(code)) return
@@ -540,4 +545,4 @@ function init() {
 		}
 	}
 }
-window.addEventListener("load", init, false);
+window.addEventListener("load", init, false)
