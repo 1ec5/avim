@@ -610,7 +610,7 @@ var avim = {
 		obj.addEventListener(evt,handle,capture);
 	//	obj.addEventListener(evt,this.getPref,capture);
 	},
-	init: function () {
+	initLater: function () {
 		var kkk=false;
 		for(this.g=0;this.g<this.fID.length;this.g++) {
 			if(this.findIgnore(this.fID[this.g])) continue;
@@ -623,22 +623,18 @@ var avim = {
 			} catch(e) { }
 		}
 	},
-	uglyF: function () { var ugly=50;while(ugly<5000) {setTimeout(this.init,ugly);ugly+=50} },
+	uglyF: function () { var ugly=50;while(ugly<5000) {setTimeout(this.initLater,ugly);ugly+=50} },
 	initMenu: function () {
 		this.getPref();
 		this.updateMenu();
-	}
+	},
+    init: function () {
+        this.getPref();
+        this.attachEvt(document,"keypress",this.onKeyPress,false);
+        this.uglyF();
+        this.attachEvt(document,"mousedown",this.uglyF,false);
+        this.attachEvt(window, "focus", this.initMenu, false);
+    }
 };
 
-this.getPref();
-if(this.on_off==0) this.setMethod(-1);
-else this.setMethod(this.method);
-this.setSpell(this.dockspell);
-this.setDauCu(this.dauCu);
-
-this.attachEvt(document,"keypress",this.onKeyPress,false);
-
-this.uglyF();
-this.attachEvt(document,"mousedown",this.uglyF,false);
-
-this.attachEvt(window, "focus", this.initMenu, false);
+avim.attachEvt(window, "load", this.init, false);
