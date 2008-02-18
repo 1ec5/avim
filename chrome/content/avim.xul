@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
+
+<overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+	<keyset>
+		<key id="avim-enabled-key" modifiers="accel,shift" key="&avim-enabled-key.accesskey;" />
+	</keyset>
+	
+	<commandset>
+		<command id="avim-method-cmd" oncommand="setMethod(this.value);" />
+	</commandset>
+	
+	<broadcasterset>
+		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" observers="avim-menu-enabled,avim-status-enabled" oncommand="toggleEnabled(this);" />
+		<broadcaster id="him_off" name="him_off" label="&him_off.label;" />
+		
+		<!-- Input methods -->
+		<broadcaster id="him_auto" label="&him_auto.label;" accesskey="&him_auto.accesskey;" value="0" observers="avim-menu-auto,avim-status-auto" command="avim-method-cmd" />
+		<broadcaster id="him_telex" label="&him_telex.label;" accesskey="&him_telex.accesskey;" value="1" observers="avim-menu-telex,avim-status-telex" command="avim-method-cmd" />
+		<broadcaster id="him_vni" label="&him_vni.label;" accesskey="&him_vni.accesskey;" value="2" observers="avim-menu-vni,avim-status-vni" command="avim-method-cmd" />
+		<broadcaster id="him_viqr" label="&him_viqr.label;" accesskey="&him_viqr.accesskey;" value="3" observers="avim-menu-viqr,avim-status-viqr" command="avim-method-cmd" />
+		<broadcaster id="him_viqr2" label="&him_viqr2.label;" accesskey="&him_viqr2.accesskey;" value="4" observers="avim-menu-viqr2,avim-status-viqr2" command="avim-method-cmd" />
+		
+		<!-- Options -->
+		<broadcaster id="him_ckspell" name="him_ckspell" type="checkbox" label="&him_ckspell.label;" accesskey="&him_ckspell.accesskey;" description="&him_ckspell.description;" oncommand="setSpell(this);" />
+		<broadcaster id="him_daucu" name="him_daucu" type="checkbox" label="&him_daucu.label;" accesskey="&him_daucu.accesskey;" description="&him_daucu.description;" oncommand="setDauCu(this);" />
+	</broadcasterset>
+	
+	<popupset>
+		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
+		<menupopup id="avim-status-popup" onpopupshowing="updateMenu();">
+			<menuitem id="avim-status-enabled" type="checkbox" observes="him_on" />
+			
+			<!-- Input methods -->
+			<menuseparator id="avim-status-methods-separator" />
+			<menuitem id="avim-status-auto" name="viet_method" type="radio" observes="him_auto" />
+			<menuitem id="avim-status-telex" name="viet_method" type="radio" observes="him_telex" />
+			<menuitem id="avim-status-vni" name="viet_method" type="radio" observes="him_vni" />
+			<menuitem id="avim-status-viqr" name="viet_method" type="radio" observes="him_viqr" />
+			<menuitem id="avim-status-viqr2" name="viet_method" type="radio" observes="him_viqr2" />
+			
+			<!-- Options -->
+			<menuseparator id="avim-status-options-separator" />
+			<menuitem id="avim-status-spell" observes="him_ckspell" />
+			<menuitem id="avim-status-oldaccents" observes="him_daucu" />
+		</menupopup>
+	</popupset>
+	
+	<!-- Edit > Vietnamese Input -->
+	<menupopup id="menu_EditPopup">
+		<menuseparator id="avim-separator" />
+		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
+			<menupopup id="avim-menu-popup" onpopupshowing="updateMenu();">
+				<menuitem id="avim-menu-enabled" type="checkbox" key="avim-enabled-key" observes="him_on" />
+				
+				<!-- Input methods -->
+				<menuseparator id="avim-menu-methods-separator" />
+				<menuitem id="avim-menu-auto" name="viet_method" type="radio" observes="him_auto" />
+				<menuitem id="avim-menu-telex" name="viet_method" type="radio" observes="him_telex" />
+				<menuitem id="avim-menu-vni" name="viet_method" type="radio" observes="him_vni" />
+				<menuitem id="avim-menu-viqr" name="viet_method" type="radio" observes="him_viqr" />
+				<menuitem id="avim-menu-viqr2" name="viet_method" type="radio" observes="him_viqr2" />
+				
+				<!-- Options -->
+				<menuseparator id="avim-menu-options-separator" />
+				<menuitem id="avim-menu-spell" observes="him_ckspell" />
+				<menuitem id="avim-menu-oldaccents" observes="him_daucu" />
+			</menupopup>
+		</menu>
+	</menupopup>
+	
+	<!-- Status bar menu -->
+	<statusbar id="status-bar">
+		<statusbarpanel id="avim-status" label="&AVIM.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" />
+	</statusbar>
+	
+	<script id="avim-js" type="application/x-javascript" src="./avim.js" />
+</overlay>

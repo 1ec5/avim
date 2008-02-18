@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:chrome="http://www.mozilla.org/rdf/chrome#">
+	<Seq about="urn:mozilla:locale:root">
+		<li resource="urn:mozilla:locale:vi" />
+	</Seq>
+	<Description about="urn:mozilla:locale:vi">
+		<chrome:author>Nguyễn Xuân Minh</chrome:author>
+		<chrome:displayName>Tiếng Việt</chrome:displayName>
+		<chrome:name>vi</chrome:name>
+		<chrome:packages>
+			<Seq about="urn:mozilla:locale:vi:packages">
+				<li resource="urn:mozilla:locale:vi:avim" />
+			</Seq>
+		</chrome:packages>
+	</Description>
+</RDF>
