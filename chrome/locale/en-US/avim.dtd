@@ -1,0 +1,27 @@
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-menu.label "Vietnamese Input">
+<!ENTITY avim-menu.accesskey "V">
+
+<!-- Input method menu -->
+<!ENTITY avim-enabled-key.accesskey "V">
+<!ENTITY him_auto.label "Auto">
+<!ENTITY him_auto.accesskey "A">
+<!ENTITY him_telex.label "Telex">
+<!ENTITY him_telex.accesskey "T">
+<!ENTITY him_vni.label "VNI">
+<!ENTITY him_vni.accesskey "N">
+<!ENTITY him_viqr.label "VIQR">
+<!ENTITY him_viqr.accesskey "Q">
+<!ENTITY him_viqr2.label "VIQR*">
+<!ENTITY him_viqr2.accesskey "R">
+<!ENTITY him_on.label "Enabled">
+<!ENTITY him_on.accesskey "E">
+<!ENTITY him_off.label "Off">
+
+<!-- Options -->
+<!ENTITY him_ckspell.label "Enforce Spelling">
+<!ENTITY him_ckspell.accesskey "S">
+<!ENTITY him_ckspell.description "Only place accent marks onto words that conform to Vietnamese spelling rules">
+<!ENTITY him_daucu.label "Old Accents">
+<!ENTITY him_daucu.accesskey "l">
+<!ENTITY him_daucu.description "Place accent marks above the first vowel in a diphthong">

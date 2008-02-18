@@ -1,23 +1,40 @@
-<?xml version="1.0"?>
-<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+<?xml version="1.0" encoding="UTF-8"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#" xmlns:NC="http://home.netscape.com/NC-rdf#">
+	<Description about="urn:mozilla:extension:file:avim.jar">
+		<em:package>content/</em:package>
+		<em:locale>locale/en-US/</em:locale>
+	</Description>
 	<Description about="urn:mozilla:install-manifest">
-		<em:id>{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}</em:id>
-		<em:name>AVIM</em:name>
-		<em:version>20061001</em:version>
-		<em:description>Advanced Vietnamese Input Method (AVIM)</em:description>
-		<em:creator>Hieu Tran Dang</em:creator>
-		<em:homepageURL>http://hdang.co.uk</em:homepageURL>
-		<em:file>
-			<Description about="urn:mozilla:extension:file:avim.jar">
-				<em:package>content/</em:package>
-			</Description>
-		</em:file>
 		<em:targetApplication>
 			<Description>
-			<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-			<em:minVersion>1.5</em:minVersion>
-			<em:maxVersion>2.0.0.*</em:maxVersion>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id><!-- Mozilla Firefox -->
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>3.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
+		
+		<em:id>{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}</em:id>
+		<em:type>2</em:type><!-- extension -->
+		<em:version>20071102</em:version>
+		
+		<!-- English / fallback -->
+		<em:name>AVIM</em:name>
+		<em:description>Type fully-accented Vietnamese directly into any webpage or dialog box using only a standard keyboard.</em:description>
+		<em:creator>Hieu Tran Dang</em:creator>
+		<em:contributor>Minh Nguyen</em:contributor>
+		<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
+		
+		<!-- Vietnamese -->
+		<em:localized>
+			<Description>
+				<em:locale>vi</em:locale>
+				<em:name>AVIM</em:name>
+				<em:description>Gõ tiếng Việt có dấu thẳng vào trang Web hay hộp thoại nào, chỉ cần bàn phím thường.</em:description>
+				<em:creator>Đặng Trần Hiếu</em:creator>
+				<em:contributor>Nguyễn Xuân Minh</em:contributor>
+				<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
+			</Description>
+		</em:localized>
 	</Description>
 </RDF>
