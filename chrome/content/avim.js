@@ -24,9 +24,9 @@ var enabledID = "him_on";
 var methodLabel = "avim-status";
 var nextKeyID = "avim-enabled-key";
 var methodCmdID = "avim-method-cmd";
-var /* agt=navigator.userAgent.toLowerCase(), */ alphabet="QWERTYUIOPASDFGHJKLZXCVBNM ",them,spellerr,setCookie,getCookie,attached=[];
-var /* is_ie=false, */ S,F,J,R,X,D,oc,sk,saveStr,wi,frame,/* is_opera=false, */ D2 /* ,isKHTML=false */;
-var /* ver=0, */ support=true,changed=false,specialChange=false,uni,uni2,g,h,SFJRX,DAWEO,Z,AEO,moc,trang,kl=0,tw5,range=null,fID=document.getElementsByTagName("iframe");
+var alphabet="QWERTYUIOPASDFGHJKLZXCVBNM ",them,spellerr,setCookie,getCookie,attached=[];
+var S,F,J,R,X,D,oc,sk,saveStr,wi,frame,D2;
+var support=true,changed=false,specialChange=false,uni,uni2,g,h,SFJRX,DAWEO,Z,AEO,moc,trang,kl=0,tw5,range=null,fID=document.getElementsByTagName("iframe");
 var skey=[97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89];
 var skey2="a,a,a,e,e,i,o,o,o,u,u,y,A,A,A,E,E,I,O,O,O,U,U,Y".split(','),A,E,O,whit=false,english="ĐÂĂƠƯÊÔ",lowen="đâăơưêô",ds1="d,D".split(","),db1=[273,272];
 var os1="o,O,ơ,Ơ,ó,Ó,ò,Ò,ọ,Ọ,ỏ,Ỏ,õ,Õ,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ".split(","),ob1="ô,Ô,ô,Ô,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ".split(",");
@@ -71,100 +71,31 @@ function start(obj,key) {
 	else if(method==2) { uni="9,6,6,6,7,8".split(','); D2="6789"; }
 	else if(method==3) { uni="D,^,^,^,+,(".split(','); D2="D^+("; }
 	else if(method==4) { uni="D,^,^,^,*,(".split(','); D2="D^*("; }
-//	if(!is_ie) {
-		key=fcc(key.which);
-		w=mozGetText(obj);
-		nnc=(D2.indexOf(up(key))>=0);
-		if((!w)||(obj.sel)) return;
-		main(w[0],key,w[1],uni,nnc);
-		if(!dockspell) w=mozGetText(obj);
-		if((w)&&(uni2)&&(!changed)) main(w[0],key,w[1],uni2,nnc);
-//	} else {
-//		obj=ieGetText(obj);
-//		if(obj) {
-//			var sT=obj.cW.text;
-//			w=main(obj.cW.text,key,0,uni,false);
-//			if((uni2)&&((w==sT)||(typeof(w)=='undefined'))) w=main(obj.cW.text,key,0,uni2,false);
-//			if(w) obj.cW.text=w;
-//		}
-//	}
+	key=fcc(key.which);
+	w=mozGetText(obj);
+	nnc=(D2.indexOf(up(key))>=0);
+	if((!w)||(obj.sel)) return;
+	main(w[0],key,w[1],uni,nnc);
+	if(!dockspell) w=mozGetText(obj);
+	if((w)&&(uni2)&&(!changed)) main(w[0],key,w[1],uni2,nnc);
 	if(D2.indexOf(up(key))>=0) {
-//		if(!is_ie) {
-			w=mozGetText(obj);
-			if(!w) return;
-			normC(w[0],key,w[1]);
-//		} else if(typeof(obj)=="object") {
-//			obj=ieGetText(obj);
-//			if(obj) {
-//				w=obj.cW.text;
-//				if(!changed) { w+=key; changed=true; }
-//				obj.cW.text=w;
-//				w=normC(w,key,0);
-//				if(w) { obj=ieGetText(obj); obj.cW.text=w; }
-//			}
-//		}
+		w=mozGetText(obj);
+		if(!w) return;
+		normC(w[0],key,w[1]);
 	}
 }
-//function ieGetText(obj) {
-//	var caret=obj.document.selection.createRange(),w="";
-//	if(caret.text) caret.text="";
-//	else {
-//		while(1) {
-//			caret.moveStart("character",-1);
-//			if(w.length==caret.text.length) break;
-//			w=caret.text;
-//			if(notWord(w.charAt(0))) {
-//				if(w.charCodeAt(0)==13) w=w.substr(2);
-//				else if(w.charAt(0)!="\\") w=w.substr(1);
-//				break;
-//			}
-//		}
-//	}
-//	if(w.length) {
-//		caret.collapse(false);
-//		caret.moveStart("character",-w.length);
-//		obj.cW=caret.duplicate();
-//		return obj;
-//	}
-//	return false;
-//}
-//function ie_replaceChar(w,pos,c) {
-//	var r="",uc=0;
-//	if(isNaN(c)) uc=up(c);
-//	if((whit)&&(up(w.substr(w.length-pos-1,1))=='U')&&(pos!=1)&&(up(w.substr(w.length-pos-2,1))!='Q')) {
-//		whit=false;
-//		if((up(unV(fcc(c)))=="Ơ")||(uc=="O")) {
-//			if(w.substr(w.length-pos-1,1)=='u') r=fcc(432);
-//			else r=fcc(431);
-//		}
-//		if(uc=="O") {
-//			if(c=="o") c=417;
-//			else c=416;
-//		}
-//	}
-//	if(!isNaN(c)) {
-//		changed=true;r+=fcc(c);
-//		return w.substr(0,w.length-pos-r.length+1)+r+w.substr(w.length-pos+1);
-//	}
-//	return w.substr(0,w.length-pos)+c+w.substr(w.length-pos+1);
-//}
 function tr(k,w,by,sf,i) {
 	var r,pos=findC(w,k,sf);
 	if(pos) {
-		if(pos[1]) {
-//			if(is_ie) return ie_replaceChar(w,pos[0],pos[1]);
-			return replaceChar(oc,i-pos[0],pos[1]);
-		} else {
-			var c,pC=w.substr(w.length-pos,1),cmp;r=sf;
-			for(g=0;g<r.length;g++) {
-				if((nan(r[g]))||(r[g]=="e")) cmp=pC;
-				else cmp=pC.charCodeAt(0);
-				if(cmp==r[g]) {
-					if(!nan(by[g])) c=by[g];
-					else c=by[g].charCodeAt(0);
-//					if(is_ie) return ie_replaceChar(w,pos,c);
-					return replaceChar(oc,i-pos,c);
-				}
+		if(pos[1]) return replaceChar(oc,i-pos[0],pos[1]);
+		var c,pC=w.substr(w.length-pos,1),cmp;r=sf;
+		for(g=0;g<r.length;g++) {
+			if((nan(r[g]))||(r[g]=="e")) cmp=pC;
+			else cmp=pC.charCodeAt(0);
+			if(cmp==r[g]) {
+				if(!nan(by[g])) c=by[g];
+				else c=by[g].charCodeAt(0);
+				return replaceChar(oc,i-pos,c);
 			}
 		}
 	}
@@ -205,8 +136,8 @@ function main(w,k,i,a,nnc) {
 }
 function DAWEOZ(k,w,by,sf,i,uk) { if((DAWEO.indexOf(uk)>=0)||(Z.indexOf(uk)>=0)) return tr(k,w,by,sf,i); }
 function normC(w,k,i) {
-	var uk=up(k),u=repSign(null),fS,c,j,space=(k.charCodeAt(0)==32)?true:false;
-	if(/* (!is_ie)&& */(space)) return;
+	var uk=up(k),u=repSign(null),fS,c,j,space=(k.charCodeAt(0)==32);
+	if(space) return;
 	for(j=1;j<=w.length;j++) {
 		for(h=0;h<u.length;h++) {
 			if(u[h]==w.charCodeAt(w.length-j)) {
@@ -218,29 +149,23 @@ function normC(w,k,i) {
 				c=skey[h%24]; if((alphabet.indexOf(uk)<0)&&(D2.indexOf(uk)<0)) return w;
 				w=unV(w);
 				if((!space)&&(!changed)) w+=k;
-//				if(!is_ie) {
-					var sp=oc.selectionStart,pos=sp;
-					if(!changed) {
-						var sst=oc.scrollTop;pos+=k.length;
-						if(!oc.data) { oc.value=oc.value.substr(0,sp)+k+oc.value.substr(oc.selectionEnd);changed=true;oc.scrollTop=sst; }
-						else { oc.insertData(oc.pos,k);oc.pos++;range.setEnd(oc,oc.pos);specialChange=true; }
+				var sp=oc.selectionStart,pos=sp;
+				if(!changed) {
+					var sst=oc.scrollTop;pos+=k.length;
+					if(!oc.data) { oc.value=oc.value.substr(0,sp)+k+oc.value.substr(oc.selectionEnd);changed=true;oc.scrollTop=sst; }
+					else { oc.insertData(oc.pos,k);oc.pos++;range.setEnd(oc,oc.pos);specialChange=true; }
+				}
+				if(!oc.data) oc.setSelectionRange(pos,pos);
+				if(!ckspell(w,fS)) {
+					replaceChar(oc,i-j,c);
+					var a=[D];
+					if(!oc.data) {
+						main(w,fS,pos,a,false);
+					} else {
+						var ww=mozGetText(oc);
+						main(ww[0],fS,ww[1],a,false);
 					}
-					if(!oc.data) oc.setSelectionRange(pos,pos);
-					if(!ckspell(w,fS)) {
-						replaceChar(oc,i-j,c);
-						var a=[D];
-						if(!oc.data) {
-							main(w,fS,pos,a,false);
-						} else {
-							var ww=mozGetText(oc);
-							main(ww[0],fS,ww[1],a,false);
-						}
-					}
-//				} else {
-//					var ret=sr(w,fS,0);
-//					if((space)&&(ret)) ret+=fcc(32);
-//					if(ret) return ret;
-//				}
+				}
 			}
 		}
 	}
@@ -450,13 +375,10 @@ function sr(w,k,i) {
 	var sf=getSF();
 	pos=findC(w,k,sf);
 	if(pos) {
-		if(pos[1]) {
-			/* if(!is_ie) */ replaceChar(oc,i-pos[0],pos[1]);
-//			else return ie_replaceChar(w,pos[0],pos[1]);
-		} else {
+		if(pos[1]) replaceChar(oc,i-pos[0],pos[1]);
+		else {
 			var c=retUni(w,k,pos);
-			/* if (!is_ie) */ replaceChar(oc,i-pos,c);
-//			else return ie_replaceChar(w,pos,c);
+			replaceChar(oc,i-pos,c);
 		}
 	}
 	return false;
@@ -516,35 +438,12 @@ function getSF() {
 	var sf=[],x; for(x=0;x<skey.length;x++) sf[sf.length]=fcc(skey[x]);
 	return sf;
 }
-//function statusMessage() {
-//	var str='Kiểu gõ: ';
-//	if(on_off==0) str+='Tắt';
-//	else if(method==1) str+='TELEX';
-//	else if(method==2) str+='VNI';
-//	else if(method==3) str+='VIQR';
-//	else if(method==4) str+='VIQR*';
-//	else if(method==0) str+='Tự động';
-//	if(isKHTML) str+=" [Alt-F9]";
-//	else str+=" [F9]";
-//	str+=" | Chính tả: ";
-//	str+=(dockspell==0)?"Tắt":"Bật";
-//	if(isKHTML) str+=" [Alt-F8]";
-//	else str+=" [F8]";
-//	str+=" | Bỏ dấu: ";
-//	str+=(dauCu==1)?"Cũ":"Mới";
-//	if(isKHTML) str+=" [Alt-F7]";
-//	else str+=" [F7]";
-//	str+=" | Bật/Tắt [F12] - AVIM 20071102";
-//	window.status=str;
-//}
 function updateInfo() {
 	setCookie();
-//	if(support) statusMessage();
 	getCookie();
 	updateMenu();
 }
 function updateMenu() {
-//	getCookie();
 	// Update method menu items
 	var radioOn = getEL(enabledID ? enabledID : radioID[5]);
 	setObservedAttr(radioOn, "checked", !!on_off);
@@ -552,15 +451,12 @@ function updateMenu() {
 	if (cmdMethod) cmdMethod.setAttribute("disabled", !on_off);
 	setObservedAttr(getEL(radioID[6]), "disabled", !on_off);
 	setObservedAttr(getEL(radioID[7]), "disabled", !on_off);
-//	for (var i = 0; i < 5; i++) {
-////		setObservedAttr(getEL(radioID[method]), "disabled", !on_off);
-//		var radio = getEL(radioID[i]);
-//		if (radio) radio.setAttribute("disabled", !on_off);
-//	}
 	setObservedAttr(getEL(radioID[method]), "checked", true);
+	
 	// Update options menu items
 	setObservedAttr(getEL(radioID[6]), "checked", !!dockspell);
 	setObservedAttr(getEL(radioID[7]), "checked", !!dauCu);
+	
 	// Update status bar panel
 	if (getEL(methodLabel)) {
 		if (on_off) setObservedAttr(getEL(methodLabel), "label", getEL(radioID[method]).getAttribute("label"));
@@ -581,17 +477,11 @@ function setObservedAttr(bcaster, attr, val) {
 	}
 }
 function setMethod(m) {
-	if (m == -1) {
-		on_off = 0;
-//		if(getEL(radioID[5])) getEL(radioID[5]).setAttribute("checked", true);
-	}
+	if (m == -1) on_off = 0;
 	else {
 		on_off = 1;
 		method = m;
-//		if(getEL(radioID[m])) getEL(radioID[m]).setAttribute("checked", true);
 	}
-//	setSpell(dockspell);
-//	setDauCu(dauCu);
 	updateInfo();
 }
 function toggleEnabled(item) {
@@ -602,37 +492,18 @@ function toggleEnabled(item) {
 	else setMethod(item.value);
 }
 function setDauCu(box) {
-	if(typeof(box)=="number") {
-		dauCu=box;/* if(getEL(radioID[7])) getEL(radioID[7]).setAttribute("checked", !!box); */
-	} else dauCu = 0 + (box.getAttribute("checked") == "true");
+	if(typeof(box)=="number") dauCu=box;
+	else dauCu = 0 + (box.getAttribute("checked") == "true");
 	updateInfo();
 }
 function setSpell(box) {
-	if(typeof(box)=="number") {
-		spellerr=(box==1)?ckspell:nospell;
-//		if(getEL(radioID[6])) getEL(radioID[6]).setAttribute("checked", !!box);
-	}
+	if(typeof(box)=="number") spellerr=(box==1)?ckspell:nospell;
 	else {
 		if(box.getAttribute("checked") == "true") { spellerr=ckspell;dockspell=1; }
 		else { spellerr=nospell;dockspell=0; }
 	}
 	updateInfo();
 }
-//function onKeyDown(e) {
-//	if (e=='iframe') { frame=findF();var key=frame.event.keyCode; }
-//	else var key=(!is_ie)?e.which:window.event.keyCode;
-//	if((key==120)||(key==123)||(key==119)||(key==118)) {
-//		if(key==120) { on_off=1;setMethod(((method==4)?0:++method)); }
-//		else if(key==118) { setDauCu(((dauCu==1)?0:1)); }
-//		else if(key==119) { dockspell=(dockspell==0)?1:0;setSpell(dockspell); }
-//		else if(key==123) {
-//			on_off=(on_off==0)?1:0;
-//			if(on_off==0) setMethod(-1);
-//			else setMethod(method);
-//		}
-//		updateInfo();
-//	}
-//}
 function ifInit(w) {
 	var sel=w.getSelection();
 	range=sel?sel.getRangeAt(0):document.createRange();
@@ -675,114 +546,43 @@ if(useCookie==1) { setCookie=doSetCookie; getCookie=doGetCookie; }
 else { setCookie=noCookie; getCookie=noCookie; }
 function noCookie() {}
 function doSetCookie() {
-//	var exp=new Date(11245711156480).toGMTString(),end=';expires='+exp+';path=/';
-//	document.cookie='AVIM_on_off='+on_off+end;
-//	document.cookie='AVIM_method='+method+end;
-//	document.cookie='AVIM_ckspell='+dockspell+end;
-//	document.cookie='AVIM_daucu='+dauCu+end;
 	var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
 	prefs.setBoolPref("enabled", !!on_off);
 	prefs.setIntPref("method", method);
 	prefs.setBoolPref("ignoreMalformed", !!dockspell);
 	prefs.setBoolPref("oldAccents", !!dauCu);
 	prefs.setCharPref("ignoredFieldIds", va.join(","));
-//	foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-//	foStream.init(file, 0x02 | 0x08 | 0x20, 0644, 0);
-//		data=on_off+"\n"+method+"\n"+dockspell+"\n"+dauCu;
-//	foStream.write(data, data.length);
-//		foStream.close();
 }
 function doGetCookie() {
-//	var ck=document.cookie, res=/AVIM_method/.test(ck);
-//	if((!res)||(ck.indexOf('AVIM_ckspell')<0)) { setCookie(); return; }
-//	var p,ckA=ck.split(';');
-//	for(var i=0;i<ckA.length;i++) {
-//		p=ckA[i].split('='); p[0]=p[0].replace(/^\s+/g,""); p[1]=parseInt(p[1]);
-//		if(p[0]=='AVIM_on_off') on_off=p[1];
-//		else if(p[0]=='AVIM_method') method=p[1];
-//		else if(p[0]=='AVIM_ckspell') {
-//			if(p[1]==0) { dockspell=0; spellerr=nospell; }
-//			else { dockspell=1; spellerr=ckspell; }
-//		} else if(p[0]=='AVIM_daucu') dauCu=parseInt(p[1]);
-//	}
 	var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
 	on_off = 0 + prefs.getBoolPref("enabled");
 	method = prefs.getIntPref("method");
 	dockspell = 0 + prefs.getBoolPref("ignoreMalformed");
 	dauCu = 0 + prefs.getBoolPref("oldAccents");
 	va = prefs.getCharPref("ignoredFieldIds").split(",");
-//	if(!file.exists()) setCookie();
-//		istream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-//		istream.init(file, 0x01, 0444, 0);
-//		istream.QueryInterface(Components.interfaces.nsILineInputStream);
-//		var line={},pref=[],more;
-//	do {
-//		more = istream.readLine(line);
-//		pref.push(parseInt(line.value));
-//	} while(more);
-//		on_off=pref[0];method=pref[1];dockspell=pref[2];dauCu=pref[3];
-//			istream.close();
 }
-//if(!is_ie) {
-//	if(agt.indexOf("opera")>=0) {
-//		operaV=agt.split(" ");operaVersion=parseInt(operaV[operaV.length-1]);
-//		if(operaVersion>=8) is_opera=true;
-//		else {
-//			operaV=operaV[0].split("/");operaVersion=parseInt(operaV[1]);
-//			if(operaVersion>=8) is_opera=true;
-//		}
-//	} else if(agt.indexOf("khtml")>=0) isKHTML=true;
-//	else {
-//		ver=agt.substr(agt.indexOf("rv:")+3);
-//		ver=parseFloat(ver.substr(0,ver.indexOf(" ")));
-//		if(agt.indexOf("mozilla")<0) ver=0;
-//	}
-//}
 function up(w) {
 	w=w.toUpperCase();
-//	if(isKHTML) {
-//		str="êôơâăưếốớấắứềồờầằừễỗỡẫẵữệộợậặự",rep="ÊÔƠÂĂƯẾỐỚẤẮỨỀỒỜẦẰỪỄỖỠẪẴỮỆỘỢẶỰ";
-//		for(z=0;z<w.length;z++) {
-//			io=str.indexOf(w.substr(z,1));
-//			if(io>=0) w=w.substr(0,z)+rep.substr(io,1)+w.substr(z+1);
-//		}
-//	}
 	return w;
 }
 function findIgnore(el) {
 	for(var i=0;i<va.length;i++) if((el.id == va[i] || el.name == va[i]) && va[i].length > 0) return true;
 }
-//if((is_ie)||(ver>=1.3)||(is_opera)||(isKHTML)) {
 getCookie();
 if(on_off==0) setMethod(-1);
 else setMethod(method);
-setSpell(dockspell);setDauCu(dauCu);/* statusMessage(); */
-//} else support=false;
+setSpell(dockspell);setDauCu(dauCu);
 function onKeyPress(e) {
 	if (document.documentElement.localName == "page") return;
 	if(!support) return;
-//	if(!is_ie) {
-		var el=e.target,code=e.which;
-		if(e.ctrlKey) return;
-		if((e.altKey)&&(code!=92)&&(code!=126)) return;
-//	}
-//	else { var el=window.event.srcElement,code=window.event.keyCode; if((event.ctrlKey)&&(code!=92)&&(code!=126)) return; }
+	var el=e.target,code=e.which;
+	if(e.ctrlKey) return;
+	if((e.altKey)&&(code!=92)&&(code!=126)) return;
 	var xulURI = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 	var xulAnonIDs = {
 		"searchbar": "searchbar-textbox",
 		"findbar": "findbar-textbox"
 	};
-//	if(el.id=='searchbar') {
-//		el = document.getAnonymousNodes(el);
-//		if(el[1].getAttribute('type')=='autocomplete') {
-//			el = document.getAnonymousNodes(el[1]);
-//			el = el[0].lastChild;
-//		} else {
-//			el = el[1].firstChild;
-//			el = el.lastChild;
-//		}
-//		el = document.getAnonymousElementByAttribute(el, "anonid", "input");
-//	}
 	if (el.namespaceURI == xulURI && xulAnonIDs[el.localName]) {
 		el = document.getAnonymousElementByAttribute(el, "anonid", xulAnonIDs[el.localName]);
 	}
@@ -791,22 +591,16 @@ function onKeyPress(e) {
 	var isXUL = el.namespaceURI == xulURI && xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 	if((!isHTML && !isXUL) || checkCode(code)) return;
 	sk=fcc(code); if (findIgnore(el)) return;
-	/* if(!is_ie) */ start(el,e);
-//	else start(el,sk);
+	start(el,e);
 	if(changed) {
 		changed=false;
-		/* if (!is_ie) */ e.preventDefault();
-//		else return false;
+		e.preventDefault();
 	}
 }
 function attachEvt(obj,evt,handle,capture) {
-//	if(is_ie) { obj.attachEvent("on"+evt,handle); obj.attachEvent("on"+evt,getCookie); }
-//	else {
-		obj.addEventListener(evt,handle,capture);
-		obj.addEventListener(evt,getCookie,capture);
-//  }
+	obj.addEventListener(evt,handle,capture);
+//	obj.addEventListener(evt,getCookie,capture);
 }
-//attachEvt(document,"keydown",onKeyDown,false);
 attachEvt(document,"keypress",onKeyPress,false);
 function findF() {
 	for(g=0;g<fID.length;g++) {
@@ -818,42 +612,18 @@ function findF() {
 		}
 	}
 }
-//function onKeyDownI() { onKeyDown("iframe"); }
 function initAVIM() {
 	var kkk=false;
-//	if((support)&&(!isKHTML)) {
-//		if(is_opera) { if(operaVersion<9) return; }
-		for(g=0;g<fID.length;g++) {
-			if(findIgnore(fID[g])) continue;
-//			if(is_ie) {
-//				var doc;
-//				try {
-//					frame=fID[g];if(typeof(frame)!="undefined") {
-//						if(frame.contentWindow.document) doc=frame.contentWindow.document;
-//						else if(frame.document) doc=frame.document;
-//					}
-//					if((doc)&&((up(doc.designMode)=="ON")||(doc.body.contentEditable))) {
-//						for(l=0;l<attached.length;l++) if(doc==attached[l]) { kkk=true; break; }
-//						if(!kkk) {
-//							attached[attached.length]=doc;
-////							attachEvt(doc,"keydown",onKeyDownI,false);
-//							attachEvt(doc,"keypress",FKeyPress,false);
-//						} else kkk=false;
-//					}
-//				}
-//				catch(e) { }
-//			} else {
-				var iframedit;
-				try {
-					wi=fID[g].contentWindow;iframedit=wi.document;iframedit.wi=wi;
-					if((iframedit)&&(up(iframedit.designMode)=="ON")) {
-						attachEvt(iframedit,"keypress",ifMoz,false);
-//						attachEvt(iframedit,"keydown",onKeyDown,true);
-					}
-				} catch(e) { }
-//			}
-		}
-//	}
+	for(g=0;g<fID.length;g++) {
+		if(findIgnore(fID[g])) continue;
+		var iframedit;
+		try {
+			wi=fID[g].contentWindow;iframedit=wi.document;iframedit.wi=wi;
+			if((iframedit)&&(up(iframedit.designMode)=="ON")) {
+				attachEvt(iframedit,"keypress",ifMoz,false);
+			}
+		} catch(e) { }
+	}
 }
 function uglyF() { var ugly=50;while(ugly<5000) {setTimeout("initAVIM()",ugly);ugly+=50} }
 uglyF();attachEvt(document,"mousedown",uglyF,false);
@@ -861,5 +631,4 @@ function initMenu() {
 	getCookie();
 	updateMenu();
 }
-//attachEvt(window, "load", initMenu, false);
 attachEvt(window, "focus", initMenu, false);
