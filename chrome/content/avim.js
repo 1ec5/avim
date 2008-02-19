@@ -458,7 +458,7 @@ var avim = {
 		if(k==this.R) return [7843,7849,7859,7867,7875,7881,7887,7893,7903,7911,7917,7927,7842,7848,7858,7866,7874,7880,7886,7892,7902,7910,7916,7926];
 		if(k==this.X) return [227,7851,7861,7869,7877,297,245,7895,7905,361,7919,7929,195,7850,7860,7868,7876,296,213,7894,7904,360,7918,7928];
 	},
-	getEL: function (id) { return document.getElementById(id); },
+	$: document.getElementById,
 	getSF: function () {
 		var sf=[],x; for(x=0;x<this.skey.length;x++) sf[sf.length]=this.fcc(this.skey[x]);
 		return sf;
@@ -470,22 +470,22 @@ var avim = {
 	},
 	updateMenu: function () {
 		// Update method menu items
-		var radioOn = this.getEL(this.enabledID ? this.enabledID : this.radioID[5]);
+		var radioOn = this.$(this.enabledID ? this.enabledID : this.radioID[5]);
 		this.setObservedAttr(radioOn, "checked", !!this.on_off);
-		var cmdMethod = this.getEL(this.methodCmdID);
+		var cmdMethod = this.$(this.methodCmdID);
 		if (cmdMethod) cmdMethod.setAttribute("disabled", !this.on_off);
-		this.setObservedAttr(this.getEL(this.radioID[6]), "disabled", !this.on_off);
-		this.setObservedAttr(this.getEL(this.radioID[7]), "disabled", !this.on_off);
-		this.setObservedAttr(this.getEL(this.radioID[this.method]), "checked", true);
+		this.setObservedAttr(this.$(this.radioID[6]), "disabled", !this.on_off);
+		this.setObservedAttr(this.$(this.radioID[7]), "disabled", !this.on_off);
+		this.setObservedAttr(this.$(this.radioID[this.method]), "checked", true);
 		
 		// Update options menu items
-		this.setObservedAttr(this.getEL(this.radioID[6]), "checked", !!this.dockspell);
-		this.setObservedAttr(this.getEL(this.radioID[7]), "checked", !!this.dauCu);
+		this.setObservedAttr(this.$(this.radioID[6]), "checked", !!this.dockspell);
+		this.setObservedAttr(this.$(this.radioID[7]), "checked", !!this.dauCu);
 		
 		// Update status bar panel
-		if (this.getEL(this.methodLabel)) {
-			if (this.on_off) this.setObservedAttr(this.getEL(this.methodLabel), "label", this.getEL(this.radioID[this.method]).getAttribute("label"));
-			else this.setObservedAttr(this.getEL(this.methodLabel), "label", this.getEL(this.radioID[5]).getAttribute("label"));
+		if (this.$(this.methodLabel)) {
+			if (this.on_off) this.setObservedAttr(this.$(this.methodLabel), "label", this.$(this.radioID[this.method]).getAttribute("label"));
+			else this.setObservedAttr(this.$(this.methodLabel), "label", this.$(this.radioID[5]).getAttribute("label"));
 		}
 	},
 	setObservedAttr: function (bcaster, attr, val) {
@@ -497,7 +497,7 @@ var avim = {
 		}
 		ids = ids.split(",");
 		for (var i = 0; i < ids.length; i++) {
-			var radio = this.getEL(ids[i]);
+			var radio = this.$(ids[i]);
 			if (radio) radio.setAttribute(attr, val);
 		}
 	},
@@ -608,7 +608,6 @@ var avim = {
 	},
 	attachEvt: function (obj,evt,handle,capture) {
 		obj.addEventListener(evt,handle,capture);
-	//	obj.addEventListener(evt,this.getPref,capture);
 	},
 	initLater: function () {
 		var kkk=false;
