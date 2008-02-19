@@ -91,11 +91,13 @@ var avim = {
 	},
 	start: function (obj,key) {
 		var w="",nnc;this.oc=obj;this.uni2=false;
-		if(this.method==0) { this.uni="D,A,E,O,W,W".split(','); this.uni2="9,6,6,6,7,8".split(','); this.D2="DAWEO6789"; }
-		else if(this.method==1) { this.uni="D,A,E,O,W,W".split(','); this.D2="DAWEO"; }
-		else if(this.method==2) { this.uni="9,6,6,6,7,8".split(','); this.D2="6789"; }
-		else if(this.method==3) { this.uni="D,^,^,^,+,(".split(','); this.D2="D^+("; }
-		else if(this.method==4) { this.uni="D,^,^,^,*,(".split(','); this.D2="D^*("; }
+		switch (this.method) {
+			case 0: this.uni="D,A,E,O,W,W".split(','); this.uni2="9,6,6,6,7,8".split(','); this.D2="DAWEO6789"; break;
+			case 1: this.uni="D,A,E,O,W,W".split(','); this.D2="DAWEO"; break;
+			case 2: this.uni="9,6,6,6,7,8".split(','); this.D2="6789"; break;
+			case 3: this.uni="D,^,^,^,+,(".split(','); this.D2="D^+("; break;
+			case 4: this.uni="D,^,^,^,*,(".split(','); this.D2="D^*("; break;
+		}
 		key=this.fcc(key.which);
 		w=this.mozGetText(obj);
 		nnc=(this.D2.indexOf(this.up(key))>=0);
@@ -214,8 +216,8 @@ var avim = {
 				}
 			}
 		}
-		for(b=0;b<vDConsonant.length;b++) if(tw.indexOf(vDConsonant[b])==0){tw=tw.substr(vDConsonant[b].length);update=true;t=b;break}
-		if(!update) for(b=0;b<vSConsonant.length;b++) if(tw.indexOf(vSConsonant[b])==0){tw=tw.substr(1);break}
+		for(b=0;b<vDConsonant.length;b++) if(tw.indexOf(vDConsonant[b])==0){tw=tw.substr(vDConsonant[b].length);update=true;t=b;break;}
+		if(!update) for(b=0;b<vSConsonant.length;b++) if(tw.indexOf(vSConsonant[b])==0){tw=tw.substr(1);break;}
 		update=false;twE=tw;
 		for(b=0;b<vDConsonantE.length;b++) {
 			if(tw.substr(tw.length-vDConsonantE[b].length)==vDConsonantE[b]) {
@@ -227,7 +229,7 @@ var avim = {
 				update=true;break;
 			}
 		}
-		if(!update) for(b=0;b<vSConsonantE.length;b++) if(tw.substr(tw.length-1)==vSConsonantE[b]){tw=tw.substr(0,tw.length-1);break}
+		if(!update) for(b=0;b<vSConsonantE.length;b++) if(tw.substr(tw.length-1)==vSConsonantE[b]){tw=tw.substr(0,tw.length-1);break;}
 		if(tw) {
 			for(a=0;a<vDConsonant.length;a++) {
 				for(b=0;b<tw.length;b++) { if(tw.substr(b,vDConsonant[a].length)==vDConsonant[a]) return true; }
@@ -308,7 +310,10 @@ var avim = {
 				}
 			}
 		}
-		if((uk!=this.Z)&&(this.DAWEO.indexOf(uk)<0)) { var tEC=this.retKC(uk); for (this.g=0;this.g<tEC.length;this.g++) tE+=this.fcc(tEC[this.g]); }
+		if((uk!=this.Z)&&(this.DAWEO.indexOf(uk)<0)) {
+			var tEC=this.retKC(uk);
+			for (this.g=0;this.g<tEC.length;this.g++) tE+=this.fcc(tEC[this.g]);
+		}
 		for(this.g=1;this.g<=w.length;this.g++) {
 			if(this.DAWEO.indexOf(uk)<0) {
 				cc=this.up(w.substr(w.length-this.g,1));
@@ -588,10 +593,7 @@ var avim = {
 		if(e.ctrlKey) return;
 		if((e.altKey)&&(code!=92)&&(code!=126)) return;
 		var xulURI = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-		var xulAnonIDs = {
-			"searchbar": "searchbar-textbox",
-			"findbar": "findbar-textbox"
-		};
+		var xulAnonIDs = {"searchbar": "searchbar-textbox", "findbar": "findbar-textbox"};
 		if (el.namespaceURI == xulURI && xulAnonIDs[el.localName]) {
 			el = document.getAnonymousElementByAttribute(el, "anonid", xulAnonIDs[el.localName]);
 		}
@@ -627,13 +629,13 @@ var avim = {
 		this.getPref();
 		this.updateMenu();
 	},
-    init: function () {
-        this.getPref();
-        this.attachEvt(document,"keypress",this.onKeyPress,false);
-        this.uglyF();
-        this.attachEvt(document,"mousedown",this.uglyF,false);
-        this.attachEvt(window, "focus", this.initMenu, false);
-    }
+	init: function () {
+		this.getPref();
+		this.attachEvt(document,"keypress",this.onKeyPress,false);
+		this.uglyF();
+		this.attachEvt(document,"mousedown",this.uglyF,false);
+		this.attachEvt(window, "focus", this.initMenu, false);
+	}
 };
 
 avim.attachEvt(window, "load", this.init, false);
