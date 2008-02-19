@@ -373,21 +373,17 @@ var avim = {
 	},
 	unV: function (w) {
 		var u=this.repSign(null),b,a;
-		for(a=1;a<=w.length;a++) {
-			for(b=0;b<u.length;b++) {
-				if(u[b]==w.charCodeAt(w.length-a)) {
-					w=w.substr(0,w.length-a)+this.fcc(this.skey[b%24])+w.substr(w.length-a+1);
-				}
+		for(a=1;a<=w.length;a++) for(b=0;b<u.length;b++) {
+			if(u[b]==w.charCodeAt(w.length-a)) {
+				w=w.substr(0,w.length-a)+this.fcc(this.skey[b%24])+w.substr(w.length-a+1);
 			}
 		}
 		return w;
 	},
 	unV2: function (w) {
 		var a,b;
-		for(a=1;a<=w.length;a++) {
-			for(b=0;b<this.skey.length;b++) {
-				if(this.skey[b]==w.charCodeAt(w.length-a)) w=w.substr(0,w.length-a)+this.skey2[b]+w.substr(w.length-a+1);
-			}
+		for(a=1;a<=w.length;a++) for(b=0;b<this.skey.length;b++) {
+			if(this.skey[b]==w.charCodeAt(w.length-a)) w=w.substr(0,w.length-a)+this.skey2[b]+w.substr(w.length-a+1);
 		}
 		return w;
 	},
@@ -457,11 +453,13 @@ var avim = {
 		if(this.whit) this.whit=false;
 	},
 	retKC: function (k) {
-		if(k==this.S) return [225,7845,7855,233,7871,237,243,7889,7899,250,7913,253,193,7844,7854,201,7870,205,211,7888,7898,218,7912,221];
-		if(k==this.F) return [224,7847,7857,232,7873,236,242,7891,7901,249,7915,7923,192,7846,7856,200,7872,204,210,7890,7900,217,7914,7922];
-		if(k==this.J) return [7841,7853,7863,7865,7879,7883,7885,7897,7907,7909,7921,7925,7840,7852,7862,7864,7878,7882,7884,7896,7906,7908,7920,7924];
-		if(k==this.R) return [7843,7849,7859,7867,7875,7881,7887,7893,7903,7911,7917,7927,7842,7848,7858,7866,7874,7880,7886,7892,7902,7910,7916,7926];
-		if(k==this.X) return [227,7851,7861,7869,7877,297,245,7895,7905,361,7919,7929,195,7850,7860,7868,7876,296,213,7894,7904,360,7918,7928];
+		switch (k) {
+			case this.S: return [225,7845,7855,233,7871,237,243,7889,7899,250,7913,253,193,7844,7854,201,7870,205,211,7888,7898,218,7912,221]; break;
+			case this.F: return [224,7847,7857,232,7873,236,242,7891,7901,249,7915,7923,192,7846,7856,200,7872,204,210,7890,7900,217,7914,7922]; break;
+			case this.J: return [7841,7853,7863,7865,7879,7883,7885,7897,7907,7909,7921,7925,7840,7852,7862,7864,7878,7882,7884,7896,7906,7908,7920,7924]; break;
+			case this.R: return [7843,7849,7859,7867,7875,7881,7887,7893,7903,7911,7917,7927,7842,7848,7858,7866,7874,7880,7886,7892,7902,7910,7916,7926]; break;
+			case this.X: return [227,7851,7861,7869,7877,297,245,7895,7905,361,7919,7929,195,7850,7860,7868,7876,296,213,7894,7904,360,7918,7928]; break;
+		}
 	},
 	$: document.getElementById,
 	getSF: function () {
@@ -563,7 +561,7 @@ var avim = {
 		if(this.changed) { this.changed=false; e.preventDefault(); }
 	},
 	checkCode: function (code) { return((this.on_off==0)||((code<45)&&(code!=42)&&(code!=32)&&(code!=39)&&(code!=40)&&(code!=43))||(code==145)||(code==255)); },
-	fcc: function (x) { return String.fromCharCode(x); },
+	fcc: String.fromCharCode,
 	setPref: function () {
 		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
 		prefs.setBoolPref("enabled", !!this.on_off);
@@ -580,10 +578,7 @@ var avim = {
 		this.dauCu = 0 + prefs.getBoolPref("oldAccents");
 		this.va = prefs.getCharPref("ignoredFieldIds").split(",");
 	},
-	up: function (w) {
-		w=w.toUpperCase();
-		return w;
-	},
+	up: String.toUpperCase,
 	findIgnore: function (el) {
 		for(var i=0;i<this.va.length;i++) if((el.id == this.va[i] || el.name == this.va[i]) && this.va[i].length > 0) return true;
 	},
