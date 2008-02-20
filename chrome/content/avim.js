@@ -170,8 +170,7 @@ function normC(w,k,i) {
 	}
 }
 function spellerr(w, k) {
-	if (!!dockspell) ckspell(w, k);
-	else return false;
+	return !!dockspell && ckspell(w, k);
 }
 function ckspell(w,k) {
 	w=unV(w); var exc="UOU,IEU".split(','),z,next=true,noE="UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','),noBE="YEU",test,a,b;
