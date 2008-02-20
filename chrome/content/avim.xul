@@ -49,7 +49,7 @@ THE SOFTWARE.
 	
 	<popupset>
 		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
-		<menupopup id="avim-status-popup" onpopupshowing="foo.updateMenu();">
+		<menupopup id="avim-status-popup" onpopupshowing="updateMenu();">
 			<menuitem id="avim-status-enabled" type="checkbox" observes="him_on" />
 			
 			<!-- Input methods -->
@@ -71,7 +71,7 @@ THE SOFTWARE.
 	<menupopup id="menu_EditPopup">
 		<menuseparator id="avim-separator" />
 		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
-			<menupopup id="avim-menu-popup" onpopupshowing="foo.updateMenu();">
+			<menupopup id="avim-menu-popup" onpopupshowing="updateMenu();">
 				<menuitem id="avim-menu-enabled" type="checkbox" key="avim-enabled-key" observes="him_on" />
 				
 				<!-- Input methods -->

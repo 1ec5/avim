@@ -23,7 +23,7 @@ var enabledID = "him_on";
 var methodLabel = "avim-status";
 var nextKeyID = "avim-enabled-key";
 var methodCmdID = "avim-method-cmd";
-var alphabet="QWERTYUIOPASDFGHJKLZXCVBNM ",them,spellerr=(!!dockspell)?ckspell:nospell,attached=[];
+var alphabet="QWERTYUIOPASDFGHJKLZXCVBNM ",them,attached=[];
 var S,F,J,R,X,D,oc,sk,saveStr,wi,frame,D2;
 var support=true,changed=false,specialChange=false,uni,uni2,g,h,SFJRX,DAWEO,Z,AEO,moc,trang,kl=0,tw5,range=null,fID=document.getElementsByTagName("iframe");
 var skey=[97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89];
@@ -169,7 +169,10 @@ function normC(w,k,i) {
 		}
 	}
 }
-function nospell(w,k) { return false; }
+function spellerr(w, k) {
+	if (!!dockspell) ckspell(w, k);
+	else return false;
+}
 function ckspell(w,k) {
 	w=unV(w); var exc="UOU,IEU".split(','),z,next=true,noE="UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','),noBE="YEU",test,a,b;
 	var check=true,noM="UE,UYE,IU,EU,UY".split(','),noMT="AY,AU".split(','),noT="UA",t=-1,notV2="IAO";
@@ -496,10 +499,10 @@ function setDauCu(box) {
 	updateInfo();
 }
 function setSpell(box) {
-	if(typeof(box)=="number") spellerr=(box==1)?ckspell:nospell;
+	if(typeof(box)=="number") dockspell = box;
 	else {
-		if(box.getAttribute("checked") == "true") { spellerr=ckspell;dockspell=1; }
-		else { spellerr=nospell;dockspell=0; }
+		if(box.getAttribute("checked") == "true") { dockspell=1; }
+		else { dockspell=0; }
 	}
 	updateInfo();
 }
