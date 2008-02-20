@@ -1,0 +1,33 @@
+Until version 20061001, the version number indicated the extension's release
+date. Starting with version 1.0.0.20071102, the first three version parts
+indicate the version of the extension itself, while the fourth part indicates
+the version of avim.js that the extension was based on.
+
+Version 20060714 (July 14, 2006)
+
+Version 20061001 (October 1, 2006)
+
+Version 1.0.0.20071102 (?)
+ - Added support for Firefox 3.0.
+ - Replaced the status bar radio buttons with an unobtrusive popup menu.
+ - Added an identical menu under the Edit menu, for those who hide their status
+   bars.
+ - Switched to keyboard shortcuts that no longer conflict with shortcuts in
+   Firefox or (hopefully) other extensions.
+ - Replaced the "Off" "input method" with a separate "Enabled" option.
+ - Added the Ctrl+Shift+V keyboard shortcut (Cmd+Shift+V in the Mac) to toggle
+   AVIM on and off.
+ - Replaced the avim_prefs plain text preferences file with entries in Firefox's
+   built-in preferences service. Users of previous versions will have to set
+   their input method and other options again. Advanced options can be set using
+   about:config.
+ - Added support for windows other than the main browser window, including the
+   Bookmark Properties window, the Bookmarks Organizer, JavaScript confirm()
+   dialogs, and any other XUL document affected by an overlay listed in
+   chrome.manifest.
+ - Ensured that windows are updated upon focus to reflect input method changes
+   in other windows.
+ - Refactored avim.js to use one monolithic `avim` object, to minimize function
+   and variable naming conflicts with other extensions.
+ - Localized into Vietnamese, in case Firefox ever gets an official translation
+   into Vietnamese. One can hope...
