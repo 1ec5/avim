@@ -27,7 +27,5 @@ Version 1.0.0.20071102 (?)
    chrome.manifest.
  - Ensured that windows are updated upon focus to reflect input method changes
    in other windows.
- - Refactored avim.js to use one monolithic `avim` object, to minimize function
-   and variable naming conflicts with other extensions.
  - Localized into Vietnamese, in case Firefox ever gets an official translation
    into Vietnamese. One can hope...
