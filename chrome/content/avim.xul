@@ -28,11 +28,11 @@ THE SOFTWARE.
 	</keyset>
 	
 	<commandset>
-		<command id="avim-method-cmd" oncommand="avim.setMethod(avim.value);" />
+		<command id="avim-method-cmd" oncommand="setMethod(this.value);" />
 	</commandset>
 	
 	<broadcasterset>
-		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" observers="avim-menu-enabled,avim-status-enabled" oncommand="avim.toggleEnabled(this);" />
+		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" observers="avim-menu-enabled,avim-status-enabled" oncommand="toggleEnabled(this);" />
 		<broadcaster id="him_off" name="him_off" label="&him_off.label;" />
 		
 		<!-- Input methods -->
@@ -43,13 +43,13 @@ THE SOFTWARE.
 		<broadcaster id="him_viqr2" label="&him_viqr2.label;" accesskey="&him_viqr2.accesskey;" value="4" observers="avim-menu-viqr2,avim-status-viqr2" command="avim-method-cmd" />
 		
 		<!-- Options -->
-		<broadcaster id="him_ckspell" name="him_ckspell" type="checkbox" label="&him_ckspell.label;" accesskey="&him_ckspell.accesskey;" description="&him_ckspell.description;" oncommand="avim.setSpell(this);" />
-		<broadcaster id="him_daucu" name="him_daucu" type="checkbox" label="&him_daucu.label;" accesskey="&him_daucu.accesskey;" description="&him_daucu.description;" oncommand="avim.setDauCu(this);" />
+		<broadcaster id="him_ckspell" name="him_ckspell" type="checkbox" label="&him_ckspell.label;" accesskey="&him_ckspell.accesskey;" description="&him_ckspell.description;" oncommand="setSpell(this);" />
+		<broadcaster id="him_daucu" name="him_daucu" type="checkbox" label="&him_daucu.label;" accesskey="&him_daucu.accesskey;" description="&him_daucu.description;" oncommand="setDauCu(this);" />
 	</broadcasterset>
 	
 	<popupset>
 		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
-		<menupopup id="avim-status-popup" onpopupshowing="avim.updateMenu();">
+		<menupopup id="avim-status-popup" onpopupshowing="foo.updateMenu();">
 			<menuitem id="avim-status-enabled" type="checkbox" observes="him_on" />
 			
 			<!-- Input methods -->
@@ -71,7 +71,7 @@ THE SOFTWARE.
 	<menupopup id="menu_EditPopup">
 		<menuseparator id="avim-separator" />
 		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
-			<menupopup id="avim-menu-popup" onpopupshowing="avim.updateMenu();">
+			<menupopup id="avim-menu-popup" onpopupshowing="foo.updateMenu();">
 				<menuitem id="avim-menu-enabled" type="checkbox" key="avim-enabled-key" observes="him_on" />
 				
 				<!-- Input methods -->
