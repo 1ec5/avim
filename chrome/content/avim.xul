@@ -28,7 +28,7 @@ THE SOFTWARE.
 	</keyset>
 	
 	<commandset>
-		<command id="avim-method-cmd" oncommand="avim.setMethod(this.value);" />
+		<command id="avim-method-cmd" oncommand="avim.setMethod(avim.value);" />
 	</commandset>
 	
 	<broadcasterset>
