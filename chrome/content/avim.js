@@ -7,7 +7,7 @@
  * You are allowed to use this software in any way you want providing:
  * 	1. You must retain this copyright notice at all time
  * 	2. You must not claim that you or any other third party is the author
- *	   of this software in any way.
+ *     of this software in any way.
  * 
  * Modified for the AVIM Firefox extension by Minh Nguyen <http://www.1ec5.org/>.
  */
