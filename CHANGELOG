@@ -22,7 +22,7 @@ Version 1.0.0.20071102 (?)
    their input method and other options again. Advanced options can be set using
    about:config.
  - Added support for windows other than the main browser window, including the
-   Bookmark Properties window, the Bookmarks Organizer, JavaScript confirm()
+   Bookmark Properties window, the Bookmarks Organizer, JavaScript prompt()
    dialogs, and any other XUL document affected by an overlay listed in
    chrome.manifest.
  - Ensured that windows are updated upon focus to reflect input method changes

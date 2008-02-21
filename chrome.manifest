@@ -18,14 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# content	avim jar:chrome/avim.jar!/content/
-content	avim chrome/content/
-locale	avim en-US	chrome/locale/en-US/
-locale	avim vi	chrome/locale/vi/
+# content avim jar:chrome/avim.jar!/content/
+content avim chrome/content/
+locale avim en-US chrome/locale/en-US/
+locale avim vi chrome/locale/vi/
 
-# overlay	chrome://browser/content/browser.xul	chrome://avim/content/avim.xul
-
-overlay	chrome://global/content/editMenuOverlay.xul	chrome://avim/content/avim.xul
-overlay chrome://browser/content/places/bookmarkProperties.xul  chrome://avim/content/avim.xul
-overlay chrome://global/content/commonDialog.xul  chrome://avim/content/avim.xul
-# overlay chrome://browser/content/preferences/cookies.xul    chrome://avim/content/avim.xul
+overlay chrome://browser/content/browser.xul chrome://avim/content/avim.xul appversion<2.9
+overlay chrome://global/content/editMenuOverlay.xul chrome://avim/content/avim.xul appversion>2.9
+overlay chrome://browser/content/places/bookmarkProperties.xul chrome://avim/content/avim.xul appversion>2.9
+overlay chrome://browser/content/bookmarks/bookmarksProperties.xul chrome://avim/content/avim.xul appversion<2.9
+overlay chrome://global/content/commonDialog.xul chrome://avim/content/avim.xul
+# overlay chrome://browser/content/preferences/cookies.xul chrome://avim/content/avim.xul

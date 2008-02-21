@@ -37,7 +37,7 @@ THE SOFTWARE.
 		
 		<em:id>{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}</em:id>
 		<em:type>2</em:type><!-- extension -->
-		<em:version>20071102</em:version>
+		<em:version>1.0.0.20071102</em:version>
 		
 		<!-- English / fallback -->
 		<em:name>AVIM</em:name>
