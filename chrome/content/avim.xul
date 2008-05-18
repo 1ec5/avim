@@ -32,15 +32,15 @@ THE SOFTWARE.
 	</commandset>
 	
 	<broadcasterset>
-		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" observers="avim-menu-enabled avim-status-enabled" oncommand="toggleEnabled(this);" />
+		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" oncommand="toggleEnabled(this);" />
 		<broadcaster id="him_off" name="him_off" label="&him_off.label;" />
 		
 		<!-- Input methods -->
-		<broadcaster id="him_auto" label="&him_auto.label;" accesskey="&him_auto.accesskey;" value="0" observers="avim-menu-auto avim-status-auto" command="avim-method-cmd" />
-		<broadcaster id="him_telex" label="&him_telex.label;" accesskey="&him_telex.accesskey;" value="1" observers="avim-menu-telex avim-status-telex" command="avim-method-cmd" />
-		<broadcaster id="him_vni" label="&him_vni.label;" accesskey="&him_vni.accesskey;" value="2" observers="avim-menu-vni avim-status-vni" command="avim-method-cmd" />
-		<broadcaster id="him_viqr" label="&him_viqr.label;" accesskey="&him_viqr.accesskey;" value="3" observers="avim-menu-viqr avim-status-viqr" command="avim-method-cmd" />
-		<broadcaster id="him_viqr2" label="&him_viqr2.label;" accesskey="&him_viqr2.accesskey;" value="4" observers="avim-menu-viqr2 avim-status-viqr2" command="avim-method-cmd" />
+		<broadcaster id="him_auto" label="&him_auto.label;" accesskey="&him_auto.accesskey;" value="0" command="avim-method-cmd" />
+		<broadcaster id="him_telex" label="&him_telex.label;" accesskey="&him_telex.accesskey;" value="1" command="avim-method-cmd" />
+		<broadcaster id="him_vni" label="&him_vni.label;" accesskey="&him_vni.accesskey;" value="2" command="avim-method-cmd" />
+		<broadcaster id="him_viqr" label="&him_viqr.label;" accesskey="&him_viqr.accesskey;" value="3" command="avim-method-cmd" />
+		<broadcaster id="him_viqr_star" label="&him_viqr_star.label;" accesskey="&him_viqr_star.accesskey;" value="4" command="avim-method-cmd" />
 		
 		<!-- Options -->
 		<broadcaster id="him_ckspell" name="him_ckspell" type="checkbox" label="&him_ckspell.label;" accesskey="&him_ckspell.accesskey;" description="&him_ckspell.description;" oncommand="setSpell(this);" />
@@ -58,7 +58,7 @@ THE SOFTWARE.
 			<menuitem id="avim-status-telex" name="viet_method" type="radio" observes="him_telex" />
 			<menuitem id="avim-status-vni" name="viet_method" type="radio" observes="him_vni" />
 			<menuitem id="avim-status-viqr" name="viet_method" type="radio" observes="him_viqr" />
-			<menuitem id="avim-status-viqr2" name="viet_method" type="radio" observes="him_viqr2" />
+			<menuitem id="avim-status-viqr-star" name="viet_method" type="radio" observes="him_viqr_star" />
 			
 			<!-- Options -->
 			<menuseparator id="avim-status-options-separator" />
@@ -80,7 +80,7 @@ THE SOFTWARE.
 				<menuitem id="avim-menu-telex" name="viet_method" type="radio" observes="him_telex" />
 				<menuitem id="avim-menu-vni" name="viet_method" type="radio" observes="him_vni" />
 				<menuitem id="avim-menu-viqr" name="viet_method" type="radio" observes="him_viqr" />
-				<menuitem id="avim-menu-viqr2" name="viet_method" type="radio" observes="him_viqr2" />
+				<menuitem id="avim-menu-viqr-star" name="viet_method" type="radio" observes="him_viqr_star" />
 				
 				<!-- Options -->
 				<menuseparator id="avim-menu-options-separator" />

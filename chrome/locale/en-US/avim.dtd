@@ -34,8 +34,8 @@ THE SOFTWARE.
 <!ENTITY him_vni.accesskey "N">
 <!ENTITY him_viqr.label "VIQR">
 <!ENTITY him_viqr.accesskey "Q">
-<!ENTITY him_viqr2.label "VIQR*">
-<!ENTITY him_viqr2.accesskey "R">
+<!ENTITY him_viqr_star.label "VIQR*">
+<!ENTITY him_viqr_star.accesskey "R">
 <!ENTITY him_on.label "Enabled">
 <!ENTITY him_on.accesskey "E">
 <!ENTITY him_off.label "Off">

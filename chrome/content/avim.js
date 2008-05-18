@@ -4,7 +4,7 @@ var AVIMGlobalConfig = {
 	ckSpell: 1, //Spell Check: 0=Off, 1=On
 	oldAccent: 1, //0: New way (oa`, oe`, uy`), 1: The good old day (o`a, o`e, u`y)
 	useCookie: 1, //Cookies: 0=Off, 1=On
-	exclude: ["email"] //IDs of the fields you DON'T want to let users type Vietnamese in
+	exclude: ["email", "TextboxEval"] //IDs of the fields you DON'T want to let users type Vietnamese in
 };
 
 var AVIMAutoConfig = {
@@ -15,9 +15,9 @@ var AVIMAutoConfig = {
 };
 
 function AVIM()	{
-	this.radioID="him_auto,him_telex,him_vni,him_viqr,him_viqr2,him_off,him_ckspell,him_daucu".split(",");this.changed=false
-	this.agt=navigator.userAgent.toLowerCase();this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.support=true;this.ver=0;this.specialChange=false
-	this.is_ie=((agt.indexOf("msie")!=-1)&&(agt.indexOf("opera")==-1));this.is_opera=false;this.isKHTML=false;this.kl=0
+	this.radioID="him_auto,him_telex,him_vni,him_viqr,him_viqr_star,him_off,him_ckspell,him_daucu".split(",");this.changed=false
+	this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.specialChange=false
+	this.kl=0
 	this.skey=new Array(97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89)
 	this.fID=document.getElementsByTagName("iframe");this.range=null;this.whit=false;this.db1=new Array(273,272);this.ds1="d,D".split(",")
 	this.os1="o,O,ơ,Ơ,ó,Ó,ò,Ò,ọ,Ọ,ỏ,Ỏ,õ,Õ,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ".split(",");this.ob1="ô,Ô,ô,Ô,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ".split(",")
@@ -32,21 +32,6 @@ function AVIM()	{
 	this.fcc=function(x) { return String.fromCharCode(x) }
 	this.getEL=function(id) { return document.getElementById(id) }
 	this.getSF=function() { var sf=new Array(),x; for(x=0;x<this.skey.length;x++) sf[sf.length]=this.fcc(this.skey[x]); return sf }
-	if(!this.is_ie) {
-		if(this.agt.indexOf("opera")>=0) {
-			this.operaV=this.agt.split(" ");this.operaVersion=parseInt(this.operaV[this.operaV.length-1])
-			if(this.operaVersion>=8) this.is_opera=true
-			else {
-				this.operaV=this.operaV[0].split("/");this.operaVersion=parseInt(this.operaV[1])
-				if(this.operaVersion>=8) this.is_opera=true
-			}
-		} else if(this.agt.indexOf("khtml")>=0) this.isKHTML=true
-		else {
-			this.ver=this.agt.substr(this.agt.indexOf("rv:")+3)
-			this.ver=parseFloat(this.ver.substr(0,this.ver.indexOf(" ")))
-			if(this.agt.indexOf("mozilla")<0) this.ver=0
-		}
-	}
 	this.nospell=function(w,k) { return false }
 	this.ckspell=function(w,k) {
 		w=this.unV(w); var exc="UOU,IEU".split(','),z,next=true,noE="UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','),noBE="YEU"
@@ -109,11 +94,12 @@ function AVIM()	{
 	}
 	this.noCookie=function() {}
 	this.doSetCookie=function() {
-		var exp=new Date(11245711156480).toGMTString()
-		document.cookie='AVIM_on_off='+AVIMGlobalConfig.onOff+';expires='+exp
-		document.cookie='AVIM_method='+AVIMGlobalConfig.method+';expires='+exp
-		document.cookie='AVIM_ckspell='+AVIMGlobalConfig.ckSpell+';expires='+exp
-		document.cookie='AVIM_daucu='+AVIMGlobalConfig.oldAccent+';expires='+exp
+		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
+		prefs.setBoolPref("enabled", !!AVIMGlobalConfig.onOff);
+		prefs.setIntPref("method", AVIMGlobalConfig.method);
+		prefs.setBoolPref("ignoreMalformed", !!AVIMGlobalConfig.ckSpell);
+		prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
+		prefs.setCharPref("ignoredFieldIds", AVIMGlobalConfig.exclude.join(" "));
 	}
 	this.doGetCookie=function() {
 		var ck=document.cookie,res=/AVIM_method/.test(ck),p,i,ckA=ck.split(';')
@@ -152,12 +138,10 @@ function AVIM()	{
 		}
 		this.setCookie()
 	}
-	if((this.is_ie)||(this.ver>=1.3)||(this.is_opera)||(this.isKHTML)) {
-		this.getCookie()
-		if(AVIMGlobalConfig.onOff==0) this.setMethod(-1)
-		else this.setMethod(AVIMGlobalConfig.method)
-		this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent)
-	} else this.support=false
+	this.getCookie()
+	if(AVIMGlobalConfig.onOff==0) this.setMethod(-1)
+	else this.setMethod(AVIMGlobalConfig.method)
+	this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent)
 	this.mozGetText=function(obj) {
 		var v,pos,w="",g=1
 		v=(obj.data)?obj.data:obj.value
@@ -213,45 +197,22 @@ function AVIM()	{
 		else if(method==2) { uni=vni; this.D2="6789" }
 		else if(method==3) { uni=viqr; this.D2="D^+(" }
 		else if(method==4) { uni=viqr2; this.D2="D^*(" }
-		if(!this.is_ie) {
-			key=this.fcc(key.which)
-			w=this.mozGetText(obj)
-			if((!w)||(obj.sel)) return
-			if(this.D2.indexOf(this.up(key))>=0) noNormC=true
-			else noNormC=false
-			this.main(w[0],key,w[1],uni,noNormC)
-			if(!dockspell) w=this.mozGetText(obj)
-			if((w)&&(uni2)&&(!this.changed)) this.main(w[0],key,w[1],uni2,noNormC)
-			if(!dockspell) w=this.mozGetText(obj)
-			if((w)&&(uni3)&&(!this.changed)) this.main(w[0],key,w[1],uni3,noNormC)
-			if(!dockspell) w=this.mozGetText(obj)
-			if((w)&&(uni4)&&(!this.changed)) this.main(w[0],key,w[1],uni4,noNormC)
-		} else {
-			obj=this.ieGetText(obj)
-			if(obj) {
-				var sT=obj.cW.text
-				w=this.main(sT,key,0,uni,false)
-				if((uni2)&&((w==sT)||(typeof(w)=='undefined'))) w=this.main(sT,key,0,uni2,false)
-				if((uni3)&&((w==sT)||(typeof(w)=='undefined'))) w=this.main(sT,key,0,uni3,false)
-				if((uni4)&&((w==sT)||(typeof(w)=='undefined'))) w=this.main(sT,key,0,uni4,false)
-				if(w) obj.cW.text=w
-			}
-		}
+		key=this.fcc(key.which)
+		w=this.mozGetText(obj)
+		if((!w)||(obj.sel)) return
+		if(this.D2.indexOf(this.up(key))>=0) noNormC=true
+		else noNormC=false
+		this.main(w[0],key,w[1],uni,noNormC)
+		if(!dockspell) w=this.mozGetText(obj)
+		if((w)&&(uni2)&&(!this.changed)) this.main(w[0],key,w[1],uni2,noNormC)
+		if(!dockspell) w=this.mozGetText(obj)
+		if((w)&&(uni3)&&(!this.changed)) this.main(w[0],key,w[1],uni3,noNormC)
+		if(!dockspell) w=this.mozGetText(obj)
+		if((w)&&(uni4)&&(!this.changed)) this.main(w[0],key,w[1],uni4,noNormC)
 		if(this.D2.indexOf(this.up(key))>=0) {
-			if(!this.is_ie) {
-				w=this.mozGetText(obj)
-				if(!w) return
-				this.normC(w[0],key,w[1])
-			} else if(typeof(obj)=="object") { 
-				obj=this.ieGetText(obj)
-				if(obj) {
-					w=obj.cW.text
-					if(!this.changed) { w+=key;this.changed=true }
-					obj.cW.text=w
-					w=this.normC(w,key,0)
-					if(w) { obj=this.ieGetText(obj); obj.cW.text=w }
-				}
-			}
+			w=this.mozGetText(obj)
+			if(!w) return
+			this.normC(w[0],key,w[1])
 		}
 	}
 	this.findC=function(w,k,sf) {
@@ -419,8 +380,7 @@ function AVIM()	{
 		var r,pos=this.findC(w,k,sf),g
 		if(pos) {
 			if(pos[1]) {
-				if(this.is_ie) return this.ie_replaceChar(w,pos[0],pos[1])
-				else return this.replaceChar(this.oc,i-pos[0],pos[1])
+				return this.replaceChar(this.oc,i-pos[0],pos[1])
 			} else {
 				var c,pC=w.substr(w.length-pos,1),cmp;r=sf
 				for(g=0;g<r.length;g++) {
@@ -429,8 +389,7 @@ function AVIM()	{
 					if(cmp==r[g]) {
 						if(!this.nan(by[g])) c=by[g]
 						else c=by[g].charCodeAt(0)
-						if(this.is_ie) return this.ie_replaceChar(w,pos,c)
-						else return this.replaceChar(this.oc,i-pos,c)
+						return this.replaceChar(this.oc,i-pos,c)
 					}
 				}
 			}
@@ -477,7 +436,7 @@ function AVIM()	{
 	this.DAWEOZ=function(k,w,by,sf,i,uk) { if((this.DAWEO.indexOf(uk)>=0)||(this.Z.indexOf(uk)>=0)) return this.tr(k,w,by,sf,i) }
 	this.normC=function(w,k,i) {
 		var uk=this.up(k),u=this.repSign(null),fS,c,j,h,space=(k.charCodeAt(0)==32)?true:false
-		if((!this.is_ie)&&(space)) return
+		if(space) return
 		for(j=1;j<=w.length;j++) {
 			for(h=0;h<u.length;h++) {
 				if(u[h]==w.charCodeAt(w.length-j)) {
@@ -488,28 +447,22 @@ function AVIM()	{
 					else fS=this.X
 					c=this.skey[h%24]; if((this.alphabet.indexOf(uk)<0)&&(this.D2.indexOf(uk)<0)) return w; w=this.unV(w)
 					if((!space)&&(!this.changed)) w+=k
-					if(!this.is_ie) {
-						var sp=this.oc.selectionStart,pos=sp
-						if(!this.changed) {
-							var sst=this.oc.scrollTop;pos+=k.length
-							if(!this.oc.data) { this.oc.value=this.oc.value.substr(0,sp)+k+this.oc.value.substr(this.oc.selectionEnd);this.changed=true;this.oc.scrollTop=sst }
-							else { this.oc.insertData(this.oc.pos,k);this.oc.pos++;this.range.setEnd(this.oc,this.oc.pos);this.specialChange=true }
+					var sp=this.oc.selectionStart,pos=sp
+					if(!this.changed) {
+						var sst=this.oc.scrollTop;pos+=k.length
+						if(!this.oc.data) { this.oc.value=this.oc.value.substr(0,sp)+k+this.oc.value.substr(this.oc.selectionEnd);this.changed=true;this.oc.scrollTop=sst }
+						else { this.oc.insertData(this.oc.pos,k);this.oc.pos++;this.range.setEnd(this.oc,this.oc.pos);this.specialChange=true }
+					}
+					if(!this.oc.data) this.oc.setSelectionRange(pos,pos)
+					if(!this.ckspell(w,fS)) {
+						this.replaceChar(this.oc,i-j,c)
+						if(!this.oc.data) {
+							var a=new Array(this.D)
+							this.main(w,fS,pos,a,false)
+						} else {
+							var ww=this.mozGetText(this.oc),a=new Array(this.D)
+							this.main(ww[0],fS,ww[1],a,false)
 						}
-						if(!this.oc.data) this.oc.setSelectionRange(pos,pos)
-						if(!this.ckspell(w,fS)) {
-							this.replaceChar(this.oc,i-j,c)
-							if(!this.oc.data) {
-								var a=new Array(this.D)
-								this.main(w,fS,pos,a,false)
-							} else {
-								var ww=this.mozGetText(this.oc),a=new Array(this.D)
-								this.main(ww[0],fS,ww[1],a,false)
-							}
-						}
-					} else {
-						var ret=this.sr(w,fS,0)
-						if((space)&&(ret)) ret+=this.fcc(32)
-						if(ret) return ret
 					}
 				}
 			}
@@ -563,12 +516,10 @@ function AVIM()	{
 		var sf=this.getSF(),pos=this.findC(w,k,sf)
 		if(pos) {
 			if(pos[1]) {
-				if(!this.is_ie) this.replaceChar(this.oc,i-pos[0],pos[1])
-				else return this.ie_replaceChar(w,pos[0],pos[1])
+				this.replaceChar(this.oc,i-pos[0],pos[1])
 			} else {
 				var c=this.retUni(w,k,pos)
-				if (!this.is_ie) this.replaceChar(this.oc,i-pos,c)
-				else return this.ie_replaceChar(w,pos,c)
+				this.replaceChar(this.oc,i-pos,c)
 			}
 		}
 		return false
@@ -625,13 +576,6 @@ function AVIM()	{
 	}
 	this.up=function(w) {
 		w=w.toUpperCase()
-		if(this.isKHTML) {
-			var str="êôơâăưếốớấắứềồờầằừễỗỡẫẵữệộợậặự",rep="ÊÔƠÂĂƯẾỐỚẤẮỨỀỒỜẦẰỪỄỖỠẪẴỮỆỘỢẶỰ",z,io
-			for(z=0;z<w.length;z++) {
-				io=str.indexOf(w.substr(z,1))
-				if(io>=0) w=w.substr(0,z)+rep.substr(io,1)+w.substr(z+1)
-			}
-		}
 		return w
 	}
 	this.findIgnore=function(el) {
@@ -649,44 +593,60 @@ function AVIM()	{
 		}
 	}
 	this.keyPressHandler=function(e) {
-		if(!this.support) return
-		if(!this.is_ie) { var el=e.target,code=e.which; if(e.ctrlKey) return; if((e.altKey)&&(code!=92)&&(code!=126)) return }
-		else { var el=window.event.srcElement,code=window.event.keyCode; if((window.event.ctrlKey)&&(code!=92)&&(code!=126)) return }
+		var el=e.target,code=e.which;
+		if(e.ctrlKey) return;
+		if((e.altKey)&&(code!=92)&&(code!=126)) return
 		if(((el.type!='textarea')&&(el.type!='text'))||this.checkCode(code)) return
 		this.sk=this.fcc(code); if(this.findIgnore(el)) return
-		if(!this.is_ie) this.start(el,e)
-		else this.start(el,this.sk)
+		this.start(el,e)
 		if(this.changed) { this.changed=false; return false }
 		return true
 	}
 	this.attachEvt=function(obj,evt,handle,capture) {
-		if(this.is_ie) obj.attachEvent("on"+evt,handle)
-		else obj.addEventListener(evt,handle,capture)
+		obj.addEventListener(evt,handle,capture)
 	}
+	
+	// Preferences
+	
+	this.registerPrefs = function() {
+		this.prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
+		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		this.prefs.addObserver("", this, false);
+		this.getPrefs();
+	};
+	this.unregisterPrefs = function() {
+		this.setPrefs();
+		this.prefs.removeObserver("", this);
+	};
+	this.observe = function(subject, topic, data) {
+		if (topic != "nsPref:changed") return;
+		// TODO: Do something when the preferences change.
+		this.getPrefs();
+	};
+	this.setPrefs = function() {
+		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
+		prefs.setBoolPref("enabled", !!AVIMGlobalConfig.onOff);
+		prefs.setIntPref("method", AVIMGlobalConfig.method);
+		prefs.setBoolPref("ignoreMalformed", !!AVIMGlobalConfig.ckSpell);
+		prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
+		prefs.setCharPref("ignoredFieldIds", AVIMGlobalConfig.exclude.join(" "));
+	};
+	this.getPrefs = function() {
+		AVIMGlobalConfig.onOff = 0 + prefs.getBoolPref("enabled");
+		AVIMGlobalConfig.method = prefs.getIntPref("method");
+		AVIMGlobalConfig.ckSpell = 0 + prefs.getBoolPref("ignoreMalformed");
+		AVIMGlobalConfig.oldAccent = 0 + prefs.getBoolPref("oldAccents");
+		AVIMGlobalConfig.exclude = prefs.getCharPref("ignoredFieldIds").split(/\s+/);
+	};
 }
 function AVIMInit(AVIM) {
-	if((AVIM.support)&&(!AVIM.isKHTML)) {
-		if(AVIM.is_opera) { if(AVIM.operaVersion<9) return }
-		for(AVIM.g=0;AVIM.g<AVIM.fID.length;AVIM.g++) {
-			if(AVIM.findIgnore(AVIM.fID[AVIM.g])) continue
-			if(AVIM.is_ie) {
-				var doc
-				try {
-					AVIM.frame=AVIM.fID[AVIM.g];if(typeof(AVIM.frame)!="undefined") {
-						if(AVIM.frame.contentWindow.document) doc=AVIM.frame.contentWindow.document
-						else if(AVIM.frame.document) doc=AVIM.frame.document
-					}
-				} catch(e) { }
-				if((doc)&&((AVIM.up(doc.designMode)=="ON")||(doc.body.contentEditable)))
-					doc.onkeypress=function() { AVIM.FKeyPress(); if(AVIM.changed) { AVIM.changed=false; return false } }
-			} else {
-				var iframedit
-				try { AVIM.wi=AVIM.fID[AVIM.g].contentWindow;iframedit=AVIM.wi.document;iframedit.wi=AVIM.wi } catch(e) { }
-				if((iframedit)&&(AVIM.up(iframedit.designMode)=="ON")) {
-					iframedit.AVIM=AVIM
-					AVIM.attachEvt(iframedit,"keypress",AVIM.ifMoz,false)
-				}
-			}
+	for(AVIM.g=0;AVIM.g<AVIM.fID.length;AVIM.g++) {
+		if(AVIM.findIgnore(AVIM.fID[AVIM.g])) continue
+		var iframedit
+		try { AVIM.wi=AVIM.fID[AVIM.g].contentWindow;iframedit=AVIM.wi.document;iframedit.wi=AVIM.wi } catch(e) { }
+		if((iframedit)&&(AVIM.up(iframedit.designMode)=="ON")) {
+			iframedit.AVIM=AVIM
+			AVIM.attachEvt(iframedit,"keypress",AVIM.ifMoz,false)
 		}
 	}
 }
@@ -694,4 +654,10 @@ AVIMObj=new AVIM()
 function AVIMAJAXFix() { var a=50;while(a<5000) {setTimeout("AVIMInit(AVIMObj)",a);a+=50} }
 AVIMAJAXFix()
 AVIMObj.attachEvt(document,"mousedown",AVIMAJAXFix,false)
+window.addEventListener("load", function (e) {
+	AVIMObj.registerPrefs();
+}, false);
+window.addEventListener("unload", function (e) {
+	AVIMObj.unregisterPrefs();
+}, false);
 document.onkeypress=function(e) { var a=AVIMObj.keyPressHandler(e); return a }
