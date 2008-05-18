@@ -428,15 +428,15 @@ function AVIM()	{
 		else for(h=0;h<a.length;h++) if(a[h]==uk) { got=true; by=by.concat(bya[h]); sf=sf.concat(sfa[h]) }
 		if(uk==this.moc) this.whit=true;
 		if(!got) {
-			if(noNormC) return
+			if(noNormC) return "";
 			else return this.normC(w,k,i)
 		}
 		return this.DAWEOZ(k,w,by,sf,i,uk)
 	}
-	this.DAWEOZ=function(k,w,by,sf,i,uk) { if((this.DAWEO.indexOf(uk)>=0)||(this.Z.indexOf(uk)>=0)) return this.tr(k,w,by,sf,i) }
+	this.DAWEOZ=function(k,w,by,sf,i,uk) { if((this.DAWEO.indexOf(uk)>=0)||(this.Z.indexOf(uk)>=0)) return this.tr(k,w,by,sf,i); return false; }
 	this.normC=function(w,k,i) {
 		var uk=this.up(k),u=this.repSign(null),fS,c,j,h,space=(k.charCodeAt(0)==32)?true:false
-		if(space) return
+		if(space) return "";
 		for(j=1;j<=w.length;j++) {
 			for(h=0;h<u.length;h++) {
 				if(u[h]==w.charCodeAt(w.length-j)) {
@@ -467,6 +467,7 @@ function AVIM()	{
 				}
 			}
 		}
+		return "";
 	}
 	this.DAWEOF=function(cc,k,g) {
 		var ret=new Array(),kA=new Array(this.A,this.moc,this.trang,this.E,this.O),z,a;ret[0]=g
@@ -481,6 +482,7 @@ function AVIM()	{
 		if(k==this.J) return new Array(7841,7853,7863,7865,7879,7883,7885,7897,7907,7909,7921,7925,7840,7852,7862,7864,7878,7882,7884,7896,7906,7908,7920,7924)
 		if(k==this.R) return new Array(7843,7849,7859,7867,7875,7881,7887,7893,7903,7911,7917,7927,7842,7848,7858,7866,7874,7880,7886,7892,7902,7910,7916,7926)
 		if(k==this.X) return new Array(227,7851,7861,7869,7877,297,245,7895,7905,361,7919,7929,195,7850,7860,7868,7876,296,213,7894,7904,360,7918,7928)
+		return [];
 	}
 	this.unV=function(w) {
 		var u=this.repSign(null),b,a
@@ -532,6 +534,7 @@ function AVIM()	{
 			if(t!=this.up(t)) return u[lC]
 			return u[uC]
 		}
+		return false
 	}
 	this.ifInit=function(w) {
 		var sel=w.getSelection()
@@ -565,7 +568,7 @@ function AVIM()	{
 		if(this.checkCode(obj.event.keyCode)||((obj.event.ctrlKey)&&(obj.event.keyCode!=92)&&(obj.event.keyCode!=126))) return
 		this.start(obj,this.sk)
 	}
-	this.checkCode=function(code) { if(((AVIMGlobalConfig.onOff==0)||((code<45)&&(code!=42)&&(code!=32)&&(code!=39)&&(code!=40)&&(code!=43))||(code==145)||(code==255))) return true }
+	this.checkCode=function(code) { return (((AVIMGlobalConfig.onOff==0)||((code<45)&&(code!=42)&&(code!=32)&&(code!=39)&&(code!=40)&&(code!=43))||(code==145)||(code==255))); }
 	this.notWord=function(w) {
 		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t"+this.fcc(160)
 		return (str.indexOf(w)>=0)
@@ -581,23 +584,25 @@ function AVIM()	{
 	this.findIgnore=function(el) {
 		var va=AVIMGlobalConfig.exclude,i
 		for(i=0;i<va.length;i++) if((el.id==va[i])&&(va[i].length>0)) return true
+		return false;
 	}
 	this.findF=function() {
 		var g
 		for(g=0;g<this.fID.length;g++) {
-			if(this.findIgnore(this.fID[g])) return;this.frame=this.fID[g]
+			if(this.findIgnore(this.fID[g])) return false;this.frame=this.fID[g]
 			if(typeof(this.frame)!="undefined") {
 				try { if ((this.frame.contentWindow.document)&&(this.frame.contentWindow.event)) return this.frame.contentWindow }
 				catch(e) { if ((this.frame.document)&&(this.frame.event)) return this.frame }
 			}
 		}
+		return false;
 	}
 	this.keyPressHandler=function(e) {
 		var el=e.target,code=e.which;
-		if(e.ctrlKey) return;
-		if((e.altKey)&&(code!=92)&&(code!=126)) return
-		if(((el.type!='textarea')&&(el.type!='text'))||this.checkCode(code)) return
-		this.sk=this.fcc(code); if(this.findIgnore(el)) return
+		if(e.ctrlKey) return false;
+		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
+		if(((el.type!='textarea')&&(el.type!='text'))||this.checkCode(code)) return false;
+		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
 		this.start(el,e)
 		if(this.changed) { this.changed=false; return false }
 		return true
