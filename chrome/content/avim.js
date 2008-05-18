@@ -3,7 +3,6 @@ var AVIMGlobalConfig = {
 	onOff: 1, //Starting status: 0=Off, 1=On
 	ckSpell: 1, //Spell Check: 0=Off, 1=On
 	oldAccent: 1, //0: New way (oa`, oe`, uy`), 1: The good old day (o`a, o`e, u`y)
-	useCookie: 1, //Cookies: 0=Off, 1=On
 	exclude: ["email", "TextboxEval"] //IDs of the fields you DON'T want to let users type Vietnamese in
 };
 
@@ -32,8 +31,9 @@ function AVIM()	{
 	this.fcc=function(x) { return String.fromCharCode(x) }
 	this.getEL=function(id) { return document.getElementById(id) }
 	this.getSF=function() { var sf=new Array(),x; for(x=0;x<this.skey.length;x++) sf[sf.length]=this.fcc(this.skey[x]); return sf }
-	this.nospell=function(w,k) { return false }
 	this.ckspell=function(w,k) {
+		// TODO: If enforceMalformed is false, do we return true or false here?
+		if (!AVIMGlobalConfig.ckSpell) return true;
 		w=this.unV(w); var exc="UOU,IEU".split(','),z,next=true,noE="UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','),noBE="YEU"
 		var check=true,noM="UE,UYE,IU,EU,UY".split(','),noMT="AY,AU".split(','),noT="UA",t=-1,notV2="IAO"
 		var uw=this.up(w),tw=uw,update=false,gi="IO",noAOEW="OE,OO,AO,EO,IA,AI".split(','),noAOE="OA",test,a,b
@@ -92,53 +92,28 @@ function AVIM()	{
 		else if(uw2.length>3) return true
 		return false
 	}
-	this.noCookie=function() {}
-	this.doSetCookie=function() {
-		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
-		prefs.setBoolPref("enabled", !!AVIMGlobalConfig.onOff);
-		prefs.setIntPref("method", AVIMGlobalConfig.method);
-		prefs.setBoolPref("ignoreMalformed", !!AVIMGlobalConfig.ckSpell);
-		prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
-		prefs.setCharPref("ignoredFieldIds", AVIMGlobalConfig.exclude.join(" "));
-	}
-	this.doGetCookie=function() {
-		var ck=document.cookie,res=/AVIM_method/.test(ck),p,i,ckA=ck.split(';')
-		if((!res)||(ck.indexOf('AVIM_ckspell')<0)) { this.setCookie(); return }
-		for(i=0;i<ckA.length;i++) {
-			p=ckA[i].split('='); p[0]=p[0].replace(/^\s+/g,""); p[1]=parseInt(p[1])
-			if(p[0]=='AVIM_on_off') AVIMGlobalConfig.onOff=p[1]
-			else if(p[0]=='AVIM_method') AVIMGlobalConfig.method=p[1]
-			else if(p[0]=='AVIM_ckspell') {
-				if(p[1]==0) { AVIMGlobalConfig.ckSpell=0; this.spellerr=this.nospell }
-				else { AVIMGlobalConfig.ckSpell=1; this.spellerr=this.ckspell }
-			} else if(p[0]=='AVIM_daucu') AVIMGlobalConfig.oldAccent=parseInt(p[1])
-		}
-	}
-	if(AVIMGlobalConfig.useCookie==1) { this.setCookie=this.doSetCookie; this.getCookie=this.doGetCookie }
-	else { this.setCookie=this.noCookie; this.getCookie=this.noCookie }
 	this.setMethod=function(m) {
 		if(m==-1) { AVIMGlobalConfig.onOff=0;if(this.getEL(this.radioID[5])) this.getEL(this.radioID[5]).checked=true }
 		else { AVIMGlobalConfig.onOff=1;AVIMGlobalConfig.method=m;if(this.getEL(this.radioID[m])) this.getEL(this.radioID[m]).checked=true }
-		this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent);this.setCookie()
+		this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent);this.setPrefs()
 	}
 	this.setDauCu=function(box) {
 		if(typeof(box)=="number") {
 			AVIMGlobalConfig.oldAccent=box;if(this.getEL(this.radioID[7])) this.getEL(this.radioID[7]).checked=box
 		} else AVIMGlobalConfig.oldAccent=(box.checked)?1:0
-		this.setCookie()
+		this.setPrefs()
 	}
 	this.setSpell=function(box) {
 		if(typeof(box)=="number") { 
-			this.spellerr=(box==1)?this.ckspell:this.nospell
 			if(this.getEL(this.radioID[6])) this.getEL(this.radioID[6]).checked=box
 		}
 		else {
-			if(box.checked) { this.spellerr=this.ckspell;AVIMGlobalConfig.ckSpell=1 }
-			else { this.spellerr=this.nospell;AVIMGlobalConfig.ckSpell=0 }
+			if(box.checked) { AVIMGlobalConfig.ckSpell=1 }
+			else { AVIMGlobalConfig.ckSpell=0 }
 		}
-		this.setCookie()
+		this.setPrefs()
 	}
-	this.getCookie()
+	this.getPrefs()
 	if(AVIMGlobalConfig.onOff==0) this.setMethod(-1)
 	else this.setMethod(AVIMGlobalConfig.method)
 	this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent)
@@ -157,28 +132,6 @@ function AVIM()	{
 			else w=v.substr(pos-g,1)+w; g++
 		}
 		return new Array(w,pos)
-	}
-	this.ieGetText=function(obj) {
-		var caret=obj.document.selection.createRange(),w=""
-		if(caret.text) caret.text=""
-		else {
-			while(1) {
-				caret.moveStart("character",-1)
-				if(w.length==caret.text.length) break
-				w=caret.text
-				if(this.notWord(w.charAt(0))) {
-					if(w.charCodeAt(0)==13) w=w.substr(2)
-					else if(w.charAt(0)!="\\") w=w.substr(1)
-					break
-				}
-			}
-		}
-		if(w.length) {
-			caret.collapse(false)
-			caret.moveStart("character",-w.length)
-			obj.cW=caret.duplicate()
-			return obj
-		} else return false
 	}
 	this.start=function(obj,key) {
 		var w="",method=AVIMGlobalConfig.method,dockspell=AVIMGlobalConfig.ckSpell,fixed=false,uni,uni2=false,uni3=false,uni4=false;this.oc=obj
@@ -275,14 +228,14 @@ function AVIM()	{
 					} else { c++;vowA[vowA.length]=g }
 				} else if(uk!=this.Z) {
 					for(h=0;h<uni_array.length;h++) if(uni_array[h]==w.charCodeAt(w.length-g)) {
-						if(this.spellerr(w,k)) return false
+						if(this.ckspell(w,k)) return false
 						return new Array(g,tEC[h%24])
 					}
 					for(h=0;h<tEC.length;h++) if(tEC[h]==w.charCodeAt(w.length-g)) return new Array(g,this.fcc(this.skey[h]))
 				}
 			}
 		}
-		if((uk!=this.Z)&&(typeof(res)!='object')) if(this.spellerr(w,k)) return false
+		if((uk!=this.Z)&&(typeof(res)!='object')) if(this.ckspell(w,k)) return false
 		if(this.DAWEO.indexOf(uk)<0) {
 			for(g=1;g<=w.length;g++) {
 				if((uk!=this.Z)&&(s.indexOf(w.substr(w.length-g,1))>=0)) return g
