@@ -28,8 +28,8 @@ function AVIM()	{
 	this.orA="ó,ò,ỏ,õ,ọ,o,Ó,Ò,Ỏ,Õ,Ọ,O".split(',');this.aA="ấ,ầ,ẩ,ẫ,ậ,â,Ấ,Ầ,Ẩ,Ẫ,Ậ,Â".split(',');oA="ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',')
 	this.mocA="ớ,ờ,ở,ỡ,ợ,ơ,ứ,ừ,ử,ữ,ự,ư,Ớ,Ờ,Ở,Ỡ,Ợ,Ơ,Ứ,Ừ,Ử,Ữ,Ự,Ư".split(',');this.trangA="ắ,ằ,ẳ,ẵ,ặ,ă,Ắ,Ằ,Ẳ,Ẵ,Ặ,Ă".split(',')
 	this.eA="ế,ề,ể,ễ,ệ,ê,Ế,Ề,Ể,Ễ,Ệ,Ê".split(',');this.oA="ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',');this.skey2="a,a,a,e,e,i,o,o,o,u,u,y,A,A,A,E,E,I,O,O,O,U,U,Y".split(',')
-	this.fcc=function(x) { return String.fromCharCode(x) }
-	this.getEL=function(id) { return document.getElementById(id) }
+	this.fcc=String.fromCharCode;
+	this.$=document.getElementById;
 	this.getSF=function() { var sf=new Array(),x; for(x=0;x<this.skey.length;x++) sf[sf.length]=this.fcc(this.skey[x]); return sf }
 	this.ckspell=function(w,k) {
 		// TODO: If enforceMalformed is false, do we return true or false here?
@@ -93,19 +93,19 @@ function AVIM()	{
 		return false
 	}
 	this.setMethod=function(m) {
-		if(m==-1) { AVIMGlobalConfig.onOff=0;if(this.getEL(this.radioID[5])) this.getEL(this.radioID[5]).checked=true }
-		else { AVIMGlobalConfig.onOff=1;AVIMGlobalConfig.method=m;if(this.getEL(this.radioID[m])) this.getEL(this.radioID[m]).checked=true }
+		if(m==-1) { AVIMGlobalConfig.onOff=0;if(this.$(this.radioID[5])) this.$(this.radioID[5]).checked=true }
+		else { AVIMGlobalConfig.onOff=1;AVIMGlobalConfig.method=m;if(this.$(this.radioID[m])) this.$(this.radioID[m]).checked=true }
 		this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent);this.setPrefs()
 	}
 	this.setDauCu=function(box) {
 		if(typeof(box)=="number") {
-			AVIMGlobalConfig.oldAccent=box;if(this.getEL(this.radioID[7])) this.getEL(this.radioID[7]).checked=box
+			AVIMGlobalConfig.oldAccent=box;if(this.$(this.radioID[7])) this.$(this.radioID[7]).checked=box
 		} else AVIMGlobalConfig.oldAccent=(box.checked)?1:0
 		this.setPrefs()
 	}
 	this.setSpell=function(box) {
 		if(typeof(box)=="number") { 
-			if(this.getEL(this.radioID[6])) this.getEL(this.radioID[6]).checked=box
+			if(this.$(this.radioID[6])) this.$(this.radioID[6]).checked=box
 		}
 		else {
 			if(box.checked) { AVIMGlobalConfig.ckSpell=1 }
@@ -527,8 +527,7 @@ function AVIM()	{
 		return (str.indexOf(w)>=0)
 	}
 	this.nan=function(w) {
-		if ((isNaN(w))||(w=='e')) return true
-		else return false
+		return ((isNaN(w))||(w=='e'));
 	}
 	this.up=function(w) {
 		w=w.toUpperCase()
