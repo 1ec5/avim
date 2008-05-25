@@ -21,16 +21,16 @@ THE SOFTWARE.
 -->
 
 <!ENTITY AVIM.label "AVIM">
-<!ENTITY avim-menu.label "Vietnamese Input">
+<!ENTITY avim-menu.label "Entrada vietnamita">
 <!ENTITY avim-menu.accesskey "V">
 
 <!-- Input method menu -->
 <!ENTITY avim-enabled.modifiers "accel,shift"><!-- Ctrl+Shift on Windows; Cmd+Shift on Mac -->
 <!ENTITY avim-enabled.key "V">
-<!ENTITY avim-enabled.label "Enabled">
-<!ENTITY avim-enabled.accesskey "E">
-<!ENTITY avim-auto.label "Auto">
-<!ENTITY avim-auto.accesskey "A">
+<!ENTITY avim-enabled.label "Activada">
+<!ENTITY avim-enabled.accesskey "A">
+<!ENTITY avim-auto.label "Autom‡tica">
+<!ENTITY avim-auto.accesskey "M">
 <!ENTITY avim-telex.label "Telex">
 <!ENTITY avim-telex.accesskey "T">
 <!ENTITY avim-vni.label "VNI">
@@ -39,12 +39,12 @@ THE SOFTWARE.
 <!ENTITY avim-viqr.accesskey "Q">
 <!ENTITY avim-viqr-star.label "VIQR*">
 <!ENTITY avim-viqr-star.accesskey "R">
-<!ENTITY avim-disabled.label "Off">
+<!ENTITY avim-disabled.label "Apagada">
 
 <!-- Options -->
-<!ENTITY avim-spell.label "Enforce Spelling">
-<!ENTITY avim-spell.accesskey "S">
-<!ENTITY avim-spell.description "Only place accent marks onto words that conform to Vietnamese spelling rules">
-<!ENTITY avim-oldaccents.label "Old Accents">
-<!ENTITY avim-oldaccents.accesskey "l">
-<!ENTITY avim-oldaccents.description "Place accent marks on the first vowel in a diphthong">
+<!ENTITY avim-spell.label "Ortograf’a Correcta">
+<!ENTITY avim-spell.accesskey "O">
+<!ENTITY avim-spell.description "Solamente poner los accentos en las palabras que cumplen con las reglas ortograf’as vietnamitas">
+<!ENTITY avim-oldaccents.label "Accentos Viejos">
+<!ENTITY avim-oldaccents.accesskey "j">
+<!ENTITY avim-oldaccents.description "Poner los accentos en la primera vocal de un diptongo">

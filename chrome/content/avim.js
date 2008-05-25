@@ -20,10 +20,11 @@ function AVIM()	{
 		oldAccents: "avim-oldaccents-cmd"
 	};
 	this.broadcasters = {
-		enabled: "him_on",
-		methods: ["him_auto", "him_telex", "him_vni", "him_viqr", "him_viqr_star"],
-		spell: "him_ckspell",
-		oldAccents: "him_daucu"
+		enabled: "avim-enabled-bc",
+		methods: ["avim-auto-bc", "avim-telex-bc", "avim-vni-bc",
+				  "avim-viqr-bc", "avim-viqr-star-bc"],
+		spell: "avim-spell-bc",
+		oldAccents: "avim-oldaccents-bc"
 	};
 	this.panel = "avim-status";
 //	this.radioID="him_auto,him_telex,him_vni,him_viqr,him_viqr_star,him_off,him_ckspell,him_daucu".split(",");this.changed=false
@@ -162,6 +163,8 @@ function AVIM()	{
 	this.mozGetText=function(obj) {
 		var v,pos,w="",g=1
 		v=(obj.data)?obj.data:obj.value
+//		if (!v) v = obj.getAttribute("value");
+//		window.dump("mozGetText: obj=<" + obj.tagName + " value='" + v + "'>\n");	// debug
 		if(v.length<=0) return false
 		if(!obj.data) {
 			if(!obj.setSelectionRange) return false
@@ -593,16 +596,24 @@ function AVIM()	{
 //	}
 	// Modified to handle XUL and XBL text boxes correctly
 	this.keyPressHandler=function(e) {
-		if (document.documentElement.localName == "page") return false;
 		var el=e.target,code=e.which;
 		if(e.ctrlKey) return false;
 		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
-		var xulURI = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-		var xulAnonIDs = {
-			searchbar: "searchbar-textbox", findbar: "findbar-textbox"
-		};
-		if (el.namespaceURI == xulURI && xulAnonIDs[el.localName]) {
-			el = document.getAnonymousElementByAttribute(el, "anonid", xulAnonIDs[el.localName]);
+		var xulURI =
+			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+		if (el.namespaceURI == xulURI) {
+			var xulAnonIDs = {
+				searchbar: "searchbar-textbox", findbar: "findbar-textbox"
+			};
+			if (xulAnonIDs[el.localName]) {
+				el = document.getAnonymousElementByAttribute(el, "anonid",
+					xulAnonIDs[el.localName]);
+			}
+			else if (document.documentElement.localName == "page" ||
+					 (document.documentElement.localName == "window" ||
+					  document.documentElement.id == "config")) {
+				return false;
+			}
 		}
 		var isHTML = el.type == "textarea" || el.type == "text";
 		var xulTags = ["textbox", "searchbar", "findbar"];
@@ -610,6 +621,7 @@ function AVIM()	{
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
+//		dump("Starting with " + el);											// debug
 		this.start(el,e)
 		if (this.changed) {
 			this.changed=false;
@@ -653,6 +665,15 @@ function AVIM()	{
 	this.getPrefs = function() {
 		AVIMGlobalConfig.onOff = 0 + this.prefs.getBoolPref("enabled");
 		AVIMGlobalConfig.method = this.prefs.getIntPref("method");
+		// In case someone enters an invalid method ID in about:config
+		if (AVIMGlobalConfig.method < 0 ||
+			AVIMGlobalConfig.method >= this.broadcasters.methods.length) {
+			Components.classes["@mozilla.org/preferences-service;1"]
+				.getService(Components.interfaces.nsIPrefService)
+				.getDefaultBranch("extensions.avim.")
+				.clearUserPref("method");
+			AVIMGlobalConfig.method = this.prefs.getIntPref("method");
+		}
 		AVIMGlobalConfig.ckSpell =
 			0 + this.prefs.getBoolPref("ignoreMalformed");
 		AVIMGlobalConfig.oldAccent = 0 + this.prefs.getBoolPref("oldAccents");
