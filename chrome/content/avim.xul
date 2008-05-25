@@ -52,7 +52,7 @@ THE SOFTWARE.
 	<popupset>
 		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
 		<menupopup id="avim-status-popup">
-			<menuitem id="avim-status-enabled" type="checkbox" observes="avim-enabled-bc" />
+			<menuitem id="avim-status-enabled" type="checkbox" label="&avim-enabled.label;" observes="avim-enabled-bc" />
 			
 			<!-- Input methods -->
 			<menuseparator id="avim-status-methods-separator" />
