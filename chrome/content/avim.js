@@ -92,31 +92,29 @@ function AVIM()	{
 		else if(uw2.length>3) return true
 		return false
 	}
+	this.toggle = function(enabled) {
+		AVIMGlobalConfig.onOff = 0 + enabled;
+	};
 	this.setMethod=function(m) {
-		if(m==-1) { AVIMGlobalConfig.onOff=0;if(this.$(this.radioID[5])) this.$(this.radioID[5]).checked=true }
-		else { AVIMGlobalConfig.onOff=1;AVIMGlobalConfig.method=m;if(this.$(this.radioID[m])) this.$(this.radioID[m]).checked=true }
-		this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent);this.setPrefs()
-	}
-	this.setDauCu=function(box) {
-		if(typeof(box)=="number") {
-			AVIMGlobalConfig.oldAccent=box;if(this.$(this.radioID[7])) this.$(this.radioID[7]).checked=box
-		} else AVIMGlobalConfig.oldAccent=(box.checked)?1:0
-		this.setPrefs()
-	}
-	this.setSpell=function(box) {
-		if(typeof(box)=="number") { 
-			if(this.$(this.radioID[6])) this.$(this.radioID[6]).checked=box
-		}
+		if (m == -1) AVIMGlobalConfig.onOff = 0;
 		else {
-			if(box.checked) { AVIMGlobalConfig.ckSpell=1 }
-			else { AVIMGlobalConfig.ckSpell=0 }
+			AVIMGlobalConfig.onOff = 1;
+			AVIMGlobalConfig.method = m;
 		}
+		this.setPrefs();
+	}
+	this.setDauCu=function(enabled) {
+		AVIMGlobalConfig.oldAccent = 0 + enabled;
 		this.setPrefs()
 	}
-	this.getPrefs()
-	if(AVIMGlobalConfig.onOff==0) this.setMethod(-1)
-	else this.setMethod(AVIMGlobalConfig.method)
-	this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent)
+	this.setSpell=function(enabled) {
+		AVIMGlobalConfig.ckSpell = 0 + enabled;
+		this.setPrefs()
+	}
+//	this.getPrefs()
+//	if(AVIMGlobalConfig.onOff==0) this.setMethod(-1)
+//	else this.setMethod(AVIMGlobalConfig.method)
+//	this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent)
 	this.mozGetText=function(obj) {
 		var v,pos,w="",g=1
 		v=(obj.data)?obj.data:obj.value
@@ -549,12 +547,24 @@ function AVIM()	{
 //		}
 //		return false;
 //	}
+	// Modified to handle XUL and XBL text boxes correctly
 	this.keyPressHandler=function(e) {
+		if (document.documentElement.localName == "page") return false;
 		var el=e.target,code=e.which;
 		if(e.ctrlKey) return false;
 		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
-		// TODO: Make this work in XBL controls again.
-		if(((el.type!='textarea')&&(el.type!='text'))||this.checkCode(code)) return false;
+		var xulURI = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+		var xulAnonIDs = {
+			searchbar: "searchbar-textbox", findbar: "findbar-textbox"
+		};
+		if (el.namespaceURI == xulURI && xulAnonIDs[el.localName]) {
+			el = document.getAnonymousElementByAttribute(el, "anonid", xulAnonIDs[el.localName]);
+		}
+		var isHTML = el.type == "textarea" || el.type == "text";
+		var xulTags = ["textbox", "searchbar", "findbar"];
+		var isXUL = el.namespaceURI == xulURI &&
+			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
+		if((!isHTML && !isXUL) || checkCode(code)) return false;
 		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
 		this.start(el,e)
 		if(this.changed) { this.changed=false; return false }
@@ -564,7 +574,7 @@ function AVIM()	{
 		obj.addEventListener(evt,handle,capture)
 	}
 	
-	// Preferences
+	// Integration with Mozilla preferences service
 	this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
 		.getService(Components.interfaces.nsIPrefService)
 		.getBranch("extensions.avim.");

@@ -28,11 +28,11 @@ THE SOFTWARE.
 	</keyset>
 	
 	<commandset>
-		<command id="avim-method-cmd" oncommand="setMethod(this.value);" />
+		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value);" />
 	</commandset>
 	
 	<broadcasterset>
-		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" oncommand="toggleEnabled(this);" />
+		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" oncommand="AVIMObj.toggle(this.getAttribute('checked') == 'true');" />
 		
 		<!-- Input methods -->
 		<broadcaster id="him_auto" label="&him_auto.label;" accesskey="&him_auto.accesskey;" value="0" command="avim-method-cmd" />
@@ -42,13 +42,13 @@ THE SOFTWARE.
 		<broadcaster id="him_viqr_star" label="&him_viqr_star.label;" accesskey="&him_viqr_star.accesskey;" value="4" command="avim-method-cmd" />
 		
 		<!-- Options -->
-		<broadcaster id="him_ckspell" name="him_ckspell" type="checkbox" label="&him_ckspell.label;" accesskey="&him_ckspell.accesskey;" description="&him_ckspell.description;" oncommand="setSpell(this);" />
-		<broadcaster id="him_daucu" name="him_daucu" type="checkbox" label="&him_daucu.label;" accesskey="&him_daucu.accesskey;" description="&him_daucu.description;" oncommand="setDauCu(this);" />
+		<broadcaster id="him_ckspell" name="him_ckspell" type="checkbox" label="&him_ckspell.label;" accesskey="&him_ckspell.accesskey;" description="&him_ckspell.description;" oncommand="AVIMObj.setSpell(this.getAttribute('checked') == 'true');" />
+		<broadcaster id="him_daucu" name="him_daucu" type="checkbox" label="&him_daucu.label;" accesskey="&him_daucu.accesskey;" description="&him_daucu.description;" oncommand="AVIMObj.setDauCu(this.getAttribute('checked') == 'true');" />
 	</broadcasterset>
 	
 	<popupset>
 		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
-		<menupopup id="avim-status-popup" onpopupshowing="updateMenu();">
+		<menupopup id="avim-status-popup" onpopupshowing="AVIMObj.updateMenu();">
 			<menuitem id="avim-status-enabled" type="checkbox" observes="him_on" />
 			
 			<!-- Input methods -->
@@ -70,7 +70,7 @@ THE SOFTWARE.
 	<menupopup id="menu_EditPopup">
 		<menuseparator id="avim-separator" />
 		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
-			<menupopup id="avim-menu-popup" onpopupshowing="updateMenu();">
+			<menupopup id="avim-menu-popup" onpopupshowing="AVIMObj.updateMenu();">
 				<menuitem id="avim-menu-enabled" type="checkbox" key="avim-enabled-key" observes="him_on" />
 				
 				<!-- Input methods -->
