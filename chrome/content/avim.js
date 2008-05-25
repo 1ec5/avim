@@ -553,6 +553,7 @@ function AVIM()	{
 		var el=e.target,code=e.which;
 		if(e.ctrlKey) return false;
 		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
+		// TODO: Make this work in XBL controls again.
 		if(((el.type!='textarea')&&(el.type!='text'))||this.checkCode(code)) return false;
 		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
 		this.start(el,e)
@@ -609,10 +610,11 @@ function AVIMInit(AVIM) {
 	}
 }
 AVIMObj=new AVIM()
-function AVIMAJAXFix() { var a=50;while(a<5000) {setTimeout("AVIMInit(AVIMObj)",a);a+=50} }
-AVIMAJAXFix()
-AVIMObj.attachEvt(document,"mousedown",AVIMAJAXFix,false)
+//function AVIMAJAXFix() { var a=50;while(a<5000) {setTimeout("AVIMInit(AVIMObj)",a);a+=50} }
+//AVIMAJAXFix()
+//AVIMObj.attachEvt(document,"mousedown",AVIMAJAXFix,false)
 window.addEventListener("load", function (e) {
+	AVIMInit(AVIMObj);
 	AVIMObj.registerPrefs();
 }, false);
 window.addEventListener("unload", function (e) {
