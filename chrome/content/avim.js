@@ -15,8 +15,9 @@ var AVIMAutoConfig = {
 
 function AVIM()	{
 	this.radioID="him_auto,him_telex,him_vni,him_viqr,him_viqr_star,him_off,him_ckspell,him_daucu".split(",");this.changed=false
+	this.enabledID = "him_on";
+	this.methodCmdID = "avim-method-cmd";
 	this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.specialChange=false
-	this.kl=0
 	this.skey=new Array(97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89)
 	this.fID=document.getElementsByTagName("iframe");this.range=null;this.whit=false;this.db1=new Array(273,272);this.ds1="d,D".split(",")
 	this.os1="o,O,ơ,Ơ,ó,Ó,ò,Ò,ọ,Ọ,ỏ,Ỏ,õ,Õ,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ".split(",");this.ob1="ô,Ô,ô,Ô,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ".split(",")
@@ -32,8 +33,7 @@ function AVIM()	{
 	this.$=document.getElementById;
 	this.getSF=function() { var sf=new Array(),x; for(x=0;x<this.skey.length;x++) sf[sf.length]=this.fcc(this.skey[x]); return sf }
 	this.ckspell=function(w,k) {
-		// TODO: If enforceMalformed is false, do we return true or false here?
-		if (!AVIMGlobalConfig.ckSpell) return true;
+		if (!AVIMGlobalConfig.ckSpell) return false;
 		w=this.unV(w); var exc="UOU,IEU".split(','),z,next=true,noE="UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','),noBE="YEU"
 		var check=true,noM="UE,UYE,IU,EU,UY".split(','),noMT="AY,AU".split(','),noT="UA",t=-1,notV2="IAO"
 		var uw=this.up(w),tw=uw,update=false,gi="IO",noAOEW="OE,OO,AO,EO,IA,AI".split(','),noAOE="OA",test,a,b
@@ -388,7 +388,7 @@ function AVIM()	{
 	}
 	this.DAWEOZ=function(k,w,by,sf,i,uk) { if((this.DAWEO.indexOf(uk)>=0)||(this.Z.indexOf(uk)>=0)) return this.tr(k,w,by,sf,i); return false; }
 	this.normC=function(w,k,i) {
-		var uk=this.up(k),u=this.repSign(null),fS,c,j,h,space=(k.charCodeAt(0)==32)?true:false
+		var uk=this.up(k),u=this.repSign(null),fS,c,j,h,space=(k.charCodeAt(0)==32);
 		if(space) return "";
 		for(j=1;j<=w.length;j++) {
 			for(h=0;h<u.length;h++) {
@@ -515,12 +515,12 @@ function AVIM()	{
 		if(avim.specialChange) { avim.specialChange=false; avim.changed=false; node.deleteData(node.pos-1,1) }
 		if(avim.changed) { avim.changed=false; e.preventDefault() }
 	}
-	this.FKeyPress=function() {
-		var obj=this.findF()
-		this.sk=this.fcc(obj.event.keyCode)
-		if(this.checkCode(obj.event.keyCode)||((obj.event.ctrlKey)&&(obj.event.keyCode!=92)&&(obj.event.keyCode!=126))) return
-		this.start(obj,this.sk)
-	}
+//	this.FKeyPress=function() {
+//		var obj=this.findF()
+//		this.sk=this.fcc(obj.event.keyCode)
+//		if(this.checkCode(obj.event.keyCode)||((obj.event.ctrlKey)&&(obj.event.keyCode!=92)&&(obj.event.keyCode!=126))) return
+//		this.start(obj,this.sk)
+//	}
 	this.checkCode=function(code) { return (((AVIMGlobalConfig.onOff==0)||((code<45)&&(code!=42)&&(code!=32)&&(code!=39)&&(code!=40)&&(code!=43))||(code==145)||(code==255))); }
 	this.notWord=function(w) {
 		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t"+this.fcc(160)
@@ -538,17 +538,17 @@ function AVIM()	{
 		for(i=0;i<va.length;i++) if((el.id==va[i])&&(va[i].length>0)) return true
 		return false;
 	}
-	this.findF=function() {
-		var g
-		for(g=0;g<this.fID.length;g++) {
-			if(this.findIgnore(this.fID[g])) return false;this.frame=this.fID[g]
-			if(typeof(this.frame)!="undefined") {
-				try { if ((this.frame.contentWindow.document)&&(this.frame.contentWindow.event)) return this.frame.contentWindow }
-				catch(e) { if ((this.frame.document)&&(this.frame.event)) return this.frame }
-			}
-		}
-		return false;
-	}
+//	this.findF=function() {
+//		var g
+//		for(g=0;g<this.fID.length;g++) {
+//			if(this.findIgnore(this.fID[g])) return false;this.frame=this.fID[g]
+//			if(typeof(this.frame)!="undefined") {
+//				try { if ((this.frame.contentWindow.document)&&(this.frame.contentWindow.event)) return this.frame.contentWindow }
+//				catch(e) { if ((this.frame.document)&&(this.frame.event)) return this.frame }
+//			}
+//		}
+//		return false;
+//	}
 	this.keyPressHandler=function(e) {
 		var el=e.target,code=e.which;
 		if(e.ctrlKey) return false;
@@ -564,9 +564,11 @@ function AVIM()	{
 	}
 	
 	// Preferences
+	this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
+		.getService(Components.interfaces.nsIPrefService)
+		.getBranch("extensions.avim.");
 	
 	this.registerPrefs = function() {
-		this.prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
 		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		this.prefs.addObserver("", this, false);
 		this.getPrefs();
@@ -577,11 +579,10 @@ function AVIM()	{
 	};
 	this.observe = function(subject, topic, data) {
 		if (topic != "nsPref:changed") return;
-		// TODO: Do something when the preferences change.
 		this.getPrefs();
+		// TODO: Update UI when the preferences change.
 	};
 	this.setPrefs = function() {
-		var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.avim.");
 		prefs.setBoolPref("enabled", !!AVIMGlobalConfig.onOff);
 		prefs.setIntPref("method", AVIMGlobalConfig.method);
 		prefs.setBoolPref("ignoreMalformed", !!AVIMGlobalConfig.ckSpell);

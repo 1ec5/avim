@@ -33,7 +33,6 @@ THE SOFTWARE.
 	
 	<broadcasterset>
 		<broadcaster id="him_on" name="him_on" label="&him_on.label;" accesskey="&him_on.accesskey;" oncommand="toggleEnabled(this);" />
-		<broadcaster id="him_off" name="him_off" label="&him_off.label;" />
 		
 		<!-- Input methods -->
 		<broadcaster id="him_auto" label="&him_auto.label;" accesskey="&him_auto.accesskey;" value="0" command="avim-method-cmd" />
