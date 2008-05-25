@@ -18,9 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# content avim jar:chrome/avim.jar!/content/
 content avim chrome/content/
 locale avim en-US chrome/locale/en-US/
+locale avim es chrome/locale/es/
 locale avim vi chrome/locale/vi/
 
 overlay chrome://browser/content/browser.xul chrome://avim/content/avim.xul appversion<2.9

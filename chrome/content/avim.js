@@ -1,3 +1,17 @@
+/*
+ * AVIM JavaScript Vietnamese Input Method Source File
+ * 
+ * Copyright (C) 2004-2007 Hieu Tran Dang <lt2hieu2004 (at) users (dot) sf (dot) net>
+ * Website:	http://avim.veneroida.com/
+ * 
+ * You are allowed to use this software in any way you want providing:
+ * 	1. You must retain this copyright notice at all time
+ * 	2. You must not claim that you or any other third party is the author
+ *	   of this software in any way.
+ * 
+ * Modified for the AVIM Firefox extension by Minh Nguyen <http://www.1ec5.org/>.
+ */
+
 var AVIMGlobalConfig = {
 	method: 0, //Default input method: 0=AUTO, 1=TELEX, 2=VNI, 3=VIQR, 4=VIQR*
 	onOff: 1, //Starting status: 0=Off, 1=On
@@ -609,9 +623,8 @@ function AVIM()	{
 				el = document.getAnonymousElementByAttribute(el, "anonid",
 					xulAnonIDs[el.localName]);
 			}
-			else if (document.documentElement.localName == "page" ||
-					 (document.documentElement.localName == "window" ||
-					  document.documentElement.id == "config")) {
+			else if (document.documentElement.localName == "window" ||
+					 document.documentElement.id == "config") {
 				return false;
 			}
 		}
