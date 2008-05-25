@@ -34,11 +34,11 @@ avim.jar:
 	rm -rf `find avim -name ".svn" -type d`
 	
 	# Create archives.
-	zip -r avim/chrome/avim.jar avim/chrome/*
-	zip -r avim.xpi avim/
-	
-	# Clean up.
-	rm -rf avim/
+	mv -f avim/chrome/content/ .
+	mv -f avim/chrome/locale/ .
+	zip -mr avim.jar content/ locale/
+	mv -f avim.jar avim/chrome/avim.jar
+	zip -mr avim.xpi avim/
 
 .PHONY: clean
 
