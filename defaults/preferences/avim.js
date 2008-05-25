@@ -41,4 +41,4 @@ pref("extensions.avim.oldAccents", true);
  * Ignore any fields that contain e-mail addresses, as well as the code
  * evaluation bar in the Error Console. Field IDs are separated by spaces.
  */
-pref("extensions.avim.ignoredFieldIds", "email TextboxEval");
+pref("extensions.avim.ignoredFieldIds", "email e-mail TextboxEval");

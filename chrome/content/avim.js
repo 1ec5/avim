@@ -17,7 +17,10 @@ var AVIMGlobalConfig = {
 	onOff: 1, //Starting status: 0=Off, 1=On
 	ckSpell: 1, //Spell Check: 0=Off, 1=On
 	oldAccent: 1, //0: New way (oa`, oe`, uy`), 1: The good old day (o`a, o`e, u`y)
-	exclude: ["email", "TextboxEval"] //IDs of the fields you DON'T want to let users type Vietnamese in
+	//IDs of the fields you DON'T want to let users type Vietnamese in
+	exclude: ["email", "e-mail",	// don't want it for e-mail fields in general
+			  "TextboxEval",		// Firefox Error Console, Code bar
+			  ]
 };
 
 var AVIMAutoConfig = {
