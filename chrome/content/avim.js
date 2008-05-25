@@ -611,7 +611,11 @@ function AVIM()	{
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
 		this.start(el,e)
-		if(this.changed) { this.changed=false; return false }
+		if (this.changed) {
+			this.changed=false;
+			e.preventDefault();
+			return false;
+		}
 		return true
 	}
 	this.attachEvt=function(obj,evt,handle,capture) {
