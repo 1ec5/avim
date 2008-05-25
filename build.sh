@@ -63,7 +63,7 @@ rm -rf $TMP_DIR
 
 $BEFORE_BUILD
 
-mkdir --parents --verbose $TMP_DIR/chrome
+mkdir -pv $TMP_DIR/chrome
 
 # generate the JAR file, excluding CVS and temporary files
 JAR_FILE=$TMP_DIR/chrome/$APP_NAME.jar
@@ -82,12 +82,12 @@ for DIR in $ROOT_DIRS; do
   mkdir $TMP_DIR/$DIR
   FILES="`find $DIR -path $PRUNE_DIRS -prune -o -type f -print | grep -v \~`"
   echo $FILES >> files
-  cp --verbose --parents $FILES $TMP_DIR
+  cp -pv $FILES $TMP_DIR
 done
 
 # Copy other files to the root of future XPI.
 for ROOT_FILE in $ROOT_FILES install.rdf chrome.manifest; do
-  cp --verbose $ROOT_FILE $TMP_DIR
+  cp -v $ROOT_FILE $TMP_DIR
   if [ -f $ROOT_FILE ]; then
     echo $ROOT_FILE >> files
   fi
@@ -102,9 +102,11 @@ if [ -f "chrome.manifest" ]; then
   #s/^(skin|locale)(\s+\S*\s+\S*\s+)(.*\/)$/\1\2jar:chrome\/$APP_NAME\.jar!\/\3/
   #
   # Then try this! (Same, but with characters escaped for bash :)
-  sed -i -r s/^\(content\\s+\\S*\\s+\)\(\\S*\\/\)$/\\1jar:chrome\\/$APP_NAME\\.jar!\\/\\2/ chrome.manifest
-  sed -i -r s/^\(skin\|locale\)\(\\s+\\S*\\s+\\S*\\s+\)\(.*\\/\)$/\\1\\2jar:chrome\\/$APP_NAME\\.jar!\\/\\3/ chrome.manifest
-
+  #sed -i -r -E s/^\(content\\s+\\S*\\s+\)\(\\S*\\/\)$/\\1jar:chrome\\/$APP_NAME\\.jar\!\\/\\2/ chrome.manifest
+  #sed -i -r -E s/^\(skin\|locale\)\(\\s+\\S*\\s+\\S*\\s+\)\(.*\\/\)$/\\1\\2jar:chrome\\/$APP_NAME\\.jar\!\\/\\3/ chrome.manifest
+  perl -pi -e "s/^(content\s+\S*\s+)(\S*\/)$/\1jar:chrome\/$APP_NAME\.jar\!\/\2/" chrome.manifest
+  perl -pi -e "s/^(skin|locale)(\s+\S*\s+\S*\s+)(.*\/)$/\1\2jar:chrome\/$APP_NAME\.jar!\/\3/" chrome.manifest
+ 
   # (it simply adds jar:chrome/whatever.jar!/ at appropriate positions of chrome.manifest)
 fi
 
