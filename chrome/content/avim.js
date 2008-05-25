@@ -14,9 +14,19 @@ var AVIMAutoConfig = {
 };
 
 function AVIM()	{
-	this.radioID="him_auto,him_telex,him_vni,him_viqr,him_viqr_star,him_off,him_ckspell,him_daucu".split(",");this.changed=false
-	this.enabledID = "him_on";
-	this.methodCmdID = "avim-method-cmd";
+	this.commands = {
+		method: "avim-method-cmd",
+		spell: "avim-spell-cmd",
+		oldAccents: "avim-oldaccents-cmd"
+	};
+	this.broadcasters = {
+		enabled: "him_on",
+		methods: ["him_auto", "him_telex", "him_vni", "him_viqr", "him_viqr_star"],
+		spell: "him_ckspell",
+		oldAccents: "him_daucu"
+	};
+	this.panel = "avim-status";
+//	this.radioID="him_auto,him_telex,him_vni,him_viqr,him_viqr_star,him_off,him_ckspell,him_daucu".split(",");this.changed=false
 	this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.specialChange=false
 	this.skey=new Array(97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89)
 	this.fID=document.getElementsByTagName("iframe");this.range=null;this.whit=false;this.db1=new Array(273,272);this.ds1="d,D".split(",")
@@ -25,12 +35,14 @@ function AVIM()	{
 	this.trangs1="a,A,â,Â,á,Á,à,À,ạ,Ạ,ả,Ả,ã,Ã,ấ,Ấ,ầ,Ầ,ậ,Ậ,ẩ,Ẩ,ẫ,Ẫ".split(",");this.trangb1="ă,Ă,ă,Ă,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ".split(",")
 	this.as1="a,A,ă,Ă,á,Á,à,À,ạ,Ạ,ả,Ả,ã,Ã,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ,ế,Ế,ề,Ề,ệ,Ệ,ể,Ể,ễ,Ễ".split(",");this.ab1="â,Â,â,Â,ấ,Ấ,ầ,Ầ,ậ,Ậ,ẩ,Ẩ,ẫ,Ẫ,ấ,Ấ,ầ,Ầ,ậ,Ậ,ẩ,Ẩ,ẫ,Ẫ,é,É,è,È,ẹ,Ẹ,ẻ,Ẻ,ẽ,Ẽ".split(",")
 	this.es1="e,E,é,É,è,È,ẹ,Ẹ,ẻ,Ẻ,ẽ,Ẽ".split(",");this.eb1="ê,Ê,ế,Ế,ề,Ề,ệ,Ệ,ể,Ể,ễ,Ễ".split(",");this.english="ĐÂĂƠƯÊÔ"
-	this.lowen="đâăơưêô";this.arA="á,à,ả,ã,ạ,a,Á,À,Ả,Ã,Ạ,A".split(',');this.mocrA="ó,ò,ỏ,õ,ọ,o,ú,ù,ủ,ũ,ụ,u,Ó,Ò,Ỏ,Õ,Ọ,O,Ú,Ù,Ủ,Ũ,Ụ,U".split(',');erA="é,è,ẻ,ẽ,ẹ,e,É,È,Ẻ,Ẽ,Ẹ,E".split(',')
-	this.orA="ó,ò,ỏ,õ,ọ,o,Ó,Ò,Ỏ,Õ,Ọ,O".split(',');this.aA="ấ,ầ,ẩ,ẫ,ậ,â,Ấ,Ầ,Ẩ,Ẫ,Ậ,Â".split(',');oA="ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',')
+	this.lowen="đâăơưêô";this.arA="á,à,ả,ã,ạ,a,Á,À,Ả,Ã,Ạ,A".split(',');this.mocrA="ó,ò,ỏ,õ,ọ,o,ú,ù,ủ,ũ,ụ,u,Ó,Ò,Ỏ,Õ,Ọ,O,Ú,Ù,Ủ,Ũ,Ụ,U".split(',');this.erA="é,è,ẻ,ẽ,ẹ,e,É,È,Ẻ,Ẽ,Ẹ,E".split(',')
+	this.orA="ó,ò,ỏ,õ,ọ,o,Ó,Ò,Ỏ,Õ,Ọ,O".split(',');this.aA="ấ,ầ,ẩ,ẫ,ậ,â,Ấ,Ầ,Ẩ,Ẫ,Ậ,Â".split(',');this.oA="ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',')
 	this.mocA="ớ,ờ,ở,ỡ,ợ,ơ,ứ,ừ,ử,ữ,ự,ư,Ớ,Ờ,Ở,Ỡ,Ợ,Ơ,Ứ,Ừ,Ử,Ữ,Ự,Ư".split(',');this.trangA="ắ,ằ,ẳ,ẵ,ặ,ă,Ắ,Ằ,Ẳ,Ẵ,Ặ,Ă".split(',')
 	this.eA="ế,ề,ể,ễ,ệ,ê,Ế,Ề,Ể,Ễ,Ệ,Ê".split(',');this.oA="ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',');this.skey2="a,a,a,e,e,i,o,o,o,u,u,y,A,A,A,E,E,I,O,O,O,U,U,Y".split(',')
 	this.fcc=String.fromCharCode;
-	this.$=document.getElementById;
+	this.$ = function (id) {
+		return document.getElementById(id);
+	};
 	this.getSF=function() { var sf=new Array(),x; for(x=0;x<this.skey.length;x++) sf[sf.length]=this.fcc(this.skey[x]); return sf }
 	this.ckspell=function(w,k) {
 		if (!AVIMGlobalConfig.ckSpell) return false;
@@ -92,8 +104,9 @@ function AVIM()	{
 		else if(uw2.length>3) return true
 		return false
 	}
-	this.toggle = function(enabled) {
+	this.setEnabled = function(enabled) {
 		AVIMGlobalConfig.onOff = 0 + enabled;
+		this.setPrefs();
 	};
 	this.setMethod=function(m) {
 		if (m == -1) AVIMGlobalConfig.onOff = 0;
@@ -111,6 +124,37 @@ function AVIM()	{
 		AVIMGlobalConfig.ckSpell = 0 + enabled;
 		this.setPrefs()
 	}
+	this.updateUI = function() {
+		// Enabled/disabled
+		var bc_enabled = this.$(this.broadcasters.enabled);
+		bc_enabled.setAttribute("checked", "" + !!AVIMGlobalConfig.onOff);
+		
+		// Disable methods and options if AVIM is disabled
+		for each (var cmd in this.commands) {
+			this.$(cmd).setAttribute("disabled", "" + !AVIMGlobalConfig.onOff);
+		}
+		
+		// Method
+		for each (var bc in this.broadcasters.methods) {
+			this.$(bc).removeAttribute("checked");
+		}
+		var bc_sel = this.$(this.broadcasters.methods[AVIMGlobalConfig.method]);
+		bc_sel.setAttribute("checked", "true");
+		
+		// Options
+		var bc_spell = this.$(this.broadcasters.spell);
+		bc_spell.setAttribute("checked", "" + !!AVIMGlobalConfig.ckSpell);
+		var bc_old = this.$(this.broadcasters.oldAccents);
+		bc_old.setAttribute("checked", "" + !!AVIMGlobalConfig.oldAccent);
+		
+		// Status bar panel
+		var panel = this.$(this.panel);
+		if (!panel) return;
+		if (AVIMGlobalConfig.onOff) {
+			panel.setAttribute("label", bc_sel.getAttribute("label"));
+		}
+		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
+	};
 //	this.getPrefs()
 //	if(AVIMGlobalConfig.onOff==0) this.setMethod(-1)
 //	else this.setMethod(AVIMGlobalConfig.method)
@@ -564,7 +608,7 @@ function AVIM()	{
 		var xulTags = ["textbox", "searchbar", "findbar"];
 		var isXUL = el.namespaceURI == xulURI &&
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
-		if((!isHTML && !isXUL) || checkCode(code)) return false;
+		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
 		this.start(el,e)
 		if(this.changed) { this.changed=false; return false }
@@ -583,6 +627,7 @@ function AVIM()	{
 		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		this.prefs.addObserver("", this, false);
 		this.getPrefs();
+		this.updateUI();
 	};
 	this.unregisterPrefs = function() {
 		this.setPrefs();
@@ -591,21 +636,24 @@ function AVIM()	{
 	this.observe = function(subject, topic, data) {
 		if (topic != "nsPref:changed") return;
 		this.getPrefs();
-		// TODO: Update UI when the preferences change.
+		this.updateUI();
 	};
 	this.setPrefs = function() {
-		prefs.setBoolPref("enabled", !!AVIMGlobalConfig.onOff);
-		prefs.setIntPref("method", AVIMGlobalConfig.method);
-		prefs.setBoolPref("ignoreMalformed", !!AVIMGlobalConfig.ckSpell);
-		prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
-		prefs.setCharPref("ignoredFieldIds", AVIMGlobalConfig.exclude.join(" "));
+		this.prefs.setBoolPref("enabled", !!AVIMGlobalConfig.onOff);
+		this.prefs.setIntPref("method", AVIMGlobalConfig.method);
+		this.prefs.setBoolPref("ignoreMalformed", !!AVIMGlobalConfig.ckSpell);
+		this.prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
+		this.prefs.setCharPref("ignoredFieldIds",
+							   AVIMGlobalConfig.exclude.join(" "));
 	};
 	this.getPrefs = function() {
-		AVIMGlobalConfig.onOff = 0 + prefs.getBoolPref("enabled");
-		AVIMGlobalConfig.method = prefs.getIntPref("method");
-		AVIMGlobalConfig.ckSpell = 0 + prefs.getBoolPref("ignoreMalformed");
-		AVIMGlobalConfig.oldAccent = 0 + prefs.getBoolPref("oldAccents");
-		AVIMGlobalConfig.exclude = prefs.getCharPref("ignoredFieldIds").split(/\s+/);
+		AVIMGlobalConfig.onOff = 0 + this.prefs.getBoolPref("enabled");
+		AVIMGlobalConfig.method = this.prefs.getIntPref("method");
+		AVIMGlobalConfig.ckSpell =
+			0 + this.prefs.getBoolPref("ignoreMalformed");
+		AVIMGlobalConfig.oldAccent = 0 + this.prefs.getBoolPref("oldAccents");
+		AVIMGlobalConfig.exclude =
+			this.prefs.getCharPref("ignoredFieldIds").split(/\s+/);
 	};
 }
 function AVIMInit(AVIM) {
@@ -619,7 +667,7 @@ function AVIMInit(AVIM) {
 		}
 	}
 }
-AVIMObj=new AVIM()
+var AVIMObj=new AVIM()
 //function AVIMAJAXFix() { var a=50;while(a<5000) {setTimeout("AVIMInit(AVIMObj)",a);a+=50} }
 //AVIMAJAXFix()
 //AVIMObj.attachEvt(document,"mousedown",AVIMAJAXFix,false)
@@ -630,4 +678,7 @@ window.addEventListener("load", function (e) {
 window.addEventListener("unload", function (e) {
 	AVIMObj.unregisterPrefs();
 }, false);
-document.onkeypress=function(e) { var a=AVIMObj.keyPressHandler(e); return a }
+window.addEventListener("keypress", function(e) {
+	var a = AVIMObj.keyPressHandler(e);
+	return a;
+}, false);
