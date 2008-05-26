@@ -23,6 +23,6 @@
 <!ENTITY avim-spell.label "Ortograf’a Correcta">
 <!ENTITY avim-spell.accesskey "O">
 <!ENTITY avim-spell.description "Solamente poner los accentos en las palabras que cumplen con las reglas ortograf’as vietnamitas">
-<!ENTITY avim-oldaccents.label "Accentos Viejos">
+<!ENTITY avim-oldaccents.label "Acentos Viejos">
 <!ENTITY avim-oldaccents.accesskey "j">
 <!ENTITY avim-oldaccents.description "Poner los accentos en la primera vocal de un diptongo">
