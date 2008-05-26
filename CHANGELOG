@@ -1,13 +1,14 @@
 Until version 20061001, the version number indicated the extension's release
-date. Starting with version 1.0.0.20071102, the first part indicates the version
-of avim.js that the extension was based on, while the remaining three version
-parts indicate the version of the extension itself.
+date. Starting with the 20080224.x series, the first part indicates the version
+of avim.js that the extension was based on, while the remaining version part
+indicates the version of the extension itself, expressed as a Subversion
+revision number.
 
-Version 20060714 (July 14, 2006)
+Version 20060714 (Friday, July 14, 2006)
 
-Version 20061001 (October 1, 2006)
+Version 20061001 (Sunday, October 1, 2006)
 
-Version 20080224.1.0.0 (?)
+Version 20080224.$Rev$ ($Date$)
  - Based on a rewritten codebase by Dang Tran Hieu.
  - Added support for Firefox 3.0.
  - Replaced the status bar radio buttons with an unobtrusive popup menu.

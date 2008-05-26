@@ -35,9 +35,12 @@ CHROME_PROVIDERS=  # which chrome providers we have (space-separated list)
 CLEAN_UP=          # delete the jar / "files" when done?       (1/0)
 ROOT_FILES=        # put these files in root of xpi (space separated list of leaf filenames)
 ROOT_DIRS=         # ...and these directories       (space separated list)
+VAR_FILES=         # files that need variable substitution (space separated list)
 PRUNE_DIRS=	       # exclude files with these directories in their paths (space separated list)
 BEFORE_BUILD=      # run this before building       (bash command)
 AFTER_BUILD=       # ...and this after the build    (bash command)
+
+REV_NUM=`svnversion -n | cat`
 
 if [ -z $1 ]; then
   . ./config_build.sh
@@ -94,6 +97,19 @@ for ROOT_FILE in $ROOT_FILES install.rdf chrome.manifest; do
 done
 
 cd $TMP_DIR
+
+if [ -n "$VAR_FILES" ]; then
+  REV_DATE=`date -u '+%A, %B %e, %Y'`
+  REV_YEAR=`date -u '+%Y'`
+  echo "Substituting variables for r""$REV_NUM on $REV_DATE..."
+  for VAR_FILE in $VAR_FILES; do
+    if [ -f $VAR_FILE ]; then
+      perl -pi -e "s/\x24Rev\x24/$REV_NUM/" $VAR_FILE
+      perl -pi -e "s/\x24Date\x24/$REV_DATE/" $VAR_FILE
+      perl -pi -e "s/\x24Year\x24/$REV_YEAR/" $VAR_FILE
+    fi
+  done
+fi
 
 if [ -f "chrome.manifest" ]; then
   echo "Preprocessing chrome.manifest..."
