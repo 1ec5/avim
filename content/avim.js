@@ -30,7 +30,7 @@ function AVIM()	{
 		oldAccents: "avim-oldaccents-bc"
 	};
 	this.panel = "avim-status";
-//	this.radioID="him_auto,him_telex,him_vni,him_viqr,him_viqr_star,him_off,him_ckspell,him_daucu".split(",");this.changed=false
+	this.changed=false
 	this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.specialChange=false
 	this.skey=new Array(97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89)
 	this.fID=document.getElementsByTagName("iframe");this.range=null;this.whit=false;this.db1=new Array(273,272);this.ds1="d,D".split(",")
@@ -112,6 +112,9 @@ function AVIM()	{
 		AVIMGlobalConfig.onOff = 0 + enabled;
 		this.setPrefs();
 	};
+	this.toggle = function() {
+		this.setEnabled(!AVIMGlobalConfig.onOff);
+	};
 	this.setMethod=function(m) {
 		if (m == -1) AVIMGlobalConfig.onOff = 0;
 		else {
@@ -159,15 +162,9 @@ function AVIM()	{
 		}
 		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
 	};
-//	this.getPrefs()
-//	if(AVIMGlobalConfig.onOff==0) this.setMethod(-1)
-//	else this.setMethod(AVIMGlobalConfig.method)
-//	this.setSpell(AVIMGlobalConfig.ckSpell);this.setDauCu(AVIMGlobalConfig.oldAccent)
 	this.mozGetText=function(obj) {
 		var v,pos,w="",g=1
 		v=(obj.data)?obj.data:obj.value
-//		if (!v) v = obj.getAttribute("value");
-//		window.dump("mozGetText: obj=<" + obj.tagName + " value='" + v + "'>\n");	// debug
 		if(v.length<=0) return false
 		if(!obj.data) {
 			if(!obj.setSelectionRange) return false
@@ -569,7 +566,9 @@ function AVIM()	{
 //		if(this.checkCode(obj.event.keyCode)||((obj.event.ctrlKey)&&(obj.event.keyCode!=92)&&(obj.event.keyCode!=126))) return
 //		this.start(obj,this.sk)
 //	}
-	this.checkCode=function(code) { return (((AVIMGlobalConfig.onOff==0)||((code<45)&&(code!=42)&&(code!=32)&&(code!=39)&&(code!=40)&&(code!=43))||(code==145)||(code==255))); }
+	this.checkCode=function(code) {
+		return AVIMGlobalConfig.onOff == 0 || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
+	}
 	this.notWord=function(w) {
 		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t"+this.fcc(160)
 		return (str.indexOf(w)>=0)
@@ -599,7 +598,7 @@ function AVIM()	{
 	// Modified to handle XUL and XBL text boxes correctly
 	this.keyPressHandler=function(e) {
 		var el=e.target,code=e.which;
-		if(e.ctrlKey) return false;
+		if(e.ctrlKey || e.metaKey) return false;
 		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
 		var xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
@@ -622,7 +621,6 @@ function AVIM()	{
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
-//		dump("Starting with " + el);											// debug
 		this.start(el,e)
 		if (this.changed) {
 			this.changed=false;
@@ -652,7 +650,7 @@ function AVIM()	{
 	};
 	this.observe = function(subject, topic, data) {
 		if (topic != "nsPref:changed") return;
-		this.getPrefs();
+		this.getPrefs(data);
 		this.updateUI();
 	};
 	this.setPrefs = function() {
@@ -662,24 +660,54 @@ function AVIM()	{
 		this.prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
 		this.prefs.setCharPref("ignoredFieldIds",
 							   AVIMGlobalConfig.exclude.join(" "));
+		// Auto method configuration
+		this.prefs.setBoolPref("auto.telex", AVIMAutoConfig.telex);
+		this.prefs.setBoolPref("auto.vni", AVIMAutoConfig.vni);
+		this.prefs.setBoolPref("auto.viqr", AVIMAutoConfig.viqr);
+		this.prefs.setBoolPref("auto.viqrStar", AVIMAutoConfig.viqrStar);
 	};
-	this.getPrefs = function() {
-		AVIMGlobalConfig.onOff = 0 + this.prefs.getBoolPref("enabled");
-		AVIMGlobalConfig.method = this.prefs.getIntPref("method");
-		// In case someone enters an invalid method ID in about:config
-		if (AVIMGlobalConfig.method < 0 ||
-			AVIMGlobalConfig.method >= this.broadcasters.methods.length) {
-			Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefService)
-				.getDefaultBranch("extensions.avim.")
-				.clearUserPref("method");
-			AVIMGlobalConfig.method = this.prefs.getIntPref("method");
+	this.getPrefs = function(changedPref) {
+//		dump("Changed pref: " + changedPref + "\n");							// debug
+		if (!changedPref || changedPref == "enabled") {
+			AVIMGlobalConfig.onOff = 0 + this.prefs.getBoolPref("enabled");
 		}
-		AVIMGlobalConfig.ckSpell =
-			0 + this.prefs.getBoolPref("ignoreMalformed");
-		AVIMGlobalConfig.oldAccent = 0 + this.prefs.getBoolPref("oldAccents");
-		AVIMGlobalConfig.exclude =
-			this.prefs.getCharPref("ignoredFieldIds").split(/\s+/);
+		if (!changedPref || changedPref == "method") {
+			AVIMGlobalConfig.method = this.prefs.getIntPref("method");
+			// In case someone enters an invalid method ID in about:config
+			if (AVIMGlobalConfig.method < 0 ||
+				AVIMGlobalConfig.method >= this.broadcasters.methods.length) {
+				Components.classes["@mozilla.org/preferences-service;1"]
+					.getService(Components.interfaces.nsIPrefService)
+					.getDefaultBranch("extensions.avim.")
+					.clearUserPref("method");
+				AVIMGlobalConfig.method = this.prefs.getIntPref("method");
+			}
+		}
+		if (!changedPref || changedPref == "ignoreMalformed") {
+			AVIMGlobalConfig.ckSpell =
+				0 + this.prefs.getBoolPref("ignoreMalformed");
+		}
+		if (!changedPref || changedPref == "oldAccents") {
+			AVIMGlobalConfig.oldAccent =
+				0 + this.prefs.getBoolPref("oldAccents");
+		}
+		if (!changedPref || changedPref == "ignoredFieldIds") {
+			AVIMGlobalConfig.exclude =
+				this.prefs.getCharPref("ignoredFieldIds").split(/\s+/);
+		}
+		// Auto method configuration
+		if (!changedPref || changedPref == "auto.telex") {
+			AVIMAutoConfig.telex = this.prefs.getBoolPref("auto.telex");
+		}
+		if (!changedPref || changedPref == "auto.vni") {
+			AVIMAutoConfig.vni = this.prefs.getBoolPref("auto.vni");
+		}
+		if (!changedPref || changedPref == "auto.viqr") {
+			AVIMAutoConfig.viqr = this.prefs.getBoolPref("auto.viqr");
+		}
+		if (!changedPref || changedPref == "auto.viqrStar") {
+			AVIMAutoConfig.viqrStar = this.prefs.getBoolPref("auto.viqrStar");
+		}
 	};
 }
 function AVIMInit(AVIM) {

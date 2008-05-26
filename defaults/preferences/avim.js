@@ -20,3 +20,9 @@ pref("extensions.avim.oldAccents", true);
  * evaluation bar in the Error Console. Field IDs are separated by spaces.
  */
 pref("extensions.avim.ignoredFieldIds", "email e-mail TextboxEval");
+
+/* Include some standard input methods in the Auto method. */
+pref("extensions.avim.auto.telex", true);
+pref("extensions.avim.auto.vni", true);
+pref("extensions.avim.auto.viqr", false);
+pref("extensions.avim.auto.viqrStar", false);

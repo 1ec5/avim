@@ -26,8 +26,9 @@ Version 20080224.$Rev$ ($Date$)
    ones.
  - Replaced the avim_prefs plain text preferences file with entries in Firefox's
    built-in preferences service. Users of previous versions will have to set
-   their input method and other options again. Advanced options can be set using
-   about:config.
+   their input method and other options again.
+ - Advanced options can be set using about:config. These options are: the IDs of
+   text boxes that AVIM should ignore and the actual methods that comprise Auto.
  - Ensured that any preference change is reflected in every open windows, as
    well as windows opened from that point on.
  - Localized into Spanish, because Minh knows Spanish.
