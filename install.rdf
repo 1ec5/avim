@@ -32,7 +32,7 @@
 		<!-- English / fallback -->
 		<em:name>AVIM</em:name>
 		<em:description>Type fully-accented Vietnamese directly into any webpage or dialog box using only a standard keyboard.</em:description>
-		<em:creator>Hieu Tran Dang</em:creator>
+		<em:creator>Hieu Dang</em:creator>
 		<em:developer>Minh Nguyen</em:developer>
 		<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
 		
@@ -42,7 +42,7 @@
 				<em:locale>es</em:locale>
 				<em:name>AVIM</em:name>
 				<em:description>Teclar en vietnamita con todos los accentos, directamente en cualquier página Web o caja de diálogo, usando un teclado estándar.</em:description>
-				<em:creator>Hieu Tran Dang</em:creator>
+				<em:creator>Hieu Dang</em:creator>
 				<em:developer>Minh Nguyen</em:developer>
 				<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
 			</Description>
