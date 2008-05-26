@@ -82,10 +82,12 @@ zip -0 -r $JAR_FILE `cat files`
 # prepare components and defaults
 echo "Copying various files to $TMP_DIR folder..."
 for DIR in $ROOT_DIRS; do
-  mkdir $TMP_DIR/$DIR
-  FILES="`find $DIR -path $PRUNE_DIRS -prune -o -type f -print | grep -v \~`"
-  echo $FILES >> files
-  cp -pv $FILES $TMP_DIR
+  cp -rpv $DIR $TMP_DIR
+  rm -rf `find $TMP_DIR/$DIR -name ".svn" -type d`
+#  mkdir $TMP_DIR/$DIR
+#  FILES="`find $DIR -path $PRUNE_DIRS -prune -o -type f -print | grep -v \~`"
+#  echo $FILES >> files
+#  cp -pv $FILES $TMP_DIR
 done
 
 # Copy other files to the root of future XPI.
