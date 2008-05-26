@@ -596,9 +596,8 @@ function AVIM()	{
 		return w
 	}
 	this.findIgnore=function(el) {
-		var va=AVIMGlobalConfig.exclude,i
-		for(i=0;i<va.length;i++) if((el.id==va[i])&&(va[i].length>0)) return true
-		return false;
+		return el.id &&
+			AVIMGlobalConfig.exclude.indexOf(el.id.toLowerCase()) >= 0;
 	}
 //	this.findF=function() {
 //		var g
@@ -698,28 +697,66 @@ function AVIM()	{
 	};
 }
 function AVIMInit(AVIM) {
-	for(AVIM.g=0;AVIM.g<AVIM.fID.length;AVIM.g++) {
-		if(AVIM.findIgnore(AVIM.fID[AVIM.g])) continue
+	for(var i=0;i<AVIM.fID.length;i++) {
+		if(AVIM.findIgnore(AVIM.fID[i])) continue
 		var iframedit
-		try { AVIM.wi=AVIM.fID[AVIM.g].contentWindow;iframedit=AVIM.wi.document;iframedit.wi=AVIM.wi } catch(e) { }
+		try { AVIM.wi=AVIM.fID[i].contentWindow;iframedit=AVIM.wi.document;iframedit.wi=AVIM.wi } catch(e) { }
 		if((iframedit)&&(AVIM.up(iframedit.designMode)=="ON")) {
 			iframedit.AVIM=AVIM
 			AVIM.attachEvt(iframedit,"keypress",AVIM.ifMoz,false)
 		}
 	}
 }
-var AVIMObj=new AVIM()
-//function AVIMAJAXFix() { var a=50;while(a<5000) {setTimeout("AVIMInit(AVIMObj)",a);a+=50} }
-//AVIMAJAXFix()
-//AVIMObj.attachEvt(document,"mousedown",AVIMAJAXFix,false)
-window.addEventListener("load", function (e) {
-	AVIMInit(AVIMObj);
-	AVIMObj.registerPrefs();
-}, false);
-window.addEventListener("unload", function (e) {
-	AVIMObj.unregisterPrefs();
-}, false);
-window.addEventListener("keypress", function(e) {
-	var a = AVIMObj.keyPressHandler(e);
-	return a;
-}, false);
+
+//function AVIMInit(AVIM) {
+//		var iframedit
+//		try { AVIM.wi=AVIM.fID[AVIM.g].contentWindow;iframedit=AVIM.wi.document;iframedit.wi=AVIM.wi } catch(e) { }
+//		if((iframedit)&&(AVIM.up(iframedit.designMode)=="ON")) {
+//			iframedit.AVIM=AVIM
+//			AVIM.attachEvt(iframedit,"keypress",AVIM.ifMoz,false)
+//		}
+//	
+////	var appcontent = document.getElementById("appcontent");
+////	if (appcontent) {
+////		appcontent.addEventListener("DOMContentLoaded", function (e) {
+////			var doc = e.originalTarget;
+////			if (doc.nodeName == "#document") {
+////				e.originalTarget.AVIM = AVIM;
+////				doc.addEventListener("keypress", function (e) {
+////					doc.AVIM.ifMoz(e);
+////				}, true);
+////			}
+//		
+////			var iframes = document.getElementsByTagName("iframe");
+////			for (var i = 0; i < iframes.length; i++) {
+////				if (AVIM.findIgnore(iframes[i])) continue;
+////				iframes[i].contentDocument.addEventListener("keypress",
+////															AVIM.ifMoz, false);
+////			}
+////
+////		}, true);
+////	}
+//}
+
+if (!AVIMObj) {
+	var AVIMObj=new AVIM()
+	function AVIMAJAXFix() {
+		for (var a = 50; a < 5000; a += 50) {
+			setTimeout(function () {
+				AVIMInit(AVIMObj);
+			}, a);
+		}
+	}
+//	AVIMAJAXFix()
+	AVIMObj.attachEvt(document,"mousedown",AVIMAJAXFix,false)
+	window.addEventListener("load", function (e) {
+		AVIMInit(AVIMObj);
+		AVIMObj.registerPrefs();
+	}, false);
+	window.addEventListener("unload", function (e) {
+		AVIMObj.unregisterPrefs();
+	}, false);
+	window.addEventListener("keypress", function (e) {
+		return AVIMObj.keyPressHandler(e);
+	}, false);
+}

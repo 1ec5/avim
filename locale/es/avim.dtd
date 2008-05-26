@@ -21,7 +21,7 @@ THE SOFTWARE.
 -->
 
 <!ENTITY AVIM.label "AVIM">
-<!ENTITY avim-menu.label "Entrada vietnamita">
+<!ENTITY avim-menu.label "Entrada en Vietnamita">
 <!ENTITY avim-menu.accesskey "V">
 
 <!-- Input method menu -->

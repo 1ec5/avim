@@ -10,10 +10,14 @@ Version 20061001 (Sunday, October 1, 2006)
 
 Version 20080224.$Rev$ ($Date$)
  - Based on a rewritten codebase by Dang Tran Hieu.
- - Added support for Firefox 3.0.
+ - Added support for Firefox 3 and removed support for Firefox 2.
  - Replaced the status bar radio buttons with an unobtrusive popup menu.
  - Added an identical menu under the Edit menu, for those who hide their status
    bars.
+ - Added support for windows other than the main browser window, including the
+   Bookmark Properties dialog, the Library window, JavaScript prompt() dialogs,
+   and any other XUL document affected by an overlay listed in chrome.manifest.
+   The about:config filter bar and the Error Console code bar are not supported.
  - Removed keyboard shortcuts that conflicted with built-in shortcuts and other
    extensions.
  - Replaced the "Off" "input method" with a separate "Enabled" option.
@@ -24,10 +28,6 @@ Version 20080224.$Rev$ ($Date$)
    built-in preferences service. Users of previous versions will have to set
    their input method and other options again. Advanced options can be set using
    about:config.
- - Added support for windows other than the main browser window, including the
-   Bookmark Properties dialog, the Library window, JavaScript prompt() dialogs,
-   and any other XUL document affected by an overlay listed in chrome.manifest.
-   The about:config filter bar and the Error Console code bar are not supported.
  - Ensured that any preference change is reflected in every open windows, as
    well as windows opened from that point on.
  - Localized into Spanish, because Minh knows Spanish.
