@@ -610,7 +610,7 @@ function AVIM()	{
 				el = document.getAnonymousElementByAttribute(el, "anonid",
 					xulAnonIDs[el.localName]);
 			}
-			else if (document.documentElement.localName == "window" ||
+			else if (document.documentElement.localName == "window" &&
 					 document.documentElement.id == "config") {
 				return false;
 			}
