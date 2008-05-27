@@ -22,8 +22,8 @@ Version 20080224.$Rev$ ($Date$)
    extensions.
  - Replaced the "Off" "input method" with a separate "Enabled" option.
  - Added the Ctrl+Shift+V keyboard shortcut (Cmd+Shift+V on the Mac) to toggle
-   AVIM on and off; hopefully this shortcut will not conflict with existing
-   ones.
+   AVIM on and off; this shortcut does not conflict with any built-in shortcuts,
+   but does conflict with AdBlock Plus.
  - Replaced the avim_prefs plain text preferences file with entries in Firefox's
    built-in preferences service. Users of previous versions will have to set
    their input method and other options again.
