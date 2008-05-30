@@ -9,7 +9,7 @@
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}</em:id>
 		<em:type>2</em:type><!-- extension -->
-		<em:version>20080224.$Rev$</em:version>
+		<em:version>${Version}</em:version>
 		
 		<!-- Mozilla Firefox -->
 		<em:targetApplication>

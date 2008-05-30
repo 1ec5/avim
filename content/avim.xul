@@ -14,18 +14,18 @@
 	</commandset>
 	
 	<broadcasterset>
-		<broadcaster id="avim-enabled-bc" label="&avim-enabled.label;" accesskey="&avim-enabled.accesskey;" command="avim-enabled-cmd" />
+		<broadcaster id="avim-enabled-bc" label="&avim-enabled.label;" accesskey="&avim-enabled.accesskey;" autocheck="false" command="avim-enabled-cmd" />
 		
 		<!-- Input methods -->
-		<broadcaster id="avim-auto-bc" label="&avim-auto.label;" accesskey="&avim-auto.accesskey;" value="0" command="avim-method-cmd" />
-		<broadcaster id="avim-telex-bc" label="&avim-telex.label;" accesskey="&avim-telex.accesskey;" value="1" command="avim-method-cmd" />
-		<broadcaster id="avim-vni-bc" label="&avim-vni.label;" accesskey="&avim-vni.accesskey;" value="2" command="avim-method-cmd" />
-		<broadcaster id="avim-viqr-bc" label="&avim-viqr.label;" accesskey="&avim-viqr.accesskey;" value="3" command="avim-method-cmd" />
-		<broadcaster id="avim-viqr-star-bc" label="&avim-viqr-star.label;" accesskey="&avim-viqr-star.accesskey;" value="4" command="avim-method-cmd" />
+		<broadcaster id="avim-auto-bc" label="&avim-auto.label;" accesskey="&avim-auto.accesskey;" autocheck="false" value="0" command="avim-method-cmd" />
+		<broadcaster id="avim-telex-bc" label="&avim-telex.label;" accesskey="&avim-telex.accesskey;" autocheck="false" value="1" command="avim-method-cmd" />
+		<broadcaster id="avim-vni-bc" label="&avim-vni.label;" accesskey="&avim-vni.accesskey;" autocheck="false" value="2" command="avim-method-cmd" />
+		<broadcaster id="avim-viqr-bc" label="&avim-viqr.label;" accesskey="&avim-viqr.accesskey;" autocheck="false" value="3" command="avim-method-cmd" />
+		<broadcaster id="avim-viqr-star-bc" label="&avim-viqr-star.label;" accesskey="&avim-viqr-star.accesskey;" autocheck="false" value="4" command="avim-method-cmd" />
 		
 		<!-- Options -->
-		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" description="&avim-spell.description;" command="avim-spell-cmd" />
-		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" description="&avim-oldaccents.description;" command="avim-oldaccents-cmd" />
+		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" description="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
+		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" description="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
 	</broadcasterset>
 	
 	<popupset>

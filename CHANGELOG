@@ -8,7 +8,7 @@ Version 20060714 (Friday, July 14, 2006)
 
 Version 20061001 (Sunday, October 1, 2006)
 
-Version 20080224.$Rev$ ($Date$)
+Version ${Version} (${Date})
  - Based on a refactored codebase by Hieu Dang.
  - Added support for Firefox 3 and removed support for Firefox 2.
  - Replaced the status bar radio buttons with an unobtrusive popup menu.
