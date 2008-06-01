@@ -129,9 +129,11 @@ function AVIM()	{
 	
 	/**
 	 * Sets the input method to the method with the given ID and updates the
-	 * stored preferences.
+	 * stored preferences. If the given method ID is -1, the method is not
+	 * changed and AVIM is instead disabled.
 	 *
-	 * @param m	{number}	the ID of the method to enable.
+	 * @param m	{number}	the ID of the method to enable, or -1 to diable
+	 * 						AVIM.
 	 */
 	this.setMethod=function(m) {
 		if (m == -1) AVIMGlobalConfig.onOff = 0;
