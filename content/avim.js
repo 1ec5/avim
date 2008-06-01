@@ -109,13 +109,30 @@ function AVIM()	{
 		else if(uw2.length>3) return true
 		return false
 	}
+	
+	/**
+	 * Enables or disables AVIM and updates the stored preferences.
+	 *
+	 * @param enabled	{boolean}	true to enable AVIM; false to disable it.
+	 */
 	this.setEnabled = function(enabled) {
 		AVIMGlobalConfig.onOff = 0 + enabled;
 		this.setPrefs();
 	};
+	
+	/**
+	 * Enables AVIM if currently disabled; disables AVIM otherwise.
+	 */
 	this.toggle = function() {
 		this.setEnabled(!AVIMGlobalConfig.onOff);
 	};
+	
+	/**
+	 * Sets the input method to the method with the given ID and updates the
+	 * stored preferences.
+	 *
+	 * @param m	{number}	the ID of the method to enable.
+	 */
 	this.setMethod=function(m) {
 		if (m == -1) AVIMGlobalConfig.onOff = 0;
 		else {
@@ -124,14 +141,36 @@ function AVIM()	{
 		}
 		this.setPrefs();
 	}
+	
+	/**
+	 * Enables or disables old-style placement of diacritical marks over
+	 * diphthongs and updates the stored preferences.
+	 *
+	 * @param enabled	{boolean}	true to use old-style diacritics; false to
+	 * 								use new-style diacritics.
+	 */
 	this.setDauCu=function(enabled) {
 		AVIMGlobalConfig.oldAccent = 0 + enabled;
 		this.setPrefs()
 	}
+	
+	/**
+	 * Enables or disables spelling enforcement and updates the stored
+	 * preferences. If enabled, diacritical marks are not placed over words that
+	 * do not conform to Vietnamese spelling rules and are instead treated as
+	 * literals.
+	 *
+	 * @param enabled	{boolean}	true to enforce spelling; false otherwise.
+	 */
 	this.setSpell=function(enabled) {
 		AVIMGlobalConfig.ckSpell = 0 + enabled;
 		this.setPrefs()
 	}
+	
+	/**
+	 * Updates the XUL menus and status bar panel to reflect AVIM's current
+	 * state.
+	 */
 	this.updateUI = function() {
 		// Enabled/disabled
 		var bc_enabled = this.$(this.broadcasters.enabled);
@@ -597,7 +636,17 @@ function AVIM()	{
 //		}
 //		return false;
 //	}
-	// Modified to handle XUL and XBL text boxes correctly
+	
+	/**
+	 * Handles key presses in the current window. This function is triggered as
+	 * soon as the key goes up. If the key press's target is a XUL element, this
+	 * function finds the anonymous XBL child that actually handles text input,
+	 * as necessary.
+	 *
+	 * @param e	{object}	the key press event.
+	 * @returns {boolean}	true if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
 	this.keyPressHandler=function(e) {
 		var el=e.target,code=e.which;
 		if(e.ctrlKey || e.metaKey) return false;
@@ -647,25 +696,47 @@ function AVIM()	{
 	}
 	
 	// Integration with Mozilla preferences service
+	
+	// Root for AVIM preferences
 	this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
 		.getService(Components.interfaces.nsIPrefService)
 		.getBranch("extensions.avim.");
 	
+	/**
+	 * Registers an observer so that AVIM automatically reflects changes to its
+	 * preferences.
+	 */
 	this.registerPrefs = function() {
 		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		this.prefs.addObserver("", this, false);
 		this.getPrefs();
 		this.updateUI();
 	};
+	
+	/**
+	 * Unregisters the preferences observer as the window is being closed.
+	 */
 	this.unregisterPrefs = function() {
 		this.setPrefs();
 		this.prefs.removeObserver("", this);
 	};
+	
+	/**
+	 * Reacts to changes to AVIM preferences.
+	 *
+	 * @param subject
+	 * @param topic		{string}	the type of event that occurred.
+	 * @param data		{string}	the name of the preference that changed.
+	 */
 	this.observe = function(subject, topic, data) {
 		if (topic != "nsPref:changed") return;
 		this.getPrefs(data);
 		this.updateUI();
 	};
+	
+	/**
+	 * Updates the stored preferences to reflect AVIM's current state.
+	 */
 	this.setPrefs = function() {
 		this.prefs.setBoolPref("enabled", !!AVIMGlobalConfig.onOff);
 		this.prefs.setIntPref("method", AVIMGlobalConfig.method);
@@ -679,6 +750,12 @@ function AVIM()	{
 		this.prefs.setBoolPref("auto.viqr", AVIMAutoConfig.viqr);
 		this.prefs.setBoolPref("auto.viqrStar", AVIMAutoConfig.viqrStar);
 	};
+	
+	/**
+	 * Updates AVIM's current state to reflect the stored preferences.
+	 *
+	 * @param changedPref	{string}	the name of the preference that changed.
+	 */
 	this.getPrefs = function(changedPref) {
 //		dump("Changed pref: " + changedPref + "\n");							// debug
 		if (!changedPref || changedPref == "enabled") {
