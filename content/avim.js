@@ -6,6 +6,7 @@ var AVIMGlobalConfig = {
 	//IDs of the fields you DON'T want to let users type Vietnamese in
 	exclude: ["email", "e-mail",	// don't want it for e-mail fields in general
 			  "TextboxEval",		// Firefox Error Console, Code bar
+			  "tx_tagName",			// Tag Name, Insert Node, DOM Inspector
 			  ]
 };
 
@@ -607,10 +608,7 @@ function AVIM()	{
 			// Ignore XUL pages embedded inside XUL windows.
 			if (document.documentElement.localName == "page") return false;
 			// Ignore about:config.
-			if (document.documentElement.localName == "window" &&
-				document.documentElement.id == "config") {
-				return false;
-			}
+			if (el.parentNode && el.parentNode.id == "filterRow") return false;
 		}
 		// If the XUL element is actually an XBL-bound element, get the
 		// anonymous inner element. This would be much easier if el.inputField
