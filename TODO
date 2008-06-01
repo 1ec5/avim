@@ -1,5 +1,6 @@
  - Describe the extension online, probably at vi.mozdev.org.
  - Support editable trees. [1]
+ - Support the new Bookmark Properties panel without breaking the method option.
  - Optionally remember on/off state per-site, using FUEL or the Content
    Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
