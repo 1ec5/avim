@@ -6,13 +6,26 @@ locale avim vi locale/vi/
 overlay chrome://global/content/editMenuOverlay.xul chrome://avim/content/avim.xul
 overlay chrome://global/content/commonDialog.xul chrome://avim/content/avim.xul
 
-# Firefox
+### Firefox ###
+
+# Ordinary browser windows
 # overlay chrome://browser/content/browser.xul chrome://avim/content/avim.xul
+
+# Bookmark Properties dialog, now under the Places system
 overlay chrome://browser/content/places/bookmarkProperties.xul chrome://avim/content/avim.xul
 # overlay chrome://browser/content/bookmarks/bookmarksProperties.xul chrome://avim/content/avim.xul
+
+# Cookies list
 # overlay chrome://browser/content/preferences/cookies.xul chrome://avim/content/avim.xul
 
-# Thunderbird
+# File > Open Location...
+overlay chrome://browser/content/openLocation.xul chrome://avim/content/avim.xul
+
+# Help > Report Broken Web Site...
+overlay chrome://reporter/content/reportWizard.xul chrome://avim/content/avim.xul
+
+### Thunderbird ###
+
 # overlay chrome://messenger/content/messenger.xul chrome://avim/content/avim.xul appversion<3.0pre
 # overlay chrome://messenger/content/messageWindow.xul chrome://avim/content/avim.xul appversion<3.0pre
 # overlay chrome://messenger/content/folderProps.xul chrome://avim/content/avim.xul appversion<3.0pre

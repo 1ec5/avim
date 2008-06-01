@@ -541,7 +541,8 @@ function AVIM()	{
 	this.ifMoz=function(e) {
 		var code=e.which,avim=this.AVIM,cwi=e.target.parentNode.wi
 		if(typeof(cwi)=="undefined") cwi=e.target.parentNode.parentNode.wi
-		if((e.ctrlKey)||((e.altKey)&&(code!=92)&&(code!=126))) return;avim.ifInit(cwi)
+		if(e.ctrlKey || e.metaKey || (e.altKey && code != 92 && code != 126)) return;
+		avim.ifInit(cwi);
 		var node=avim.range.endContainer,newPos;avim.sk=avim.fcc(code);avim.saveStr=""
 		if(avim.checkCode(code)||(!avim.range.startOffset)||(typeof(node.data)=='undefined')) return;node.sel=false
 		if(node.data) {
@@ -602,18 +603,32 @@ function AVIM()	{
 		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
 		var xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+		if (document.documentElement.namespaceURI == xulURI) {
+			// Ignore XUL pages embedded inside XUL windows.
+			if (document.documentElement.localName == "page") return false;
+			// Ignore about:config.
+			if (document.documentElement.localName == "window" &&
+				document.documentElement.id == "config") {
+				return false;
+			}
+		}
+		// If the XUL element is actually an XBL-bound element, get the
+		// anonymous inner element. This would be much easier if el.inputField
+		// actually worked.
 		if (el.namespaceURI == xulURI) {
 			var xulAnonIDs = {
-				searchbar: "searchbar-textbox", findbar: "findbar-textbox"
+				searchbar: "searchbar-textbox", findbar: "findbar-textbox",
+				menulist: "input"
 			};
 			if (xulAnonIDs[el.localName]) {
 				el = document.getAnonymousElementByAttribute(el, "anonid",
 					xulAnonIDs[el.localName]);
 			}
-			else if (document.documentElement.localName == "window" &&
-					 document.documentElement.id == "config") {
-				return false;
-			}
+			// TODO: Make this work in editable trees.
+//			if (el.localName == "tree") {
+//				el = document.getAnonymousElementByAttribute(stack, "anonid",
+//															 "input");
+//			}
 		}
 		var isHTML = el.type == "textarea" || el.type == "text";
 		var xulTags = ["textbox", "searchbar", "findbar"];
