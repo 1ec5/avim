@@ -134,6 +134,8 @@ fi
 # generate the XPI file
 echo "Generating $APP_NAME.xpi..."
 zip -r ../$APP_NAME.xpi *
+echo "Generating $APP_NAME-$VERSION.xpi..."
+zip -r ../$APP_NAME-$VERSION.xpi *
 
 cd "$ROOT_DIR"
 

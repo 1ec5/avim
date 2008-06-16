@@ -31,7 +31,7 @@
 		
 		<!-- English / fallback -->
 		<em:name>AVIM</em:name>
-		<em:description>Type fully-accented Vietnamese directly into any webpage or dialog box using only a standard keyboard.</em:description>
+		<em:description>Type fully-accented Vietnamese directly into any webpage or dialog box using a standard keyboard.</em:description>
 		<em:creator>Hieu Dang</em:creator>
 		<em:developer>Minh Nguyen</em:developer>
 		<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
