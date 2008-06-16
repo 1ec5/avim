@@ -8,7 +8,7 @@ Version 20060714 (Friday, July 14, 2006)
 
 Version 20061001 (Sunday, October 1, 2006)
 
-Version ${Version} (${Date})
+Version 20080224.59 (Monday, June 16, 2008)
  - Based on a refactored codebase by Hieu Dang.
  - Added support for Firefox 3 and removed support for Firefox 2.
  - Replaced the status bar radio buttons with an unobtrusive popup menu.
@@ -34,3 +34,5 @@ Version ${Version} (${Date})
  - Localized into Spanish, because Minh knows Spanish.
  - Localized into Vietnamese, in case Firefox ever gets an official translation
    into Vietnamese. One can hope...
+
+Version ${Version} (${Date})
