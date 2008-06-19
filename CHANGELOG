@@ -29,10 +29,12 @@ Version 20080224.59 (Monday, June 16, 2008)
    their input method and other options again.
  - Advanced options can be set using about:config. These options are: the IDs of
    text boxes that AVIM should ignore and the actual methods that comprise Auto.
- - Ensured that any preference change is reflected in every open windows, as
+ - Ensured that any preference change is reflected in every open window, as
    well as windows opened from that point on.
  - Localized into Spanish, because Minh knows Spanish.
  - Localized into Vietnamese, in case Firefox ever gets an official translation
    into Vietnamese. One can hope...
 
 Version ${Version} (${Date})
+ - Fixed the checkbox menu items, which were completely broken.
+ - Added option to show and hide the status bar panel.
