@@ -128,7 +128,6 @@ function AVIM()	{
 	 * @param enabled	{boolean}	true to enable AVIM; false to disable it.
 	 */
 	this.setEnabled = function(enabled) {
-		dump("setEnabled: " + enabled + "\n");									// debug
 		AVIMGlobalConfig.onOff = 0 + enabled;
 		this.setPrefs();
 	};
@@ -813,7 +812,7 @@ function AVIM()	{
 	 * @param changedPref	{string}	the name of the preference that changed.
 	 */
 	this.getPrefs = function(changedPref) {
-		dump("Changed pref: " + changedPref + "\n");							// debug
+//		dump("Changed pref: " + changedPref + "\n");							// debug
 		// A ton of if statements instead of switch statements, because at
 		// startup, changedPref won't be defined, and we want to get all the
 		// preferences at that point.
