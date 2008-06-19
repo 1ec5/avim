@@ -15,6 +15,9 @@ pref("extensions.avim.ignoreMalformed", true);
 /* Place accent marks on first vowel in a diphthong (o`a, o`e, u`y). */
 pref("extensions.avim.oldAccents", true);
 
+/* Display the status bar panel. */
+pref("extensions.avim.statusBarPanel", true);
+
 /*
  * Ignore any fields that contain e-mail addresses, as well as the code
  * evaluation bar in the Error Console. Field IDs are separated by spaces.

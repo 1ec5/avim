@@ -7,10 +7,11 @@
 	</keyset>
 	
 	<commandset>
-		<command id="avim-enabled-cmd" oncommand="AVIMObj.setEnabled(this.getAttribute('checked') == 'true');" />
+		<command id="avim-enabled-cmd" oncommand="AVIMObj.toggle();" />
 		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value);" />
-		<command id="avim-spell-cmd" oncommand="AVIMObj.setSpell(this.getAttribute('checked') == 'true');" />
-		<command id="avim-oldaccents-cmd" oncommand="AVIMObj.setDauCu(this.getAttribute('checked') == 'true');" />
+		<command id="avim-spell-cmd" oncommand="AVIMObj.toggleSpell();" />
+		<command id="avim-oldaccents-cmd" oncommand="AVIMObj.toggleDauCu();" />
+		<command id="avim-statuspanel-cmd" oncommand="AVIMObj.toggleStatusPanel();" />
 	</commandset>
 	
 	<broadcasterset>
@@ -26,6 +27,7 @@
 		<!-- Options -->
 		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" description="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
 		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" description="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
+		<broadcaster id="avim-statuspanel-bc" name="avim-statuspanel" type="checkbox" label="&avim-statuspanel.label;" accesskey="&avim-statuspanel.accesskey;" description="&avim-statuspanel.description;" autocheck="false" command="avim-statuspanel-cmd" />
 	</broadcasterset>
 	
 	<popupset>
@@ -67,6 +69,7 @@
 				<menuseparator id="avim-menu-options-separator" />
 				<menuitem id="avim-menu-spell" observes="avim-spell-bc" />
 				<menuitem id="avim-menu-oldaccents" observes="avim-oldaccents-bc" />
+				<menuitem id="avim-menu-statuspanel" observes="avim-statuspanel-bc" />
 			</menupopup>
 		</menu>
 	</menupopup>

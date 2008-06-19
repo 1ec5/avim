@@ -26,3 +26,6 @@
 <!ENTITY avim-oldaccents.label "Old Accents">
 <!ENTITY avim-oldaccents.accesskey "l">
 <!ENTITY avim-oldaccents.description "Place accent marks on the first vowel in a diphthong">
+<!ENTITY avim-statuspanel.label "Status Bar Panel">
+<!ENTITY avim-statuspanel.accesskey "P">
+<!ENTITY avim-statuspanel.description "Display the AVIM status bar panel">

@@ -1,8 +1,13 @@
+/**
+ * Default preferences. Be sure to update defaults/preferences/avim.js to
+ * reflect any changes to the default preferences.
+ */
 var AVIMGlobalConfig = {
 	method: 0, //Default input method: 0=AUTO, 1=TELEX, 2=VNI, 3=VIQR, 4=VIQR*
 	onOff: 1, //Starting status: 0=Off, 1=On
 	ckSpell: 1, //Spell Check: 0=Off, 1=On
 	oldAccent: 1, //0: New way (oa`, oe`, uy`), 1: The good old day (o`a, o`e, u`y)
+	statusBarPanel: true,	// Display status bar panel
 	//IDs of the fields you DON'T want to let users type Vietnamese in
 	exclude: ["email", "e-mail",	// don't want it for e-mail fields in general
 			  "TextboxEval",		// Firefox Error Console, Code bar
@@ -10,6 +15,11 @@ var AVIMGlobalConfig = {
 			  ]
 };
 
+/**
+ * Default input methods to contribute to Auto. Be sure to update
+ * defaults/preferences/avim.js to reflect any changes to the default
+ * preferences.
+ */
 var AVIMAutoConfig = {
 	telex: true,
 	vni: true,
@@ -21,14 +31,16 @@ function AVIM()	{
 	this.commands = {
 		method: "avim-method-cmd",
 		spell: "avim-spell-cmd",
-		oldAccents: "avim-oldaccents-cmd"
+		oldAccents: "avim-oldaccents-cmd",
+		statusBarPanel: "avim-statuspanel-cmd"
 	};
 	this.broadcasters = {
 		enabled: "avim-enabled-bc",
 		methods: ["avim-auto-bc", "avim-telex-bc", "avim-vni-bc",
 				  "avim-viqr-bc", "avim-viqr-star-bc"],
 		spell: "avim-spell-bc",
-		oldAccents: "avim-oldaccents-bc"
+		oldAccents: "avim-oldaccents-bc",
+		statusBarPanel: "avim-statuspanel-bc"
 	};
 	this.panel = "avim-status";
 	this.changed=false
@@ -116,6 +128,7 @@ function AVIM()	{
 	 * @param enabled	{boolean}	true to enable AVIM; false to disable it.
 	 */
 	this.setEnabled = function(enabled) {
+		dump("setEnabled: " + enabled + "\n");									// debug
 		AVIMGlobalConfig.onOff = 0 + enabled;
 		this.setPrefs();
 	};
@@ -157,6 +170,14 @@ function AVIM()	{
 	}
 	
 	/**
+	 * Enables old-style diacritical marks if currently disabled; disables them
+	 * otherwise.
+	 */
+	this.toggleDauCu = function() {
+		this.setDauCu(!AVIMGlobalConfig.oldAccent);
+	};
+	
+	/**
 	 * Enables or disables spelling enforcement and updates the stored
 	 * preferences. If enabled, diacritical marks are not placed over words that
 	 * do not conform to Vietnamese spelling rules and are instead treated as
@@ -168,6 +189,33 @@ function AVIM()	{
 		AVIMGlobalConfig.ckSpell = 0 + enabled;
 		this.setPrefs()
 	}
+	
+	/**
+	 * Enables spelling enforcement if currently disabled; disables it
+	 * otherwise.
+	 */
+	this.toggleSpell = function() {
+		this.setSpell(!AVIMGlobalConfig.ckSpell);
+	};
+	
+	/**
+	 * Displays or hides the status bar panel and updates the stored
+	 * preferences.
+	 *
+	 * @param shown	{boolean}	true to display the status bar panel; false to
+	 * 							hide it.
+	 */
+	this.setStatusPanel=function(shown) {
+		AVIMGlobalConfig.statusBarPanel = shown;
+		this.setPrefs()
+	}
+	
+	/**
+	 * Displays the status bar panel if currently hidden; hides it otherwise.
+	 */
+	this.toggleStatusPanel = function() {
+		this.setStatusPanel(!AVIMGlobalConfig.statusBarPanel);
+	};
 	
 	/**
 	 * Updates the XUL menus and status bar panel to reflect AVIM's current
@@ -203,6 +251,10 @@ function AVIM()	{
 			panel.setAttribute("label", bc_sel.getAttribute("label"));
 		}
 		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
+		panel.style.display =
+			AVIMGlobalConfig.statusBarPanel ? "-moz-box" : "none";
+		var bc_panel = this.$(this.broadcasters.statusBarPanel);
+		bc_panel.setAttribute("checked", "" + AVIMGlobalConfig.statusBarPanel);
 	};
 	this.mozGetText=function(obj) {
 		var v,pos,w="",g=1
@@ -744,6 +796,8 @@ function AVIM()	{
 		this.prefs.setIntPref("method", AVIMGlobalConfig.method);
 		this.prefs.setBoolPref("ignoreMalformed", !!AVIMGlobalConfig.ckSpell);
 		this.prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
+		this.prefs.setBoolPref("statusBarPanel",
+							   AVIMGlobalConfig.statusBarPanel);
 		this.prefs.setCharPref("ignoredFieldIds",
 							   AVIMGlobalConfig.exclude.join(" "));
 		// Auto method configuration
@@ -759,7 +813,10 @@ function AVIM()	{
 	 * @param changedPref	{string}	the name of the preference that changed.
 	 */
 	this.getPrefs = function(changedPref) {
-//		dump("Changed pref: " + changedPref + "\n");							// debug
+		dump("Changed pref: " + changedPref + "\n");							// debug
+		// A ton of if statements instead of switch statements, because at
+		// startup, changedPref won't be defined, and we want to get all the
+		// preferences at that point.
 		if (!changedPref || changedPref == "enabled") {
 			AVIMGlobalConfig.onOff = 0 + this.prefs.getBoolPref("enabled");
 		}
@@ -782,6 +839,10 @@ function AVIM()	{
 		if (!changedPref || changedPref == "oldAccents") {
 			AVIMGlobalConfig.oldAccent =
 				0 + this.prefs.getBoolPref("oldAccents");
+		}
+		if (!changedPref || changedPref == "statusBarPanel") {
+			AVIMGlobalConfig.statusBarPanel =
+				this.prefs.getBoolPref("statusBarPanel");
 		}
 		if (!changedPref || changedPref == "ignoredFieldIds") {
 			AVIMGlobalConfig.exclude =
