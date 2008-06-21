@@ -35,6 +35,8 @@ Version 20080224.59 (Monday, June 16, 2008)
  - Localized into Vietnamese, in case Firefox ever gets an official translation
    into Vietnamese. One can hope...
 
-Version ${Version} (${Date})
+Version 20080224.66 (Thursday, June 19, 2008)
  - Fixed the checkbox menu items, which were completely broken.
  - Added option to show and hide the status bar panel.
+
+Version ${Version} (${Date})
