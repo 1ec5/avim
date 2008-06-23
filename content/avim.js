@@ -9,9 +9,10 @@ var AVIMGlobalConfig = {
 	oldAccent: 1, //0: New way (oa`, oe`, uy`), 1: The good old day (o`a, o`e, u`y)
 	statusBarPanel: true,	// Display status bar panel
 	//IDs of the fields you DON'T want to let users type Vietnamese in
-	exclude: ["email", "e-mail",	// don't want it for e-mail fields in general
-			  "TextboxEval",		// Firefox Error Console, Code bar
-			  "tx_tagName",			// Tag Name, Insert Node, DOM Inspector
+	exclude: ["colorzilla-textbox-hex",	// Hex box, Color Picker, Colorzilla
+			  "email", "e-mail",		// don't want it for e-mail fields in general
+			  "TextboxEval",			// Code bar, Firefox Error Console
+			  "tx_tagName",				// Tag Name, Insert Node, DOM Inspector
 			  ]
 };
 
