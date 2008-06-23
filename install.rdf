@@ -35,6 +35,7 @@
 		<em:creator>Hieu Dang</em:creator>
 		<em:developer>Minh Nguyen</em:developer>
 		<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
+		<em:iconURL>chrome://avim/content/avim.png</em:iconURL>
 		
 		<!-- Spanish -->
 		<em:localized>
