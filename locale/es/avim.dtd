@@ -7,6 +7,7 @@
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Activada">
 <!ENTITY avim-enabled.accesskey "A">
+<!ENTITY avim-method.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
 <!ENTITY avim-auto.label "Autom‡tica">
 <!ENTITY avim-auto.accesskey "M">
 <!ENTITY avim-telex.label "Telex">
@@ -25,6 +26,8 @@
 <!ENTITY avim-spell.label "Ortograf’a Correcta">
 <!ENTITY avim-spell.accesskey "O">
 <!ENTITY avim-spell.description "Solamente poner los accentos en las palabras que cumplen con las reglas ortograf’as vietnamitas">
+<!ENTITY avim-oldaccents.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-oldaccents.key ";">
 <!ENTITY avim-oldaccents.label "Acentos Viejos">
 <!ENTITY avim-oldaccents.accesskey "j">
 <!ENTITY avim-oldaccents.description "Poner los accentos en la primera vocal de un diptongo">

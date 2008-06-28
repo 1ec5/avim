@@ -4,7 +4,18 @@
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
 	<keyset>
 		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="AVIMObj.toggle();" />
+		
+		<!-- Input methods -->
+		<!-- The keys are one off from the input methods' integer IDs, because it'd be strange to have a Ctrl+Alt+0 mapping way out in right field. -->
+		<key id="avim-auto-key" modifiers="&avim-method.modifiers;" key="1" oncommand="AVIMObj.setMethod(0);" />
+		<key id="avim-telex-key" modifiers="&avim-method.modifiers;" key="2" oncommand="AVIMObj.setMethod(1);" />
+		<key id="avim-vni-key" modifiers="&avim-method.modifiers;" key="3" oncommand="AVIMObj.setMethod(2);" />
+		<key id="avim-viqr-key" modifiers="&avim-method.modifiers;" key="4" oncommand="AVIMObj.setMethod(3);" />
+		<key id="avim-viqr-star-key" modifiers="&avim-method.modifiers;" key="5" oncommand="AVIMObj.setMethod(4);" />
+		
+		<!-- Options -->
 		<key id="avim-spell-key" modifiers="&avim-spell.modifiers;" key="&avim-spell.key;" oncommand="AVIMObj.toggleSpell();" />
+		<key id="avim-oldaccents-key" modifiers="&avim-oldaccents.modifiers;" key="&avim-oldaccents.key;" oncommand="AVIMObj.toggleDauCu();" />
 	</keyset>
 	
 	<commandset>
@@ -60,16 +71,16 @@
 				
 				<!-- Input methods -->
 				<menuseparator id="avim-menu-methods-separator" />
-				<menuitem id="avim-menu-auto" name="viet_method" type="radio" observes="avim-auto-bc" />
-				<menuitem id="avim-menu-telex" name="viet_method" type="radio" observes="avim-telex-bc" />
-				<menuitem id="avim-menu-vni" name="viet_method" type="radio" observes="avim-vni-bc" />
-				<menuitem id="avim-menu-viqr" name="viet_method" type="radio" observes="avim-viqr-bc" />
-				<menuitem id="avim-menu-viqr-star" name="viet_method" type="radio" observes="avim-viqr-star-bc" />
+				<menuitem id="avim-menu-auto" name="viet_method" type="radio" key="avim-auto-key" observes="avim-auto-bc" />
+				<menuitem id="avim-menu-telex" name="viet_method" type="radio" key="avim-telex-key" observes="avim-telex-bc" />
+				<menuitem id="avim-menu-vni" name="viet_method" type="radio" key="avim-vni-key" observes="avim-vni-bc" />
+				<menuitem id="avim-menu-viqr" name="viet_method" type="radio" key="avim-viqr-key" observes="avim-viqr-bc" />
+				<menuitem id="avim-menu-viqr-star" name="viet_method" type="radio" key="avim-viqr-star-key" observes="avim-viqr-star-bc" />
 				
 				<!-- Options -->
 				<menuseparator id="avim-menu-options-separator" />
-				<menuitem id="avim-menu-spell" observes="avim-spell-bc" />
-				<menuitem id="avim-menu-oldaccents" observes="avim-oldaccents-bc" />
+				<menuitem id="avim-menu-spell" key="avim-spell-key" observes="avim-spell-bc" />
+				<menuitem id="avim-menu-oldaccents" key="avim-oldaccents-key" observes="avim-oldaccents-bc" />
 				<menuitem id="avim-menu-statuspanel" observes="avim-statuspanel-bc" />
 			</menupopup>
 		</menu>

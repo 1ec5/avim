@@ -155,7 +155,7 @@ function AVIM()	{
 			AVIMGlobalConfig.method = m;
 		}
 		this.setPrefs();
-	}
+	};
 	
 	/**
 	 * Enables or disables old-style placement of diacritical marks over
@@ -234,6 +234,7 @@ function AVIM()	{
 		// Method
 		for each (var bc in this.broadcasters.methods) {
 			this.$(bc).removeAttribute("checked");
+			this.$(bc).removeAttribute("key");
 		}
 		var bc_sel = this.$(this.broadcasters.methods[AVIMGlobalConfig.method]);
 		bc_sel.setAttribute("checked", "true");
