@@ -3,7 +3,7 @@
 <!ENTITY avim-menu.accesskey "V">
 
 <!-- Input method menu -->
-<!ENTITY avim-enabled.modifiers "accel,shift"><!-- Ctrl+Shift on Windows; Cmd+Shift on Mac -->
+<!ENTITY avim-enabled.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Activada">
 <!ENTITY avim-enabled.accesskey "A">
@@ -20,6 +20,8 @@
 <!ENTITY avim-disabled.label "Apagada">
 
 <!-- Options -->
+<!ENTITY avim-spell.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-spell.key "S">
 <!ENTITY avim-spell.label "Ortograf’a Correcta">
 <!ENTITY avim-spell.accesskey "O">
 <!ENTITY avim-spell.description "Solamente poner los accentos en las palabras que cumplen con las reglas ortograf’as vietnamitas">

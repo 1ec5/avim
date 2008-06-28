@@ -4,6 +4,7 @@
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
 	<keyset>
 		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="AVIMObj.toggle();" />
+		<key id="avim-spell-key" modifiers="&avim-spell.modifiers;" key="&avim-spell.key;" oncommand="AVIMObj.toggleSpell();" />
 	</keyset>
 	
 	<commandset>

@@ -40,3 +40,7 @@ Version 20080224.66 (Thursday, June 19, 2008)
  - Added option to show and hide the status bar panel.
 
 Version ${Version} (${Date})
+ - Renamed "Enforce Spelling" to "Ignore Foreign Words", to better reflect the
+   purpose of that option.
+ - Fixed issue where AVIM would ignore words following certain punctuation
+   characters, such as curly quotes and ellipses.
