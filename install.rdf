@@ -10,6 +10,7 @@
 		<em:id>{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}</em:id>
 		<em:type>2</em:type><!-- extension -->
 		<em:version>${Version}</em:version>
+		<em:optionsURL>chrome://avim/content/options.xul</em:optionsURL>
 		
 		<!-- Mozilla Firefox -->
 		<em:targetApplication>

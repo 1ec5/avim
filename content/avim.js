@@ -43,6 +43,17 @@ function AVIM()	{
 		oldAccents: "avim-oldaccents-bc",
 		statusBarPanel: "avim-statuspanel-bc"
 	};
+	this.keys = {
+		enabled: "avim-enabled-key",
+		prevMethod: "avim-prev-method-key",
+		nextMethod: "avim-next-method-key",
+		spell: "avim-spell-key",
+		oldAccents: "avim-oldaccents-key"
+	}
+	this.menuItems = {
+		methods: ["avim-menu-auto", "avim-menu-telex", "avim-menu-vni",
+				  "avim-menu-viqr", "avim-menu-viqr-star"]
+	}
 	this.panel = "avim-status";
 	this.changed=false
 	this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.specialChange=false
@@ -158,6 +169,26 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Sets the input method to the one with the given distance away from the
+	 * currently enabled input method. For instance, a distance of 1 selects the
+	 * next input method, while a distance of -1 selects the previous one.
+	 *
+	 * @param distance {number}	the distance from the currently selected input
+	 * 							method to the input method to select.
+	 */
+	this.cycleMethod=function(distance) {
+		AVIMGlobalConfig.onOff = 1;
+		
+		var method = AVIMGlobalConfig.method;
+		method += distance;
+		if (method < 0) method += this.broadcasters.methods.length;
+		method %= this.broadcasters.methods.length;
+		AVIMGlobalConfig.method = method;
+		
+		this.setPrefs();
+	};
+	
+	/**
 	 * Enables or disables old-style placement of diacritical marks over
 	 * diphthongs and updates the stored preferences.
 	 *
@@ -227,7 +258,10 @@ function AVIM()	{
 		bc_enabled.setAttribute("checked", "" + !!AVIMGlobalConfig.onOff);
 		
 		// Disable methods and options if AVIM is disabled
-		for each (var cmd in this.commands) {
+		var disabled_cmds = [this.commands.method, this.commands.spell,
+							 this.commands.oldAccents];
+		for (var i = 0; i < disabled_cmds.length; i++) {
+			var cmd = disabled_cmds[i];
 			this.$(cmd).setAttribute("disabled", "" + !AVIMGlobalConfig.onOff);
 		}
 		
@@ -238,6 +272,16 @@ function AVIM()	{
 		}
 		var bc_sel = this.$(this.broadcasters.methods[AVIMGlobalConfig.method]);
 		bc_sel.setAttribute("checked", "true");
+		
+		var prev_bc_idx = AVIMGlobalConfig.method - 1;
+		if (prev_bc_idx < 0) prev_bc_idx += this.menuItems.methods.length;
+		var prev_bc = this.$(this.menuItems.methods[prev_bc_idx]);
+		prev_bc.setAttribute("key", this.keys.prevMethod);
+		
+		var next_bc_idx =
+			(AVIMGlobalConfig.method + 1) % this.menuItems.methods.length;
+		var next_bc = this.$(this.menuItems.methods[next_bc_idx]);
+		next_bc.setAttribute("key", this.keys.nextMethod);
 		
 		// Options
 		var bc_spell = this.$(this.broadcasters.spell);
@@ -777,7 +821,7 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Reacts to changes to AVIM preferences.
+	 * Responds to changes to AVIM preferences.
 	 *
 	 * @param subject
 	 * @param topic		{string}	the type of event that occurred.

@@ -40,9 +40,17 @@ Version 20080224.66 (Thursday, June 19, 2008)
  - Added option to show and hide the status bar panel.
 
 Version ${Version} (${Date})
+ - Added a preference window that currently covers all the options available
+   through about:config.
  - Fixed issue where AVIM would ignore words following certain punctuation
    characters, such as curly quotes and ellipses.
  - Changed keyboard shortcut for toggling AVIM to Ctrl+Alt+V (Cmd+Opt+V on the
    Mac) to avoid a collision with Adblock Plus.
+ - Added the Ctrl+: (Cmd+:) and Ctrl+; (Cmd+;) keyboard shortcuts to cycle back
+   and forward through the input method list.
  - Added the Ctrl+Alt+S (Cmd+Opt+S) keyboard shortcut to toggle the "Enforce
    Spelling" option.
+ - Added the Ctrl+Alt+; (Cmd+Opt+;) keyboard shortcut to toggle the "Old
+   Accents" option.
+ - Removed the menu item to toggle the status bar panel, since it is redundant
+   with the preference window now.

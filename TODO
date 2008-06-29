@@ -1,15 +1,12 @@
- - Write a preference panel. [1]
- - Support editable trees. [2]
+ - Support editable trees. [1]
  - Add key mapping for the dong sign.
  - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [3] Maybe limit this feature to bookmarks (FUEL), since
+   Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
  - The extension has some commented code towards supporting Thunderbird 3a1. The
    main issues are identifying the myriad of textboxes that AVIM should ignore,
    and finding a keyboard shortcut for toggling AVIM that won't conflict with
    any of the shortcuts used on any of Thunderbird's windows.
 
-[1] http://developer.mozilla.org/en/docs/Preferences_System:preference
-    http://developer.mozilla.org/en/docs/Preferences_System:New_attributes
-[2] http://wiki.mozilla.org/XUL:Tree
-[3] http://developer.mozilla.org/en/docs/Using_content_preferences
+[1] http://wiki.mozilla.org/XUL:Tree
+[2] http://developer.mozilla.org/en/docs/Using_content_preferences

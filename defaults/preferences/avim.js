@@ -22,7 +22,7 @@ pref("extensions.avim.statusBarPanel", true);
  * Ignore any fields that contain e-mail addresses, as well as the code
  * evaluation bar in the Error Console. Field IDs are separated by spaces.
  */
-pref("extensions.avim.ignoredFieldIds", "colorzilla-textbox-hex email e-mail TextboxEval tx_tagName");
+pref("extensions.avim.ignoredFieldIds", "TextboxEval colorzilla-textbox-hex e-mail email tx_tagName");
 
 /* Include some standard input methods in the Auto method. */
 pref("extensions.avim.auto.telex", true);

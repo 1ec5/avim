@@ -6,12 +6,8 @@
 		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="AVIMObj.toggle();" />
 		
 		<!-- Input methods -->
-		<!-- The keys are one off from the input methods' integer IDs, because it'd be strange to have a Ctrl+Alt+0 mapping way out in right field. -->
-		<key id="avim-auto-key" modifiers="&avim-method.modifiers;" key="1" oncommand="AVIMObj.setMethod(0);" />
-		<key id="avim-telex-key" modifiers="&avim-method.modifiers;" key="2" oncommand="AVIMObj.setMethod(1);" />
-		<key id="avim-vni-key" modifiers="&avim-method.modifiers;" key="3" oncommand="AVIMObj.setMethod(2);" />
-		<key id="avim-viqr-key" modifiers="&avim-method.modifiers;" key="4" oncommand="AVIMObj.setMethod(3);" />
-		<key id="avim-viqr-star-key" modifiers="&avim-method.modifiers;" key="5" oncommand="AVIMObj.setMethod(4);" />
+		<key id="avim-prev-method-key" modifiers="&avim-prev-method.modifiers;" key="&avim-prev-method.key;" oncommand="AVIMObj.cycleMethod(-1);" />
+		<key id="avim-next-method-key" modifiers="&avim-next-method.modifiers;" key="&avim-next-method.key;" oncommand="AVIMObj.cycleMethod(1);" />
 		
 		<!-- Options -->
 		<key id="avim-spell-key" modifiers="&avim-spell.modifiers;" key="&avim-spell.key;" oncommand="AVIMObj.toggleSpell();" />
@@ -23,7 +19,7 @@
 		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value);" />
 		<command id="avim-spell-cmd" oncommand="AVIMObj.toggleSpell();" />
 		<command id="avim-oldaccents-cmd" oncommand="AVIMObj.toggleDauCu();" />
-		<command id="avim-statuspanel-cmd" oncommand="AVIMObj.toggleStatusPanel();" />
+		<!-- <command id="avim-statuspanel-cmd" oncommand="AVIMObj.toggleStatusPanel();" /> -->
 	</commandset>
 	
 	<broadcasterset>
@@ -39,7 +35,7 @@
 		<!-- Options -->
 		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" description="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
 		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" description="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
-		<broadcaster id="avim-statuspanel-bc" name="avim-statuspanel" type="checkbox" label="&avim-statuspanel.label;" accesskey="&avim-statuspanel.accesskey;" description="&avim-statuspanel.description;" autocheck="false" command="avim-statuspanel-cmd" />
+		<!-- <broadcaster id="avim-statuspanel-bc" name="avim-statuspanel" type="checkbox" label="&avim-statuspanel.label;" accesskey="&avim-statuspanel.accesskey;" description="&avim-statuspanel.description;" autocheck="false" command="avim-statuspanel-cmd" /> -->
 	</broadcasterset>
 	
 	<popupset>
@@ -81,7 +77,7 @@
 				<menuseparator id="avim-menu-options-separator" />
 				<menuitem id="avim-menu-spell" key="avim-spell-key" observes="avim-spell-bc" />
 				<menuitem id="avim-menu-oldaccents" key="avim-oldaccents-key" observes="avim-oldaccents-bc" />
-				<menuitem id="avim-menu-statuspanel" observes="avim-statuspanel-bc" />
+				<!-- <menuitem id="avim-menu-statuspanel" observes="avim-statuspanel-bc" /> -->
 			</menupopup>
 		</menu>
 	</menupopup>
@@ -91,5 +87,5 @@
 		<statusbarpanel id="avim-status" label="&AVIM.label;" disabledLabel="&avim-disabled.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" />
 	</statusbar>
 	
-	<script id="avim-js" type="application/x-javascript" src="./avim.js" />
+	<script id="avim-js" type="application/x-javascript" src="chrome://avim/content/avim.js" />
 </overlay>
