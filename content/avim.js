@@ -679,6 +679,7 @@ function AVIM()	{
 	}
 	this.ifMoz=function(e) {
 		var code=e.which,avim=this.AVIM,cwi=e.target.parentNode.wi
+//		dump("ifMoz -- target: " + e.target.tagName + "; code: " + code + "\n");	// debug
 		if(typeof(cwi)=="undefined") cwi=e.target.parentNode.parentNode.wi
 		if(e.ctrlKey || e.metaKey || (e.altKey && code != 92 && code != 126)) return;
 		avim.ifInit(cwi);
@@ -748,6 +749,7 @@ function AVIM()	{
 	 */
 	this.keyPressHandler=function(e) {
 		var el=e.target,code=e.which;
+//		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if(e.ctrlKey || e.metaKey) return false;
 		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
 		var xulURI =
@@ -908,67 +910,16 @@ function AVIM()	{
 		}
 	};
 }
-function AVIMInit(AVIM) {
-	for(var i=0;i<AVIM.fID.length;i++) {
-		if(AVIM.findIgnore(AVIM.fID[i])) continue
-		var iframedit
-		try { AVIM.wi=AVIM.fID[i].contentWindow;iframedit=AVIM.wi.document;iframedit.wi=AVIM.wi } catch(e) { }
-		if((iframedit)&&(AVIM.up(iframedit.designMode)=="ON")) {
-			iframedit.AVIM=AVIM
-			AVIM.attachEvt(iframedit,"keypress",AVIM.ifMoz,false)
-		}
-	}
-}
-
-//function AVIMInit(AVIM) {
-//		var iframedit
-//		try { AVIM.wi=AVIM.fID[AVIM.g].contentWindow;iframedit=AVIM.wi.document;iframedit.wi=AVIM.wi } catch(e) { }
-//		if((iframedit)&&(AVIM.up(iframedit.designMode)=="ON")) {
-//			iframedit.AVIM=AVIM
-//			AVIM.attachEvt(iframedit,"keypress",AVIM.ifMoz,false)
-//		}
-//	
-////	var appcontent = document.getElementById("appcontent");
-////	if (appcontent) {
-////		appcontent.addEventListener("DOMContentLoaded", function (e) {
-////			var doc = e.originalTarget;
-////			if (doc.nodeName == "#document") {
-////				e.originalTarget.AVIM = AVIM;
-////				doc.addEventListener("keypress", function (e) {
-////					doc.AVIM.ifMoz(e);
-////				}, true);
-////			}
-//		
-////			var iframes = document.getElementsByTagName("iframe");
-////			for (var i = 0; i < iframes.length; i++) {
-////				if (AVIM.findIgnore(iframes[i])) continue;
-////				iframes[i].contentDocument.addEventListener("keypress",
-////															AVIM.ifMoz, false);
-////			}
-////
-////		}, true);
-////	}
-//}
 
 if (!AVIMObj) {
 	var AVIMObj=new AVIM()
-	function AVIMAJAXFix() {
-		for (var a = 50; a < 5000; a += 50) {
-			setTimeout(function () {
-				AVIMInit(AVIMObj);
-			}, a);
-		}
-	}
-//	AVIMAJAXFix()
-	AVIMObj.attachEvt(document,"mousedown",AVIMAJAXFix,false)
-	window.addEventListener("load", function (e) {
-		AVIMInit(AVIMObj);
+	addEventListener("load", function (e) {
 		AVIMObj.registerPrefs();
 	}, false);
-	window.addEventListener("unload", function (e) {
+	addEventListener("unload", function (e) {
 		AVIMObj.unregisterPrefs();
 	}, false);
-	window.addEventListener("keypress", function (e) {
+	addEventListener("keypress", function (e) {
 		return AVIMObj.keyPressHandler(e);
-	}, false);
+	}, true);
 }
