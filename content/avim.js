@@ -32,16 +32,16 @@ function AVIM()	{
 	this.commands = {
 		method: "avim-method-cmd",
 		spell: "avim-spell-cmd",
-		oldAccents: "avim-oldaccents-cmd",
-		statusBarPanel: "avim-statuspanel-cmd"
+		oldAccents: "avim-oldaccents-cmd"
+//		, statusBarPanel: "avim-statuspanel-cmd"
 	};
 	this.broadcasters = {
 		enabled: "avim-enabled-bc",
 		methods: ["avim-auto-bc", "avim-telex-bc", "avim-vni-bc",
 				  "avim-viqr-bc", "avim-viqr-star-bc"],
 		spell: "avim-spell-bc",
-		oldAccents: "avim-oldaccents-bc",
-		statusBarPanel: "avim-statuspanel-bc"
+		oldAccents: "avim-oldaccents-bc"
+//		, statusBarPanel: "avim-statuspanel-bc"
 	};
 	this.keys = {
 		enabled: "avim-enabled-key",
@@ -298,8 +298,8 @@ function AVIM()	{
 		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
 		panel.style.display =
 			AVIMGlobalConfig.statusBarPanel ? "-moz-box" : "none";
-		var bc_panel = this.$(this.broadcasters.statusBarPanel);
-		bc_panel.setAttribute("checked", "" + AVIMGlobalConfig.statusBarPanel);
+//		var bc_panel = this.$(this.broadcasters.statusBarPanel);
+//		bc_panel.setAttribute("checked", "" + AVIMGlobalConfig.statusBarPanel);
 	};
 	this.mozGetText=function(obj) {
 		var v,pos,w="",g=1

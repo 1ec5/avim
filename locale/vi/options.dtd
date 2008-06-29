@@ -1,0 +1,52 @@
+<!-- General options -->
+
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-preferences.title "&AVIM.label;">
+<!ENTITY avim-preferences.style "width: 45em;"><!-- Based on <chrome://browser/locale/preferences/preferences.dtd>. -->
+
+<!ENTITY enabled-check.label "Bật lên &AVIM.label; để gõ tiếng Việt">
+<!ENTITY enabled-check.accesskey "B">
+
+<!-- Input Editing tab -->
+
+<!ENTITY input-panel.label "Bộ gõ">
+
+<!ENTITY method-menu.label "Kiểu gõ:">
+<!ENTITY method-menu.accesskey "K">
+<!ENTITY method-auto-item.label "Tự động">
+<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-vni-item.label "VNI">
+<!ENTITY method-viqr-item.label "VIQR">
+<!ENTITY method-viqr-star-item.label "VIQR*">
+
+<!ENTITY spell-check.label "Bắt buộc các quy tắc chính tả tiếng Việt">
+<!ENTITY spell-check.accesskey "c">
+<!ENTITY oldaccents-check.label "Bỏ dấu trên nguyên âm đầu tiên trong nguyên âm đôi ở cuối từ (bỏ dấu kiểu cũ)">
+<!ENTITY oldaccents-check.accesskey "d">
+
+<!ENTITY auto-methods.label "Nhận tổ hợp gõ từ các kiểu gõ sau khi &method-auto-item.label; được chọn:">
+<!ENTITY auto-telex-check.accesskey "T">
+<!ENTITY auto-vni-check.accesskey "V">
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!ENTITY auto-viqr-star-check.accesskey "R">
+
+<!-- Ignored Textboxes tab -->
+
+<!ENTITY ignored-panel.label "Bỏ qua">
+
+<!ENTITY ignore-text.label "ID của hộp văn bản:">
+<!ENTITY ignore-button.label "Bỏ qua">
+<!ENTITY ignore-button.accesskey "q">
+
+<!ENTITY ignored-desc.label "Bạn có thể định rõ các hộp văn bản để &AVIM.label; bỏ qua. Chẳng hạn có thể bắt &AVIM.label; phải bỏ qua một hộp văn bản chứa địa chỉ Web, vì kiểu gõ có thể gây trở ngại khi nhập địa chỉ.">
+<!ENTITY ignored-desc.line-count "3">
+<!ENTITY ignored-instructions.label "Để bỏ qua một hộp văn bản, hãy kiếm ID của nó bằng cách xem mã nguồn của trang Web chứa hộp này. Sau đó, nhập ID ở dưới và nhấn &ignore-button.label;.">
+<!ENTITY ignored-instructions.line-count "2">
+
+<!ENTITY remove-button.label "Dời ID">
+<!ENTITY remove-button.accesskey "D"><!-- Conflicts with oldaccents-check.accesskey, but they're in different tabs. -->
+
+<!-- Display options -->
+
+<!ENTITY statuspanel-check.label "Hiển thị trên thanh trạng thái">
+<!ENTITY statuspanel-check.accesskey "H">

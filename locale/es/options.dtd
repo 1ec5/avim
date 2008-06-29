@@ -1,0 +1,52 @@
+<!-- General options -->
+
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-preferences.title "&AVIM.label;">
+<!ENTITY avim-preferences.style "width: 45em;"><!-- Based on <chrome://browser/locale/preferences/preferences.dtd>. -->
+
+<!ENTITY enabled-check.label "Activar &AVIM.label; para la entrada en vietnamita">
+<!ENTITY enabled-check.accesskey "A">
+
+<!-- Input Editing tab -->
+
+<!ENTITY input-panel.label "Edici—n de Entrada">
+
+<!ENTITY method-menu.label "MŽtodo de entrada:">
+<!ENTITY method-menu.accesskey "M">
+<!ENTITY method-auto-item.label "Auto">
+<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-vni-item.label "VNI">
+<!ENTITY method-viqr-item.label "VIQR">
+<!ENTITY method-viqr-star-item.label "VIQR*">
+
+<!ENTITY spell-check.label "Requirir la ortograf’a vietnamita correcta">
+<!ENTITY spell-check.accesskey "o">
+<!ENTITY oldaccents-check.label "Poner los signos tonales sobre la primera vocal en un diptongo final (acentos de estilo viejo)">
+<!ENTITY oldaccents-check.accesskey "P">
+
+<!ENTITY auto-methods.label "Aceptar las pulsaciones de los mŽtodos de entrada siguientes cuando &method-auto-item.label; se selecciona:">
+<!ENTITY auto-telex-check.accesskey "T">
+<!ENTITY auto-vni-check.accesskey "V">
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!ENTITY auto-viqr-star-check.accesskey "R">
+
+<!-- Ignored Textboxes tab -->
+
+<!ENTITY ignored-panel.label "Cajas de Texto para Ignorar">
+
+<!ENTITY ignore-text.label "ID de la caja de texto:">
+<!ENTITY ignore-button.label "Ignorar">
+<!ENTITY ignore-button.accesskey "I">
+
+<!ENTITY ignored-desc.label "Puedes especificar los cajas de texto que &AVIM.label; debe ignorar. Por ejemplo, sup—n que quieres que &AVIM.label; ignore una cierta caja de texto que contenga una direcci—n web, porque el mŽtodo de entrada puede impedir la entrada de la direcci—n.">
+<!ENTITY ignored-desc.line-count "3">
+<!ENTITY ignored-instructions.label "Para ignorar una caja de texto, primero busca su ID por ver el c—digo fuente de la p‡gina Web que contiene la caja. DespuŽs, entra el ID abajo y haz clic en &ignore-button.label;.">
+<!ENTITY ignored-instructions.line-count "2">
+
+<!ENTITY remove-button.label "Borrar ID">
+<!ENTITY remove-button.accesskey "B">
+
+<!-- Display options -->
+
+<!ENTITY statuspanel-check.label "Mostrar en la barra de estado">
+<!ENTITY statuspanel-check.accesskey "e">
