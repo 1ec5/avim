@@ -678,28 +678,29 @@ function AVIM()	{
 		this.range=sel?sel.getRangeAt(0):document.createRange()
 	}
 	this.ifMoz=function(e) {
-		var code=e.which,avim=this.AVIM,cwi=e.target.parentNode.wi
+		var code=e.which; //,avim=this.AVIM,cwi=e.target.parentNode.wi
+		var cwi = e.target.ownerDocument.defaultView;
 //		dump("ifMoz -- target: " + e.target.tagName + "; code: " + code + "\n");	// debug
-		if(typeof(cwi)=="undefined") cwi=e.target.parentNode.parentNode.wi
-		if(e.ctrlKey || e.metaKey || (e.altKey && code != 92 && code != 126)) return;
-		avim.ifInit(cwi);
-		var node=avim.range.endContainer,newPos;avim.sk=avim.fcc(code);avim.saveStr=""
-		if(avim.checkCode(code)||(!avim.range.startOffset)||(typeof(node.data)=='undefined')) return;node.sel=false
+//		if(typeof(cwi)=="undefined") cwi=e.target.parentNode.parentNode.wi
+		if(e.ctrlKey || e.metaKey || e.altKey) return;
+		this.ifInit(cwi);
+		var node=this.range.endContainer,newPos;this.sk=this.fcc(code);this.saveStr=""
+		if(this.checkCode(code)||(!this.range.startOffset)||(typeof(node.data)=='undefined')) return;node.sel=false
 		if(node.data) {
-			avim.saveStr=node.data.substr(avim.range.endOffset)
-			if(avim.range.startOffset!=avim.range.endOffset) node.sel=true
-			node.deleteData(avim.range.startOffset,node.data.length)
+			this.saveStr=node.data.substr(this.range.endOffset)
+			if(this.range.startOffset!=this.range.endOffset) node.sel=true
+			node.deleteData(this.range.startOffset,node.data.length)
 		}
-		avim.range.setEnd(node,avim.range.endOffset)
-		avim.range.setStart(node,0)
+		this.range.setEnd(node,this.range.endOffset)
+		this.range.setStart(node,0)
 		if(!node.data) return
 		node.value=node.data; node.pos=node.data.length; node.which=code
-		avim.start(node,e)
-		node.insertData(node.data.length,avim.saveStr)
-		newPos=node.data.length-avim.saveStr.length+avim.kl
-		avim.range.setEnd(node,newPos); avim.range.setStart(node,newPos); avim.kl=0
-		if(avim.specialChange) { avim.specialChange=false; avim.changed=false; node.deleteData(node.pos-1,1) }
-		if(avim.changed) { avim.changed=false; e.preventDefault() }
+		this.start(node,e)
+		node.insertData(node.data.length,this.saveStr)
+		newPos=node.data.length-this.saveStr.length+this.kl
+		this.range.setEnd(node,newPos); this.range.setStart(node,newPos); this.kl=0
+		if(this.specialChange) { this.specialChange=false; this.changed=false; node.deleteData(node.pos-1,1) }
+		if(this.changed) { this.changed=false; e.preventDefault() }
 	}
 //	this.FKeyPress=function() {
 //		var obj=this.findF()
@@ -751,7 +752,7 @@ function AVIM()	{
 		var el=e.target,code=e.which;
 //		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if(e.ctrlKey || e.metaKey) return false;
-		if((e.altKey)&&(code!=92)&&(code!=126)) return false;
+		if(e.altKey) return false;
 		var xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 		if (document.documentElement.namespaceURI == xulURI) {
@@ -920,6 +921,12 @@ if (!AVIMObj) {
 		AVIMObj.unregisterPrefs();
 	}, false);
 	addEventListener("keypress", function (e) {
+//		dump("keyPressHandler -- target: " + e.target.tagName + "; code: " + e.which + "\n");	// debug
+//		dump("                -- designMode: " + e.target.ownerDocument.designMode + "\n");	// debug
+		var doc = e.target.ownerDocument;
+		if (doc.designMode && doc.designMode.toLowerCase() == "on") {
+			return AVIMObj.ifMoz(e);
+		}
 		return AVIMObj.keyPressHandler(e);
 	}, true);
 }
