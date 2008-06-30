@@ -44,7 +44,11 @@ function AVIMOptionsPanel() {
 		var ignoreTextBox = document.getElementById(this.ignoreTextBoxId);
 		var idList = document.getElementById(this.idListId);
 		var ids = ignoreTextBox.value.split(this.ignoredIdsDelimiter);
-		for (var i = 0; i < ids.length; i++) idList.appendItem(ids[i], ids[i]);
+		for (var i = 0; i < ids.length; i++) {
+			if (ids[i] && !idList.getElementsByAttribute("value", ids[i])) {
+				idList.appendItem(ids[i], ids[i]);
+			}
+		}
 		this.setPrefs();
 	};
 	
