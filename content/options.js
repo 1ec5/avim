@@ -45,9 +45,9 @@ function AVIMOptionsPanel() {
 		var idList = document.getElementById(this.idListId);
 		var ids = ignoreTextBox.value.split(this.ignoredIdsDelimiter);
 		for (var i = 0; i < ids.length; i++) {
-			if (ids[i] && !idList.getElementsByAttribute("value", ids[i])) {
-				idList.appendItem(ids[i], ids[i]);
-			}
+			var dupes = idList.getElementsByAttribute("value", ids[i]);
+			dump("Elements with the value '" + ids[i] + "': " + dupes.length + ".\n");	// debug
+			if (ids[i] && !dupes.length) idList.appendItem(ids[i], ids[i]);
 		}
 		this.setPrefs();
 	};

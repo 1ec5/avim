@@ -766,8 +766,8 @@ function AVIM()	{
 		// actually worked.
 		if (el.namespaceURI == xulURI) {
 			var xulAnonIDs = {
-				searchbar: "searchbar-textbox", findbar: "findbar-textbox",
-				menulist: "input"
+				searchbar: "searchbar-textbox", findbar: "findbar-textbox"
+//				,menulist: "input"
 			};
 			if (xulAnonIDs[el.localName]) {
 				el = document.getAnonymousElementByAttribute(el, "anonid",
