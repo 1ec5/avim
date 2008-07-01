@@ -766,14 +766,23 @@ function AVIM()	{
 		// actually worked.
 		if (el.namespaceURI == xulURI) {
 			var xulAnonIDs = {
-				searchbar: "searchbar-textbox", findbar: "findbar-textbox"
-//				,menulist: "input"
+				searchbar: "searchbar-textbox", findbar: "findbar-textbox",
+				menulist: "input"
 			};
 			if (xulAnonIDs[el.localName]) {
 				el = document.getAnonymousElementByAttribute(el, "anonid",
 					xulAnonIDs[el.localName]);
 			}
 			// TODO: Make this work in editable trees.
+//			var xulAnonClasses = {
+//				tree: "tree-input"
+//			};
+//			if (xulAnonClasses[el.localName]) {
+//				var className = xulAnonClasses[el.localName];
+//				var anons = document.getAnonymousElementByAttribute(el, "class",
+//																	className);
+//				el = anons[0];
+//			}
 //			if (el.localName == "tree") {
 //				el = document.getAnonymousElementByAttribute(stack, "anonid",
 //															 "input");
@@ -921,7 +930,11 @@ if (!AVIMObj) {
 		AVIMObj.unregisterPrefs();
 	}, false);
 	addEventListener("keypress", function (e) {
-//		dump("keyPressHandler -- target: " + e.target.tagName + "; code: " + e.which + "\n");	// debug
+//		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
+//		dump("                -- target -- tag name: " + e.target.tagName + "; id: " + e.target.id + "; className: " + e.target.className + "\n");		// debug
+//		var attrs = e.target.attributes;
+//		for (var i = 0; i < attrs.length; i++) dump("\t\t" + attrs[i].nodeName + " = " + attrs[i].nodeValue + "\n");
+//		if (window.console) console.log(e.which, e.target);						// debug
 //		dump("                -- designMode: " + e.target.ownerDocument.designMode + "\n");	// debug
 		var doc = e.target.ownerDocument;
 		if (doc.designMode && doc.designMode.toLowerCase() == "on") {

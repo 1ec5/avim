@@ -46,21 +46,20 @@ function AVIMOptionsPanel() {
 		var ids = ignoreTextBox.value.split(this.ignoredIdsDelimiter);
 		for (var i = 0; i < ids.length; i++) {
 			var dupes = idList.getElementsByAttribute("value", ids[i]);
-			dump("Elements with the value '" + ids[i] + "': " + dupes.length + ".\n");	// debug
 			if (ids[i] && !dupes.length) idList.appendItem(ids[i], ids[i]);
 		}
 		this.setPrefs();
 	};
 	
 	/**
-	 * Enables or disables the Remove ID buton, based on whether the Ignored IDs
-	 * list contains any rows.
+	 * Enables or disables the Remove ID buton, based on whether any rows are
+	 * selected in the Ignored IDs list.
 	 */
 	this.validateRemoveButton = function() {
 		var removeButton = document.getElementById(this.removeButtonId);
 		var idList = document.getElementById(this.idListId);
 //		dump("First row: " + idList.getItemAtIndex(0).value + ".\n");								// debug
-		removeButton.disabled = !idList.getItemAtIndex(0).value;
+		removeButton.disabled = !idList.selectedCount;
 	};
 	
 	/**

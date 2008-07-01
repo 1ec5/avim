@@ -76,7 +76,7 @@
 							<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
 						</hbox>
 						<separator class="thin" />
-						<listbox id="ignoredids-list" rows="10" seltype="multiple" />
+						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="options.validateRemoveButton();" />
 						<hbox class="actionButtons">
 							<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
 						</hbox>
