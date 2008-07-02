@@ -39,7 +39,7 @@ Version 20080224.66 (Thursday, June 19, 2008)
  - Fixed the checkbox menu items, which were completely broken.
  - Added option to show and hide the status bar panel.
 
-Version ${Version} (${Date})
+Version 20080224.87 (Wednesday, July  2, 2008)
  - Added a preference window that currently covers all the options available
    through about:config.
  - Added toolbar buttons for enabling and disabling AVIM and for choosing the
