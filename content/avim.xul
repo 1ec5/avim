@@ -24,6 +24,7 @@
 	</commandset>
 	
 	<broadcasterset>
+		<!-- A label isn't specified here, because then it can't be overridden by the <toolbarbutton>. -->
 		<broadcaster id="avim-enabled-bc" accesskey="&avim-enabled.accesskey;" autocheck="false" command="avim-enabled-cmd" />
 		
 		<!-- Input methods -->
