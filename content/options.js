@@ -48,7 +48,7 @@ function AVIMOptionsPanel() {
 			var dupes = idList.getElementsByAttribute("value", ids[i]);
 			if (ids[i] && !dupes.length) idList.appendItem(ids[i], ids[i]);
 		}
-		this.setPrefs();
+		if (document.documentElement.instantApply) this.setPrefs();
 	};
 	
 	/**
@@ -138,7 +138,7 @@ function AVIMOptionsPanel() {
 			idList.removeChild(sel_items[i]);
 //			idList.removeItemAt(idList.getIndexOfItem(sel_items[i]));
 		}
-		this.setPrefs();
+		if (document.documentElement.instantApply) this.setPrefs();
 //		this.validateRemoveButton();
 	};
 	
