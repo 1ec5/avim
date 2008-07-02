@@ -7,6 +7,7 @@
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Enabled">
 <!ENTITY avim-enabled.accesskey "E">
+<!ENTITY avim-enabled.description "Enable &AVIM.label; for Vietnamese input">
 <!ENTITY avim-prev-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->

@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
@@ -16,14 +17,14 @@
 	
 	<commandset>
 		<command id="avim-enabled-cmd" oncommand="AVIMObj.toggle();" />
-		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value);" />
+		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value || this.getAttribute('value'));" />
 		<command id="avim-spell-cmd" oncommand="AVIMObj.toggleSpell();" />
 		<command id="avim-oldaccents-cmd" oncommand="AVIMObj.toggleDauCu();" />
 		<!-- <command id="avim-statuspanel-cmd" oncommand="AVIMObj.toggleStatusPanel();" /> -->
 	</commandset>
 	
 	<broadcasterset>
-		<broadcaster id="avim-enabled-bc" label="&avim-enabled.label;" accesskey="&avim-enabled.accesskey;" autocheck="false" command="avim-enabled-cmd" />
+		<broadcaster id="avim-enabled-bc" accesskey="&avim-enabled.accesskey;" autocheck="false" command="avim-enabled-cmd" />
 		
 		<!-- Input methods -->
 		<broadcaster id="avim-auto-bc" label="&avim-auto.label;" accesskey="&avim-auto.accesskey;" autocheck="false" value="0" command="avim-method-cmd" />
@@ -33,9 +34,9 @@
 		<broadcaster id="avim-viqr-star-bc" label="&avim-viqr-star.label;" accesskey="&avim-viqr-star.accesskey;" autocheck="false" value="4" command="avim-method-cmd" />
 		
 		<!-- Options -->
-		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" description="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
-		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" description="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
-		<!-- <broadcaster id="avim-statuspanel-bc" name="avim-statuspanel" type="checkbox" label="&avim-statuspanel.label;" accesskey="&avim-statuspanel.accesskey;" description="&avim-statuspanel.description;" autocheck="false" command="avim-statuspanel-cmd" /> -->
+		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" statustext="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
+		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" statustext="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
+		<!-- <broadcaster id="avim-statuspanel-bc" name="avim-statuspanel" type="checkbox" label="&avim-statuspanel.label;" accesskey="&avim-statuspanel.accesskey;" statustext="&avim-statuspanel.description;" autocheck="false" command="avim-statuspanel-cmd" /> -->
 	</broadcasterset>
 	
 	<popupset>
@@ -58,12 +59,24 @@
 		</menupopup>
 	</popupset>
 	
+	<!-- Toolbar buttons -->
+	<toolbarpalette id="BrowserToolbarPalette">
+		<toolbarbutton id="avim-tb-enabled" type="checkbox" orient="vertical" label="&AVIM.label;" tooltiptext="&avim-enabled.description;" observes="avim-enabled-bc" />
+		
+		<!-- Input methods -->
+		<toolbarbutton id="avim-tb-auto" group="avim-tb-group" type="radio" orient="vertical" value="0" observes="avim-auto-bc" />
+		<toolbarbutton id="avim-tb-telex" group="avim-tb-group" type="radio" orient="vertical" value="1" observes="avim-telex-bc" />
+		<toolbarbutton id="avim-tb-vni" group="avim-tb-group" type="radio" orient="vertical" value="2" observes="avim-vni-bc" />
+		<toolbarbutton id="avim-tb-viqr" group="avim-tb-group" type="radio" orient="vertical" value="3" observes="avim-viqr-bc" />
+		<toolbarbutton id="avim-tb-viqr-star" group="avim-tb-group" type="radio" orient="vertical" value="4" observes="avim-viqr-star-bc" />
+	</toolbarpalette>
+	
 	<!-- Edit > Vietnamese Input -->
 	<menupopup id="menu_EditPopup">
 		<menuseparator id="avim-separator" />
 		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
 			<menupopup id="avim-menu-popup">
-				<menuitem id="avim-menu-enabled" type="checkbox" key="avim-enabled-key" observes="avim-enabled-bc" />
+				<menuitem id="avim-menu-enabled" type="checkbox" label="&avim-enabled.label;" key="avim-enabled-key" observes="avim-enabled-bc" />
 				
 				<!-- Input methods -->
 				<menuseparator id="avim-menu-methods-separator" />

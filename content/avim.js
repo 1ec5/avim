@@ -58,7 +58,7 @@ function AVIM()	{
 	this.changed=false
 	this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.specialChange=false
 	this.skey=new Array(97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89)
-	this.fID=document.getElementsByTagName("iframe");this.range=null;this.whit=false;this.db1=new Array(273,272);this.ds1="d,D".split(",")
+	this.range=null;this.whit=false;this.db1=new Array(273,272);this.ds1="d,D".split(",")
 	this.os1="o,O,ơ,Ơ,ó,Ó,ò,Ò,ọ,Ọ,ỏ,Ỏ,õ,Õ,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ".split(",");this.ob1="ô,Ô,ô,Ô,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ".split(",")
 	this.mocs1="o,O,ô,Ô,u,U,ó,Ó,ò,Ò,ọ,Ọ,ỏ,Ỏ,õ,Õ,ú,Ú,ù,Ù,ụ,Ụ,ủ,Ủ,ũ,Ũ,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ".split(",");this.mocb1="ơ,Ơ,ơ,Ơ,ư,Ư,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ,ứ,Ứ,ừ,Ừ,ự,Ự,ử,Ử,ữ,Ữ,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ".split(",")
 	this.trangs1="a,A,â,Â,á,Á,à,À,ạ,Ạ,ả,Ả,ã,Ã,ấ,Ấ,ầ,Ầ,ậ,Ậ,ẩ,Ẩ,ẫ,Ẫ".split(",");this.trangb1="ă,Ă,ă,Ă,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ".split(",")
@@ -702,12 +702,6 @@ function AVIM()	{
 		if(this.specialChange) { this.specialChange=false; this.changed=false; node.deleteData(node.pos-1,1) }
 		if(this.changed) { this.changed=false; e.preventDefault() }
 	}
-//	this.FKeyPress=function() {
-//		var obj=this.findF()
-//		this.sk=this.fcc(obj.event.keyCode)
-//		if(this.checkCode(obj.event.keyCode)||((obj.event.ctrlKey)&&(obj.event.keyCode!=92)&&(obj.event.keyCode!=126))) return
-//		this.start(obj,this.sk)
-//	}
 	this.checkCode=function(code) {
 		return AVIMGlobalConfig.onOff == 0 || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
 	}
@@ -726,17 +720,6 @@ function AVIM()	{
 		return el.id &&
 			AVIMGlobalConfig.exclude.indexOf(el.id.toLowerCase()) >= 0;
 	}
-//	this.findF=function() {
-//		var g
-//		for(g=0;g<this.fID.length;g++) {
-//			if(this.findIgnore(this.fID[g])) return false;this.frame=this.fID[g]
-//			if(typeof(this.frame)!="undefined") {
-//				try { if ((this.frame.contentWindow.document)&&(this.frame.contentWindow.event)) return this.frame.contentWindow }
-//				catch(e) { if ((this.frame.document)&&(this.frame.event)) return this.frame }
-//			}
-//		}
-//		return false;
-//	}
 	
 	/**
 	 * Handles key presses in the current window. This function is triggered as
@@ -931,11 +914,6 @@ if (!AVIMObj) {
 	}, false);
 	addEventListener("keypress", function (e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
-//		dump("                -- target -- tag name: " + e.target.tagName + "; id: " + e.target.id + "; className: " + e.target.className + "\n");		// debug
-//		var attrs = e.target.attributes;
-//		for (var i = 0; i < attrs.length; i++) dump("\t\t" + attrs[i].nodeName + " = " + attrs[i].nodeValue + "\n");
-//		if (window.console) console.log(e.which, e.target);						// debug
-//		dump("                -- designMode: " + e.target.ownerDocument.designMode + "\n");	// debug
 		var doc = e.target.ownerDocument;
 		if (doc.designMode && doc.designMode.toLowerCase() == "on") {
 			return AVIMObj.ifMoz(e);

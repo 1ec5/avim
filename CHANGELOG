@@ -42,8 +42,11 @@ Version 20080224.66 (Thursday, June 19, 2008)
 Version ${Version} (${Date})
  - Added a preference window that currently covers all the options available
    through about:config.
- - Fixed reliability issues in AJAX applications, including Gmail, and rich text
-   editors like FCKeditor. More testing is needed, however.
+ - Added toolbar buttons for enabling and disabling AVIM and for choosing the
+   input method. The buttons can be added to the toolbar using the Customize
+   Toolbar dialog box.
+ - Added support for AJAX applications like Gmail and rich text editors like
+   FCKeditor. More testing is needed, however.
  - Fixed issue where AVIM would ignore words following certain punctuation
    characters, such as curly quotes and ellipses.
  - Changed keyboard shortcut for toggling AVIM to Ctrl+Alt+V (Cmd+Opt+V on the
