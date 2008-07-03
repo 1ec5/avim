@@ -2,9 +2,11 @@
  * A controller for the AVIM Options panel.
  */
 function AVIMOptionsPanel() {
-	this.broadcasters = {
-		disabled: "disabled-bc"
-	}
+	const MUDIM_ID = "mudim@svol.ru";
+	
+	this.broadcasters = {disabled: "disabled-bc"};
+	
+	this.notificationBoxId = "general-note";
 	
 	this.tabBoxId = "general-tabbox";
 	this.tabsId = "general-tabs";
@@ -106,6 +108,18 @@ function AVIMOptionsPanel() {
 	};
 	
 	/**
+	 * Enables or disables Input Editing panel preferences, and displays or
+	 * hides the Mudim conflict warning based on whether there is a conflict.
+	 */
+	this.validateForEnabled = function() {
+		var bc = document.getElementById(this.broadcasters.disabled);
+		bc.setAttribute("disabled", "" + !this.prefs.getBoolPref("enabled"));
+		
+		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
+		else this.mudimMonitor.hideWarning();
+	};
+	
+	/**
 	 * Updates the panel's current state to reflect the stored preferences.
 	 *
 	 * @param changedPref	{string}	the name of the preference that changed.
@@ -115,6 +129,7 @@ function AVIMOptionsPanel() {
 			var bc = document.getElementById(this.broadcasters.disabled);
 			bc.setAttribute("disabled",
 							"" + !this.prefs.getBoolPref("enabled"));
+			this.validateForEnabled();
 		}
 		if (!changedPref || changedPref == "ignoredFieldIds") {
 			this.updateIgnoredIds();
@@ -217,13 +232,17 @@ function AVIMOptionsPanel() {
 			var lineCount = descs[i].getAttribute("linecount");
 			descs[i].style.height = lineCount * lineHeight + "px";
 		}
-	}
+	};
 	
 	/**
 	 * Initializes the AVIM Options panel's controller. This method should only
 	 * be called once the panel itself has finished loading.
 	 */
 	this.initialize = function() {
+		this.mudimMonitor = new MudimMonitor(this.prefs,
+											 this.notificationBoxId);
+		this.mudimMonitor.registerPrefs();
+		
 		this.registerPrefs();
 		this.validateRemoveButton();
 		
@@ -238,6 +257,135 @@ function AVIMOptionsPanel() {
 	this.finalize = function() {
 		this.unregisterPrefs();
 	};
+	
+	/**
+	 * An inner class that detects when Mudim is installed and enabled.
+	 */
+	function MudimMonitor(avimPrefs, notificationBoxId) {
+		this.avimPrefs = avimPrefs;
+		this.notificationBoxId = notificationBoxId;
+		
+		this.stringBundleId = "bundle";
+		this.noteValue = "mudim-note";
+		
+		// Mudim itself
+		this.mudim = Application.extensions.get(MUDIM_ID);
+		
+		// Root for Mudim preferences
+		this.prefs =
+			Components.classes["@mozilla.org/preferences-service;1"]
+				.getService(Components.interfaces.nsIPrefService)
+				.getBranch("chimmudim.settings.");
+		
+		/**
+		 * Registers an observer so that a warning is displayed if Mudim is
+		 * enabled.
+		 */
+		this.registerPrefs = function() {
+			this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+			this.prefs.addObserver("", this, false);
+			this.getPrefs();
+		};
+		
+		/**
+		 * Unregisters the preferences observer as the window is being closed.
+		 */
+		this.unregisterPrefs = function() {
+			this.setPrefs();
+			this.prefs.removeObserver("", this);
+		};
+		
+		/**
+		 * Returns whether Mudim conflicts with AVIM.
+		 *
+		 * @returns {boolean}	true if Mudim conflicts with AVIM; false
+		 * 						otherwise.
+		 */
+		this.conflicts = function() {
+			var avimEnabled = this.avimPrefs.getBoolPref("enabled");
+			return avimEnabled && this.mudim && this.mudim.enabled &&
+				this.prefs.getIntPref("method") != 0;
+		};
+		
+		/**
+		 * Disables the Mudim extension, because it may interfere with AVIM's
+		 * operation. Unfortunately, we can't just set Mudim's method preference
+		 * to 0 (off), because Mudim doesn't observe preference changes.
+		 *
+		 * @param note	{object}	the <notification> element whose button
+		 * 							triggered the call to this method.
+		 * @param desc	{string}	the button's description.
+		 */
+		this.disableMudim = function(note, desc) {
+			var mediator =
+				Components.classes["@mozilla.org/appshell/window-mediator;1"]
+					.getService(Components.interfaces.nsIWindowMediator);
+			var enumerator = mediator.getEnumerator("navigator:browser");
+			while (enumerator.hasMoreElements()) {
+				var win = enumerator.getNext();
+				if (win && win.CHIM && win.CHIM.SetMethod &&
+					win.CHIM.SetMethod instanceof Function) {
+					win.CHIM.SetMethod(0);
+				}
+			}
+		};
+		
+		/**
+		 * Displays a notification that Mudim is enabled.
+		 */
+		this.displayWarning = function() {
+			var noteBox = document.getElementById(this.notificationBoxId);
+			if (noteBox.getNotificationWithValue(this.noteValue)) return;
+			
+			var stringBundle = document.getElementById(this.stringBundleId);
+			var noteLabel = stringBundle.getString("mudim-note.label");
+			var noteBtns = [{
+				accessKey: stringBundle.getString("mudim-button.accesskey"),
+				callback: this.disableMudim,
+				label: stringBundle.getString("mudim-button.label"),
+				popup: null
+			}];
+			noteBox.appendNotification(noteLabel, this.noteValue,
+									   URI_NOTIFICATION_ICON_WARNING,
+									   noteBox.PRIORITY_WARNING_MEDIUM,
+									   noteBtns);
+		};
+		
+		/**
+		 * Hides the notification that Mudim is enabled.
+		 */
+		this.hideWarning = function() {
+			var noteBox = document.getElementById(this.notificationBoxId);
+			var note = noteBox.getNotificationWithValue(this.noteValue);
+			if (note) noteBox.removeNotification(note);
+		};
+		
+		/**
+		 * Updates the panel's current state to reflect the stored preferences.
+		 *
+		 * @param changedPref	{string}	the name of the preference that
+		 * 									changed.
+		 */
+		this.getPrefs = function(changedPref) {
+			if (!changedPref || changedPref == "method") {
+				if (this.conflicts()) this.displayWarning();
+				else this.hideWarning();
+			}
+		};
+		
+		/**
+		 * Responds to changes to Mudim preferences, namely the method
+		 * preference.
+		 *
+		 * @param subject
+		 * @param topic		{string}	the type of event that occurred.
+		 * @param data		{string}	the name of the preference that changed.
+		 */
+		this.observe = function(subject, topic, data) {
+			if (topic != "nsPref:changed") return;
+			this.getPrefs(data);
+		};
+	}
 }
 var options;
 if (!options) {

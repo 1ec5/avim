@@ -33,8 +33,8 @@
 		<!-- English / fallback -->
 		<em:name>AVIM</em:name>
 		<em:description>Type fully-accented Vietnamese directly into any webpage or dialog box using a standard keyboard.</em:description>
-		<em:creator>Hieu Dang</em:creator>
-		<em:developer>Minh Nguyen</em:developer>
+		<em:creator>Minh Nguyen</em:creator>
+		<em:contributor>Hieu Dang</em:contributor>
 		<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
 		<em:iconURL>chrome://avim/content/avim.png</em:iconURL>
 		
@@ -44,8 +44,8 @@
 				<em:locale>es</em:locale>
 				<em:name>AVIM</em:name>
 				<em:description>Teclar en vietnamita con todos los acentos, directamente en cualquier página Web o caja de diálogo, usando un teclado estándar.</em:description>
-				<em:creator>Hieu Dang</em:creator>
-				<em:developer>Minh Nguyen</em:developer>
+				<em:creator>Minh Nguyen</em:creator>
+				<em:contributor>Hieu Dang</em:contributor>
 				<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
 			</Description>
 		</em:localized>
@@ -56,8 +56,8 @@
 				<em:locale>vi</em:locale>
 				<em:name>AVIM</em:name>
 				<em:description>Gõ tiếng Việt có dấu thẳng vào bất cứ trang Web hay hộp thoại nào, chỉ cần bàn phím thường.</em:description>
-				<em:creator>Đặng Trần Hiếu</em:creator>
-				<em:developer>Nguyễn Xuân Minh</em:developer>
+				<em:creator>Nguyễn Xuân Minh</em:creator>
+				<em:contributor>Đặng Trần Hiếu</em:contributor>
 				<em:homepageURL>http://avim.veneroida.com/</em:homepageURL>
 			</Description>
 		</em:localized>

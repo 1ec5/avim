@@ -59,3 +59,10 @@ Version 20080224.87 (Wednesday, July  2, 2008)
    Accents" option.
  - Removed the menu item to toggle the status bar panel, since it is redundant
    with the preference window now.
+
+Version ${Version} (${Date})
+ - Added a warning that indicates when Mudim is enabled and turned on, along
+   with a button to turn Mudim off (as opposed to disabling the extension).
+   Mudim often interferes with AVIM, since the two extensions serve the same
+   purpose.
+ - Optimized the toolbar button images.

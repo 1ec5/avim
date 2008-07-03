@@ -5,7 +5,12 @@
 <!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
 
 <prefwindow id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="&avim-preferences.title;" style="&avim-preferences.style;">
+	<script type="application/x-javascript" src="chrome://mozapps/content/extensions/extensions.js" />
 	<script type="application/x-javascript" src="chrome://avim/content/options.js" />
+	
+	<stringbundleset>
+		<stringbundle id="bundle" src="chrome://avim/locale/options.properties" />
+	</stringbundleset>
 	
 	<commandset>
 		<command id="ignore-cmd" oncommand="options.ignoreIdsInTextBox();" />
@@ -16,76 +21,78 @@
 		<broadcaster id="disabled-bc" />
 	</broadcasterset>
 	
-	<prefpane id="general-pane" label="&avim-preferences.title;">
-		<preferences>
-			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" />
-			<preference id="method-pref" name="extensions.avim.method" type="int" />
-			<preference id="spell-pref" name="extensions.avim.ignoreMalformed" type="bool" />
-			<preference id="oldaccents-pref" name="extensions.avim.oldAccents" type="bool" />
-			<preference id="statuspanel-pref" name="extensions.avim.statusBarPanel" type="bool" />
-			<!-- <preference id="ignoredids-pref" name="extensions.avim.ignoredFieldIds" type="unichar" /> -->
-			<preference id="auto-telex-pref" name="extensions.avim.auto.telex" type="bool" />
-			<preference id="auto-vni-pref" name="extensions.avim.auto.vni" type="bool" />
-			<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
-			<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
-		</preferences>
-		
-		<vbox flex="1">
-			<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" />
+		<prefpane id="general-pane" label="&avim-preferences.title;">
+			<preferences>
+				<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" />
+				<preference id="method-pref" name="extensions.avim.method" type="int" />
+				<preference id="spell-pref" name="extensions.avim.ignoreMalformed" type="bool" />
+				<preference id="oldaccents-pref" name="extensions.avim.oldAccents" type="bool" />
+				<preference id="statuspanel-pref" name="extensions.avim.statusBarPanel" type="bool" />
+				<!-- <preference id="ignoredids-pref" name="extensions.avim.ignoredFieldIds" type="unichar" /> -->
+				<preference id="auto-telex-pref" name="extensions.avim.auto.telex" type="bool" />
+				<preference id="auto-vni-pref" name="extensions.avim.auto.vni" type="bool" />
+				<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
+				<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
+			</preferences>
 			
-			<tabbox id="general-tabbox">
-				<tabs id="general-tabs">
-					<tab label="&input-panel.label;" linkedpanel="input-panel" />
-					<tab label="&ignored-panel.label;" linkedpanel="ignored-panel" />
-				</tabs>
-				<tabpanels>
-					<tabpanel id="input-panel" orient="vertical">
-						<hbox align="center">
-							<label accesskey="&method-menu.accesskey;" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
-							<menulist id="method-menu" preference="method-pref" observes="disabled-bc">
-								<menupopup>
-									<menuitem id="method-auto-item" value="0" label="&method-auto-item.label;" />
-									<menuitem id="method-telex-item" value="1" label="&method-telex-item.label;" />
-									<menuitem id="method-vni-item" value="2" label="&method-vni-item.label;" />
-									<menuitem id="method-viqr-item" value="3" label="&method-viqr-item.label;" />
-									<menuitem id="method-viqr-star-item" value="4" label="&method-viqr-star-item.label;" />
-								</menupopup>
-							</menulist>
-						</hbox>
+			<vbox flex="1">
+				<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" oncommand="options.validateForEnabled(); return true;" />
+				
+				<tabbox id="general-tabbox">
+					<tabs id="general-tabs">
+						<tab label="&input-panel.label;" linkedpanel="input-panel" />
+						<tab label="&ignored-panel.label;" linkedpanel="ignored-panel" />
+					</tabs>
+					<tabpanels>
+						<tabpanel id="input-panel" orient="vertical">
+	<notificationbox id="general-note" flex="1">
+							<hbox align="center">
+								<label accesskey="&method-menu.accesskey;" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
+								<menulist id="method-menu" preference="method-pref" observes="disabled-bc">
+									<menupopup>
+										<menuitem id="method-auto-item" value="0" label="&method-auto-item.label;" />
+										<menuitem id="method-telex-item" value="1" label="&method-telex-item.label;" />
+										<menuitem id="method-vni-item" value="2" label="&method-vni-item.label;" />
+										<menuitem id="method-viqr-item" value="3" label="&method-viqr-item.label;" />
+										<menuitem id="method-viqr-star-item" value="4" label="&method-viqr-star-item.label;" />
+									</menupopup>
+								</menulist>
+							</hbox>
+							
+							<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" />
+							<checkbox id="oldaccents-check" preference="oldaccents-pref" label="&oldaccents-check.label;" accesskey="&oldaccents-check.accesskey;" observes="disabled-bc" />
+							
+							<separator class="thin" />
+							
+							<label observes="disabled-bc">&auto-methods.label;</label>
+							<vbox id="auto-methods-box" class="indent"><!-- Turn this into an <hbox> once this panel gets longer. -->
+								<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-auto-item.label;" accesskey="&auto-telex-check.accesskey;" observes="disabled-bc" />
+								<checkbox id="auto-vni-check" preference="auto-vni-pref" label="&method-vni-item.label;" accesskey="&auto-vni-check.accesskey;" observes="disabled-bc" />
+								<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="disabled-bc" />
+								<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="disabled-bc" />
+							</vbox>
+	</notificationbox>
+						</tabpanel>
 						
-						<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" />
-						<checkbox id="oldaccents-check" preference="oldaccents-pref" label="&oldaccents-check.label;" accesskey="&oldaccents-check.accesskey;" observes="disabled-bc" />
-						
-						<separator class="thin" />
-						
-						<label observes="disabled-bc">&auto-methods.label;</label>
-						<vbox id="auto-methods-box" class="indent"><!-- Turn this into an <hbox> once this panel gets longer. -->
-							<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-auto-item.label;" accesskey="&auto-telex-check.accesskey;" observes="disabled-bc" />
-							<checkbox id="auto-vni-check" preference="auto-vni-pref" label="&method-vni-item.label;" accesskey="&auto-vni-check.accesskey;" observes="disabled-bc" />
-							<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="disabled-bc" />
-							<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="disabled-bc" />
-						</vbox>
-					</tabpanel>
-					
-					<tabpanel id="ignored-panel" orient="vertical">
-						<description id="ignored-desc" linecount="&ignored-desc.line-count;">&ignored-desc.label;</description>
-						<description id="ignored-instructions" linecount="&ignored-instructions.line-count;">&ignored-instructions.label;</description>
-						<hbox align="center">
-							<label control="ignore-text">&ignore-text.label;</label>
-							<textbox id="ignore-text" flex="1" oninput="options.validateIgnoreButton();" />
-							<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
-						</hbox>
-						<separator class="thin" />
-						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="options.validateRemoveButton();" />
-						<hbox class="actionButtons">
-							<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
-						</hbox>
-					</tabpanel>
-				</tabpanels>
-			</tabbox>
-			
-			<!-- Display -->
-			<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
-		</vbox>
-	</prefpane>
+						<tabpanel id="ignored-panel" orient="vertical">
+							<description id="ignored-desc" linecount="&ignored-desc.line-count;">&ignored-desc.label;</description>
+							<description id="ignored-instructions" linecount="&ignored-instructions.line-count;">&ignored-instructions.label;</description>
+							<hbox align="center">
+								<label control="ignore-text">&ignore-text.label;</label>
+								<textbox id="ignore-text" flex="1" oninput="options.validateIgnoreButton();" />
+								<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
+							</hbox>
+							<separator class="thin" />
+							<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="options.validateRemoveButton();" />
+							<hbox class="actionButtons">
+								<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
+							</hbox>
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+				
+				<!-- Display -->
+				<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
+			</vbox>
+		</prefpane>
 </prefwindow>
