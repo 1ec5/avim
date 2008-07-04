@@ -68,3 +68,5 @@ Version 20080224.91 (Thursday, July  3, 2008)
  - Optimized the toolbar button images.
 
 Version ${Version} (${Date})
+ - Updated home page to point to 1ec5.org.
+ - Made ignored textbox IDs case-insensitive.

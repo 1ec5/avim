@@ -11,8 +11,8 @@ var AVIMGlobalConfig = {
 	//IDs of the fields you DON'T want to let users type Vietnamese in
 	exclude: ["colorzilla-textbox-hex",	// Hex box, Color Picker, ColorZilla
 			  "email", "e-mail",		// don't want it for e-mail fields in general
-			  "TextboxEval",			// Code bar, Firefox Error Console
-			  "tx_tagName",				// Tag Name, Insert Node, DOM Inspector
+			  "textboxeval",			// Code bar, Firefox Error Console
+			  "tx_tagname",				// Tag Name, Insert Node, DOM Inspector
 			  ]
 };
 
@@ -838,8 +838,8 @@ function AVIM()	{
 		this.prefs.setBoolPref("oldAccents", !!AVIMGlobalConfig.oldAccent);
 		this.prefs.setBoolPref("statusBarPanel",
 							   AVIMGlobalConfig.statusBarPanel);
-		this.prefs.setCharPref("ignoredFieldIds",
-							   AVIMGlobalConfig.exclude.join(" "));
+		var ids = AVIMGlobalConfig.exclude.join(" ").toLowerCase();
+		this.prefs.setCharPref("ignoredFieldIds", ids);
 		// Auto method configuration
 		this.prefs.setBoolPref("auto.telex", AVIMAutoConfig.telex);
 		this.prefs.setBoolPref("auto.vni", AVIMAutoConfig.vni);
@@ -885,8 +885,8 @@ function AVIM()	{
 				this.prefs.getBoolPref("statusBarPanel");
 		}
 		if (!changedPref || changedPref == "ignoredFieldIds") {
-			AVIMGlobalConfig.exclude =
-				this.prefs.getCharPref("ignoredFieldIds").split(/\s+/);
+			var ids = this.prefs.getCharPref("ignoredFieldIds").toLowerCase();
+			AVIMGlobalConfig.exclude = ids.split(/\s+/);
 		}
 		// Auto method configuration
 		if (!changedPref || changedPref == "auto.telex") {
