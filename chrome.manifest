@@ -72,6 +72,10 @@ overlay	chrome://inspector/content/viewers/dom/insertDialog.xul				chrome://avim
 # Options dialog
 overlay	chrome://nightly/content/options/options.xul	chrome://avim/content/avim.xul
 
+### Pencil #####################################################################
+
+overlay	chrome://pencil/content/UI/Window.xul	chrome://avim/content/avim.xul
+
 ### ScrapBook ##################################################################
 
 # Item Properties dialog

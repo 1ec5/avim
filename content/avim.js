@@ -255,7 +255,9 @@ function AVIM()	{
 	this.updateUI = function() {
 		// Enabled/disabled
 		var bc_enabled = this.$(this.broadcasters.enabled);
-		bc_enabled.setAttribute("checked", "" + !!AVIMGlobalConfig.onOff);
+		if (bc_enabled) {
+			bc_enabled.setAttribute("checked", "" + !!AVIMGlobalConfig.onOff);
+		}
 		
 		// Disable methods and options if AVIM is disabled
 		var disabled_cmds = [this.commands.method, this.commands.spell,
@@ -271,23 +273,27 @@ function AVIM()	{
 			this.$(bc).removeAttribute("key");
 		}
 		var bc_sel = this.$(this.broadcasters.methods[AVIMGlobalConfig.method]);
-		bc_sel.setAttribute("checked", "true");
+		if (bc_sel) bc_sel.setAttribute("checked", "true");
 		
 		var prev_bc_idx = AVIMGlobalConfig.method - 1;
 		if (prev_bc_idx < 0) prev_bc_idx += this.menuItems.methods.length;
 		var prev_bc = this.$(this.menuItems.methods[prev_bc_idx]);
-		prev_bc.setAttribute("key", this.keys.prevMethod);
+		if (prev_bc) prev_bc.setAttribute("key", this.keys.prevMethod);
 		
 		var next_bc_idx =
 			(AVIMGlobalConfig.method + 1) % this.menuItems.methods.length;
 		var next_bc = this.$(this.menuItems.methods[next_bc_idx]);
-		next_bc.setAttribute("key", this.keys.nextMethod);
+		if (next_bc) next_bc.setAttribute("key", this.keys.nextMethod);
 		
 		// Options
 		var bc_spell = this.$(this.broadcasters.spell);
-		bc_spell.setAttribute("checked", "" + !!AVIMGlobalConfig.ckSpell);
+		if (bc_spell) {
+			bc_spell.setAttribute("checked", "" + !!AVIMGlobalConfig.ckSpell);
+		}
 		var bc_old = this.$(this.broadcasters.oldAccents);
-		bc_old.setAttribute("checked", "" + !!AVIMGlobalConfig.oldAccent);
+		if (bc_old) {
+			bc_old.setAttribute("checked", "" + !!AVIMGlobalConfig.oldAccent);
+		}
 		
 		// Status bar panel
 		var panel = this.$(this.panel);
