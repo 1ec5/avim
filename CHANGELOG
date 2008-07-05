@@ -73,8 +73,10 @@ Version 20080224.93 (Friday, July  4, 2008)
  - Updated home page to point to 1ec5.org.
  - Made ignored textbox IDs case-insensitive.
 
-Version ${Version} (${Date})
+Version 20080224.96 (Saturday, July  5, 2008)
  - Fixed an issue where Mudim would not be turned off after the Disable Mudum
    button is pressed.
  - Added support for the Pencil extension.
  - Fixed an issue where the status bar panel would not work in ChatZilla.
+
+Version ${Version} (${Date})
