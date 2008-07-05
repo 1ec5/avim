@@ -323,8 +323,7 @@ function AVIMOptionsPanel() {
 			var enumerator = mediator.getEnumerator("navigator:browser");
 			while (enumerator.hasMoreElements()) {
 				var win = enumerator.getNext();
-				if (win && win.CHIM && win.CHIM.SetMethod &&
-					win.CHIM.SetMethod instanceof Function) {
+				if (win && win.CHIM && win.CHIM.SetMethod) {
 					win.CHIM.SetMethod(0);
 				}
 			}

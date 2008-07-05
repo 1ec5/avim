@@ -5,11 +5,13 @@ indicates the version of the extension itself, expressed as a Subversion
 revision number.
 
 Version 20060714 (Friday, July 14, 2006)
+ - Initial release.
 
 Version 20061001 (Sunday, October 1, 2006)
+ - Integrated with the latest version of the AVIM script.
 
 Version 20080224.59 (Monday, June 16, 2008)
- - Based on a refactored codebase by Hieu Dang.
+ - First release by Minh Nguyen, based on a refactored codebase by Hieu Dang.
  - Added support for Firefox 3 and removed support for Firefox 2.
  - Replaced the status bar radio buttons with an unobtrusive popup menu.
  - Added an identical menu under the Edit menu, for those who hide their status
@@ -72,3 +74,7 @@ Version 20080224.93 (Friday, July  4, 2008)
  - Made ignored textbox IDs case-insensitive.
 
 Version ${Version} (${Date})
+ - Fixed an issue where Mudim would not be turned off after the Disable Mudum
+   button is pressed.
+ - Added support for the Pencil extension.
+ - Fixed an issue where the status bar panel would not work in ChatZilla.
