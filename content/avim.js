@@ -925,6 +925,17 @@ function AVIM()	{
 		HIM: function(win) {
 			if ("setMethod" in win) win.setMethod(-1);
 		},
+		VietIMEW: function(win) {
+			if (!("VietIME" in win)) return;
+			for (var memberName in win) {
+				var member = win[memberName];
+				if (member.setTelexMode != undefined &&
+					member.setNormalMode != undefined) {
+					member.setNormalMode();
+					break;
+				}
+			}
+		},
 		VietTyping: function(win) {
 			if ("changeMode" in win) win.changeMode(-1);
 			else win.ON_OFF = 0;
@@ -938,7 +949,8 @@ function AVIM()	{
 		"DAWEOF": "HIM",	// since at least version 1.13 (build 20050810)
 		"UNIZZ": "VietTyping",
 		"initVinaseekTyper": "VietUni",
-		"AVIMObj": "AVIM"
+		"AVIMObj": "AVIM",
+		"GetVnVowelIndex": "VietIMEW"
 	};
 	
 	/**
@@ -966,7 +978,8 @@ function AVIM()	{
 			}
 			catch (e) {
 				dump("AVIMObj.disableOthers -- couldn't disable " +
-					 markers[marker] + "\n");									// debug
+					 markers[marker] + ":\n");									// debug
+				dump("\t\t" + e + "\n");										// debug
 			}
 		}
 	};

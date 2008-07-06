@@ -51,6 +51,7 @@ function AVIMOptionsPanel() {
 			if (ids[i] && !dupes.length) idList.appendItem(ids[i], ids[i]);
 		}
 		if (document.documentElement.instantApply) this.setPrefs();
+		ignoreTextBox.value = "";
 	};
 	
 	/**
@@ -70,10 +71,12 @@ function AVIMOptionsPanel() {
 	 * @param oldArray {array}	the array to normalize.
 	 * @returns {array} the normalized array.
 	 */
-	this.normalizeArray = function(oldArray) {
+	this.normalizeArray = function(oldArray, lower) {
 		var newArray = [];
 		for (var i = 0; i < oldArray.length; i++) {
-			if (newArray.indexOf(oldArray[i]) < 0) newArray.push(oldArray[i]);
+			var elem = oldArray[i];
+			if (lower) elem = elem.toLowerCase();
+			if (newArray.indexOf(elem) < 0) newArray.push(elem);
 		}
 		newArray.sort();
 		return newArray;
@@ -98,7 +101,7 @@ function AVIMOptionsPanel() {
 		// Repopulate the list.
 		var ignoredIds = this.prefs.getCharPref("ignoredFieldIds");
 		ignoredIds = ignoredIds.split(this.ignoredIdsDelimiter);
-		ignoredIds = this.normalizeArray(ignoredIds);
+		ignoredIds = this.normalizeArray(ignoredIds, true);
 //		dump("Got ignoredIds: " + ignoredIds.join(",") + ".\n");				// debug
 		for (var i = 0; i < ignoredIds.length; i++) {
 			idList.appendItem(ignoredIds[i], ignoredIds[i]);
@@ -190,7 +193,7 @@ function AVIMOptionsPanel() {
 			var row = idList.getItemAtIndex(i);
 			ignoredIds.push(row.value);
 		}
-		ignoredIds = this.normalizeArray(ignoredIds);
+		ignoredIds = this.normalizeArray(ignoredIds, true);
 		this.prefs.setCharPref("ignoredFieldIds", ignoredIds.join(" "));
 //		dump("Set ignoredIds: " + ignoredIds.join(",") + ".\n");				// debug
 	};

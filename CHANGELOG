@@ -82,3 +82,5 @@ Version 20080224.96 (Saturday, July  5, 2008)
 Version ${Version} (${Date})
  - Fixed compatibility issues with the AVIM/HIM, VietTyping, and VietUni scripts
    by turning off any instances of the scripts when typing in a webpage.
+ - Forced ignored textbox IDs to lowercase.
+ - Cleared ID textbox after the ID is ignored.
