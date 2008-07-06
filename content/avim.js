@@ -927,12 +927,14 @@ if (!AVIMObj) {
 		var doc = e.target.ownerDocument;
 		
 		// Disable AVIM script if it's enabled on the webpage.
-		// DAWEOF() has existed in HIM/AVIM since at least version 1.13 (build
-		// 20050810). Using wrappedJSObject is only safe in Firefox 3 and above.
-		var win = doc.defaultView;
-		if (win.wrappedJSObject.DAWEOF) win.wrappedJSObject.setMethod(-1);
-		if (win.wrappedJSObject.AVIMObj) {
-			win.wrappedJSObject.AVIMObj.setMethod(-1);
+		// Using wrappedJSObject is only safe in Firefox 3 and above.
+		var winWrapper = new XPCNativeWrapper(doc.defaultView);
+		var win = winWrapper.wrappedJSObject;
+		if (win && win != window) {
+			// DAWEOF() has existed in HIM/AVIM since at least version 1.13
+			// (build 20050810).
+			if (win.DAWEOF) win.setMethod(-1);
+			if (win.AVIMObj) win.AVIMObj.setMethod(-1);
 		}
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
