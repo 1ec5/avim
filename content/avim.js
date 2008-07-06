@@ -948,7 +948,10 @@ function AVIM()	{
 		"DAWEO": "HIM",	// since at least version 1.1 (build 20050430)
 		"DAWEOF": "HIM",	// since at least version 1.13 (build 20050810)
 		"UNIZZ": "VietTyping",
-		"initVinaseekTyper": "VietUni",
+		"telexingVietUC": "VietUni",	// present in vietuni8.js (2001-10-19)
+										// and version 14.0 by Tran Kien Duc
+										// (2004-01-07)
+		"findCharToChange": "HIM",	// since the beginning
 		"AVIMObj": "AVIM",
 		"GetVnVowelIndex": "VietIMEW"
 	};
