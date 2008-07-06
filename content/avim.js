@@ -29,6 +29,7 @@ var AVIMAutoConfig = {
 };
 
 function AVIM()	{
+	// IDs of user interface elements
 	this.commands = {
 		method: "avim-method-cmd",
 		spell: "avim-spell-cmd",
@@ -55,6 +56,7 @@ function AVIM()	{
 				  "avim-menu-viqr", "avim-menu-viqr-star"]
 	}
 	this.panel = "avim-status";
+	
 	this.changed=false
 	this.alphabet="QWERTYUIOPASDFGHJKLZXCVBNM\ ";this.specialChange=false
 	this.skey=new Array(97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89)
@@ -912,6 +914,62 @@ function AVIM()	{
 			AVIMAutoConfig.viqrStar = this.prefs.getBoolPref("auto.viqrStar");
 		}
 	};
+	
+	// Markers and disablers for embedded Vietnamese IMEs
+	var disablers = {
+		AVIM: function(win) {
+			if ("AVIMObj" in win && "setMethod" in win.AVIMObj) {
+				win.AVIMObj.setMethod(-1);
+			}
+		},
+		HIM: function(win) {
+			if ("setMethod" in win) win.setMethod(-1);
+		},
+		VietTyping: function(win) {
+			if ("changeMode" in win) win.changeMode(-1);
+			else win.ON_OFF = 0;
+		},
+		VietUni: function(win) {
+			if ("setTypingMode" in win) win.setTypingMode();
+		}
+	};
+	var markers = {
+		"DAWEO": "HIM",	// since at least version 1.1 (build 20050430)
+		"DAWEOF": "HIM",	// since at least version 1.13 (build 20050810)
+		"UNIZZ": "VietTyping",
+		"initVinaseekTyper": "VietUni",
+		"AVIMObj": "AVIM"
+	};
+	
+	/**
+	 * Given a HTML document node, disables any Vietnamese JavaScript input
+	 * method editors (IMEs) embedded in the document that may cause conflicts.
+	 * If AVIM is disabled, this method does nothing.
+	 *
+	 * @param doc {object}	An HTML document node.
+	 */
+	this.disableOthers = function(doc) {
+		if (!AVIMGlobalConfig.onOff) return;
+		
+		// Using wrappedJSObject is only safe in Firefox 3 and above.
+		var winWrapper = new XPCNativeWrapper(doc.defaultView);
+		var win = winWrapper.wrappedJSObject;
+		if (!win || win == window) return;
+		
+		for (var marker in markers) {
+			if (!(marker in win)) continue;
+			dump("AVIMObj.disableOthers -- marker: " + marker + "\n");			// debug
+			try {
+				var disabler = disablers[markers[marker]];
+				disabler(win);
+				break;
+			}
+			catch (e) {
+				dump("AVIMObj.disableOthers -- couldn't disable " +
+					 markers[marker] + "\n");									// debug
+			}
+		}
+	};
 }
 
 if (!AVIMObj) {
@@ -925,17 +983,7 @@ if (!AVIMObj) {
 	addEventListener("keypress", function (e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
 		var doc = e.target.ownerDocument;
-		
-		// Disable AVIM script if it's enabled on the webpage.
-		// Using wrappedJSObject is only safe in Firefox 3 and above.
-		var winWrapper = new XPCNativeWrapper(doc.defaultView);
-		var win = winWrapper.wrappedJSObject;
-		if (win && win != window) {
-			// DAWEOF() has existed in HIM/AVIM since at least version 1.13
-			// (build 20050810).
-			if (win.DAWEOF) win.setMethod(-1);
-			if (win.AVIMObj) win.AVIMObj.setMethod(-1);
-		}
+		AVIMObj.disableOthers(doc);
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
 		if (doc.designMode && doc.designMode.toLowerCase() == "on") {
