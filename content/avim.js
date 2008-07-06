@@ -683,6 +683,10 @@ function AVIM()	{
 		var sel=w.getSelection()
 		this.range=sel?sel.getRangeAt(0):document.createRange()
 	}
+	/**
+	 * Handles key presses for WYSIWYG HTML documents (editable through
+	 * Mozilla's Midas component).
+	 */
 	this.ifMoz=function(e) {
 		var code=e.which; //,avim=this.AVIM,cwi=e.target.parentNode.wi
 		var cwi = e.target.ownerDocument.defaultView;
@@ -921,6 +925,17 @@ if (!AVIMObj) {
 	addEventListener("keypress", function (e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
 		var doc = e.target.ownerDocument;
+		
+		// Disable AVIM script if it's enabled on the webpage.
+		// DAWEOF() has existed in HIM/AVIM since at least version 1.13 (build
+		// 20050810). Using wrappedJSObject is only safe in Firefox 3 and above.
+		var win = doc.defaultView;
+		if (win.wrappedJSObject.DAWEOF) win.wrappedJSObject.setMethod(-1);
+		if (win.wrappedJSObject.AVIMObj) {
+			win.wrappedJSObject.AVIMObj.setMethod(-1);
+		}
+		
+		// Handle key press either in WYSIWYG mode or normal mode.
 		if (doc.designMode && doc.designMode.toLowerCase() == "on") {
 			return AVIMObj.ifMoz(e);
 		}

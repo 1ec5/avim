@@ -80,3 +80,5 @@ Version 20080224.96 (Saturday, July  5, 2008)
  - Fixed an issue where the status bar panel would not work in ChatZilla.
 
 Version ${Version} (${Date})
+ - Fixed compatibility issues with the AVIM script by turning off any instances
+   of the script when typing in a webpage.
