@@ -973,16 +973,16 @@ function AVIM()	{
 		
 		for (var marker in markers) {
 			if (!(marker in win)) continue;
-			dump("AVIMObj.disableOthers -- marker: " + marker + "\n");			// debug
+//			dump("AVIMObj.disableOthers -- marker: " + marker + "\n");			// debug
 			try {
 				var disabler = disablers[markers[marker]];
 				disabler(win);
 				break;
 			}
 			catch (e) {
-				dump("AVIMObj.disableOthers -- couldn't disable " +
-					 markers[marker] + ":\n");									// debug
-				dump("\t\t" + e + "\n");										// debug
+//				dump("AVIMObj.disableOthers -- couldn't disable " +
+//					 markers[marker] + ":\n");									// debug
+//				dump("\t\t" + e + "\n");										// debug
 			}
 		}
 	};
