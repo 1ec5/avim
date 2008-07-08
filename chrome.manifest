@@ -1,8 +1,8 @@
 content	avim	content/
 
-locale	avim	en-US	locale/en-US/
-locale	avim	es		locale/es/
-locale	avim	vi		locale/vi/
+locale	avim	en	locale/en-US/
+locale	avim	es	locale/es/
+locale	avim	vi	locale/vi/
 
 skin	avim	classic/1.0	skin/
 

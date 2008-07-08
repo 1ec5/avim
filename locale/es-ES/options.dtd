@@ -9,9 +9,9 @@
 
 <!-- Input Editing tab -->
 
-<!ENTITY input-panel.label "Edici梟 de Entrada">
+<!ENTITY input-panel.label "Edici贸n de Entrada">
 
-<!ENTITY method-menu.label "M巘odo de entrada:">
+<!ENTITY method-menu.label "M茅todo de entrada:">
 <!ENTITY method-menu.accesskey "M">
 <!ENTITY method-auto-item.label "Auto">
 <!ENTITY method-telex-item.label "Telex">
@@ -19,12 +19,12 @@
 <!ENTITY method-viqr-item.label "VIQR">
 <!ENTITY method-viqr-star-item.label "VIQR*">
 
-<!ENTITY spell-check.label "Requirir la ortograf抋 vietnamita correcta">
+<!ENTITY spell-check.label "Requirir la ortograf铆a vietnamita correcta">
 <!ENTITY spell-check.accesskey "o">
 <!ENTITY oldaccents-check.label "Poner los signos tonales sobre la primera vocal en un diptongo final (acentos de estilo viejo)">
 <!ENTITY oldaccents-check.accesskey "P">
 
-<!ENTITY auto-methods.label "Aceptar las pulsaciones de los m巘odos de entrada siguientes cuando &method-auto-item.label; se selecciona:">
+<!ENTITY auto-methods.label "Aceptar las pulsaciones de los m茅todos de entrada siguientes cuando &method-auto-item.label; se selecciona:">
 <!ENTITY auto-telex-check.accesskey "T">
 <!ENTITY auto-vni-check.accesskey "V">
 <!ENTITY auto-viqr-check.accesskey "Q">
@@ -38,9 +38,9 @@
 <!ENTITY ignore-button.label "Ignorar">
 <!ENTITY ignore-button.accesskey "I">
 
-<!ENTITY ignored-desc.label "Puedes especificar los cajas de texto que &AVIM.label; debe ignorar. Por ejemplo, sup梟 que quieres que &AVIM.label; ignore una cierta caja de texto que contenga una direcci梟 web, porque el m巘odo de entrada puede impedir la entrada de la direcci梟.">
+<!ENTITY ignored-desc.label "Puedes especificar los cajas de texto que &AVIM.label; debe ignorar. Por ejemplo, sup贸n que quieres que &AVIM.label; ignore una cierta caja de texto que contenga una direcci贸n web, porque el m茅todo de entrada puede impedir la entrada de la direcci贸n.">
 <!ENTITY ignored-desc.line-count "3">
-<!ENTITY ignored-instructions.label "Para ignorar una caja de texto, primero busca su ID por ver el c梔igo fuente de la p噂ina Web que contiene la caja. Despu巗, entra el ID abajo y haz clic en &ignore-button.label;.">
+<!ENTITY ignored-instructions.label "Para ignorar una caja de texto, primero busca su ID por ver el c贸digo fuente de la p谩gina Web que contiene la caja. Despu茅s, entra el ID abajo y haz clic en &ignore-button.label;.">
 <!ENTITY ignored-instructions.line-count "2">
 
 <!ENTITY remove-button.label "Borrar ID">

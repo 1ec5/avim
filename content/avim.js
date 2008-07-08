@@ -13,19 +13,13 @@ var AVIMGlobalConfig = {
 			  "email", "e-mail",		// don't want it for e-mail fields in general
 			  "textboxeval",			// Code bar, Firefox Error Console
 			  "tx_tagname",				// Tag Name, Insert Node, DOM Inspector
-			  ]
-};
-
-/**
- * Default input methods to contribute to Auto. Be sure to update
- * defaults/preferences/avim.js to reflect any changes to the default
- * preferences.
- */
-var AVIMAutoConfig = {
-	telex: true,
-	vni: true,
-	viqr: false,
-	viqrStar: false
+			  ],
+	// Default input methods to contribute to Auto.
+	autoMethods: {telex: true, vni: true, viqr: false, viqrStar: false},
+	// Script monitor
+	disabledScripts: {
+		AVIM: true, VietTyping: true, VietUni: true, VietIMEW: false
+	}
 };
 
 function AVIM()	{
@@ -70,11 +64,11 @@ function AVIM()	{
 	this.orA="ó,ò,ỏ,õ,ọ,o,Ó,Ò,Ỏ,Õ,Ọ,O".split(',');this.aA="ấ,ầ,ẩ,ẫ,ậ,â,Ấ,Ầ,Ẩ,Ẫ,Ậ,Â".split(',');this.oA="ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',')
 	this.mocA="ớ,ờ,ở,ỡ,ợ,ơ,ứ,ừ,ử,ữ,ự,ư,Ớ,Ờ,Ở,Ỡ,Ợ,Ơ,Ứ,Ừ,Ử,Ữ,Ự,Ư".split(',');this.trangA="ắ,ằ,ẳ,ẵ,ặ,ă,Ắ,Ằ,Ẳ,Ẵ,Ặ,Ă".split(',')
 	this.eA="ế,ề,ể,ễ,ệ,ê,Ế,Ề,Ể,Ễ,Ệ,Ê".split(',');this.oA="ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',');this.skey2="a,a,a,e,e,i,o,o,o,u,u,y,A,A,A,E,E,I,O,O,O,U,U,Y".split(',')
-	this.fcc=String.fromCharCode;
-	this.$ = function (id) {
+	var fcc = String.fromCharCode;
+	var $ = function (id) {
 		return document.getElementById(id);
 	};
-	this.getSF=function() { var sf=new Array(),x; for(x=0;x<this.skey.length;x++) sf[sf.length]=this.fcc(this.skey[x]); return sf }
+	this.getSF=function() { var sf=new Array(),x; for(x=0;x<this.skey.length;x++) sf[sf.length]=fcc(this.skey[x]); return sf }
 	this.ckspell=function(w,k) {
 		if (!AVIMGlobalConfig.ckSpell) return false;
 		w=this.unV(w); var exc="UOU,IEU".split(','),z,next=true,noE="UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','),noBE="YEU"
@@ -256,7 +250,7 @@ function AVIM()	{
 	 */
 	this.updateUI = function() {
 		// Enabled/disabled
-		var bc_enabled = this.$(this.broadcasters.enabled);
+		var bc_enabled = $(this.broadcasters.enabled);
 		if (bc_enabled) {
 			bc_enabled.setAttribute("checked", "" + !!AVIMGlobalConfig.onOff);
 		}
@@ -266,39 +260,39 @@ function AVIM()	{
 							 this.commands.oldAccents];
 		for (var i = 0; i < disabled_cmds.length; i++) {
 			var cmd = disabled_cmds[i];
-			this.$(cmd).setAttribute("disabled", "" + !AVIMGlobalConfig.onOff);
+			$(cmd).setAttribute("disabled", "" + !AVIMGlobalConfig.onOff);
 		}
 		
 		// Method
 		for each (var bc in this.broadcasters.methods) {
-			this.$(bc).removeAttribute("checked");
-			this.$(bc).removeAttribute("key");
+			$(bc).removeAttribute("checked");
+			$(bc).removeAttribute("key");
 		}
-		var bc_sel = this.$(this.broadcasters.methods[AVIMGlobalConfig.method]);
+		var bc_sel = $(this.broadcasters.methods[AVIMGlobalConfig.method]);
 		if (bc_sel) bc_sel.setAttribute("checked", "true");
 		
 		var prev_bc_idx = AVIMGlobalConfig.method - 1;
 		if (prev_bc_idx < 0) prev_bc_idx += this.menuItems.methods.length;
-		var prev_bc = this.$(this.menuItems.methods[prev_bc_idx]);
+		var prev_bc = $(this.menuItems.methods[prev_bc_idx]);
 		if (prev_bc) prev_bc.setAttribute("key", this.keys.prevMethod);
 		
 		var next_bc_idx =
 			(AVIMGlobalConfig.method + 1) % this.menuItems.methods.length;
-		var next_bc = this.$(this.menuItems.methods[next_bc_idx]);
+		var next_bc = $(this.menuItems.methods[next_bc_idx]);
 		if (next_bc) next_bc.setAttribute("key", this.keys.nextMethod);
 		
 		// Options
-		var bc_spell = this.$(this.broadcasters.spell);
+		var bc_spell = $(this.broadcasters.spell);
 		if (bc_spell) {
 			bc_spell.setAttribute("checked", "" + !!AVIMGlobalConfig.ckSpell);
 		}
-		var bc_old = this.$(this.broadcasters.oldAccents);
+		var bc_old = $(this.broadcasters.oldAccents);
 		if (bc_old) {
 			bc_old.setAttribute("checked", "" + !!AVIMGlobalConfig.oldAccent);
 		}
 		
 		// Status bar panel
-		var panel = this.$(this.panel);
+		var panel = $(this.panel);
 		if (!panel) return;
 		if (AVIMGlobalConfig.onOff) {
 			panel.setAttribute("label", bc_sel.getAttribute("label"));
@@ -306,7 +300,7 @@ function AVIM()	{
 		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
 		panel.style.display =
 			AVIMGlobalConfig.statusBarPanel ? "-moz-box" : "none";
-//		var bc_panel = this.$(this.broadcasters.statusBarPanel);
+//		var bc_panel = $(this.broadcasters.statusBarPanel);
 //		bc_panel.setAttribute("checked", "" + AVIMGlobalConfig.statusBarPanel);
 	};
 	this.mozGetText=function(obj) {
@@ -329,7 +323,7 @@ function AVIM()	{
 		var w="",method=AVIMGlobalConfig.method,dockspell=AVIMGlobalConfig.ckSpell,fixed=false,uni,uni2=false,uni3=false,uni4=false;this.oc=obj
 		var telex="D,A,E,O,W,W".split(','),vni="9,6,6,6,7,8".split(','),viqr="D,^,^,^,+,(".split(','),viqr2="D,^,^,^,*,(".split(','),a,noNormC
 		if(method==0) {
-			var arr=new Array(),check=new Array(AVIMAutoConfig.telex,AVIMAutoConfig.vni,AVIMAutoConfig.viqr,AVIMAutoConfig.viqrStar)
+			var arr=new Array(),check=new Array(AVIMGlobalConfig.autoMethods.telex,AVIMGlobalConfig.autoMethods.vni,AVIMGlobalConfig.autoMethods.viqr,AVIMGlobalConfig.autoMethods.viqrStar)
 			var value1=new Array(telex,vni,viqr,viqr2),uniA=new Array(uni,uni2,uni3,uni4),D2A=new Array("DAWEO","6789","D^+(","D^*(")
 			for(a=0;a<check.length;a++) {
 				if(check[a]) arr[arr.length]=value1[a]
@@ -342,7 +336,7 @@ function AVIM()	{
 		else if(method==2) { uni=vni; this.D2="6789" }
 		else if(method==3) { uni=viqr; this.D2="D^+(" }
 		else if(method==4) { uni=viqr2; this.D2="D^*(" }
-		key=this.fcc(key.which)
+		key=fcc(key.which)
 		w=this.mozGetText(obj)
 		if((!w)||(obj.sel)) return
 		if(this.D2.indexOf(this.up(key))>=0) noNormC=true
@@ -367,7 +361,7 @@ function AVIM()	{
 		var DAWEOFA=this.up(this.aA.join()+this.eA.join()+this.mocA.join()+this.trangA.join()+this.oA.join()+this.english),h,uc
 		for(g=0;g<sf.length;g++) {
 			if(this.nan(sf[g])) str+=sf[g]
-			else str+=this.fcc(sf[g])
+			else str+=fcc(sf[g])
 		}
 		var uk=this.up(k),i=w.length,uni_array=this.repSign(k),w2=this.up(this.unV2(this.unV(w))),dont="ƯA,ƯU".split(',')
 		if (this.DAWEO.indexOf(uk)>=0) {
@@ -407,7 +401,7 @@ function AVIM()	{
 				}
 			}
 		}
-		if((uk!=this.Z)&&(this.DAWEO.indexOf(uk)<0)) { var tEC=this.retKC(uk); for (g=0;g<tEC.length;g++) tE+=this.fcc(tEC[g]) }
+		if((uk!=this.Z)&&(this.DAWEO.indexOf(uk)<0)) { var tEC=this.retKC(uk); for (g=0;g<tEC.length;g++) tE+=fcc(tEC[g]) }
 		for(g=1;g<=w.length;g++) {
 			if(this.DAWEO.indexOf(uk)<0) {
 				cc=this.up(w.substr(w.length-g,1))
@@ -423,7 +417,7 @@ function AVIM()	{
 						if(this.ckspell(w,k)) return false
 						return new Array(g,tEC[h%24])
 					}
-					for(h=0;h<tEC.length;h++) if(tEC[h]==w.charCodeAt(w.length-g)) return new Array(g,this.fcc(this.skey[h]))
+					for(h=0;h<tEC.length;h++) if(tEC[h]==w.charCodeAt(w.length-g)) return new Array(g,fcc(this.skey[h]))
 				}
 			}
 		}
@@ -433,7 +427,7 @@ function AVIM()	{
 				if((uk!=this.Z)&&(s.indexOf(w.substr(w.length-g,1))>=0)) return g
 				else if(tE.indexOf(w.substr(w.length-g,1))>=0) {
 					for(h=0;h<tEC.length;h++) {
-						if(w.substr(w.length-g,1).charCodeAt(0)==tEC[h]) return new Array(g,this.fcc(this.skey[h]))
+						if(w.substr(w.length-g,1).charCodeAt(0)==tEC[h]) return new Array(g,fcc(this.skey[h]))
 					}
 				}
 			}
@@ -445,7 +439,7 @@ function AVIM()	{
 			if(w.substr(w.length-1)==" ") v=3
 			var ttt=this.up(w.substr(w.length-v,2))
 			if((AVIMGlobalConfig.oldAccent==0)&&((ttt=="UY")||(ttt=="OA")||(ttt=="OE"))) return vowA[0]
-			var c2=0,fdconsonant,sc="BCD"+this.fcc(272)+"GHKLMNPQRSTVX",dc="CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',')
+			var c2=0,fdconsonant,sc="BCD"+fcc(272)+"GHKLMNPQRSTVX",dc="CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',')
 			for(h=1;h<=w.length;h++) {
 				fdconsonant=false
 				for(g=0;g<dc.length;g++) {
@@ -470,9 +464,9 @@ function AVIM()	{
 		if(isNaN(c)) uc=this.up(c)
 		if((this.whit)&&(this.up(w.substr(w.length-pos-1,1))=='U')&&(pos!=1)&&(this.up(w.substr(w.length-pos-2,1))!='Q')) {
 			this.whit=false
-			if((this.up(this.unV(this.fcc(c)))=="Ơ")||(uc=="O")) {
-				if(w.substr(w.length-pos-1,1)=='u') r=this.fcc(432)
-				else r=this.fcc(431)
+			if((this.up(this.unV(fcc(c)))=="Ơ")||(uc=="O")) {
+				if(w.substr(w.length-pos-1,1)=='u') r=fcc(432)
+				else r=fcc(431)
 			}
 			if(uc=="O") {
 				if(c=="o") c=417
@@ -480,21 +474,21 @@ function AVIM()	{
 			}
 		}
 		if(!isNaN(c)) {
-			this.changed=true;r+=this.fcc(c)
+			this.changed=true;r+=fcc(c)
 			return w.substr(0,w.length-pos-r.length+1)+r+w.substr(w.length-pos+1)
 		} else return w.substr(0,w.length-pos)+c+w.substr(w.length-pos+1)
 	}
 	this.replaceChar=function(o,pos,c) {
 		var bb=false
-		if(!this.nan(c)) { var replaceBy=this.fcc(c),wfix=this.up(this.unV(this.fcc(c))); this.changed=true }
+		if(!this.nan(c)) { var replaceBy=fcc(c),wfix=this.up(this.unV(fcc(c))); this.changed=true }
 		else { var replaceBy=c; if((this.up(c)=="O")&&(this.whit)) bb=true }
 		if(!o.data) {
 			var savePos=o.selectionStart,sst=o.scrollTop
 			if ((this.up(o.value.substr(pos-1,1))=='U')&&(pos<savePos-1)&&(this.up(o.value.substr(pos-2,1))!='Q')) {
 				if((wfix=="Ơ")||(bb))
 				{
-					if (o.value.substr(pos-1,1)=='u') var r=this.fcc(432)
-					else var r=this.fcc(431)
+					if (o.value.substr(pos-1,1)=='u') var r=fcc(432)
+					else var r=fcc(431)
 				}
 				if(bb) {
 					this.changed=true; if(c=="o") replaceBy="ơ"
@@ -508,8 +502,8 @@ function AVIM()	{
 			if ((this.up(o.data.substr(pos-1,1))=='U')&&(pos<o.pos-1)) {
 				if((wfix=="Ơ")||(bb))
 				{
-					if (o.data.substr(pos-1,1)=='u') var r=this.fcc(432)
-					else var r=this.fcc(431)
+					if (o.data.substr(pos-1,1)=='u') var r=fcc(432)
+					else var r=fcc(431)
 				}
 				if(bb) {
 					this.changed=true; if(c=="o") replaceBy="ơ"
@@ -634,7 +628,7 @@ function AVIM()	{
 		for(a=1;a<=w.length;a++) {
 			for(b=0;b<u.length;b++) {
 				if(u[b]==w.charCodeAt(w.length-a)) {
-					w=w.substr(0,w.length-a)+this.fcc(this.skey[b%24])+w.substr(w.length-a+1)
+					w=w.substr(0,w.length-a)+fcc(this.skey[b%24])+w.substr(w.length-a+1)
 				}
 			}
 		}
@@ -672,7 +666,7 @@ function AVIM()	{
 		return false
 	}
 	this.retUni=function(w,k,pos) {
-		var u=this.retKC(this.up(k)),uC,lC,c=w.charCodeAt(w.length-pos),a,t=this.fcc(c)
+		var u=this.retKC(this.up(k)),uC,lC,c=w.charCodeAt(w.length-pos),a,t=fcc(c)
 		for(a=0;a<this.skey.length;a++) if(this.skey[a]==c) {
 			if(a<12) { lC=a;uC=a+12 }
 			else { lC=a-12;uC=a }
@@ -696,7 +690,7 @@ function AVIM()	{
 //		if(typeof(cwi)=="undefined") cwi=e.target.parentNode.parentNode.wi
 		if(e.ctrlKey || e.metaKey || e.altKey) return;
 		this.ifInit(cwi);
-		var node=this.range.endContainer,newPos;this.sk=this.fcc(code);this.saveStr=""
+		var node=this.range.endContainer,newPos;this.sk=fcc(code);this.saveStr=""
 		if(this.checkCode(code)||(!this.range.startOffset)||(typeof(node.data)=='undefined')) return;node.sel=false
 		if(node.data) {
 			this.saveStr=node.data.substr(this.range.endOffset)
@@ -718,7 +712,7 @@ function AVIM()	{
 		return AVIMGlobalConfig.onOff == 0 || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
 	}
 	this.notWord=function(w) {
-		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t“”‘’«»‹›–—…"+this.fcc(160)
+		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t“”‘’«»‹›–—…"+fcc(160)
 		return (str.indexOf(w)>=0)
 	}
 	this.nan=function(w) {
@@ -788,7 +782,7 @@ function AVIM()	{
 		var isXUL = el.namespaceURI == xulURI &&
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
-		this.sk=this.fcc(code); if(this.findIgnore(el)) return false;
+		this.sk=fcc(code); if(this.findIgnore(el)) return false;
 		this.start(el,e)
 		if (this.changed) {
 			this.changed=false;
@@ -853,10 +847,20 @@ function AVIM()	{
 		var ids = AVIMGlobalConfig.exclude.join(" ").toLowerCase();
 		this.prefs.setCharPref("ignoredFieldIds", ids);
 		// Auto method configuration
-		this.prefs.setBoolPref("auto.telex", AVIMAutoConfig.telex);
-		this.prefs.setBoolPref("auto.vni", AVIMAutoConfig.vni);
-		this.prefs.setBoolPref("auto.viqr", AVIMAutoConfig.viqr);
-		this.prefs.setBoolPref("auto.viqrStar", AVIMAutoConfig.viqrStar);
+		this.prefs.setBoolPref("auto.telex",
+							   AVIMGlobalConfig.autoMethods.telex);
+		this.prefs.setBoolPref("auto.vni", AVIMGlobalConfig.autoMethods.vni);
+		this.prefs.setBoolPref("auto.viqr", AVIMGlobalConfig.autoMethods.viqr);
+		this.prefs.setBoolPref("auto.viqrStar",
+							   AVIMGlobalConfig.autoMethods.viqrStar);
+		this.prefs.setBoolPref("scriptMonitor.avim",
+							   AVIMGlobalConfig.disabledScripts.AVIM);
+		this.prefs.setBoolPref("scriptMonitor.vietImeW",
+							   AVIMGlobalConfig.disabledScripts.VietIMEW);
+		this.prefs.setBoolPref("scriptMonitor.vietTyping",
+							   AVIMGlobalConfig.disabledScripts.VietTyping);
+		this.prefs.setBoolPref("scriptMonitor.vietUni",
+							   AVIMGlobalConfig.disabledScripts.VietUni);
 	};
 	
 	/**
@@ -902,30 +906,55 @@ function AVIM()	{
 		}
 		// Auto method configuration
 		if (!changedPref || changedPref == "auto.telex") {
-			AVIMAutoConfig.telex = this.prefs.getBoolPref("auto.telex");
+			AVIMGlobalConfig.autoMethods.telex =
+				this.prefs.getBoolPref("auto.telex");
 		}
 		if (!changedPref || changedPref == "auto.vni") {
-			AVIMAutoConfig.vni = this.prefs.getBoolPref("auto.vni");
+			AVIMGlobalConfig.autoMethods.vni =
+				this.prefs.getBoolPref("auto.vni");
 		}
 		if (!changedPref || changedPref == "auto.viqr") {
-			AVIMAutoConfig.viqr = this.prefs.getBoolPref("auto.viqr");
+			AVIMGlobalConfig.autoMethods.viqr =
+				this.prefs.getBoolPref("auto.viqr");
 		}
 		if (!changedPref || changedPref == "auto.viqrStar") {
-			AVIMAutoConfig.viqrStar = this.prefs.getBoolPref("auto.viqrStar");
+			AVIMGlobalConfig.autoMethods.viqrStar =
+				this.prefs.getBoolPref("auto.viqrStar");
+		}
+		if (!changedPref || changedPref == "scriptMonitor.avim") {
+			AVIMGlobalConfig.disabledScripts.AVIM =
+				this.prefs.getBoolPref("scriptMonitor.avim");
+		}
+		if (!changedPref || changedPref == "scriptMonitor.vietImeW") {
+			AVIMGlobalConfig.disabledScripts.VietIMEW =
+				this.prefs.getBoolPref("scriptMonitor.vietImeW");
+		}
+		if (!changedPref || changedPref == "scriptMonitor.vietTyping") {
+			AVIMGlobalConfig.disabledScripts.VietTyping =
+				this.prefs.getBoolPref("scriptMonitor.vietTyping");
+		}
+		if (!changedPref || changedPref == "scriptMonitor.vietUni") {
+			AVIMGlobalConfig.disabledScripts.VietUni =
+				this.prefs.getBoolPref("scriptMonitor.vietUni");
 		}
 	};
+	
+	// Script monitor
 	
 	// Markers and disablers for embedded Vietnamese IMEs
 	var disablers = {
 		AVIM: function(win) {
+			if (!AVIMGlobalConfig.disabledScripts.AVIM) return;
 			if ("AVIMObj" in win && "setMethod" in win.AVIMObj) {
 				win.AVIMObj.setMethod(-1);
 			}
 		},
 		HIM: function(win) {
+			if (!AVIMGlobalConfig.disabledScripts.AVIM) return;
 			if ("setMethod" in win) win.setMethod(-1);
 		},
 		VietIMEW: function(win) {
+			if (!AVIMGlobalConfig.disabledScripts.VietIMEW) return;
 			if (!("VietIME" in win)) return;
 			for (var memberName in win) {
 				var member = win[memberName];
@@ -937,23 +966,31 @@ function AVIM()	{
 			}
 		},
 		VietTyping: function(win) {
+			if (!AVIMGlobalConfig.disabledScripts.VietTyping) return;
 			if ("changeMode" in win) win.changeMode(-1);
 			else win.ON_OFF = 0;
 		},
 		VietUni: function(win) {
+			if (!AVIMGlobalConfig.disabledScripts.VietUni) return;
 			if ("setTypingMode" in win) win.setTypingMode();
 		}
 	};
 	var markers = {
-		"DAWEO": "HIM",	// since at least version 1.1 (build 20050430)
-		"DAWEOF": "HIM",	// since at least version 1.13 (build 20050810)
-		"UNIZZ": "VietTyping",
-		"telexingVietUC": "VietUni",	// present in vietuni8.js (2001-10-19)
-										// and version 14.0 by Tran Kien Duc
-										// (2004-01-07)
-		"findCharToChange": "HIM",	// since the beginning
-		"AVIMObj": "AVIM",
-		"GetVnVowelIndex": "VietIMEW"
+		// HIM since at least version 1.1 (build 20050430)
+		"DAWEO": disablers.HIM,
+		// HIM and AVIM since at least version 1.13 (build 20050810)
+		"DAWEOF": disablers.HIM,
+		// VietTyping, various versions
+		"UNIZZ": disablers.VietTyping,
+		// VietUni, including vietuni8.js (2001-10-19) and version 14.0 by Tran
+		// Kien Duc (2004-01-07)
+		"telexingVietUC": disablers.VietUni,
+		// HIM since version 1.0
+		"findCharToChange": disablers.HIM,
+		// AVIM after build 20071102
+		"AVIMObj": disablers.AVIM,
+		// VietIMEW
+		"GetVnVowelIndex": disablers.VietIMEW
 	};
 	
 	/**
@@ -973,17 +1010,12 @@ function AVIM()	{
 		
 		for (var marker in markers) {
 			if (!(marker in win)) continue;
-//			dump("AVIMObj.disableOthers -- marker: " + marker + "\n");			// debug
 			try {
-				var disabler = disablers[markers[marker]];
+				var disabler = markers[marker];
 				disabler(win);
 				break;
 			}
-			catch (e) {
-//				dump("AVIMObj.disableOthers -- couldn't disable " +
-//					 markers[marker] + ":\n");									// debug
-//				dump("\t\t" + e + "\n");										// debug
-			}
+			catch (e) {}
 		}
 	};
 }

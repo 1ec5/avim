@@ -12,7 +12,7 @@
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
 <!ENTITY avim-next-method.key ";">
-<!ENTITY avim-auto.label "Autom‡tica">
+<!ENTITY avim-auto.label "AutomÃ¡tica">
 <!ENTITY avim-auto.accesskey "m">
 <!ENTITY avim-telex.label "Telex">
 <!ENTITY avim-telex.accesskey "T">
@@ -27,9 +27,9 @@
 <!-- Options -->
 <!ENTITY avim-spell.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
 <!ENTITY avim-spell.key "S">
-<!ENTITY avim-spell.label "Ortograf’a Correcta">
+<!ENTITY avim-spell.label "OrtografÃ­a Correcta">
 <!ENTITY avim-spell.accesskey "O">
-<!ENTITY avim-spell.description "Solamente poner los accentos en las palabras que cumplen con las reglas ortograf’as vietnamitas">
+<!ENTITY avim-spell.description "Solamente poner los accentos en las palabras que cumplen con las reglas ortografÃ­as vietnamitas">
 <!ENTITY avim-oldaccents.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
 <!ENTITY avim-oldaccents.key ";">
 <!ENTITY avim-oldaccents.label "Acentos Viejos">
