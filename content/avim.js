@@ -952,6 +952,7 @@ function AVIM()	{
 		HIM: function(win) {
 			if (!AVIMGlobalConfig.disabledScripts.AVIM) return;
 			if ("setMethod" in win) win.setMethod(-1);
+			if ("on_off" in win) win.on_off = 0;
 		},
 		VietIMEW: function(win) {
 			if (!AVIMGlobalConfig.disabledScripts.VietIMEW) return;
