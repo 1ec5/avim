@@ -1,3 +1,4 @@
+ - Scroll single-line textboxes to the side when AVIM modifies the input.
  - Figure out why the first word entered into a designMode document is flipped
    around (i.e., "DDa'nh" turns into "a'nhDD").
  - Support editable trees. [1]

@@ -22,6 +22,12 @@
 <!ENTITY avim-viqr.accesskey "Q">
 <!ENTITY avim-viqr-star.label "VIQR*">
 <!ENTITY avim-viqr-star.accesskey "R">
+
+<!ENTITY avim-menu-prev-method.label "Previous Input Method">
+<!ENTITY avim-menu-prev-method.accesskey "P">
+<!ENTITY avim-menu-next-method.label "Next Input Method">
+<!ENTITY avim-menu-next-method.accesskey "N">
+
 <!ENTITY avim-disabled.label "Off">
 
 <!-- Options -->
@@ -35,6 +41,3 @@
 <!ENTITY avim-oldaccents.label "Old Accents">
 <!ENTITY avim-oldaccents.accesskey "l">
 <!ENTITY avim-oldaccents.description "Place accent marks on the first vowel in a final diphthong">
-<!-- <!ENTITY avim-statuspanel.label "Status Bar Panel">
-<!ENTITY avim-statuspanel.accesskey "P">
-<!ENTITY avim-statuspanel.description "Display the AVIM status bar panel"> -->

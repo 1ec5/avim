@@ -27,9 +27,10 @@ function AVIM()	{
 	// IDs of user interface elements
 	this.commands = {
 		method: "avim-method-cmd",
+		prevMethod: "avim-prev-method-cmd",
+		nextMethod: "avim-next-method-cmd",
 		spell: "avim-spell-cmd",
 		oldAccents: "avim-oldaccents-cmd"
-//		, statusBarPanel: "avim-statuspanel-cmd"
 	};
 	this.broadcasters = {
 		enabled: "avim-enabled-bc",
@@ -37,7 +38,6 @@ function AVIM()	{
 				  "avim-viqr-bc", "avim-viqr-star-bc"],
 		spell: "avim-spell-bc",
 		oldAccents: "avim-oldaccents-bc"
-//		, statusBarPanel: "avim-statuspanel-bc"
 	};
 	this.keys = {
 		enabled: "avim-enabled-key",
@@ -46,10 +46,10 @@ function AVIM()	{
 		spell: "avim-spell-key",
 		oldAccents: "avim-oldaccents-key"
 	}
-	this.menuItems = {
-		methods: ["avim-menu-auto", "avim-menu-telex", "avim-menu-vni",
-				  "avim-menu-viqr", "avim-menu-viqr-star"]
-	}
+//	this.menuItems = {
+//		methods: ["avim-menu-auto", "avim-menu-telex", "avim-menu-vni",
+//				  "avim-menu-viqr", "avim-menu-viqr-star"]
+//	}
 	this.panel = "avim-status";
 	
 	this.changed=false
@@ -257,10 +257,7 @@ function AVIM()	{
 		}
 		
 		// Disable methods and options if AVIM is disabled
-		var disabled_cmds = [this.commands.method, this.commands.spell,
-							 this.commands.oldAccents];
-		for (var i = 0; i < disabled_cmds.length; i++) {
-			var cmd = disabled_cmds[i];
+		for each (var cmd in this.commands) {
 			$(cmd).setAttribute("disabled", "" + !AVIMConfig.onOff);
 		}
 		
@@ -272,15 +269,15 @@ function AVIM()	{
 		var bc_sel = $(this.broadcasters.methods[AVIMConfig.method]);
 		if (bc_sel) bc_sel.setAttribute("checked", "true");
 		
-		var prev_bc_idx = AVIMConfig.method - 1;
-		if (prev_bc_idx < 0) prev_bc_idx += this.menuItems.methods.length;
-		var prev_bc = $(this.menuItems.methods[prev_bc_idx]);
-		if (prev_bc) prev_bc.setAttribute("key", this.keys.prevMethod);
-		
-		var next_bc_idx =
-			(AVIMConfig.method + 1) % this.menuItems.methods.length;
-		var next_bc = $(this.menuItems.methods[next_bc_idx]);
-		if (next_bc) next_bc.setAttribute("key", this.keys.nextMethod);
+//		var prev_bc_idx = AVIMConfig.method - 1;
+//		if (prev_bc_idx < 0) prev_bc_idx += this.menuItems.methods.length;
+//		var prev_bc = $(this.menuItems.methods[prev_bc_idx]);
+//		if (prev_bc) prev_bc.setAttribute("key", this.keys.prevMethod);
+//		
+//		var next_bc_idx =
+//			(AVIMConfig.method + 1) % this.menuItems.methods.length;
+//		var next_bc = $(this.menuItems.methods[next_bc_idx]);
+//		if (next_bc) next_bc.setAttribute("key", this.keys.nextMethod);
 		
 		// Options
 		var bc_spell = $(this.broadcasters.spell);

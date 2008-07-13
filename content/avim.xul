@@ -3,25 +3,26 @@
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+	<commandset>
+		<command id="avim-enabled-cmd" oncommand="AVIMObj.toggle();" />
+		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value || this.getAttribute('value'));" />
+		<command id="avim-prev-method-cmd" oncommand="AVIMObj.cycleMethod(-1);" />
+		<command id="avim-next-method-cmd" oncommand="AVIMObj.cycleMethod(1);" />
+		<command id="avim-spell-cmd" oncommand="AVIMObj.toggleSpell();" />
+		<command id="avim-oldaccents-cmd" oncommand="AVIMObj.toggleDauCu();" />
+	</commandset>
+	
 	<keyset>
 		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="AVIMObj.toggle();" />
 		
 		<!-- Input methods -->
-		<key id="avim-prev-method-key" modifiers="&avim-prev-method.modifiers;" key="&avim-prev-method.key;" oncommand="AVIMObj.cycleMethod(-1);" />
-		<key id="avim-next-method-key" modifiers="&avim-next-method.modifiers;" key="&avim-next-method.key;" oncommand="AVIMObj.cycleMethod(1);" />
+		<key id="avim-prev-method-key" modifiers="&avim-prev-method.modifiers;" key="&avim-prev-method.key;" command="avim-prev-method-cmd" />
+		<key id="avim-next-method-key" modifiers="&avim-next-method.modifiers;" key="&avim-next-method.key;" command="avim-next-method-cmd" />
 		
 		<!-- Options -->
-		<key id="avim-spell-key" modifiers="&avim-spell.modifiers;" key="&avim-spell.key;" oncommand="AVIMObj.toggleSpell();" />
-		<key id="avim-oldaccents-key" modifiers="&avim-oldaccents.modifiers;" key="&avim-oldaccents.key;" oncommand="AVIMObj.toggleDauCu();" />
+		<key id="avim-spell-key" modifiers="&avim-spell.modifiers;" key="&avim-spell.key;" command="avim-spell-cmd" />
+		<key id="avim-oldaccents-key" modifiers="&avim-oldaccents.modifiers;" key="&avim-oldaccents.key;" command="avim-oldaccents-cmd" />
 	</keyset>
-	
-	<commandset>
-		<command id="avim-enabled-cmd" oncommand="AVIMObj.toggle();" />
-		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value || this.getAttribute('value'));" />
-		<command id="avim-spell-cmd" oncommand="AVIMObj.toggleSpell();" />
-		<command id="avim-oldaccents-cmd" oncommand="AVIMObj.toggleDauCu();" />
-		<!-- <command id="avim-statuspanel-cmd" oncommand="AVIMObj.toggleStatusPanel();" /> -->
-	</commandset>
 	
 	<broadcasterset>
 		<!-- A label isn't specified here, because then it can't be overridden by the <toolbarbutton>. -->
@@ -37,7 +38,6 @@
 		<!-- Options -->
 		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" statustext="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
 		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" statustext="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
-		<!-- <broadcaster id="avim-statuspanel-bc" name="avim-statuspanel" type="checkbox" label="&avim-statuspanel.label;" accesskey="&avim-statuspanel.accesskey;" statustext="&avim-statuspanel.description;" autocheck="false" command="avim-statuspanel-cmd" /> -->
 	</broadcasterset>
 	
 	<popupset>
@@ -87,11 +87,14 @@
 				<menuitem id="avim-menu-viqr" name="viet_method" type="radio" key="avim-viqr-key" observes="avim-viqr-bc" />
 				<menuitem id="avim-menu-viqr-star" name="viet_method" type="radio" key="avim-viqr-star-key" observes="avim-viqr-star-bc" />
 				
+				<menuseparator id="avim-menu-cycle-separator" />
+				<menuitem id="avim-menu-prev-method" label="&avim-menu-prev-method.label;" accesskey="&avim-menu-prev-method.accesskey;" key="avim-prev-method-key" command="avim-prev-method-cmd" />
+				<menuitem id="avim-menu-next-method" label="&avim-menu-next-method.label;" accesskey="&avim-menu-next-method.accesskey;" key="avim-next-method-key" command="avim-next-method-cmd" />
+				
 				<!-- Options -->
 				<menuseparator id="avim-menu-options-separator" />
 				<menuitem id="avim-menu-spell" key="avim-spell-key" observes="avim-spell-bc" />
 				<menuitem id="avim-menu-oldaccents" key="avim-oldaccents-key" observes="avim-oldaccents-bc" />
-				<!-- <menuitem id="avim-menu-statuspanel" observes="avim-statuspanel-bc" /> -->
 			</menupopup>
 		</menu>
 	</menupopup>

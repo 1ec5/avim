@@ -22,6 +22,12 @@
 <!ENTITY avim-viqr.accesskey "Q">
 <!ENTITY avim-viqr-star.label "VIQR*">
 <!ENTITY avim-viqr-star.accesskey "R">
+
+<!ENTITY avim-menu-prev-method.label "Kiểu gõ Trước">
+<!ENTITY avim-menu-prev-method.accesskey "g">
+<!ENTITY avim-menu-next-method.label "Kiểu gõ Sau">
+<!ENTITY avim-menu-next-method.accesskey "S">
+
 <!ENTITY avim-disabled.label "Tắt">
 
 <!-- Options -->
@@ -35,6 +41,3 @@
 <!ENTITY avim-oldaccents.label "Bỏ dấu Kiểu cũ">
 <!ENTITY avim-oldaccents.accesskey "d">
 <!ENTITY avim-oldaccents.description "Bỏ dấu vào nguyên âm đầu tiên khi gặp nguyên âm đôi">
-<!-- <!ENTITY avim-statuspanel.label "Panel trên Thanh Trạng thái">
-<!ENTITY avim-statuspanel.accesskey "P">
-<!ENTITY avim-statuspanel.description "Trình bày panel AVIM trên thanh trạng thái"> -->
