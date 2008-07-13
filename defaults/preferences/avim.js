@@ -32,6 +32,7 @@ pref("extensions.avim.auto.viqr", false);
 pref("extensions.avim.auto.viqrStar", false);
 
 /* Disable some embedded Vietnamese IME scripts. */
+pref("extensions.avim.scriptMonitor.enabled", true);
 pref("extensions.avim.scriptMonitor.avim", true);
 pref("extensions.avim.scriptMonitor.vietTyping", true);
 pref("extensions.avim.scriptMonitor.vietUni", true);

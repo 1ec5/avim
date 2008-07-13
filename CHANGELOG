@@ -80,7 +80,11 @@ Version 20080224.96 (Saturday, July  5, 2008)
  - Fixed an issue where the status bar panel would not work in ChatZilla.
 
 Version ${Version} (${Date})
- - Fixed compatibility issues with the AVIM/HIM, VietTyping, and VietUni scripts
-   by turning off any instances of the scripts when typing in a webpage.
+ - Added a "script monitor", which fixes compatibility issues with the AVIM/HIM,
+   VietTyping, and VietUni scripts by turning off any instances of them when
+   typing in a webpage.
+ - Added a preference to disable the script monitor, in case it causes
+   performance issues.
  - Forced ignored textbox IDs to lowercase.
  - Cleared ID textbox after the ID is ignored.
+ - Fixed encoding issues that prevented the Vietnamese locale from loading.

@@ -33,6 +33,7 @@
 				<preference id="auto-vni-pref" name="extensions.avim.auto.vni" type="bool" />
 				<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
 				<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
+				<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" />
 			</preferences>
 			
 			<vbox flex="1">
@@ -71,6 +72,10 @@
 								<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="disabled-bc" />
 								<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="disabled-bc" />
 							</vbox>
+							
+							<separator class="thin" />
+							
+							<checkbox id="script-enabled-check" preference="script-enabled-pref" label="&script-enabled-check.label;" accesskey="&script-enabled-check.accesskey;" observes="disabled-bc" />
 	</notificationbox>
 						</tabpanel>
 						

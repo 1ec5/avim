@@ -30,6 +30,9 @@
 <!ENTITY auto-viqr-check.accesskey "Q">
 <!ENTITY auto-viqr-star-check.accesskey "R">
 
+<!ENTITY script-enabled-check.label "Desactivar los scripts que editar la entrada en las páginas Web">
+<!ENTITY script-enabled-check.accesskey "W">
+
 <!-- Ignored Textboxes tab -->
 
 <!ENTITY ignored-panel.label "Cajas de Texto para Ignorar">
