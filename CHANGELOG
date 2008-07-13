@@ -79,7 +79,7 @@ Version 20080224.96 (Saturday, July  5, 2008)
  - Added support for the Pencil extension.
  - Fixed an issue where the status bar panel would not work in ChatZilla.
 
-Version ${Version} (${Date})
+Version 20080224.110 (Sunday, July 13, 2008)
  - Added a "script monitor", which fixes compatibility issues with the AVIM/HIM,
    VietTyping, and VietUni scripts by turning off any instances of them when
    typing in a webpage.
@@ -88,3 +88,5 @@ Version ${Version} (${Date})
  - Forced ignored textbox IDs to lowercase.
  - Cleared ID textbox after the ID is ignored.
  - Fixed encoding issues that prevented the Vietnamese locale from loading.
+
+Version ${Version} (${Date})
