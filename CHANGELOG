@@ -96,3 +96,7 @@ Version ${Version} (${Date})
  - Options such as input method can no longer be changed when AVIM is disabled.
    Before, the menu items for these options were disabled, but the keyboard
    shortcuts were still active.
+ - Added support for disabling the Mudim script when typing in a webpage (not
+   disabled by default).
+ - Added support for disabling some versions of mViet.
+ - Added support for more rich text editors, including Dojo's Dijit.Editor.

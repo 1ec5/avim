@@ -19,7 +19,8 @@ var AVIMConfig = {
 	// Script monitor
 	disabledScripts: {
 		enabled: true,
-		AVIM: true, VietTyping: true, VietUni: true, VietIMEW: false
+		AVIM: true, CHIM: false, Mudim: false,
+		mViet: true, VietIMEW: false, VietTyping: true, VietUni: true
 	}
 };
 
@@ -710,7 +711,7 @@ function AVIM()	{
 		return AVIMConfig.onOff == 0 || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
 	}
 	this.notWord=function(w) {
-		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t“”‘’«»‹›–—…"+fcc(160)
+		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t“”‘’«»‹›–—…−×÷°″′"+fcc(160)
 		return (str.indexOf(w)>=0)
 	}
 	this.nan=function(w) {
@@ -861,6 +862,12 @@ function AVIM()	{
 							   AVIMConfig.disabledScripts.enabled);
 		this.prefs.setBoolPref("scriptMonitor.avim",
 							   AVIMConfig.disabledScripts.AVIM);
+		this.prefs.setBoolPref("scriptMonitor.chim",
+							   AVIMConfig.disabledScripts.CHIM);
+		this.prefs.setBoolPref("scriptMonitor.mudim",
+							   AVIMConfig.disabledScripts.Mudim);
+		this.prefs.setBoolPref("scriptMonitor.mViet",
+							   AVIMConfig.disabledScripts.mViet);
 		this.prefs.setBoolPref("scriptMonitor.vietImeW",
 							   AVIMConfig.disabledScripts.VietIMEW);
 		this.prefs.setBoolPref("scriptMonitor.vietTyping",
@@ -943,6 +950,18 @@ function AVIM()	{
 				AVIMConfig.disabledScripts.AVIM =
 					this.prefs.getBoolPref("scriptMonitor.avim");
 				if (specificPref) break;
+			case "scriptMonitor.chim":
+				AVIMConfig.disabledScripts.CHIM =
+					this.prefs.getBoolPref("scriptMonitor.chim");
+				if (specificPref) break;
+			case "scriptMonitor.mudim":
+				AVIMConfig.disabledScripts.Mudim =
+					this.prefs.getBoolPref("scriptMonitor.mudim");
+				if (specificPref) break;
+			case "scriptMonitor.mViet":
+				AVIMConfig.disabledScripts.mViet =
+					this.prefs.getBoolPref("scriptMonitor.mViet");
+				if (specificPref) break;
 			case "scriptMonitor.vietImeW":
 				AVIMConfig.disabledScripts.VietIMEW =
 					this.prefs.getBoolPref("scriptMonitor.vietImeW");
@@ -961,25 +980,46 @@ function AVIM()	{
 	
 	// Markers and disablers for embedded Vietnamese IMEs
 	var disablers = {
-		AVIM: function(win) {
+		// For each of these disablers, we don't need a sanity check for an
+		// object or member that served as a marker for the IME. Also,
+		// everything is wrapped in a try...cach block, so we don't need sanity
+		// checks if the disabler can halt on error without failing to reach
+		// independent statements.
+		
+		AVIM: function(win, AVIMObj) {
 			if (!AVIMConfig.disabledScripts.AVIM) return;
-			if ("AVIMObj" in win && "setMethod" in win.AVIMObj) {
-				win.AVIMObj.setMethod(-1);
-			}
+			AVIMObj.setMethod(-1);
+		},
+		CHIM: function(win, CHIM) {
+			if (!AVIMConfig.disabledScripts.CHIM) return;
+			if (parseInt(CHIM.method) == 0) return;
+			CHIM.SetMethod(0);
 		},
 		HIM: function(win) {
 			if (!AVIMConfig.disabledScripts.AVIM) return;
 			if ("setMethod" in win) win.setMethod(-1);
-			if ("on_off" in win) win.on_off = 0;
+			win.on_off = 0;
+		},
+		Mudim: function(win, Mudim) {
+			if (!AVIMConfig.disabledScripts.Mudim) return;
+			if (parseInt(Mudim.method) == 0) return;
+			if ("Toggle" in Mudim) Mudim.Toggle();
+			else win.CHIM.Toggle();
+		},
+		mViet: function(win) {
+			if (!AVIMConfig.disabledScripts.mViet) return;
+			if (typeof(win.MVOff) == "boolean" && win.MVOff) return;
+			if ("MVietOnOffButton" in win) win.MVietOnOffButton();
+			else if ("button" in win) win.button(0);
 		},
 		VietIMEW: function(win) {
 			if (!AVIMConfig.disabledScripts.VietIMEW) return;
 			if (!("VietIME" in win)) return;
-			for (var memberName in win) {
-				var member = win[memberName];
-				if (member.setTelexMode != undefined &&
-					member.setNormalMode != undefined) {
-					member.setNormalMode();
+			for (var memName in win) {
+				var mem = win[memName];
+				if (mem.setTelexMode != undefined &&
+					mem.setNormalMode != undefined) {
+					mem.setNormalMode();
 					break;
 				}
 			}
@@ -991,12 +1031,15 @@ function AVIM()	{
 		},
 		VietUni: function(win) {
 			if (!AVIMConfig.disabledScripts.VietUni) return;
-			if ("setTypingMode" in win) win.setTypingMode();
+			win.setTypingMode();
+		},
+		xvnkb: function(win) {
+			if (!AVIMConfig.disabledScripts.CHIM) return;
+			if (parseInt(win.vnMethod) == 0) return;
+			win.VKSetMethod(0);
 		}
 	};
 	var markers = {
-		// HIM since at least version 1.1 (build 20050430)
-		"DAWEO": disablers.HIM,
 		// HIM and AVIM since at least version 1.13 (build 20050810)
 		"DAWEOF": disablers.HIM,
 		// VietTyping, various versions
@@ -1004,12 +1047,45 @@ function AVIM()	{
 		// VietUni, including vietuni8.js (2001-10-19) and version 14.0 by Tran
 		// Kien Duc (2004-01-07)
 		"telexingVietUC": disablers.VietUni,
+		// Mudim since version 0.3 (r2)
+		"Mudim": disablers.Mudim,
+		// mViet 12 AC
+		"evBX": disablers.mViet,
+		// mViet 14 RTE
+		"MVietOnOffButton": disablers.mViet,
+		// CHIM since version 0.9.3
+		"CHIM": disablers.CHIM,
+		// CHIM (xvnkb.js) versions 0.8-0.9.2 and BIM 0.00.01-0.0.3
+		"vnMethod": disablers.xvnkb,
+		// HIM since at least version 1.1 (build 20050430)
+		"DAWEO": disablers.HIM,
 		// HIM since version 1.0
 		"findCharToChange": disablers.HIM,
 		// AVIM after build 20071102
 		"AVIMObj": disablers.AVIM,
 		// VietIMEW
 		"GetVnVowelIndex": disablers.VietIMEW
+	};
+	
+	/**
+	 * Given a context and marker, disables the Vietnamese JavaScript input
+	 * method editor (IME) with that marker.
+	 *
+	 * @param win		{object}	A JavaScript window object.
+	 * @param marker	{object}	A JavaScript object (possibly a function)
+	 * 								that indicates the presence of the IME.
+	 * @returns {boolean}	True if the disabler ran without errors (possibly
+	 * 						without effect); false if errors were raised.
+	 */
+	this.disableOther = function(win, marker) {
+		try {
+			var disabler = markers[marker];
+			disabler(win, win[marker]);
+			return true;
+		}
+		catch (e) {
+			return false;
+		}
 	};
 	
 	/**
@@ -1029,13 +1105,14 @@ function AVIM()	{
 		
 		for (var marker in markers) {
 			if (!(marker in win)) continue;
-			try {
-				var disabler = markers[marker];
-				disabler(win);
-				break;
-			}
-			catch (e) {}
+			if (this.disableOther(win, marker)) return;
 		}
+		
+		// mViet 14 RTE
+		if (!AVIMConfig.disabledScripts.mViet) return;
+		if (win.frameElement) win = win.frameElement.ownerDocument.defaultView;
+		var marker = "MVietOnOffButton";
+		if (marker in win) disablers.mViet(win);
 	};
 }
 
@@ -1049,13 +1126,17 @@ if (!AVIMObj) {
 	}, false);
 	addEventListener("keypress", function (e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
+//		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
 		var doc = e.target.ownerDocument;
 		AVIMObj.disableOthers(doc);
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
-		if (doc.designMode && doc.designMode.toLowerCase() == "on") {
-			return AVIMObj.ifMoz(e);
-		}
+		var wysiwyg =
+			(doc.designMode && doc.designMode.toLowerCase() == "on") ||
+			(e.target.contentEditable &&
+			 e.target.contentEditable.toLowerCase() == "true");
+		if (wysiwyg) return AVIMObj.ifMoz(e);
+		
 		return AVIMObj.keyPressHandler(e);
 	}, true);
 }

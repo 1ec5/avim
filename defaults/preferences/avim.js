@@ -23,7 +23,8 @@ pref("extensions.avim.statusBarPanel", true);
  * evaluation bar in the Error Console. Field IDs are case-insensitive and
  * separated by spaces.
  */
-pref("extensions.avim.ignoredFieldIds", "colorzilla-textbox-hex e-mail email textboxeval tx_tagname");
+pref("extensions.avim.ignoredFieldIds",
+	 "colorzilla-textbox-hex e-mail email emailconfirm textboxeval tx_tagname");
 
 /* Include some standard input methods in the Auto method. */
 pref("extensions.avim.auto.telex", true);
@@ -34,6 +35,9 @@ pref("extensions.avim.auto.viqrStar", false);
 /* Disable some embedded Vietnamese IME scripts. */
 pref("extensions.avim.scriptMonitor.enabled", true);
 pref("extensions.avim.scriptMonitor.avim", true);
+pref("extensions.avim.scriptMonitor.chim", false);
+pref("extensions.avim.scriptMonitor.mudim", false);
+pref("extensions.avim.scriptMonitor.mViet", true);
+pref("extensions.avim.scriptMonitor.vietImeW", false);
 pref("extensions.avim.scriptMonitor.vietTyping", true);
 pref("extensions.avim.scriptMonitor.vietUni", true);
-pref("extensions.avim.scriptMonitor.vietImeW", false);

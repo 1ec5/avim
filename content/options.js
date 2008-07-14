@@ -313,7 +313,8 @@ function AVIMOptionsPanel() {
 		/**
 		 * Disables the Mudim extension, because it may interfere with AVIM's
 		 * operation. Unfortunately, we can't just set Mudim's method preference
-		 * to 0 (off), because Mudim doesn't observe preference changes.
+		 * to 0 (off), because Mudim doesn't observe preference changes. This
+		 * method supports versions 0.3 (r14) and above.
 		 *
 		 * @param note	{object}	the <notification> element whose button
 		 * 							triggered the call to this method.
@@ -326,9 +327,10 @@ function AVIMOptionsPanel() {
 			var enumerator = mediator.getEnumerator("navigator:browser");
 			while (enumerator.hasMoreElements()) {
 				var win = enumerator.getNext();
-				if (win && win.CHIM && win.CHIM.SetMethod) {
-					win.CHIM.SetMethod(0);
+				try {
+					if (parseInt(win.Mudim.method) != 0) win.CHIM.Toggle();
 				}
+				catch (e) {}
 			}
 		};
 		
