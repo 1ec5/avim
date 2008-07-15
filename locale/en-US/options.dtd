@@ -1,0 +1,58 @@
+<!-- General options -->
+
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-preferences.title "&AVIM.label;">
+<!ENTITY avim-preferences.style "width: 45em;"><!-- Based on <chrome://browser/locale/preferences/preferences.dtd>. -->
+
+<!ENTITY enabled-check.label "Enable &AVIM.label; for Vietnamese input">
+<!ENTITY enabled-check.accesskey "E">
+
+<!-- Input Editing tab -->
+
+<!ENTITY input-panel.label "Input Editing">
+
+<!ENTITY method-menu.label "Input method:">
+<!ENTITY method-menu.accesskey "m">
+<!ENTITY method-auto-item.label "Auto">
+<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-vni-item.label "VNI">
+<!ENTITY method-viqr-item.label "VIQR">
+<!ENTITY method-viqr-star-item.label "VIQR*">
+
+<!ENTITY spell-check.label "Enforce Vietnamese spelling rules">
+<!ENTITY spell-check.accesskey "s">
+<!ENTITY informal-check.label "Allow DZ and F at the beginning of a word">
+<!ENTITY informal-check.accesskey "Z">
+
+<!ENTITY oldaccents-check.label "Place tone marks on the first vowel in a final diphthong (old-style accent marks)">
+<!ENTITY oldaccents-check.accesskey "d">
+
+<!ENTITY auto-methods.label "Accept keystrokes from the following input methods when &method-auto-item.label; is selected:">
+<!ENTITY auto-telex-check.accesskey "T">
+<!ENTITY auto-vni-check.accesskey "N">
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!ENTITY auto-viqr-star-check.accesskey "R">
+
+<!ENTITY script-enabled-check.label "Disable input editing scripts inside web pages">
+<!ENTITY script-enabled-check.accesskey "w">
+
+<!-- Ignored Textboxes tab -->
+
+<!ENTITY ignored-panel.label "Ignored Textboxes">
+
+<!ENTITY ignore-text.label "Textbox ID:">
+<!ENTITY ignore-button.label "Ignore">
+<!ENTITY ignore-button.accesskey "I">
+
+<!ENTITY ignored-desc.label "You can specify which textboxes &AVIM.label; should ignore. For instance, you may want &AVIM.label; to ignore a certain textbox that contains a web address, because the input method may interfere with typing in the address.">
+<!ENTITY ignored-desc.line-count "3">
+<!ENTITY ignored-instructions.label "To ignore a textbox, first find its ID by viewing the source code of the web page that contains the textbox. Then type the ID below and click &ignore-button.label;.">
+<!ENTITY ignored-instructions.line-count "2">
+
+<!ENTITY remove-button.label "Remove ID">
+<!ENTITY remove-button.accesskey "R"><!-- Conflicts with auto-viqr-star-check.accesskey, but they're in different tabs. -->
+
+<!-- Display options -->
+
+<!ENTITY statuspanel-check.label "Show in status bar">
+<!ENTITY statuspanel-check.accesskey "b">

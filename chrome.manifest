@@ -1,0 +1,99 @@
+content	avim	content/
+
+locale	avim	en	locale/en-US/
+locale	avim	es	locale/es/
+locale	avim	vi	locale/vi/
+
+skin	avim	classic/1.0	skin/
+
+overlay chrome://global/content/editMenuOverlay.xul	chrome://avim/content/avim.xul
+overlay chrome://global/content/commonDialog.xul	chrome://avim/content/avim.xul
+
+### Firefox ####################################################################
+
+# overlay	chrome://browser/content/browser.xul						chrome://avim/content/avim.xul
+
+style	chrome://browser/content/browser.xul			chrome://avim/skin/avim.css
+style	chrome://global/content/customizeToolbar.xul	chrome://avim/skin/avim.css
+
+# Bookmark Properties dialog, now part of Places
+overlay	chrome://browser/content/places/bookmarkProperties.xul			chrome://avim/content/avim.xul
+# overlay	chrome://browser/content/places/editBookmarkOverlay.xul		chrome://avim/content/avim.xul
+# overlay	chrome://browser/content/bookmarks/bookmarksProperties.xul	chrome://avim/content/avim.xul
+# Cookies list
+# overlay	chrome://browser/content/preferences/cookies.xul			chrome://avim/content/avim.xul
+# File > Open Location...
+overlay	chrome://browser/content/openLocation.xul						chrome://avim/content/avim.xul
+# Help > Report Broken Web Site...
+overlay	chrome://reporter/content/reportWizard.xul						chrome://avim/content/avim.xul
+
+### Thunderbird ################################################################
+
+# overlay	chrome://messenger/content/messenger.xul							chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/messageWindow.xul						chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/folderProps.xul							chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/renameFolderDialog.xul					chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/AccountManager.xul						chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/FilterEditor.xul							chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/addressbook/addressbook.xul				chrome://avim/content/avim.xul
+# overlay	chrome://messenger/content/addressbook/abEditCardDialog.xul			chrome://avim/content/avim.xul
+# overlay	chrome://messenger-newsblog/content/feed-properties.xul				chrome://avim/content/avim.xul
+# overlay	chrome://editor/content/EdImageProps.xul							chrome://avim/content/avim.xul
+
+### ChatZilla ##################################################################
+
+overlay	chrome://chatzilla/content/chatzilla.xul	chrome://avim/content/avim.xul
+# Preferences dialog
+overlay	chrome://chatzilla/content/config.xul		chrome://avim/content/avim.xul
+
+### ColorZilla #################################################################
+
+# Color Picker dialog
+overlay	chrome://colorzilla/content/colorzillaColorPickerDialog.xul	chrome://avim/content/avim.xul
+# Statusbar Format dialog
+overlay	chrome://colorzilla/content/colorzillaStatusbarFormat.xul	chrome://avim/content/avim.xul
+
+### DOM Inspector ##############################################################
+
+overlay	chrome://inspector/content/commandOverlay.xul						chrome://avim/content/avim.xul
+
+# Find Nodes dialog
+overlay	chrome://inspector/content/viewers/dom/findDialog.xul				chrome://avim/content/avim.xul
+# Properties dialogs
+overlay	chrome://inspector/content/viewers/domNode/domNodeDialog.xul		chrome://avim/content/avim.xul
+# overlay	chrome://inspector/content/viewers/accessibleTree/evalJSDialog.xul	chrome://avim/content/avim.xul
+# overlay	chrome://inspector/content/viewers/jsObject/evalExprDialog.xul		chrome://avim/content/avim.xul
+# Insert Node dialog
+overlay	chrome://inspector/content/viewers/dom/insertDialog.xul				chrome://avim/content/avim.xul
+
+### Nightly Tester Tools #######################################################
+
+# Options dialog
+overlay	chrome://nightly/content/options/options.xul	chrome://avim/content/avim.xul
+
+### Pencil #####################################################################
+
+overlay	chrome://pencil/content/UI/Window.xul	chrome://avim/content/avim.xul
+
+### ScrapBook ##################################################################
+
+# Item Properties dialog
+overlay	chrome://scrapbook/content/property.xul	chrome://avim/content/avim.xul
+# Manage Items dialog
+overlay	chrome://scrapbook/content/manage.xul	chrome://avim/content/avim.xul
+
+### SQLite Manager #############################################################
+
+overlay	chrome://sqlitemanager/content/sqlitemanager.xul	chrome://avim/content/avim.xul
+# Edit Record dialog
+overlay	chrome://sqlitemanager/content/RowOperations.xul	chrome://avim/content/avim.xul
+
+### Web Developer ##############################################################
+
+# Add Cookie dialog
+overlay	chrome://webdeveloper/content/dialogs/cookie.xul					chrome://avim/content/avim.xul
+# Add Tool dialog
+overlay	chrome://webdeveloper/content/options/dialogs/tool.xul				chrome://avim/content/avim.xul
+# Add View Source With dialog
+overlay	chrome://webdeveloper/content/options/dialogs/view_source_with.xul	chrome://avim/content/avim.xul
