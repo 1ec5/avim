@@ -89,7 +89,7 @@ Version 20080224.110 (Sunday, July 13, 2008)
  - Cleared ID textbox after the ID is ignored.
  - Fixed encoding issues that prevented the Vietnamese locale from loading.
 
-Version ${Version} (${Date})
+Version 20080224.118 (Tuesday, July 15, 2008)
  - Added an option to allow words that begin with "dz" or "f", even when
    spelling rules are enforced.
  - Added support for more rich text editors, including Dojo's Dijit.Editor.
@@ -102,3 +102,5 @@ Version ${Version} (${Date})
  - Options such as input method can no longer be changed when AVIM is disabled.
    Before, the menu items for these options were disabled, but the keyboard
    shortcuts were still active.
+
+Version ${Version} (${Date})
