@@ -95,7 +95,7 @@ function AVIM()	{
 			for(b=0;b<notViet.length;b++) {
 				if(uw2.substr(a,notViet[b].length)==notViet[b]) {
 					for(z=0;z<exc.length;z++) if(uw2.indexOf(exc[z])>=0) next=false
-					if((next)&&((gi.indexOf(notViet[b])<0)||(a<=0)||(uw2[a-1]!='G'))) return true
+					if((next)&&((gi.indexOf(notViet[b])<0)||(a<=0)||(uw2.substr(a-1,1)!='G'))) return true
 				}
 			}
 		}
@@ -119,7 +119,7 @@ function AVIM()	{
 			}
 			for(a=0;a<vSConsonant.length;a++) { if(tw.indexOf(vSConsonant[a])>=0) return true }
 		}
-		test=tw[0]
+		test=tw.substr(0,1)
 		if((t==3)&&((test=="A")||(test=="O")||(test=="U")||(test=="Y"))) return true
 		if((t==5)&&((test=="E")||(test=="I")||(test=="Y"))) return true
 		uw2=this.unV2(tw)
@@ -322,8 +322,8 @@ function AVIM()	{
 		if(obj.selectionStart!=obj.selectionEnd) return new Array("",pos)
 		while(1) {
 			if(pos-g<0) break
-			else if(this.notWord(v[pos-g])) { if(v[pos-g]=="\\") w=v[pos-g]+w; break }
-			else w=v[pos-g]+w; g++
+			else if(this.notWord(v.substr(pos-g,1))) { if(v.substr(pos-g,1)=="\\") w=v.substr(pos-g,1)+w; break }
+			else w=v.substr(pos-g,1)+w; g++
 		}
 		return new Array(w,pos)
 	}
@@ -364,7 +364,7 @@ function AVIM()	{
 	}
 	this.findC=function(w,k,sf) {
 		var method=AVIMConfig.method
-		if(((method==3)||(method==4))&&(w[w.length-1]=="\\")) return new Array(1,k.charCodeAt(0))
+		if(((method==3)||(method==4))&&(w.substr(w.length-1,1)=="\\")) return new Array(1,k.charCodeAt(0))
 		var str="",res,cc="",pc="",tE="",vowA=new Array(),s="ÂĂÊÔƠƯêâăơôư",c=0,dn=false,uw=this.up(w),tv,g
 		var DAWEOFA=this.up(this.aA.join()+this.eA.join()+this.mocA.join()+this.trangA.join()+this.oA.join()+this.english),h,uc
 		for(g=0;g<sf.length;g++) {
@@ -384,16 +384,16 @@ function AVIM()	{
 			}
 			if(!res) {
 				for(g=1;g<=w.length;g++) {
-					cc=w[w.length-g]
-					pc=this.up(w[w.length-g-1])
+					cc=w.substr(w.length-g,1)
+					pc=this.up(w.substr(w.length-g-1,1))
 					uc=this.up(cc)
 					for(h=0;h<dont.length;h++) if((this.tw5==dont[h])&&(this.tw5==this.unV(pc+uc))) dn=true
 					if(dn) { dn=false; continue }
 					if(str.indexOf(uc)>=0) {
-						if(((uk==this.moc)&&(this.unV(uc)=="U")&&(this.up(this.unV(w[w.length-g+1]))=="A"))||((uk==this.trang)&&(this.unV(uc)=='A')&&(this.unV(pc)=='U'))) {
+						if(((uk==this.moc)&&(this.unV(uc)=="U")&&(this.up(this.unV(w.substr(w.length-g+1,1)))=="A"))||((uk==this.trang)&&(this.unV(uc)=='A')&&(this.unV(pc)=='U'))) {
 							if(this.unV(uc)=="U") tv=1
 							else tv=2
-							ccc=this.up(w[w.length-g-tv])
+							ccc=this.up(w.substr(w.length-g-tv,1))
 							if(ccc!="Q") res=g+tv-1
 							else if(uk==this.trang) res=g
 							else if(this.moc!=this.trang) return false
@@ -412,8 +412,8 @@ function AVIM()	{
 		if((uk!=this.Z)&&(this.DAWEO.indexOf(uk)<0)) { var tEC=this.retKC(uk); for (g=0;g<tEC.length;g++) tE+=fcc(tEC[g]) }
 		for(g=1;g<=w.length;g++) {
 			if(this.DAWEO.indexOf(uk)<0) {
-				cc=this.up(w[w.length-g])
-				pc=this.up(w[w.length-g-1])
+				cc=this.up(w.substr(w.length-g,1))
+				pc=this.up(w.substr(w.length-g-1,1))
 				if(str.indexOf(cc)>=0) {
 					if(cc=='U') {
 						if(pc!='Q') { c++;vowA[vowA.length]=g }
@@ -432,10 +432,10 @@ function AVIM()	{
 		if((uk!=this.Z)&&(typeof(res)!='object')) if(this.ckspell(w,k)) return false
 		if(this.DAWEO.indexOf(uk)<0) {
 			for(g=1;g<=w.length;g++) {
-				if((uk!=this.Z)&&(s.indexOf(w[w.length-g])>=0)) return g
-				else if(tE.indexOf(w[w.length-g])>=0) {
+				if((uk!=this.Z)&&(s.indexOf(w.substr(w.length-g,1))>=0)) return g
+				else if(tE.indexOf(w.substr(w.length-g,1))>=0) {
 					for(h=0;h<tEC.length;h++) {
-						if(w[w.length-g].charCodeAt(0)==tEC[h]) return new Array(g,fcc(this.skey[h]))
+						if(w.substr(w.length-g,1).charCodeAt(0)==tEC[h]) return new Array(g,fcc(this.skey[h]))
 					}
 				}
 			}
@@ -458,7 +458,7 @@ function AVIM()	{
 					}
 				}
 				if(!fdconsonant) {
-					if(sc.indexOf(this.up(w[w.length-h]))>=0) c2++
+					if(sc.indexOf(this.up(w.substr(w.length-h,1)))>=0) c2++
 					else break
 				}
 			}
@@ -470,10 +470,10 @@ function AVIM()	{
 	this.ie_replaceChar=function(w,pos,c) {
 		var r="",uc=0
 		if(isNaN(c)) uc=this.up(c)
-		if((this.whit)&&(this.up(w[w.length-pos-1])=='U')&&(pos!=1)&&(this.up(w[w.length-pos-2])!='Q')) {
+		if((this.whit)&&(this.up(w.substr(w.length-pos-1,1))=='U')&&(pos!=1)&&(this.up(w.substr(w.length-pos-2,1))!='Q')) {
 			this.whit=false
 			if((this.up(this.unV(fcc(c)))=="Ơ")||(uc=="O")) {
-				if(w[w.length-pos-1]=='u') r=fcc(432)
+				if(w.substr(w.length-pos-1,1)=='u') r=fcc(432)
 				else r=fcc(431)
 			}
 			if(uc=="O") {
@@ -492,10 +492,10 @@ function AVIM()	{
 		else { var replaceBy=c; if((this.up(c)=="O")&&(this.whit)) bb=true }
 		if(!o.data) {
 			var savePos=o.selectionStart,sst=o.scrollTop
-			if ((this.up(o.value[pos-1])=='U')&&(pos<savePos-1)&&(this.up(o.value[pos-2])!='Q')) {
+			if ((this.up(o.value.substr(pos-1,1))=='U')&&(pos<savePos-1)&&(this.up(o.value.substr(pos-2,1))!='Q')) {
 				if((wfix=="Ơ")||(bb))
 				{
-					if (o.value[pos-1]=='u') var r=fcc(432)
+					if (o.value.substr(pos-1,1)=='u') var r=fcc(432)
 					else var r=fcc(431)
 				}
 				if(bb) {
@@ -507,10 +507,10 @@ function AVIM()	{
 			if(r) o.value=o.value.substr(0,pos-1)+r+o.value.substr(pos)
 			o.setSelectionRange(savePos,savePos);o.scrollTop=sst
 		} else {
-			if ((this.up(o.data[pos-1])=='U')&&(pos<o.pos-1)) {
+			if ((this.up(o.data.substr(pos-1,1))=='U')&&(pos<o.pos-1)) {
 				if((wfix=="Ơ")||(bb))
 				{
-					if (o.data[pos-1]=='u') var r=fcc(432)
+					if (o.data.substr(pos-1,1)=='u') var r=fcc(432)
 					else var r=fcc(431)
 				}
 				if(bb) {
@@ -529,7 +529,7 @@ function AVIM()	{
 			if(pos[1]) {
 				return this.replaceChar(this.oc,i-pos[0],pos[1])
 			} else {
-				var c,pC=w[w.length-pos],cmp;r=sf
+				var c,pC=w.substr(w.length-pos,1),cmp;r=sf
 				for(g=0;g<r.length;g++) {
 					if((this.nan(r[g]))||(r[g]=="e")) cmp=pC
 					else cmp=pC.charCodeAt(0)
@@ -654,8 +654,8 @@ function AVIM()	{
 	this.repSign=function(k) {
 		var t=new Array(),u=new Array(),a,b
 		for(a=0;a<5;a++) {
-			if((k==null)||(this.SFJRX[a]!=this.up(k))) {
-				t=this.retKC(this.SFJRX[a])
+			if((k==null)||(this.SFJRX.substr(a,1)!=this.up(k))) {
+				t=this.retKC(this.SFJRX.substr(a,1))
 				for(b=0;b<t.length;b++) u[u.length]=t[b]
 			}
 		}
