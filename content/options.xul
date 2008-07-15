@@ -19,6 +19,7 @@
 	
 	<broadcasterset>
 		<broadcaster id="disabled-bc" />
+		<broadcaster id="spell-options-bc" />
 	</broadcasterset>
 	
 		<prefpane id="general-pane" label="&avim-preferences.title;">
@@ -26,6 +27,7 @@
 				<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" />
 				<preference id="method-pref" name="extensions.avim.method" type="int" />
 				<preference id="spell-pref" name="extensions.avim.ignoreMalformed" type="bool" />
+				<preference id="informal-pref" name="extensions.avim.informal" type="bool" />
 				<preference id="oldaccents-pref" name="extensions.avim.oldAccents" type="bool" />
 				<preference id="statuspanel-pref" name="extensions.avim.statusBarPanel" type="bool" />
 				<!-- <preference id="ignoredids-pref" name="extensions.avim.ignoredFieldIds" type="unichar" /> -->
@@ -60,7 +62,10 @@
 								</menulist>
 							</hbox>
 							
-							<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" />
+							<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" oncommand="options.validateForSpellingEnforced(); return true;" />
+							<vbox id="spell-options-box" class="indent">
+								<checkbox id="informal-check" preference="informal-pref" label="&informal-check.label;" accesskey="&informal-check.accesskey;" observes="spell-options-bc" />
+							</vbox>
 							<checkbox id="oldaccents-check" preference="oldaccents-pref" label="&oldaccents-check.label;" accesskey="&oldaccents-check.accesskey;" observes="disabled-bc" />
 							
 							<separator class="thin" />

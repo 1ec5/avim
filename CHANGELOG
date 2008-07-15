@@ -90,13 +90,15 @@ Version 20080224.110 (Sunday, July 13, 2008)
  - Fixed encoding issues that prevented the Vietnamese locale from loading.
 
 Version ${Version} (${Date})
+ - Added an option to allow words that begin with "dz" or "f", even when
+   spelling rules are enforced.
+ - Added support for more rich text editors, including Dojo's Dijit.Editor.
+ - Added support for disabling some versions of mViet.
+ - Added support for disabling the CHIM and Mudim scripts when typing in a
+   webpage. The two scripts are not disabled by default.
  - Added explicit menu items for switching to the previous and next input
    methods. Previously, keys for cycling methods would move around as the input
    method changed, but this approach caused problems in Mac OS X.
  - Options such as input method can no longer be changed when AVIM is disabled.
    Before, the menu items for these options were disabled, but the keyboard
    shortcuts were still active.
- - Added support for disabling the Mudim script when typing in a webpage (not
-   disabled by default).
- - Added support for disabling some versions of mViet.
- - Added support for more rich text editors, including Dojo's Dijit.Editor.

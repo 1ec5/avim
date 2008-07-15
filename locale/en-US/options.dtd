@@ -1,7 +1,3 @@
-<!-- Convenience entities -->
-
-<!ENTITY rsquo "&#x2019;"><!-- Remove this line from your localization if you don't need an apostrophe anywhere. -->
-
 <!-- General options -->
 
 <!ENTITY AVIM.label "AVIM">
@@ -25,6 +21,9 @@
 
 <!ENTITY spell-check.label "Enforce Vietnamese spelling rules">
 <!ENTITY spell-check.accesskey "s">
+<!ENTITY informal-check.label "Allow DZ and F at the beginning of a word">
+<!ENTITY informal-check.accesskey "Z">
+
 <!ENTITY oldaccents-check.label "Place tone marks on the first vowel in a final diphthong (old-style accent marks)">
 <!ENTITY oldaccents-check.accesskey "d">
 
@@ -41,7 +40,7 @@
 
 <!ENTITY ignored-panel.label "Ignored Textboxes">
 
-<!ENTITY ignore-text.label "The textbox&rsquo;s ID:">
+<!ENTITY ignore-text.label "Textbox ID:">
 <!ENTITY ignore-button.label "Ignore">
 <!ENTITY ignore-button.accesskey "I">
 

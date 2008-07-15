@@ -4,7 +4,10 @@
 function AVIMOptionsPanel() {
 	const MUDIM_ID = "mudim@svol.ru";
 	
-	this.broadcasters = {disabled: "disabled-bc"};
+	this.broadcasters = {
+		disabled: "disabled-bc",
+		spellOptions: "spell-options-bc"
+	};
 	
 	this.notificationBoxId = "general-note";
 	
@@ -120,6 +123,20 @@ function AVIMOptionsPanel() {
 		
 		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
 		else this.mudimMonitor.hideWarning();
+		
+		this.validateForSpellingEnforced();
+	};
+	
+	/**
+	 * Enables or disables spelling enforcement options. If AVIM is enabled and
+	 * spelling is enforced, the options are enabled; otherwise, they are
+	 * disabled.
+	 */
+	this.validateForSpellingEnforced = function() {
+		var bc = document.getElementById(this.broadcasters.spellOptions);
+		var enabled = this.prefs.getBoolPref("enabled");
+		var enforced = this.prefs.getBoolPref("ignoreMalformed");
+		bc.setAttribute("disabled", "" + (!enabled || !enforced));
 	};
 	
 	/**
@@ -128,14 +145,24 @@ function AVIMOptionsPanel() {
 	 * @param changedPref	{string}	the name of the preference that changed.
 	 */
 	this.getPrefs = function(changedPref) {
-		if (!changedPref || changedPref == "enabled") {
-			var bc = document.getElementById(this.broadcasters.disabled);
-			bc.setAttribute("disabled",
-							"" + !this.prefs.getBoolPref("enabled"));
-			this.validateForEnabled();
-		}
-		if (!changedPref || changedPref == "ignoredFieldIds") {
-			this.updateIgnoredIds();
+		var specificPref = true;
+		switch (changedPref) {
+			default:
+				// Fall through when changedPref isn't defined, which happens at
+				// startup, when we want to get all the preferences.
+				specificPref = false;
+			case "enabled":
+				var bc = document.getElementById(this.broadcasters.disabled);
+				bc.setAttribute("disabled",
+								"" + !this.prefs.getBoolPref("enabled"));
+				this.validateForEnabled();
+				if (specificPref) break;
+			case "ignoreMalformed":
+				this.validateForSpellingEnforced();
+				if (specificPref) break;
+			case "ignoredFieldIds":
+				this.updateIgnoredIds();
+//				if (specificPref) break;
 		}
 	};
 	

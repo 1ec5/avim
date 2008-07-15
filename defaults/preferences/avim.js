@@ -15,6 +15,12 @@ pref("extensions.avim.ignoreMalformed", true);
 /* Place accent marks on first vowel in a diphthong (o`a, o`e, u`y). */
 pref("extensions.avim.oldAccents", true);
 
+/*
+ * Allow words with informal spellings like DZ and F when spelling enforcement
+ * is enabled.
+ */
+pref("extensions.avim.informal", false);
+
 /* Display the status bar panel. */
 pref("extensions.avim.statusBarPanel", true);
 

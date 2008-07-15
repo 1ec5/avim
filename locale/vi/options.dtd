@@ -21,6 +21,9 @@
 
 <!ENTITY spell-check.label "Bắt buộc các quy tắc chính tả tiếng Việt">
 <!ENTITY spell-check.accesskey "c">
+<!ENTITY informal-check.label "Cho phép DZ và F ở đầu từ">
+<!ENTITY informal-check.accesskey "Z">
+
 <!ENTITY oldaccents-check.label "Bỏ dấu trên nguyên âm đầu tiên trong nguyên âm đôi ở cuối từ (bỏ dấu kiểu cũ)">
 <!ENTITY oldaccents-check.accesskey "d">
 

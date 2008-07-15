@@ -7,6 +7,7 @@ var AVIMConfig = {
 	onOff: 1, //Starting status: 0=Off, 1=On
 	ckSpell: 1, //Spell Check: 0=Off, 1=On
 	oldAccent: 1, //0: New way (oa`, oe`, uy`), 1: The good old day (o`a, o`e, u`y)
+	informal: false,
 	statusBarPanel: true,	// Display status bar panel
 	//IDs of the fields you DON'T want to let users type Vietnamese in
 	exclude: ["colorzilla-textbox-hex",	// Hex box, Color Picker, ColorZilla
@@ -78,11 +79,19 @@ function AVIM()	{
 		var uw=this.up(w),tw=uw,update=false,gi="IO",noAOEW="OE,OO,AO,EO,IA,AI".split(','),noAOE="OA",test,a,b
 		var notViet="AA,AE,EE,OU,YY,YI,IY,EY,EA,EI,II,IO,YO,YA,OOO".split(','),uk=this.up(k),twE,uw2=this.unV2(uw)
 		var vSConsonant="B,C,D,G,H,K,L,M,N,P,Q,R,S,T,V,X".split(','),vDConsonant="CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',')
+		if (AVIMConfig.informal) {
+			vSConsonant.push("F");
+			vDConsonant.push("DZ");
+		}
 		var vDConsonantE="CH,NG,NH".split(','),sConsonant="C,P,T,CH".split(','),vSConsonantE="C,M,N,P,T".split(',')
 		var noNHE="O,U,IE,Ô,Ơ,Ư,IÊ,Ă,Â,UYE,UYÊ,UO,ƯƠ,ƯO,UƠ,UA,ƯA,OĂ,OE,OÊ".split(','),oMoc="UU,UOU".split(',')
 		if(this.FRX.indexOf(uk)>=0) for(a=0;a<sConsonant.length;a++) if(uw.substr(uw.length-sConsonant[a].length,sConsonant[a].length)==sConsonant[a]) return true
+		if (/[JW0-9]/.test(uw)) return true;
+		if (AVIMConfig.informal) {
+			if (uw.substr(0, 2) != "DZ" && uw.indexOf("Z") >= 0) return true;
+		}
+		else if (uw.indexOf("F") >= 0 || uw.indexOf("Z") >= 0) return true;
 		for(a=0;a<uw.length;a++) {
-			if("FJZW1234567890".indexOf(uw.substr(a,1))>=0) return true
 			for(b=0;b<notViet.length;b++) {
 				if(uw2.substr(a,notViet[b].length)==notViet[b]) {
 					for(z=0;z<exc.length;z++) if(uw2.indexOf(exc[z])>=0) next=false
@@ -846,6 +855,7 @@ function AVIM()	{
 							   AVIMConfig.statusBarPanel);
 		
 		// Advanced options
+		this.prefs.setBoolPref("informal", !!AVIMConfig.informal);
 		var ids = AVIMConfig.exclude.join(" ").toLowerCase();
 		this.prefs.setCharPref("ignoredFieldIds", ids);
 		
@@ -919,6 +929,9 @@ function AVIM()	{
 				if (specificPref) break;
 			
 			// Advanced options
+			case "informal":
+				AVIMConfig.informal = this.prefs.getBoolPref("informal");
+				if (specificPref) break;
 			case "ignoredFieldIds":
 				var ids = this.prefs.getCharPref("ignoredFieldIds");
 				AVIMConfig.exclude = ids.toLowerCase().split(/\s+/);
@@ -973,6 +986,7 @@ function AVIM()	{
 			case "scriptMonitor.vietUni":
 				AVIMConfig.disabledScripts.VietUni =
 					this.prefs.getBoolPref("scriptMonitor.vietUni");
+//				if (specificPref) break;
 		}
 	};
 	
