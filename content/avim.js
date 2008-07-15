@@ -720,7 +720,7 @@ function AVIM()	{
 		return AVIMConfig.onOff == 0 || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
 	}
 	this.notWord=function(w) {
-		var str="\ \r\n#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t“”‘’«»‹›–—…−×÷°″′"+fcc(160)
+		var str="\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t“”‘’«»‹›–—…−×÷°″′"
 		return (str.indexOf(w)>=0)
 	}
 	this.nan=function(w) {
