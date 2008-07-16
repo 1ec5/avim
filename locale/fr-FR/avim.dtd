@@ -1,0 +1,43 @@
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-menu.label "L’entrée de Vietnamien">
+<!ENTITY avim-menu.accesskey "V">
+
+<!-- Input method menu -->
+<!ENTITY avim-enabled.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-enabled.key "V">
+<!ENTITY avim-enabled.label "Activé">
+<!ENTITY avim-enabled.accesskey "A">
+<!ENTITY avim-enabled.description "Activer &AVIM.label; pour entrer le Vietnamien">
+<!ENTITY avim-prev-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-prev-method.key ":">
+<!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-next-method.key ";">
+<!ENTITY avim-auto.label "Automatique">
+<!ENTITY avim-auto.accesskey "m">
+<!ENTITY avim-telex.label "Telex">
+<!ENTITY avim-telex.accesskey "T">
+<!ENTITY avim-vni.label "VNI">
+<!ENTITY avim-vni.accesskey "V">
+<!ENTITY avim-viqr.label "VIQR">
+<!ENTITY avim-viqr.accesskey "Q">
+<!ENTITY avim-viqr-star.label "VIQR*">
+<!ENTITY avim-viqr-star.accesskey "R">
+
+<!ENTITY avim-menu-prev-method.label "La méthode d’entrée précédente">
+<!ENTITY avim-menu-prev-method.accesskey "P">
+<!ENTITY avim-menu-next-method.label "La méthode d’entrée suivante">
+<!ENTITY avim-menu-next-method.accesskey "S">
+
+<!ENTITY avim-disabled.label "Désactiver">
+
+<!-- Options -->
+<!ENTITY avim-spell.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-spell.key "o">
+<!ENTITY avim-spell.label "Correction d’orthographe">
+<!ENTITY avim-spell.accesskey "o">
+<!ENTITY avim-spell.description "Placer seulement les marques d’accent sur les mots qui suivent les règles d’orthographe vietnamien.">
+<!ENTITY avim-oldaccents.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-oldaccents.key ";">
+<!ENTITY avim-oldaccents.label "Vieux Accents">
+<!ENTITY avim-oldaccents.accesskey "x">
+<!ENTITY avim-oldaccents.description "Placer les marques d’accent sur la première voyelle dans une diphtongue finale.">

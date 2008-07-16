@@ -4,6 +4,7 @@
 		<em:package>content/</em:package>
 		<em:locale>locale/en-US/</em:locale>
 		<em:locale>locale/es/</em:locale>
+		<em:locale>locale/fr-FR/</em:locale>
 		<em:locale>locale/vi/</em:locale>
 	</Description>
 	<Description about="urn:mozilla:install-manifest">
@@ -32,7 +33,7 @@
 		
 		<!-- English / fallback -->
 		<em:name>AVIM</em:name>
-		<em:description>Type fully-accented Vietnamese directly into any webpage or dialog box using a standard keyboard.</em:description>
+		<em:description>Type fully-accented Vietnamese directly into any web page or dialog box using a standard keyboard.</em:description>
 		<em:creator>Minh Nguyen</em:creator>
 		<em:contributor>Hieu Dang</em:contributor>
 		<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
