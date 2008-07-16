@@ -80,17 +80,17 @@ function AVIM()	{
 		var notViet="AA,AE,EE,OU,YY,YI,IY,EY,EA,EI,II,IO,YO,YA,OOO".split(','),uk=this.up(k),twE,uw2=this.unV2(uw)
 		var vSConsonant="B,C,D,G,H,K,L,M,N,P,Q,R,S,T,V,X".split(','),vDConsonant="CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',')
 		if (AVIMConfig.informal) {
-			vSConsonant.push("F");
+			vSConsonant.push("F", "W");
 			vDConsonant.push("DZ");
 		}
 		var vDConsonantE="CH,NG,NH".split(','),sConsonant="C,P,T,CH".split(','),vSConsonantE="C,M,N,P,T".split(',')
 		var noNHE="O,U,IE,Ô,Ơ,Ư,IÊ,Ă,Â,UYE,UYÊ,UO,ƯƠ,ƯO,UƠ,UA,ƯA,OĂ,OE,OÊ".split(','),oMoc="UU,UOU".split(',')
 		if(this.FRX.indexOf(uk)>=0) for(a=0;a<sConsonant.length;a++) if(uw.substr(uw.length-sConsonant[a].length,sConsonant[a].length)==sConsonant[a]) return true
-		if (/[JW0-9]/.test(uw)) return true;
+		if (/[J0-9]/.test(uw)) return true;
 		if (AVIMConfig.informal) {
-			if (uw.substr(0, 2) != "DZ" && uw.indexOf("Z") >= 0) return true;
+			if (/^Z|.DZ|.F|.W|[^D]Z/.test(uw)) return true;
 		}
-		else if (uw.indexOf("F") >= 0 || uw.indexOf("Z") >= 0) return true;
+		else if (/[FWZ]/.test(uw)) return true;
 		for(a=0;a<uw.length;a++) {
 			for(b=0;b<notViet.length;b++) {
 				if(uw2.substr(a,notViet[b].length)==notViet[b]) {
@@ -1020,7 +1020,7 @@ function AVIM()	{
 			if ("Toggle" in Mudim) Mudim.Toggle();
 			else win.CHIM.Toggle();
 		},
-		mViet: function(win) {
+		MViet: function(win) {
 			if (!AVIMConfig.disabledScripts.mViet) return;
 			if (typeof(win.MVOff) == "boolean" && win.MVOff) return;
 			if ("MVietOnOffButton" in win) win.MVietOnOffButton();
@@ -1064,7 +1064,7 @@ function AVIM()	{
 		// Mudim since version 0.3 (r2)
 		"Mudim": disablers.Mudim,
 		// mViet 12 AC
-		"evBX": disablers.mViet,
+		"evBX": disablers.MViet,
 		// mViet 14 RTE
 		"MVietOnOffButton": disablers.mViet,
 		// CHIM since version 0.9.3
@@ -1126,7 +1126,7 @@ function AVIM()	{
 		if (!AVIMConfig.disabledScripts.mViet) return;
 		if (win.frameElement) win = win.frameElement.ownerDocument.defaultView;
 		var marker = "MVietOnOffButton";
-		if (marker in win) disablers.mViet(win);
+		if (marker in win) disablers.MViet(win);
 	};
 }
 

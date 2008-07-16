@@ -21,7 +21,7 @@
 
 <!ENTITY spell-check.label "Enforce Vietnamese spelling rules">
 <!ENTITY spell-check.accesskey "s">
-<!ENTITY informal-check.label "Allow DZ and F at the beginning of a word">
+<!ENTITY informal-check.label "Allow DZ, F, W at the beginning of a word">
 <!ENTITY informal-check.accesskey "Z">
 
 <!ENTITY oldaccents-check.label "Place tone marks on the first vowel in a final diphthong (old-style accent marks)">

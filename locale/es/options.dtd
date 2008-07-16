@@ -21,7 +21,7 @@
 
 <!ENTITY spell-check.label "Requirir la ortografía vietnamita correcta">
 <!ENTITY spell-check.accesskey "o">
-<!ENTITY informal-check.label "Admitir DZ y F inicial">
+<!ENTITY informal-check.label "Admitir DZ, F, W inicial">
 <!ENTITY informal-check.accesskey "Z">
 
 <!ENTITY oldaccents-check.label "Poner los signos tonales sobre la primera vocal en un diptongo final (acentos de estilo viejo)">
