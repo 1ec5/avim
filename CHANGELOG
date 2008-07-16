@@ -104,3 +104,4 @@ Version 20080224.118 (Tuesday, July 15, 2008)
    shortcuts were still active.
 
 Version ${Version} (${Date})
+ - Added French localization.

@@ -11,7 +11,7 @@
 
 <!ENTITY input-panel.label "L’entrée éditant">
 
-<!ENTITY method-menu.label "Méthode d’entrée">
+<!ENTITY method-menu.label "Méthode d’entrée&#x00a0;:">
 <!ENTITY method-menu.accesskey "M">
 <!ENTITY method-auto-item.label "Automatique">
 <!ENTITY method-telex-item.label "Telex">
@@ -27,7 +27,7 @@
 <!ENTITY oldaccents-check.label "Placer les marques de ton sur la première voyelle dans une diphtongue finale (l’accent de vieux-style marque)">
 <!ENTITY oldaccents-check.accesskey "P">
 
-<!ENTITY auto-methods.label "Accepter des frappes du suivre les méthodes d’entrée quand &method-auto-item.label; est choisi :">
+<!ENTITY auto-methods.label "Accepter des frappes du suivre les méthodes d’entrée quand &method-auto-item.label; est choisi&#x00a0;:">
 <!ENTITY auto-telex-check.accesskey "T">
 <!ENTITY auto-vni-check.accesskey "V">
 <!ENTITY auto-viqr-check.accesskey "Q">
@@ -40,7 +40,7 @@
 
 <!ENTITY ignored-panel.label "Négliger les boîtes de texte">
 
-<!ENTITY ignore-text.label "ID de boîte de texte:">
+<!ENTITY ignore-text.label "ID de boîte de texte&#x00a0;:">
 <!ENTITY ignore-button.label "Négliger">
 <!ENTITY ignore-button.accesskey "N">
 
