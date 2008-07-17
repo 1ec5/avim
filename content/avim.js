@@ -720,7 +720,8 @@ function AVIM()	{
 		return AVIMConfig.onOff == 0 || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
 	}
 	this.notWord=function(w) {
-		var str="\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t“”‘’«»‹›–—…−×÷°″′"
+		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t" +
+			"“”‘’\xab\xbb‹›–—…−×÷°″′";
 		return (str.indexOf(w)>=0)
 	}
 	this.nan=function(w) {
@@ -806,17 +807,17 @@ function AVIM()	{
 	// Integration with Mozilla preferences service
 	
 	// Root for AVIM preferences
-	this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-		.getService(Components.interfaces.nsIPrefService)
-		.getBranch("extensions.avim.");
+	var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+						  .getService(Components.interfaces.nsIPrefService)
+						  .getBranch("extensions.avim.");
 	
 	/**
 	 * Registers an observer so that AVIM automatically reflects changes to its
 	 * preferences.
 	 */
 	this.registerPrefs = function() {
-		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-		this.prefs.addObserver("", this, false);
+		prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		prefs.addObserver("", this, false);
 		this.getPrefs();
 		this.updateUI();
 	};
@@ -826,7 +827,7 @@ function AVIM()	{
 	 */
 	this.unregisterPrefs = function() {
 		this.setPrefs();
-		this.prefs.removeObserver("", this);
+		prefs.removeObserver("", this);
 	};
 	
 	/**
@@ -847,43 +848,40 @@ function AVIM()	{
 	 */
 	this.setPrefs = function() {
 		// Basic options
-		this.prefs.setBoolPref("enabled", !!AVIMConfig.onOff);
-		this.prefs.setIntPref("method", AVIMConfig.method);
-		this.prefs.setBoolPref("ignoreMalformed", !!AVIMConfig.ckSpell);
-		this.prefs.setBoolPref("oldAccents", !!AVIMConfig.oldAccent);
-		this.prefs.setBoolPref("statusBarPanel",
-							   AVIMConfig.statusBarPanel);
+		prefs.setBoolPref("enabled", !!AVIMConfig.onOff);
+		prefs.setIntPref("method", AVIMConfig.method);
+		prefs.setBoolPref("ignoreMalformed", !!AVIMConfig.ckSpell);
+		prefs.setBoolPref("oldAccents", !!AVIMConfig.oldAccent);
+		prefs.setBoolPref("statusBarPanel", AVIMConfig.statusBarPanel);
 		
 		// Advanced options
-		this.prefs.setBoolPref("informal", !!AVIMConfig.informal);
+		prefs.setBoolPref("informal", !!AVIMConfig.informal);
 		var ids = AVIMConfig.exclude.join(" ").toLowerCase();
-		this.prefs.setCharPref("ignoredFieldIds", ids);
+		prefs.setCharPref("ignoredFieldIds", ids);
 		
 		// Auto input method configuration
-		this.prefs.setBoolPref("auto.telex",
-							   AVIMConfig.autoMethods.telex);
-		this.prefs.setBoolPref("auto.vni", AVIMConfig.autoMethods.vni);
-		this.prefs.setBoolPref("auto.viqr", AVIMConfig.autoMethods.viqr);
-		this.prefs.setBoolPref("auto.viqrStar",
-							   AVIMConfig.autoMethods.viqrStar);
+		prefs.setBoolPref("auto.telex", AVIMConfig.autoMethods.telex);
+		prefs.setBoolPref("auto.vni", AVIMConfig.autoMethods.vni);
+		prefs.setBoolPref("auto.viqr", AVIMConfig.autoMethods.viqr);
+		prefs.setBoolPref("auto.viqrStar", AVIMConfig.autoMethods.viqrStar);
 		
 		// Script monitor
-		this.prefs.setBoolPref("scriptMonitor.enabled",
-							   AVIMConfig.disabledScripts.enabled);
-		this.prefs.setBoolPref("scriptMonitor.avim",
-							   AVIMConfig.disabledScripts.AVIM);
-		this.prefs.setBoolPref("scriptMonitor.chim",
-							   AVIMConfig.disabledScripts.CHIM);
-		this.prefs.setBoolPref("scriptMonitor.mudim",
-							   AVIMConfig.disabledScripts.Mudim);
-		this.prefs.setBoolPref("scriptMonitor.mViet",
-							   AVIMConfig.disabledScripts.mViet);
-		this.prefs.setBoolPref("scriptMonitor.vietImeW",
-							   AVIMConfig.disabledScripts.VietIMEW);
-		this.prefs.setBoolPref("scriptMonitor.vietTyping",
-							   AVIMConfig.disabledScripts.VietTyping);
-		this.prefs.setBoolPref("scriptMonitor.vietUni",
-							   AVIMConfig.disabledScripts.VietUni);
+		prefs.setBoolPref("scriptMonitor.enabled",
+						  AVIMConfig.disabledScripts.enabled);
+		prefs.setBoolPref("scriptMonitor.avim",
+						  AVIMConfig.disabledScripts.AVIM);
+		prefs.setBoolPref("scriptMonitor.chim",
+						  AVIMConfig.disabledScripts.CHIM);
+		prefs.setBoolPref("scriptMonitor.mudim",
+						  AVIMConfig.disabledScripts.Mudim);
+		prefs.setBoolPref("scriptMonitor.mViet",
+						  AVIMConfig.disabledScripts.mViet);
+		prefs.setBoolPref("scriptMonitor.vietImeW",
+						  AVIMConfig.disabledScripts.VietIMEW);
+		prefs.setBoolPref("scriptMonitor.vietTyping",
+						  AVIMConfig.disabledScripts.VietTyping);
+		prefs.setBoolPref("scriptMonitor.vietUni",
+						  AVIMConfig.disabledScripts.VietUni);
 	};
 	
 	/**
@@ -902,10 +900,10 @@ function AVIM()	{
 			
 			// Basic options
 			case "enabled":
-				AVIMConfig.onOff = 0 + this.prefs.getBoolPref("enabled");
+				AVIMConfig.onOff = 0 + prefs.getBoolPref("enabled");
 				if (specificPref) break;
 			case "method":
-				AVIMConfig.method = this.prefs.getIntPref("method");
+				AVIMConfig.method = prefs.getIntPref("method");
 				// In case someone enters an invalid method ID in about:config
 				var method = AVIMConfig.method;
 				if (method < 0 || method >= this.broadcasters.methods.length) {
@@ -913,79 +911,76 @@ function AVIM()	{
 						.getService(Components.interfaces.nsIPrefService)
 						.getDefaultBranch("extensions.avim.")
 						.clearUserPref("method");
-					AVIMConfig.method = this.prefs.getIntPref("method");
+					AVIMConfig.method = prefs.getIntPref("method");
 				}
 				if (specificPref) break;
 			case "ignoreMalformed":
 				AVIMConfig.ckSpell =
-					0 + this.prefs.getBoolPref("ignoreMalformed");
+					0 + prefs.getBoolPref("ignoreMalformed");
 				if (specificPref) break;
 			case "oldAccents":
-				AVIMConfig.oldAccent = 0 + this.prefs.getBoolPref("oldAccents");
+				AVIMConfig.oldAccent = 0 + prefs.getBoolPref("oldAccents");
 				if (specificPref) break;
 			case "statusBarPanel":
-				AVIMConfig.statusBarPanel =
-					this.prefs.getBoolPref("statusBarPanel");
+				AVIMConfig.statusBarPanel = prefs.getBoolPref("statusBarPanel");
 				if (specificPref) break;
 			
 			// Advanced options
 			case "informal":
-				AVIMConfig.informal = this.prefs.getBoolPref("informal");
+				AVIMConfig.informal = prefs.getBoolPref("informal");
 				if (specificPref) break;
 			case "ignoredFieldIds":
-				var ids = this.prefs.getCharPref("ignoredFieldIds");
+				var ids = prefs.getCharPref("ignoredFieldIds");
 				AVIMConfig.exclude = ids.toLowerCase().split(/\s+/);
 				if (specificPref) break;
 			
 			// Auto input method configuration
 			case "auto.telex":
-				AVIMConfig.autoMethods.telex =
-					this.prefs.getBoolPref("auto.telex");
+				AVIMConfig.autoMethods.telex = prefs.getBoolPref("auto.telex");
 				if (specificPref) break;
 			case "auto.vni":
-				AVIMConfig.autoMethods.vni = this.prefs.getBoolPref("auto.vni");
+				AVIMConfig.autoMethods.vni = prefs.getBoolPref("auto.vni");
 				if (specificPref) break;
 			case "auto.viqr":
-				AVIMConfig.autoMethods.viqr =
-					this.prefs.getBoolPref("auto.viqr");
+				AVIMConfig.autoMethods.viqr = prefs.getBoolPref("auto.viqr");
 				if (specificPref) break;
 			case "auto.viqrStar":
 				AVIMConfig.autoMethods.viqrStar =
-					this.prefs.getBoolPref("auto.viqrStar");
+					prefs.getBoolPref("auto.viqrStar");
 				if (specificPref) break;
 			
 			// Script monitor
 			case "scriptMonitor.enabled":
 				AVIMConfig.disabledScripts.enabled =
-					this.prefs.getBoolPref("scriptMonitor.enabled");
+					prefs.getBoolPref("scriptMonitor.enabled");
 				if (specificPref) break;
 			case "scriptMonitor.avim":
 				AVIMConfig.disabledScripts.AVIM =
-					this.prefs.getBoolPref("scriptMonitor.avim");
+					prefs.getBoolPref("scriptMonitor.avim");
 				if (specificPref) break;
 			case "scriptMonitor.chim":
 				AVIMConfig.disabledScripts.CHIM =
-					this.prefs.getBoolPref("scriptMonitor.chim");
+					prefs.getBoolPref("scriptMonitor.chim");
 				if (specificPref) break;
 			case "scriptMonitor.mudim":
 				AVIMConfig.disabledScripts.Mudim =
-					this.prefs.getBoolPref("scriptMonitor.mudim");
+					prefs.getBoolPref("scriptMonitor.mudim");
 				if (specificPref) break;
 			case "scriptMonitor.mViet":
 				AVIMConfig.disabledScripts.mViet =
-					this.prefs.getBoolPref("scriptMonitor.mViet");
+					prefs.getBoolPref("scriptMonitor.mViet");
 				if (specificPref) break;
 			case "scriptMonitor.vietImeW":
 				AVIMConfig.disabledScripts.VietIMEW =
-					this.prefs.getBoolPref("scriptMonitor.vietImeW");
+					prefs.getBoolPref("scriptMonitor.vietImeW");
 				if (specificPref) break;
 			case "scriptMonitor.vietTyping":
 				AVIMConfig.disabledScripts.VietTyping =
-					this.prefs.getBoolPref("scriptMonitor.vietTyping");
+					prefs.getBoolPref("scriptMonitor.vietTyping");
 				if (specificPref) break;
 			case "scriptMonitor.vietUni":
 				AVIMConfig.disabledScripts.VietUni =
-					this.prefs.getBoolPref("scriptMonitor.vietUni");
+					prefs.getBoolPref("scriptMonitor.vietUni");
 //				if (specificPref) break;
 		}
 	};

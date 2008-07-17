@@ -27,9 +27,9 @@ function AVIMOptionsPanel() {
 				  == "Darwin";
 	
 	// Root for AVIM preferences
-	this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-		.getService(Components.interfaces.nsIPrefService)
-		.getBranch("extensions.avim.");
+	var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+						  .getService(Components.interfaces.nsIPrefService)
+						  .getBranch("extensions.avim.");
 	
 	/**
 	 * Enables or disables the Ignore button, based on whether the associated
@@ -103,7 +103,7 @@ function AVIMOptionsPanel() {
 		}
 		
 		// Repopulate the list.
-		var ignoredIds = this.prefs.getCharPref("ignoredFieldIds");
+		var ignoredIds = prefs.getCharPref("ignoredFieldIds");
 		ignoredIds = ignoredIds.split(this.ignoredIdsDelimiter);
 		ignoredIds = this.normalizeArray(ignoredIds, true);
 //		dump("Got ignoredIds: " + ignoredIds.join(",") + ".\n");				// debug
@@ -120,7 +120,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateForEnabled = function() {
 		var bc = document.getElementById(this.broadcasters.disabled);
-		bc.setAttribute("disabled", "" + !this.prefs.getBoolPref("enabled"));
+		bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
 		
 		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
 		else this.mudimMonitor.hideWarning();
@@ -135,8 +135,8 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateForSpellingEnforced = function() {
 		var bc = document.getElementById(this.broadcasters.spellOptions);
-		var enabled = this.prefs.getBoolPref("enabled");
-		var enforced = this.prefs.getBoolPref("ignoreMalformed");
+		var enabled = prefs.getBoolPref("enabled");
+		var enforced = prefs.getBoolPref("ignoreMalformed");
 		bc.setAttribute("disabled", "" + (!enabled || !enforced));
 	};
 	
@@ -154,8 +154,7 @@ function AVIMOptionsPanel() {
 				specificPref = false;
 			case "enabled":
 				var bc = document.getElementById(this.broadcasters.disabled);
-				bc.setAttribute("disabled",
-								"" + !this.prefs.getBoolPref("enabled"));
+				bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
 				this.validateForEnabled();
 				if (specificPref) break;
 			case "ignoreMalformed":
@@ -193,8 +192,8 @@ function AVIMOptionsPanel() {
 	 * latest IDs in the preferences system.
 	 */
 	this.registerPrefs = function() {
-		this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-		this.prefs.addObserver("", this, false);
+		prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		prefs.addObserver("", this, false);
 		this.getPrefs();
 	};
 	
@@ -222,7 +221,7 @@ function AVIMOptionsPanel() {
 			ignoredIds.push(row.value);
 		}
 		ignoredIds = this.normalizeArray(ignoredIds, true);
-		this.prefs.setCharPref("ignoredFieldIds", ignoredIds.join(" "));
+		prefs.setCharPref("ignoredFieldIds", ignoredIds.join(" "));
 //		dump("Set ignoredIds: " + ignoredIds.join(",") + ".\n");				// debug
 	};
 	
@@ -231,7 +230,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.unregisterPrefs = function() {
 		this.setPrefs();
-		this.prefs.removeObserver("", this);
+		prefs.removeObserver("", this);
 	};
 	
 	/**
@@ -270,8 +269,7 @@ function AVIMOptionsPanel() {
 	 * be called once the panel itself has finished loading.
 	 */
 	this.initialize = function() {
-		this.mudimMonitor = new MudimMonitor(this.prefs,
-											 this.notificationBoxId);
+		this.mudimMonitor = new MudimMonitor(prefs, this.notificationBoxId);
 		this.mudimMonitor.registerPrefs();
 		
 		this.registerPrefs();
@@ -303,18 +301,17 @@ function AVIMOptionsPanel() {
 		this.mudim = Application.extensions.get(MUDIM_ID);
 		
 		// Root for Mudim preferences
-		this.prefs =
-			Components.classes["@mozilla.org/preferences-service;1"]
-				.getService(Components.interfaces.nsIPrefService)
-				.getBranch("chimmudim.settings.");
+		var mPrefs = Components.classes["@mozilla.org/preferences-service;1"]
+							   .getService(Components.interfaces.nsIPrefService)
+							   .getBranch("chimmudim.settings.");
 		
 		/**
 		 * Registers an observer so that a warning is displayed if Mudim is
 		 * enabled.
 		 */
 		this.registerPrefs = function() {
-			this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-			this.prefs.addObserver("", this, false);
+			mPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+			mPrefs.addObserver("", this, false);
 			this.getPrefs();
 		};
 		
@@ -323,7 +320,7 @@ function AVIMOptionsPanel() {
 		 */
 		this.unregisterPrefs = function() {
 			this.setPrefs();
-			this.prefs.removeObserver("", this);
+			mPrefs.removeObserver("", this);
 		};
 		
 		/**
@@ -335,7 +332,7 @@ function AVIMOptionsPanel() {
 		this.conflicts = function() {
 			var avimEnabled = this.avimPrefs.getBoolPref("enabled");
 			return avimEnabled && this.mudim && this.mudim.enabled &&
-				this.prefs.getIntPref("method") != 0;
+				mPrefs.getIntPref("method") != 0;
 		};
 		
 		/**

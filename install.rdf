@@ -39,6 +39,19 @@
 		<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
 		<em:iconURL>chrome://avim/content/avim.png</em:iconURL>
 		
+		<!-- French -->
+		<em:localized>
+			<Description>
+				<em:locale>fr-FR</em:locale>
+				<em:name>AVIM</em:name>
+				<em:description>Taper le vietnamien accentué directement dans n’importe quelle page Web ou boîte de dialogue en utilisant un clavier standard.</em:description>
+				<em:creator>Minh Nguyen</em:creator>
+				<em:contributor>Hieu Dang</em:contributor>
+				<em:translator>mr.txhuy</em:translator>
+				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+			</Description>
+		</em:localized>
+		
 		<!-- Spanish -->
 		<em:localized>
 			<Description>
