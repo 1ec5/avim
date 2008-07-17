@@ -105,3 +105,6 @@ Version 20080224.118 (Tuesday, July 15, 2008)
 
 Version ${Version} (${Date})
  - Added French localization.
+ - Added "w" to the informal spelling option.
+ - Ensured that the preferences panel still displays correctly on the Mac, even
+   if general.useragent.locale has been modified.

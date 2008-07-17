@@ -1,18 +1,21 @@
+ - Investigate using the nsIAccessibleEditableText interface to handle
+   outputting more seamlessly. [1]
  - Scroll single-line textboxes to the side when AVIM modifies the input.
  - Figure out why the first word entered into a designMode document is flipped
    around (i.e., "DDa'nh" turns into "a'nhDD").
  - Add a preference to specify allowed initial consonant clusters, like mViet
-   does. [1]
- - Support editable trees. [2]
+   does. [2]
+ - Support editable trees. [3]
  - Add key mapping for the dong sign.
  - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [3] Maybe limit this feature to bookmarks (FUEL), since
+   Preferences service. [4] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
  - The extension has some commented code towards supporting Thunderbird 3a1. The
    main issues are identifying the myriad of textboxes that AVIM should ignore,
    and finding a keyboard shortcut for toggling AVIM that won't conflict with
    any of the shortcuts used on any of Thunderbird's windows.
 
-[1] http://www.dactai.com/mviet/mviet12AC/index.htm
-[2] http://wiki.mozilla.org/XUL:Tree
-[3] http://developer.mozilla.org/en/docs/Using_content_preferences
+[1] http://developer.mozilla.org/en/docs/nsIAccessibleEditableText
+[2] http://www.dactai.com/mviet/mviet12AC/index.htm
+[3] http://wiki.mozilla.org/XUL:Tree
+[4] http://developer.mozilla.org/en/docs/Using_content_preferences

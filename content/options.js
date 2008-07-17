@@ -22,8 +22,9 @@ function AVIMOptionsPanel() {
 	this.ignoredIdsDelimiter = /\s+/;
 	this.macTabBoxMargin = 4 + "px";
 	
-	var isMac = navigator.platform == "MacIntel" ||
-		navigator.platform == "MacPPC";
+	const isMac = Components.classes["@mozilla.org/xre/app-info;1"]
+							.getService(Components.interfaces.nsIXULRuntime).OS
+				  == "Darwin";
 	
 	// Root for AVIM preferences
 	this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
