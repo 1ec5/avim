@@ -108,3 +108,5 @@ Version ${Version} (${Date})
  - Added "w" to the informal spelling option.
  - Ensured that the preferences panel still displays correctly on the Mac, even
    if general.useragent.locale has been modified.
+ - Added support for some of the Google Toolbar extension's options panels, but
+   not for its search bar yet.

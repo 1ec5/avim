@@ -68,6 +68,11 @@ overlay	chrome://inspector/content/viewers/domNode/domNodeDialog.xul		chrome://a
 # Insert Node dialog
 overlay	chrome://inspector/content/viewers/dom/insertDialog.xul				chrome://avim/content/avim.xul
 
+### Google Toolbar #############################################################
+
+# AutoFill Options dialog
+overlay chrome://google-toolbar/content/options-auto-fill.xul	chrome://avim/content/avim.xul
+
 ### Nightly Tester Tools #######################################################
 
 # Options dialog
