@@ -754,8 +754,8 @@ function AVIM()	{
 		const xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 		if (document.documentElement.namespaceURI == xulURI) {
-			// Ignore XUL pages embedded inside XUL windows.
-			if (document.documentElement.localName == "page") return false;
+//			// Ignore XUL pages embedded inside XUL windows.
+//			if (document.documentElement.localName == "page") return false;
 			// Ignore about:config.
 			if (el.parentNode && el.parentNode.id == "filterRow") return false;
 		}
@@ -1115,13 +1115,13 @@ function AVIM()	{
 		
 		// mViet 14 RTE
 		if (!AVIMConfig.disabledScripts.mViet) return;
-		if (win.frameElement) win = win.frameElement.ownerDocument.defaultView;
+		if (win.frameElement) win = win.parent;
 		var marker = "MVietOnOffButton";
 		if (marker in win) disablers.MViet(win);
 	};
 }
 
-if (!avim) {
+if (!avim && !window.frameElement) {
 	var avim=new AVIM();
 	addEventListener("load", function (e) {
 		avim.registerPrefs();

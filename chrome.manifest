@@ -31,7 +31,9 @@ overlay	chrome://reporter/content/reportWizard.xul						chrome://avim/content/av
 ### Flock ######################################################################
 
 # Image Properties dialog
-overlay	chrome://flock/content/blog/imageProperties.xul	chrome://avim/content/avim.xul
+overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/avim.xul
+# Bookmark All Tabs dialog
+overlay	chrome://browser/content/places/bookmarkProperties2.xul	chrome://avim/content/avim.xul
 
 ### Thunderbird ################################################################
 
