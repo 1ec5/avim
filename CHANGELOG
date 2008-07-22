@@ -5,10 +5,14 @@ indicates the version of the extension itself, expressed as a Subversion
 revision number.
 
 Version 20060714 (Friday, July 14, 2006)
- - Initial release.
+ - Initial release by Hieu Dang.
+ - Allows users to type Vietnamese in the search bar.
+ - Saves the user's choice of typing method and other preferences.
 
 Version 20061001 (Sunday, October 1, 2006)
- - Integrated with the latest version of the AVIM script.
+ - AVIM works correctly with Firefox 2.0 SearchPluginHacks (0.1.3).
+ - install.rdf is updated to conform with Mozilla guidelines for Firefox
+   extension developers.
 
 Version 20080224.59 (Monday, June 16, 2008)
  - First release by Minh Nguyen, based on a refactored codebase by Hieu Dang.
@@ -105,8 +109,11 @@ Version 20080224.118 (Tuesday, July 15, 2008)
 
 Version ${Version} (${Date})
  - Added French localization.
+ - Single-line textboxes no longer scroll to the beginning whenever adding
+   diacritical marks to words.
  - Added "w" to the informal spelling option.
  - Ensured that the preferences panel still displays correctly on the Mac, even
    if general.useragent.locale has been modified.
- - Added support for some of the Google Toolbar extension's options panels, but
-   not for its search bar yet.
+ - Fixed behavior on editable menulists (combo boxes), which adds support for
+   Google Toolbar and Firefox's Live Titles feature.
+ - Added support for editable trees.

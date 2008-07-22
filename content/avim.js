@@ -751,7 +751,7 @@ function AVIM()	{
 //		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if(e.ctrlKey || e.metaKey) return false;
 		if(e.altKey) return false;
-		var xulURI =
+		const xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 		if (document.documentElement.namespaceURI == xulURI) {
 			// Ignore XUL pages embedded inside XUL windows.
@@ -763,31 +763,21 @@ function AVIM()	{
 		// anonymous inner element. This would be much easier if el.inputField
 		// actually worked.
 		if (el.namespaceURI == xulURI) {
-			var xulAnonIDs = {
-				searchbar: "searchbar-textbox", findbar: "findbar-textbox",
-				menulist: "input"
-			};
-			if (xulAnonIDs[el.localName]) {
-				el = document.getAnonymousElementByAttribute(el, "anonid",
-					xulAnonIDs[el.localName]);
+			var xulAnonIDs = {findbar: "findbar-textbox"};
+			var anonEl = el.textbox || el.inputField || el.mInputField;
+			var anonID = xulAnonIDs[el.localName];
+			if (!anonEl && anonID) {
+				anonEl = document.getAnonymousElementByAttribute(el, "anonid",
+																 anonID);
 			}
-			// TODO: Make this work in editable trees.
-//			var xulAnonClasses = {
-//				tree: "tree-input"
-//			};
-//			if (xulAnonClasses[el.localName]) {
-//				var className = xulAnonClasses[el.localName];
-//				var anons = document.getAnonymousElementByAttribute(el, "class",
-//																	className);
-//				el = anons[0];
-//			}
-//			if (el.localName == "tree") {
-//				el = document.getAnonymousElementByAttribute(stack, "anonid",
-//															 "input");
-//			}
+			if (!anonEl && el.wrappedJSObject) {
+				var anonWrapper = el.wrappedJSObject;
+				anonEl = anonWrapper.inputField || anonWrapper.mInputField;
+			}
+			if (anonEl) el = anonEl;
 		}
 		var isHTML = el.type == "textarea" || el.type == "text";
-		var xulTags = ["textbox", "searchbar", "findbar"];
+		var xulTags = ["textbox"];
 		var isXUL = el.namespaceURI == xulURI &&
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
@@ -796,6 +786,12 @@ function AVIM()	{
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
+			// A bit of a hack to prevent single-line textboxes from scrolling
+			// to the beginning of the line.
+			if (window.goDoCommand) {
+				goDoCommand("cmd_charPrevious");
+				goDoCommand("cmd_charNext");
+			}
 			return false;
 		}
 		return true
