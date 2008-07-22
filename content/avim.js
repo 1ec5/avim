@@ -1121,27 +1121,27 @@ function AVIM()	{
 	};
 }
 
-if (!AVIMObj) {
-	var AVIMObj=new AVIM()
+if (!avim) {
+	var avim=new AVIM();
 	addEventListener("load", function (e) {
-		AVIMObj.registerPrefs();
+		avim.registerPrefs();
 	}, false);
 	addEventListener("unload", function (e) {
-		AVIMObj.unregisterPrefs();
+		avim.unregisterPrefs();
 	}, false);
 	addEventListener("keypress", function (e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
 //		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
 		var doc = e.target.ownerDocument;
-		AVIMObj.disableOthers(doc);
+		avim.disableOthers(doc);
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
 		var wysiwyg =
 			(doc.designMode && doc.designMode.toLowerCase() == "on") ||
 			(e.target.contentEditable &&
 			 e.target.contentEditable.toLowerCase() == "true");
-		if (wysiwyg) return AVIMObj.ifMoz(e);
+		if (wysiwyg) return avim.ifMoz(e);
 		
-		return AVIMObj.keyPressHandler(e);
+		return avim.keyPressHandler(e);
 	}, true);
 }

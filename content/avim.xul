@@ -4,16 +4,16 @@
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
 	<commandset>
-		<command id="avim-enabled-cmd" oncommand="AVIMObj.toggle();" />
-		<command id="avim-method-cmd" oncommand="AVIMObj.setMethod(this.value || this.getAttribute('value'));" />
-		<command id="avim-prev-method-cmd" oncommand="AVIMObj.cycleMethod(-1);" />
-		<command id="avim-next-method-cmd" oncommand="AVIMObj.cycleMethod(1);" />
-		<command id="avim-spell-cmd" oncommand="AVIMObj.toggleSpell();" />
-		<command id="avim-oldaccents-cmd" oncommand="AVIMObj.toggleDauCu();" />
+		<command id="avim-enabled-cmd" oncommand="avim.toggle();" />
+		<command id="avim-method-cmd" oncommand="avim.setMethod(this.value || this.getAttribute('value'));" />
+		<command id="avim-prev-method-cmd" oncommand="avim.cycleMethod(-1);" />
+		<command id="avim-next-method-cmd" oncommand="avim.cycleMethod(1);" />
+		<command id="avim-spell-cmd" oncommand="avim.toggleSpell();" />
+		<command id="avim-oldaccents-cmd" oncommand="avim.toggleDauCu();" />
 	</commandset>
 	
 	<keyset>
-		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="AVIMObj.toggle();" />
+		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="avim.toggle();" />
 		
 		<!-- Input methods -->
 		<key id="avim-prev-method-key" modifiers="&avim-prev-method.modifiers;" key="&avim-prev-method.key;" command="avim-prev-method-cmd" />

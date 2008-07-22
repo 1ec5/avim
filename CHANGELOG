@@ -109,11 +109,14 @@ Version 20080224.118 (Tuesday, July 15, 2008)
 
 Version ${Version} (${Date})
  - Added French localization.
+ - Added support for the Flock browser.
  - Single-line textboxes no longer scroll to the beginning whenever adding
    diacritical marks to words.
  - Added "w" to the informal spelling option.
- - Ensured that the preferences panel still displays correctly on the Mac, even
-   if general.useragent.locale has been modified.
+ - Fixed an issue where the script monitor would disable the extension when
+   typing in the Bookmarks sidebar's filter bar.
  - Fixed behavior on editable menulists (combo boxes), which adds support for
    Google Toolbar and Firefox's Live Titles feature.
  - Added support for editable trees.
+ - Ensured that the preferences panel still displays correctly on the Mac, even
+   if general.useragent.locale has been modified.
