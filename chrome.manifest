@@ -21,6 +21,8 @@ style	chrome://global/content/customizeToolbar.xul	chrome://avim/skin/avim.css
 overlay	chrome://browser/content/places/bookmarkProperties.xul			chrome://avim/content/avim.xul
 # overlay	chrome://browser/content/places/editBookmarkOverlay.xul		chrome://avim/content/avim.xul
 # overlay	chrome://browser/content/bookmarks/bookmarksProperties.xul	chrome://avim/content/avim.xul
+# Bookmark All Tabs dialog
+overlay	chrome://browser/content/places/bookmarkProperties2.xul			chrome://avim/content/avim.xul
 # Cookies list
 # overlay	chrome://browser/content/preferences/cookies.xul			chrome://avim/content/avim.xul
 # File > Open Location...
@@ -32,8 +34,6 @@ overlay	chrome://reporter/content/reportWizard.xul						chrome://avim/content/av
 
 # Image Properties dialog
 overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/avim.xul
-# Bookmark All Tabs dialog
-overlay	chrome://browser/content/places/bookmarkProperties2.xul	chrome://avim/content/avim.xul
 
 ### Thunderbird ################################################################
 
