@@ -467,25 +467,6 @@ function AVIM()	{
 		} else if(c==3) return vowA[1]
 		else return false
 	}
-	this.ie_replaceChar=function(w,pos,c) {
-		var r="",uc=0
-		if(isNaN(c)) uc=this.up(c)
-		if((this.whit)&&(this.up(w.substr(w.length-pos-1,1))=='U')&&(pos!=1)&&(this.up(w.substr(w.length-pos-2,1))!='Q')) {
-			this.whit=false
-			if((this.up(this.unV(fcc(c)))=="Ơ")||(uc=="O")) {
-				if(w.substr(w.length-pos-1,1)=='u') r=fcc(432)
-				else r=fcc(431)
-			}
-			if(uc=="O") {
-				if(c=="o") c=417
-				else c=416
-			}
-		}
-		if(!isNaN(c)) {
-			this.changed=true;r+=fcc(c)
-			return w.substr(0,w.length-pos-r.length+1)+r+w.substr(w.length-pos+1)
-		} else return w.substr(0,w.length-pos)+c+w.substr(w.length-pos+1)
-	}
 	this.replaceChar=function(o,pos,c) {
 		var bb=false
 		if(!this.nan(c)) { var replaceBy=fcc(c),wfix=this.up(this.unV(fcc(c))); this.changed=true }
@@ -795,9 +776,6 @@ function AVIM()	{
 			return false;
 		}
 		return true
-	}
-	this.attachEvt=function(obj,evt,handle,capture) {
-		obj.addEventListener(evt,handle,capture)
 	}
 	
 	// Integration with Mozilla preferences service

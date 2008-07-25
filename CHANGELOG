@@ -115,8 +115,8 @@ Version ${Version} (${Date})
  - Added "w" to the informal spelling option.
  - Fixed an issue where the script monitor would disable the extension when
    typing in the Bookmarks sidebar's filter bar.
- - Fixed behavior on editable menulists (combo boxes), which adds support for
-   Google Toolbar and Firefox's Live Titles feature.
+ - Fixed behavior on editable menulists (combo boxes), used in Google Toolbar
+   and Firefox's Live Titles feature.
  - Added support for editable trees.
  - Ensured that the preferences panel still displays correctly on the Mac, even
    if general.useragent.locale has been modified.
