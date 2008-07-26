@@ -787,11 +787,16 @@ function AVIM()	{
 		var editor = el.editor;
 		if (!editor) {
 			try {
-				var iface = Components.interfaces.nsIEditor;
-				editor = e.target.QueryInterface(iface);
+				var iface = Components.interfaces.nsIDOMNSEditableElement;
+				var editableEl = el.QueryInterface(iface);
+				iface = Components.interfaces.nsIEditor;
+				editor = el.QueryInterface(iface);
 			}
-			catch (e) {}
+			catch (e) {
+//				dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");	// debug
+			}
 		}
+//		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		this.start(el,e)
 		if (editor && editor.endTransaction) editor.endTransaction();
