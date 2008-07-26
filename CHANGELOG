@@ -109,10 +109,10 @@ Version 20080224.118 (Tuesday, July 15, 2008)
 
 Version ${Version} (${Date})
  - Added French localization.
- - Added support for the Flock browser.
+ - Added support for the Flock browser and for applications built atop Mozilla
+   Prism (WebRunner).
  - Single-line textboxes no longer scroll to the beginning whenever adding
    diacritical marks to words.
- - Added "w" to the informal spelling option.
  - Fixed an issue where the script monitor would disable the extension when
    typing in the Bookmarks sidebar's filter bar.
  - Fixed behavior on editable menulists (combo boxes), used in Google Toolbar

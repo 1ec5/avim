@@ -49,6 +49,10 @@ overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/
 # overlay	chrome://messenger-newsblog/content/feed-properties.xul				chrome://avim/content/avim.xul
 # overlay	chrome://editor/content/EdImageProps.xul							chrome://avim/content/avim.xul
 
+### Prism ######################################################################
+
+overlay	chrome://webrunner/content/webrunner.xul	chrome://avim/content/avim.xul
+
 ### ChatZilla ##################################################################
 
 overlay	chrome://chatzilla/content/chatzilla.xul	chrome://avim/content/avim.xul
@@ -88,6 +92,11 @@ overlay	chrome://nightly/content/options/options.xul	chrome://avim/content/avim.
 ### Pencil #####################################################################
 
 overlay	chrome://pencil/content/UI/Window.xul	chrome://avim/content/avim.xul
+
+### Prism for Firefox ##########################################################
+
+# Install Shortcut dialog
+overlay	chrome://refractor/content/install-shortcut.xul	chrome://avim/content/avim.xul
 
 ### ScrapBook ##################################################################
 

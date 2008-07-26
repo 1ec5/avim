@@ -31,6 +31,15 @@
 			</Description>
 		</em:targetApplication> -->
 		
+		<!-- Mozilla Prism -->
+		<em:targetApplication>
+			<Description>
+				<em:id>prism@developer.mozilla.org</em:id>
+				<em:minVersion>0.9</em:minVersion>
+				<em:maxVersion>1.0.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
 		<!-- Flock -->
 		<em:targetApplication>
 			<Description>

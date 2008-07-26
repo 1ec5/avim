@@ -80,17 +80,17 @@ function AVIM()	{
 		var notViet="AA,AE,EE,OU,YY,YI,IY,EY,EA,EI,II,IO,YO,YA,OOO".split(','),uk=this.up(k),twE,uw2=this.unV2(uw)
 		var vSConsonant="B,C,D,G,H,K,L,M,N,P,Q,R,S,T,V,X".split(','),vDConsonant="CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',')
 		if (AVIMConfig.informal) {
-			vSConsonant.push("F", "W");
+			vSConsonant.push("F");
 			vDConsonant.push("DZ");
 		}
 		var vDConsonantE="CH,NG,NH".split(','),sConsonant="C,P,T,CH".split(','),vSConsonantE="C,M,N,P,T".split(',')
 		var noNHE="O,U,IE,Ô,Ơ,Ư,IÊ,Ă,Â,UYE,UYÊ,UO,ƯƠ,ƯO,UƠ,UA,ƯA,OĂ,OE,OÊ".split(','),oMoc="UU,UOU".split(',')
 		if(this.FRX.indexOf(uk)>=0) for(a=0;a<sConsonant.length;a++) if(uw.substr(uw.length-sConsonant[a].length,sConsonant[a].length)==sConsonant[a]) return true
-		if (/[J0-9]/.test(uw)) return true;
+		if (/[JW0-9]/.test(uw)) return true;
 		if (AVIMConfig.informal) {
-			if (/^Z|.DZ|.F|.W|[^D]Z/.test(uw)) return true;
+			if (/^Z|.DZ|.F|[^D]Z/.test(uw)) return true;
 		}
-		else if (/[FWZ]/.test(uw)) return true;
+		else if (uw.indexOf("F") >= 0 || uw.indexOf("W") >= 0) return true;
 		for(a=0;a<uw.length;a++) {
 			for(b=0;b<notViet.length;b++) {
 				if(uw2.substr(a,notViet[b].length)==notViet[b]) {
@@ -467,6 +467,28 @@ function AVIM()	{
 		} else if(c==3) return vowA[1]
 		else return false
 	}
+	/**
+	 * Replaces the substring inside the given textbox, starting at an index and
+	 * spanning the given number of characters, with the given string.
+	 *
+	 * @param obj		{object}	The textbox's node.
+	 * @param index		{number}	The index at which to begin replacing.
+	 * @param len		{number}	The number of characters to replace.
+	 * @param newStr	{string}	The string to insert.
+	 */
+	this.splice = function(obj, index, len, newStr) {
+		var editor = obj.editor;
+		if (editor) {
+			var selStart = obj.selectionStart;
+			obj.setSelectionRange(index, index + len);
+			editor.insertText(newStr);
+			obj.setSelectionRange(selStart);
+		}
+		else {
+			var val = obj.value;
+			obj.value = val.substr(0, index) + newStr + val.substr(index + len);
+		}
+	};
 	this.replaceChar=function(o,pos,c) {
 		var bb=false
 		if(!this.nan(c)) { var replaceBy=fcc(c),wfix=this.up(this.unV(fcc(c))); this.changed=true }
@@ -1112,6 +1134,21 @@ if (!avim && !window.frameElement) {
 //		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
 		var doc = e.target.ownerDocument;
 		avim.disableOthers(doc);
+		
+//		var target = e.target;
+//		var editor = target.editor;
+//		if (!editor) {
+//			try {
+//				var iface = Components.interfaces.nsIDOMNSEditableElement;
+//				editor = target.QueryInterface(iface).editor;
+//			}
+//			catch (e) {}
+//		}
+//		if (editor) {
+//			dump("keypress -- editor: " + editor + "\n");					// debug
+//			if (editor.insertText) editor.insertText("[B]");
+//			else if (editor.setUserInput) editor.setUserInput("[C]");
+//		}
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
 		var wysiwyg =
