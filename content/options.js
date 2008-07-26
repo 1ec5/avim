@@ -298,7 +298,9 @@ function AVIMOptionsPanel() {
 		this.noteValue = "mudim-note";
 		
 		// Mudim itself
-		this.mudim = Application.extensions.get(MUDIM_ID);
+		if (window.Application) {
+			this.mudim = Application.extensions.get(MUDIM_ID);
+		}
 		
 		// Root for Mudim preferences
 		var mPrefs = Components.classes["@mozilla.org/preferences-service;1"]

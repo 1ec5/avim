@@ -763,11 +763,10 @@ function AVIM()	{
 			if (el.parentNode && el.parentNode.id == "filterRow") return false;
 		}
 		// If the XUL element is actually an XBL-bound element, get the
-		// anonymous inner element. This would be much easier if el.inputField
-		// actually worked.
+		// anonymous inner element.
 		if (el.namespaceURI == xulURI) {
-			var xulAnonIDs = {findbar: "findbar-textbox"};
 			var anonEl = el.textbox || el.inputField || el.mInputField;
+			var xulAnonIDs = {findbar: "findbar-textbox", searchvalue: "input"};
 			var anonID = xulAnonIDs[el.localName];
 			if (!anonEl && anonID) {
 				anonEl = document.getAnonymousElementByAttribute(el, "anonid",
@@ -785,17 +784,17 @@ function AVIM()	{
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk=fcc(code); if(this.findIgnore(el)) return false;
-//		var editor = e.target.editor;
-//		if (!editor) {
-//			try {
-//				var iface = Components.interfaces.nsIEditor;
-//				editor = e.target.QueryInterface(iface);
-//			}
-//			catch (e) {}
-//		}
-//		if (editor && editor.beginTransaction) editor.beginTransaction();
+		var editor = el.editor;
+		if (!editor) {
+			try {
+				var iface = Components.interfaces.nsIEditor;
+				editor = e.target.QueryInterface(iface);
+			}
+			catch (e) {}
+		}
+		if (editor && editor.beginTransaction) editor.beginTransaction();
 		this.start(el,e)
-//		if (editor && editor.endTransaction) editor.endTransaction();
+		if (editor && editor.endTransaction) editor.endTransaction();
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();

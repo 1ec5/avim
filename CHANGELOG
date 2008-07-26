@@ -119,5 +119,7 @@ Version ${Version} (${Date})
  - Fixed behavior on editable menulists (combo boxes), used in Google Toolbar
    and Firefox's Live Titles feature.
  - Added support for editable trees.
+ - Reduced the number of undo/redo levels created when adding a diacritic to
+   non-webpage textboxes.
  - The preferences panel now displays correctly on the Mac even if
    general.useragent.locale has been modified.

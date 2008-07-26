@@ -9,6 +9,7 @@ skin	avim	classic/1.0	skin/
 
 overlay chrome://global/content/editMenuOverlay.xul	chrome://avim/content/avim.xul
 overlay chrome://global/content/commonDialog.xul	chrome://avim/content/avim.xul
+overlay chrome://global/content/dialogOverlay.xul	chrome://avim/content/avim.xul
 
 ### Firefox ####################################################################
 
@@ -37,18 +38,41 @@ overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/
 
 ### Thunderbird ################################################################
 
+# Main messenger window and associated dialogs
 overlay	chrome://messenger/content/messenger.xul							chrome://avim/content/avim.xul
 overlay	chrome://messenger/content/messageWindow.xul						chrome://avim/content/avim.xul
 overlay	chrome://messenger/content/folderProps.xul							chrome://avim/content/avim.xul
 overlay	chrome://messenger/content/renameFolderDialog.xul					chrome://avim/content/avim.xul
-overlay	chrome://messenger/content/AccountManager.xul						chrome://avim/content/avim.xul
 overlay	chrome://messenger/content/FilterEditor.xul							chrome://avim/content/avim.xul
-overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://avim/content/avim.xul
+overlay	chrome://messenger-newsblog/content/feed-properties.xul				chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/subscribe.xul							chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/SearchDialog.xul							chrome://avim/content/avim.xul
+
+# Preferences and associated dialogs
+overlay	chrome://messenger/content/preferences/preferences.xul				chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/newTagDialog.xul							chrome://avim/content/avim.xul
+
+# Account Manager and associated dialogs
+overlay	chrome://messenger/content/AccountManager.xul						chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/am-identity-edit.xul						chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/SmtpServerEdit.xul						chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/AccountWizard.xul						chrome://avim/content/avim.xul
+
+# Address Book and associated dialogs
 overlay	chrome://messenger/content/addressbook/addressbook.xul				chrome://avim/content/avim.xul
 overlay chrome://messenger/content/addressbook/abNewCardDialog.xul			chrome://avim/content/avim.xul
 overlay	chrome://messenger/content/addressbook/abEditCardDialog.xul			chrome://avim/content/avim.xul
-overlay	chrome://messenger-newsblog/content/feed-properties.xul				chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/addressbook/abMailListDialog.xul			chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/addressbook/abEditListDialog.xul			chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/addressbook/abAddressBookNameDialog.xul	chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/addressbook/pref-directory-add.xul		chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/ABSearchDialog.xul						chrome://avim/content/avim.xul
+
+# Compose window and associated dialogs
+overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://avim/content/avim.xul
 overlay	chrome://editor/content/EdImageProps.xul							chrome://avim/content/avim.xul
+overlay	chrome://editor/content/EdSpellCheck.xul							chrome://avim/content/avim.xul
+overlay	chrome://editor/content/EdDictionary.xul							chrome://avim/content/avim.xul
 
 ### Prism ######################################################################
 
@@ -98,6 +122,10 @@ overlay	chrome://pencil/content/UI/Window.xul	chrome://avim/content/avim.xul
 
 # Install Shortcut dialog
 overlay	chrome://refractor/content/install-shortcut.xul	chrome://avim/content/avim.xul
+
+### Quick Locale Switcher ######################################################
+
+overlay	chrome://qls/content/qlssettings.xul	chrome://avim/content/avim.xul
 
 ### ScrapBook ##################################################################
 
