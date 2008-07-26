@@ -109,8 +109,9 @@ Version 20080224.118 (Tuesday, July 15, 2008)
 
 Version ${Version} (${Date})
  - Added French localization.
- - Added support for the Flock browser and for applications built atop Mozilla
-   Prism (WebRunner).
+ - Added support for beta versions of the Flock browser.
+ - Added support for applications built atop Mozilla Prism (WebRunner).
+ - Added support for alpha versions of Thunderbird.
  - Single-line textboxes no longer scroll to the beginning whenever adding
    diacritical marks to words.
  - Fixed an issue where the script monitor would disable the extension when
@@ -118,5 +119,5 @@ Version ${Version} (${Date})
  - Fixed behavior on editable menulists (combo boxes), used in Google Toolbar
    and Firefox's Live Titles feature.
  - Added support for editable trees.
- - Ensured that the preferences panel still displays correctly on the Mac, even
-   if general.useragent.locale has been modified.
+ - The preferences panel now displays correctly on the Mac even if
+   general.useragent.locale has been modified.

@@ -37,17 +37,18 @@ overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/
 
 ### Thunderbird ################################################################
 
-# overlay	chrome://messenger/content/messenger.xul							chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/messageWindow.xul						chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/folderProps.xul							chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/renameFolderDialog.xul					chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/AccountManager.xul						chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/FilterEditor.xul							chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/addressbook/addressbook.xul				chrome://avim/content/avim.xul
-# overlay	chrome://messenger/content/addressbook/abEditCardDialog.xul			chrome://avim/content/avim.xul
-# overlay	chrome://messenger-newsblog/content/feed-properties.xul				chrome://avim/content/avim.xul
-# overlay	chrome://editor/content/EdImageProps.xul							chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/messenger.xul							chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/messageWindow.xul						chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/folderProps.xul							chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/renameFolderDialog.xul					chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/AccountManager.xul						chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/FilterEditor.xul							chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/messengercompose/messengercompose.xul	chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/addressbook/addressbook.xul				chrome://avim/content/avim.xul
+overlay chrome://messenger/content/addressbook/abNewCardDialog.xul			chrome://avim/content/avim.xul
+overlay	chrome://messenger/content/addressbook/abEditCardDialog.xul			chrome://avim/content/avim.xul
+overlay	chrome://messenger-newsblog/content/feed-properties.xul				chrome://avim/content/avim.xul
+overlay	chrome://editor/content/EdImageProps.xul							chrome://avim/content/avim.xul
 
 ### Prism ######################################################################
 

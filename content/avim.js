@@ -478,7 +478,7 @@ function AVIM()	{
 	 */
 	this.splice = function(obj, index, len, newStr) {
 		var editor = obj.editor;
-		if (editor) {
+		if (editor && editor.insertText) {
 			var selStart = obj.selectionStart;
 			obj.setSelectionRange(index, index + len);
 			editor.insertText(newStr);
@@ -785,7 +785,17 @@ function AVIM()	{
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk=fcc(code); if(this.findIgnore(el)) return false;
+//		var editor = e.target.editor;
+//		if (!editor) {
+//			try {
+//				var iface = Components.interfaces.nsIEditor;
+//				editor = e.target.QueryInterface(iface);
+//			}
+//			catch (e) {}
+//		}
+//		if (editor && editor.beginTransaction) editor.beginTransaction();
 		this.start(el,e)
+//		if (editor && editor.endTransaction) editor.endTransaction();
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
@@ -1138,11 +1148,22 @@ if (!avim && !window.frameElement) {
 //		var target = e.target;
 //		var editor = target.editor;
 //		if (!editor) {
+////			try {
+////				var iface = Components.interfaces.nsIEditor;
+////				editor = target.QueryInterface(iface);
+////			}
+////			catch (e) {
+////				dump("keypress -- can't get editor: " + e + "\n");
+////			}
 //			try {
-//				var iface = Components.interfaces.nsIDOMNSEditableElement;
-//				editor = target.QueryInterface(iface).editor;
+////				var iface = Components.interfaces.nsIPlaintextEditor;
+////				editor = editor.QueryInterface(iface);
+//				var editor = Components.classes["@mozilla.org/editor/texteditor;1"]
+//									   .getService(Components.interfaces.nsIPlaintextEditor);
 //			}
-//			catch (e) {}
+//			catch (e) {
+//				dump("keypress -- can't get plain text editor: " + e + "\n");
+//			}
 //		}
 //		if (editor) {
 //			dump("keypress -- editor: " + editor + "\n");					// debug
