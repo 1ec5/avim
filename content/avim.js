@@ -468,6 +468,26 @@ function AVIM()	{
 		else return false
 	}
 	/**
+	 * Returns the nsIEditor (or subclass) instance associated with the given
+	 * XUL or HTML element.
+	 *
+	 * @param el	{object}	The XUL or HTML element.
+	 * @returns {object}	The associated nsIEditor instance.
+	 */
+	this.getEditor = function(el) {
+		if (el.editor) return el.editor;
+		try {
+			const iface = Components.interfaces.nsIDOMNSEditableElement;
+			return el.QueryInterface(iface).editor;
+//				iface = Components.interfaces.nsIPlaintextEditor;
+//				editor = editableEl.QueryInterface(iface);
+		}
+		catch (e) {
+//			dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");	// debug
+			return undefined;
+		}
+	}
+	/**
 	 * Replaces the substring inside the given textbox, starting at an index and
 	 * spanning the given number of characters, with the given string.
 	 *
@@ -476,18 +496,19 @@ function AVIM()	{
 	 * @param len		{number}	The number of characters to replace.
 	 * @param newStr	{string}	The string to insert.
 	 */
-	this.splice = function(obj, index, len, newStr) {
-		var editor = obj.editor;
-		if (editor && editor.insertText) {
-			var selStart = obj.selectionStart;
-			obj.setSelectionRange(index, index + len);
-			editor.insertText(newStr);
-			obj.setSelectionRange(selStart);
-		}
-		else {
-			var val = obj.value;
-			obj.value = val.substr(0, index) + newStr + val.substr(index + len);
-		}
+	this.splice = function(el, index, len, newStr) {
+//		var editor = this.getEditor(el);
+//		dump("AVIM.splice -- editor: " + editor + "; newStr: " + newStr + "\n");	// debug
+//		if (editor && editor.insertText) {
+//			var selStart = el.selectionStart;
+//			el.setSelectionRange(index, index + len);
+//			editor.insertText(newStr);
+//			el.setSelectionRange(selStart);
+//		}
+//		else {
+			var val = el.value;
+			el.value = val.substr(0, index) + newStr + val.substr(index + len);
+//		}
 	};
 	this.replaceChar=function(o,pos,c) {
 		var bb=false
@@ -506,8 +527,14 @@ function AVIM()	{
 					else replaceBy="Ơ"
 				}
 			}
-			o.value=o.value.substr(0,pos)+replaceBy+o.value.substr(pos+1)
-			if(r) o.value=o.value.substr(0,pos-1)+r+o.value.substr(pos)
+			var replaceLen = 1 + !!r;
+			if (r) {
+				replaceBy = r + replaceBy;
+				pos--;
+			}
+			this.splice(o, pos, replaceLen, replaceBy);
+//			o.value=o.value.substr(0,pos)+replaceBy+o.value.substr(pos+1)
+//			if(r) o.value=o.value.substr(0,pos-1)+r+o.value.substr(pos)
 			o.setSelectionRange(savePos,savePos);o.scrollTop=sst
 		} else {
 			if ((this.up(o.data.substr(pos-1,1))=='U')&&(pos<o.pos-1)) {
@@ -600,7 +627,12 @@ function AVIM()	{
 					var sp=this.oc.selectionStart,pos=sp
 					if(!this.changed) {
 						var sst=this.oc.scrollTop;pos+=k.length
-						if(!this.oc.data) { this.oc.value=this.oc.value.substr(0,sp)+k+this.oc.value.substr(this.oc.selectionEnd);this.changed=true;this.oc.scrollTop=sst }
+						if(!this.oc.data) {
+							this.splice(this.oc, sp, this.oc.selectionEnd - sp, k);
+//							this.oc.value=this.oc.value.substr(0,sp)+k+this.oc.value.substr(this.oc.selectionEnd);
+							this.changed=true;
+							this.oc.scrollTop=sst
+						}
 						else { this.oc.insertData(this.oc.pos,k);this.oc.pos++;this.range.setEnd(this.oc,this.oc.pos);this.specialChange=true }
 					}
 					if(!this.oc.data) this.oc.setSelectionRange(pos,pos)
@@ -784,18 +816,7 @@ function AVIM()	{
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk=fcc(code); if(this.findIgnore(el)) return false;
-		var editor = el.editor;
-		if (!editor) {
-			try {
-				var iface = Components.interfaces.nsIDOMNSEditableElement;
-				var editableEl = el.QueryInterface(iface);
-				iface = Components.interfaces.nsIEditor;
-				editor = el.QueryInterface(iface);
-			}
-			catch (e) {
-//				dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");	// debug
-			}
-		}
+		var editor = this.getEditor(el);
 //		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		this.start(el,e)
