@@ -62,14 +62,14 @@
 	
 	<!-- Toolbar buttons -->
 	<toolbarpalette id="BrowserToolbarPalette">
-		<toolbarbutton id="avim-tb-enabled" type="checkbox" orient="vertical" label="&AVIM.label;" tooltiptext="&avim-enabled.description;" observes="avim-enabled-bc" />
+		<toolbarbutton id="avim-tb-enabled" class="avim-tb" type="checkbox" orient="vertical" label="&AVIM.label;" tooltiptext="&avim-enabled.description;" observes="avim-enabled-bc" />
 		
 		<!-- Input methods -->
-		<toolbarbutton id="avim-tb-auto" group="avim-tb-group" type="radio" orient="vertical" value="0" observes="avim-auto-bc" />
-		<toolbarbutton id="avim-tb-telex" group="avim-tb-group" type="radio" orient="vertical" value="1" observes="avim-telex-bc" />
-		<toolbarbutton id="avim-tb-vni" group="avim-tb-group" type="radio" orient="vertical" value="2" observes="avim-vni-bc" />
-		<toolbarbutton id="avim-tb-viqr" group="avim-tb-group" type="radio" orient="vertical" value="3" observes="avim-viqr-bc" />
-		<toolbarbutton id="avim-tb-viqr-star" group="avim-tb-group" type="radio" orient="vertical" value="4" observes="avim-viqr-star-bc" />
+		<toolbarbutton id="avim-tb-auto" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="0" observes="avim-auto-bc" />
+		<toolbarbutton id="avim-tb-telex" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="1" observes="avim-telex-bc" />
+		<toolbarbutton id="avim-tb-vni" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="2" observes="avim-vni-bc" />
+		<toolbarbutton id="avim-tb-viqr" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="3" observes="avim-viqr-bc" />
+		<toolbarbutton id="avim-tb-viqr-star" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="4" observes="avim-viqr-star-bc" />
 	</toolbarpalette>
 	
 	<!-- Edit > Vietnamese Input -->

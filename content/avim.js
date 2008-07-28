@@ -825,7 +825,9 @@ function AVIM()	{
 			e.preventDefault();
 			// A bit of a hack to prevent single-line textboxes from scrolling
 			// to the beginning of the line.
-			if (window.goDoCommand) {
+			var multiline = (isXUL && el.getAttribute("multiline") == "true") ||
+				el.type == "textarea";
+			if (window.goDoCommand && !multiline) {
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}
