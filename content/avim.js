@@ -503,12 +503,11 @@ function AVIM()	{
 //			var selStart = el.selectionStart;
 //			el.setSelectionRange(index, index + len);
 //			editor.insertText(newStr);
-//			el.setSelectionRange(selStart);
+//			el.setSelectionRange(selStart + newStr.length - len);
+//			return;
 //		}
-//		else {
-			var val = el.value;
-			el.value = val.substr(0, index) + newStr + val.substr(index + len);
-//		}
+		var val = el.value;
+		el.value = val.substr(0, index) + newStr + val.substr(index + len);
 	};
 	this.replaceChar=function(o,pos,c) {
 		var bb=false
@@ -1169,32 +1168,6 @@ if (!avim && !window.frameElement) {
 //		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
 		var doc = e.target.ownerDocument;
 		avim.disableOthers(doc);
-		
-//		var target = e.target;
-//		var editor = target.editor;
-//		if (!editor) {
-////			try {
-////				var iface = Components.interfaces.nsIEditor;
-////				editor = target.QueryInterface(iface);
-////			}
-////			catch (e) {
-////				dump("keypress -- can't get editor: " + e + "\n");
-////			}
-//			try {
-////				var iface = Components.interfaces.nsIPlaintextEditor;
-////				editor = editor.QueryInterface(iface);
-//				var editor = Components.classes["@mozilla.org/editor/texteditor;1"]
-//									   .getService(Components.interfaces.nsIPlaintextEditor);
-//			}
-//			catch (e) {
-//				dump("keypress -- can't get plain text editor: " + e + "\n");
-//			}
-//		}
-//		if (editor) {
-//			dump("keypress -- editor: " + editor + "\n");					// debug
-//			if (editor.insertText) editor.insertText("[B]");
-//			else if (editor.setUserInput) editor.setUserInput("[C]");
-//		}
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
 		var wysiwyg =

@@ -112,8 +112,8 @@ Version ${Version} (${Date})
  - Added support for beta versions of the Flock browser.
  - Added support for applications built atop Mozilla Prism (WebRunner).
  - Added support for alpha versions of Thunderbird.
- - Single-line textboxes no longer scroll to the beginning whenever adding
-   diacritical marks to words.
+ - Single-line textboxes no longer jump to the beginning whenever adding
+   diacritics to words.
  - Fixed an issue where the script monitor would disable the extension when
    typing in the Bookmarks sidebar's filter bar.
  - Fixed behavior on editable menulists (combo boxes), used in Google Toolbar
