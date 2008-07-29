@@ -111,7 +111,7 @@ Version ${Version} (${Date})
  - Added French localization.
  - Added support for beta versions of Flock 2.
  - Added support for applications built atop Mozilla Prism (WebRunner).
- - Added support for alpha versions of Thunderbird 3.
+ - Added support for alpha versions of Mozilla Thunderbird 3.
  - Single-line textboxes no longer jump to the beginning whenever adding
    diacritics to words.
  - Fixed an issue where the script monitor would disable the extension when
