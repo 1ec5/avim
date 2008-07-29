@@ -6,6 +6,9 @@ CLEAN_UP=1
 ROOT_FILES="CHANGELOG LICENSE"
 ROOT_DIRS="defaults"
 VAR_FILES="install.rdf CHANGELOG LICENSE"
+REV_NUM=`svnversion -n | cat`
+REV_DATE=`date -u '+%A, %B %e, %Y'`
+REV_YEAR=`date -u '+%Y'`
 VERSION="20080224.$REV_NUM"
 #"*CVS*"
 PRUNE_DIRS="*.svn*"

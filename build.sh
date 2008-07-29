@@ -42,6 +42,8 @@ BEFORE_BUILD=      # run this before building       (bash command)
 AFTER_BUILD=       # ...and this after the build    (bash command)
 
 REV_NUM=`svnversion -n | cat`
+REV_DATE=`date -u '+%A, %B %e, %Y'`
+REV_YEAR=`date -u '+%Y'`
 
 if [ -z $1 ]; then
   . ./config_build.sh
@@ -102,8 +104,6 @@ done
 cd $TMP_DIR
 
 if [ -n "$VAR_FILES" ]; then
-  REV_DATE=`date -u '+%A, %B %e, %Y'`
-  REV_YEAR=`date -u '+%Y'`
   echo "Substituting variables for version $VERSION, build r$REV_NUM on \
 $REV_DATE..."
   for VAR_FILE in $VAR_FILES; do
