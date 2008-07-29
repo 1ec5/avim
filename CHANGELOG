@@ -107,7 +107,7 @@ Version 20080224.118 (Tuesday, July 15, 2008)
    Before, the menu items for these options were disabled, but the keyboard
    shortcuts were still active.
 
-Version ${Version} (${Date})
+Version 20080224.139 (Tuesday, July 29, 2008)
  - Added French localization.
  - Added support for beta versions of Flock 2.
  - Added support for applications built atop Mozilla Prism (WebRunner).
@@ -123,3 +123,5 @@ Version ${Version} (${Date})
    speeding up typing in textboxes with lots of existing text.
  - The preferences panel now displays correctly on the Mac even if
    general.useragent.locale has been modified.
+
+Version ${Version} (${Date})
