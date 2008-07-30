@@ -125,3 +125,4 @@ Version 20080224.139 (Tuesday, July 29, 2008)
    general.useragent.locale has been modified.
 
 Version ${Version} (${Date})
+ - Vinova can now be automatically disabled on webpages via a hidden preference.
