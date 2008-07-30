@@ -4,9 +4,9 @@
  */
 var AVIMConfig = {
 	method: 0, //Default input method: 0=AUTO, 1=TELEX, 2=VNI, 3=VIQR, 4=VIQR*
-	onOff: 1, //Starting status: 0=Off, 1=On
-	ckSpell: 1, //Spell Check: 0=Off, 1=On
-	oldAccent: 1, //0: New way (oa`, oe`, uy`), 1: The good old day (o`a, o`e, u`y)
+	onOff: true, //Starting status: false=Off, true=On
+	ckSpell: true, //Spell Check: true=Off, false=On
+	oldAccent: true, //false: New way (oa`, oe`, uy`), true: The good old day (o`a, o`e, u`y)
 	informal: false,
 	statusBarPanel: true,	// Display status bar panel
 	//IDs of the fields you DON'T want to let users type Vietnamese in
@@ -147,8 +147,8 @@ function AVIM()	{
 	 * @param enabled	{boolean}	true to enable AVIM; false to disable it.
 	 */
 	this.setEnabled = function(enabled) {
-		AVIMConfig.onOff = 0 + enabled;
-		this.setPrefs();
+		AVIMConfig.onOff = enabled;
+		this.setPrefs("enabled");
 	};
 	
 	/**
@@ -167,12 +167,12 @@ function AVIM()	{
 	 * 						AVIM.
 	 */
 	this.setMethod=function(m) {
-		if (m == -1) AVIMConfig.onOff = 0;
+		if (m == -1) AVIMConfig.onOff = false;
 		else {
-			AVIMConfig.onOff = 1;
+			AVIMConfig.onOff = true;
 			AVIMConfig.method = m;
 		}
-		this.setPrefs();
+		this.setPrefs("method");
 	};
 	
 	/**
@@ -184,7 +184,7 @@ function AVIM()	{
 	 * 							method to the input method to select.
 	 */
 	this.cycleMethod=function(distance) {
-		AVIMConfig.onOff = 1;
+		AVIMConfig.onOff = true;
 		
 		var method = AVIMConfig.method;
 		method += distance;
@@ -192,7 +192,7 @@ function AVIM()	{
 		method %= this.broadcasters.methods.length;
 		AVIMConfig.method = method;
 		
-		this.setPrefs();
+		this.setPrefs("method");
 	};
 	
 	/**
@@ -203,8 +203,8 @@ function AVIM()	{
 	 * 								use new-style diacritics.
 	 */
 	this.setDauCu=function(enabled) {
-		AVIMConfig.oldAccent = 0 + enabled;
-		this.setPrefs()
+		AVIMConfig.oldAccent = enabled;
+		this.setPrefs("oldAccents")
 	}
 	
 	/**
@@ -224,8 +224,8 @@ function AVIM()	{
 	 * @param enabled	{boolean}	true to enforce spelling; false otherwise.
 	 */
 	this.setSpell=function(enabled) {
-		AVIMConfig.ckSpell = 0 + enabled;
-		this.setPrefs()
+		AVIMConfig.ckSpell = enabled;
+		this.setPrefs("ignoreMalformed")
 	}
 	
 	/**
@@ -243,9 +243,9 @@ function AVIM()	{
 	 * @param shown	{boolean}	true to display the status bar panel; false to
 	 * 							hide it.
 	 */
-	this.setStatusPanel=function(shown) {
+	this.setStatusPanel = function(shown) {
 		AVIMConfig.statusBarPanel = shown;
-		this.setPrefs()
+		this.setPrefs("statusBarPanel")
 	}
 	
 	/**
@@ -263,7 +263,7 @@ function AVIM()	{
 		// Enabled/disabled
 		var bc_enabled = $(this.broadcasters.enabled);
 		if (bc_enabled) {
-			bc_enabled.setAttribute("checked", "" + !!AVIMConfig.onOff);
+			bc_enabled.setAttribute("checked", "" + AVIMConfig.onOff);
 		}
 		
 		// Disable methods and options if AVIM is disabled
@@ -292,11 +292,11 @@ function AVIM()	{
 		// Options
 		var bc_spell = $(this.broadcasters.spell);
 		if (bc_spell) {
-			bc_spell.setAttribute("checked", "" + !!AVIMConfig.ckSpell);
+			bc_spell.setAttribute("checked", "" + AVIMConfig.ckSpell);
 		}
 		var bc_old = $(this.broadcasters.oldAccents);
 		if (bc_old) {
-			bc_old.setAttribute("checked", "" + !!AVIMConfig.oldAccent);
+			bc_old.setAttribute("checked", "" + AVIMConfig.oldAccent);
 		}
 		
 		// Status bar panel
@@ -446,7 +446,7 @@ function AVIM()	{
 			var v=2
 			if(w.substr(w.length-1)==" ") v=3
 			var ttt=this.up(w.substr(w.length-v,2))
-			if((AVIMConfig.oldAccent==0)&&((ttt=="UY")||(ttt=="OA")||(ttt=="OE"))) return vowA[0]
+			if((!AVIMConfig.oldAccent)&&((ttt=="UY")||(ttt=="OA")||(ttt=="OE"))) return vowA[0]
 			var c2=0,fdconsonant,sc="BCD"+fcc(272)+"GHKLMNPQRSTVX",dc="CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',')
 			for(h=1;h<=w.length;h++) {
 				fdconsonant=false
@@ -751,7 +751,7 @@ function AVIM()	{
 		if(this.changed) { this.changed=false; e.preventDefault() }
 	}
 	this.checkCode=function(code) {
-		return AVIMConfig.onOff == 0 || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
+		return !AVIMConfig.onOff || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
 	}
 	this.notWord=function(w) {
 		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t" +
@@ -942,7 +942,7 @@ function AVIM()	{
 			
 			// Basic options
 			case "enabled":
-				AVIMConfig.onOff = 0 + prefs.getBoolPref("enabled");
+				AVIMConfig.onOff = prefs.getBoolPref("enabled");
 				if (specificPref) break;
 			case "method":
 				AVIMConfig.method = prefs.getIntPref("method");
@@ -957,11 +957,10 @@ function AVIM()	{
 				}
 				if (specificPref) break;
 			case "ignoreMalformed":
-				AVIMConfig.ckSpell =
-					0 + prefs.getBoolPref("ignoreMalformed");
+				AVIMConfig.ckSpell = prefs.getBoolPref("ignoreMalformed");
 				if (specificPref) break;
 			case "oldAccents":
-				AVIMConfig.oldAccent = 0 + prefs.getBoolPref("oldAccents");
+				AVIMConfig.oldAccent = prefs.getBoolPref("oldAccents");
 				if (specificPref) break;
 			case "statusBarPanel":
 				AVIMConfig.statusBarPanel = prefs.getBoolPref("statusBarPanel");
