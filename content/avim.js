@@ -20,8 +20,8 @@ var AVIMConfig = {
 	// Script monitor
 	disabledScripts: {
 		enabled: true,
-		AVIM: true, CHIM: false, Mudim: false,
-		mViet: true, VietIMEW: false, VietTyping: true, VietUni: true
+		AVIM: true, CHIM: false, Mudim: false, mViet: true, VietIMEW: false,
+		VietTyping: true, VietUni: true, Vinova: false
 	}
 };
 
@@ -878,42 +878,52 @@ function AVIM()	{
 	/**
 	 * Updates the stored preferences to reflect AVIM's current state.
 	 */
-	this.setPrefs = function() {
-		// Basic options
-		prefs.setBoolPref("enabled", !!AVIMConfig.onOff);
-		prefs.setIntPref("method", AVIMConfig.method);
-		prefs.setBoolPref("ignoreMalformed", !!AVIMConfig.ckSpell);
-		prefs.setBoolPref("oldAccents", !!AVIMConfig.oldAccent);
-		prefs.setBoolPref("statusBarPanel", AVIMConfig.statusBarPanel);
+	this.setPrefs = function(changedPref) {
+		// Boolean preferences
+		var boolPrefs = {
+			// Basic options
+			enabled: AVIMConfig.onOff,
+			ignoreMalformed: AVIMConfig.ckSpell,
+			oldAccents: AVIMConfig.oldAccent,
+			statusBarPanel: AVIMConfig.statusBarPanel,
+			
+			// Advanced options
+			informal: AVIMConfig.informal,
+			
+			// Auto input method configuration
+			"auto.telex": AVIMConfig.autoMethods.telex,
+			"auto.vni": AVIMConfig.autoMethods.vni,
+			"auto.viqr": AVIMConfig.autoMethods.viqr,
+			"auto.viqrStar": AVIMConfig.autoMethods.viqrStar,
+			
+			// Script monitor
+			"scriptMonitor.enabled": AVIMConfig.disabledScripts.enabled,
+			"scriptMonitor.avim": AVIMConfig.disabledScripts.avim,
+			"scriptMonitor.chim": AVIMConfig.disabledScripts.chim,
+			"scriptMonitor.mudim": AVIMConfig.disabledScripts.mudim,
+			"scriptMonitor.mViet": AVIMConfig.disabledScripts.mViet,
+			"scriptMonitor.vietImeW": AVIMConfig.disabledScripts.vietImeW,
+			"scriptMonitor.vietTyping": AVIMConfig.disabledScripts.vietTyping,
+			"scriptMonitor.vietUni": AVIMConfig.disabledScripts.vietUni,
+			"scriptMonitor.vinova": AVIMConfig.disabledScripts.vinova
+		};
+		if (changedPref && changedPref in boolPrefs) {
+			prefs.setBoolPref(changedPref, !!boolPrefs[changedPref]);
+		}
+		else for (var pref in boolPrefs) {
+			prefs.setBoolPref(pref, !!boolPrefs[pref]);
+		}
 		
-		// Advanced options
-		prefs.setBoolPref("informal", !!AVIMConfig.informal);
-		var ids = AVIMConfig.exclude.join(" ").toLowerCase();
-		prefs.setCharPref("ignoredFieldIds", ids);
+		// Integer preferences
+		if (!changedPref || changedPref == "method") {
+			prefs.setIntPref("method", AVIMConfig.method);
+		}
 		
-		// Auto input method configuration
-		prefs.setBoolPref("auto.telex", AVIMConfig.autoMethods.telex);
-		prefs.setBoolPref("auto.vni", AVIMConfig.autoMethods.vni);
-		prefs.setBoolPref("auto.viqr", AVIMConfig.autoMethods.viqr);
-		prefs.setBoolPref("auto.viqrStar", AVIMConfig.autoMethods.viqrStar);
-		
-		// Script monitor
-		prefs.setBoolPref("scriptMonitor.enabled",
-						  AVIMConfig.disabledScripts.enabled);
-		prefs.setBoolPref("scriptMonitor.avim",
-						  AVIMConfig.disabledScripts.AVIM);
-		prefs.setBoolPref("scriptMonitor.chim",
-						  AVIMConfig.disabledScripts.CHIM);
-		prefs.setBoolPref("scriptMonitor.mudim",
-						  AVIMConfig.disabledScripts.Mudim);
-		prefs.setBoolPref("scriptMonitor.mViet",
-						  AVIMConfig.disabledScripts.mViet);
-		prefs.setBoolPref("scriptMonitor.vietImeW",
-						  AVIMConfig.disabledScripts.VietIMEW);
-		prefs.setBoolPref("scriptMonitor.vietTyping",
-						  AVIMConfig.disabledScripts.VietTyping);
-		prefs.setBoolPref("scriptMonitor.vietUni",
-						  AVIMConfig.disabledScripts.VietUni);
+		// Custom string preferences
+		if (!changedPref || changedPref == "ignoredFieldIds") {
+			var ids = AVIMConfig.exclude.join(" ").toLowerCase();
+			prefs.setCharPref("ignoredFieldIds", ids);
+		}
 	};
 	
 	/**
@@ -1013,6 +1023,10 @@ function AVIM()	{
 			case "scriptMonitor.vietUni":
 				AVIMConfig.disabledScripts.VietUni =
 					prefs.getBoolPref("scriptMonitor.vietUni");
+				if (specificPref) break;
+			case "scriptMonitor.vinova":
+				AVIMConfig.disabledScripts.Vinova =
+					prefs.getBoolPref("scriptMonitor.vinova");
 //				if (specificPref) break;
 		}
 	};
@@ -1074,6 +1088,10 @@ function AVIM()	{
 			if (!AVIMConfig.disabledScripts.VietUni) return;
 			win.setTypingMode();
 		},
+		Vinova: function(win, vinova) {
+			if (!AVIMConfig.disabledScripts.Vinova) return;
+			vinova.reset(true);
+		},
 		xvnkb: function(win) {
 			if (!AVIMConfig.disabledScripts.CHIM) return;
 			if (parseInt(win.vnMethod) == 0) return;
@@ -1104,6 +1122,8 @@ function AVIM()	{
 		"findCharToChange": disablers.HIM,
 		// AVIM after build 20071102
 		"AVIMObj": disablers.AVIM,
+		// Vinova (2008-05-23)
+		"vinova": disablers.Vinova,
 		// VietIMEW
 		"GetVnVowelIndex": disablers.VietIMEW
 	};

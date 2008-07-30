@@ -47,3 +47,4 @@ pref("extensions.avim.scriptMonitor.mViet", true);
 pref("extensions.avim.scriptMonitor.vietImeW", false);
 pref("extensions.avim.scriptMonitor.vietTyping", true);
 pref("extensions.avim.scriptMonitor.vietUni", true);
+pref("extensions.avim.scriptMonitor.vinova", false);
