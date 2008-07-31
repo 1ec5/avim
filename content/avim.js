@@ -797,7 +797,14 @@ function AVIM()	{
 		// anonymous inner element.
 		if (el.namespaceURI == xulURI) {
 			var anonEl = el.textbox || el.inputField || el.mInputField;
-			var xulAnonIDs = {findbar: "findbar-textbox", searchvalue: "input"};
+			var xulAnonIDs = {
+				findbar: "findbar-textbox", searchvalue: "input",
+				"sb-locationbar-textbox": "textbox"
+			};
+			if (!anonEl && el.localName == "sb-servicepane" && el.mTreePane &&
+				el.mTreePane.mTree) {
+				anonEl = el.mTreePane.mTree.inputField;
+			}
 			var anonID = xulAnonIDs[el.localName];
 			if (!anonEl && anonID) {
 				anonEl = document.getAnonymousElementByAttribute(el, "anonid",

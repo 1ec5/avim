@@ -2,7 +2,7 @@
 
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
-<overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+<overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<commandset>
 		<command id="avim-enabled-cmd" oncommand="avim.toggle();" />
 		<command id="avim-method-cmd" oncommand="avim.setMethod(this.value || this.getAttribute('value'));" />
@@ -104,5 +104,5 @@
 		<statusbarpanel id="avim-status" label="&AVIM.label;" disabledLabel="&avim-disabled.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" />
 	</statusbar>
 	
-	<script id="avim-js" type="application/x-javascript" src="chrome://avim/content/avim.js" />
+	<script type="text/javascript" src="chrome://avim/content/avim.js" />
 </overlay>

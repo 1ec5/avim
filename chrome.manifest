@@ -7,6 +7,7 @@ locale	avim	vi	locale/vi/
 
 skin	avim	classic/1.0	skin/
 
+overlay chrome://global/content/globalOverlay.xul	chrome://avim/content/avim.xul
 overlay chrome://global/content/editMenuOverlay.xul	chrome://avim/content/avim.xul
 overlay chrome://global/content/commonDialog.xul	chrome://avim/content/avim.xul
 overlay chrome://global/content/dialogOverlay.xul	chrome://avim/content/avim.xul
@@ -30,11 +31,6 @@ overlay	chrome://browser/content/places/bookmarkProperties2.xul			chrome://avim/
 overlay	chrome://browser/content/openLocation.xul						chrome://avim/content/avim.xul
 # Help > Report Broken Web Site...
 overlay	chrome://reporter/content/reportWizard.xul						chrome://avim/content/avim.xul
-
-### Flock ######################################################################
-
-# Image Properties dialog
-overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/avim.xul
 
 ### Thunderbird ################################################################
 
@@ -78,6 +74,28 @@ overlay	chrome://editor/content/EdDictionary.xul							chrome://avim/content/avi
 
 overlay	chrome://webrunner/content/webrunner.xul	chrome://avim/content/avim.xul
 
+### Flock ######################################################################
+
+# Image Properties dialog
+overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/avim.xul
+
+### Songbird ###################################################################
+
+overlay	chrome://songbird/content/xul/layoutWithBrowserOverlay.xul		chrome://avim/content/avim.xul
+overlay	chrome://songbird/content/xul/layoutWithoutBrowserOverlay.xul	chrome://avim/content/avim.xul
+# Open URL dialog
+overlay	chrome://songbird/content/xul/openURL.xul						chrome://avim/content/avim.xul
+# Edit Bookmark dialog
+overlay	chrome://songbird/content/xul/editBookmark.xul					chrome://avim/content/avim.xul
+# Metadata Editor dialog
+overlay	chrome://songbird/content/xul/trackEditor.xul					chrome://avim/content/avim.xul
+# Subscribe dialog
+overlay	chrome://songbird/content/xul/subscribe.xul						chrome://avim/content/avim.xul
+# Downloads dialog
+overlay	chrome://mozapps/content/downloads/downloads.xul				chrome://avim/content/avim.xul
+# Preferences dialog
+overlay	chrome://browser/content/preferences/preferences.xul			chrome://avim/content/avim.xul
+
 ### ChatZilla ##################################################################
 
 overlay	chrome://chatzilla/content/chatzilla.xul	chrome://avim/content/avim.xul
@@ -103,6 +121,10 @@ overlay	chrome://inspector/content/viewers/domNode/domNodeDialog.xul		chrome://a
 # overlay	chrome://inspector/content/viewers/jsObject/evalExprDialog.xul		chrome://avim/content/avim.xul
 # Insert Node dialog
 overlay	chrome://inspector/content/viewers/dom/insertDialog.xul				chrome://avim/content/avim.xul
+
+### googlebar ##################################################################
+
+overlay	chrome://googlebar/content/googlebarPrefDialog.xul	chrome://avim/content/avim.xul
 
 ### Google Toolbar #############################################################
 
@@ -134,11 +156,26 @@ overlay	chrome://scrapbook/content/property.xul	chrome://avim/content/avim.xul
 # Manage Items dialog
 overlay	chrome://scrapbook/content/manage.xul	chrome://avim/content/avim.xul
 
+### Songbird Developer Tools ###################################################
+
+overlay	chrome://sbdevtools/content/wizard-common-overlay.xul	chrome://avim/content/avim.xul
+
 ### SQLite Manager #############################################################
 
 overlay	chrome://sqlitemanager/content/sqlitemanager.xul	chrome://avim/content/avim.xul
 # Edit Record dialog
 overlay	chrome://sqlitemanager/content/RowOperations.xul	chrome://avim/content/avim.xul
+
+### StumbleUpon ################################################################
+
+# Review dialog
+overlay	chrome://stumbleupon/content/ratingDialog.xul	chrome://avim/content/avim.xul
+# Search dialog
+overlay	chrome://stumbleupon/content/searchDialog.xul	chrome://avim/content/avim.xul
+# Sign-in dialog
+overlay	chrome://stumbleupon/content/signinDialog.xul	chrome://avim/content/avim.xul
+# Tagging dialog
+overlay	chrome://stumbleupon/content/taggingDialog.xul	chrome://avim/content/avim.xul
 
 ### Web Developer ##############################################################
 
