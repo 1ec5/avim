@@ -91,6 +91,10 @@ function AVIM()	{
 			if (/^Z|.DZ|.F|[^D]Z/.test(uw)) return true;
 		}
 		else if (uw.indexOf("F") >= 0 || uw.indexOf("W") >= 0) return true;
+		
+		// From Mudim issue #16
+		if (/^Q[^U]|^C[IEÊ]|^NG[IEÊ]/.test(uw)) return true;
+		
 		for(a=0;a<uw.length;a++) {
 			for(b=0;b<notViet.length;b++) {
 				if(uw2.substr(a,notViet[b].length)==notViet[b]) {
@@ -783,8 +787,7 @@ function AVIM()	{
 	this.keyPressHandler=function(e) {
 		var el=e.target,code=e.which;
 //		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
-		if(e.ctrlKey || e.metaKey) return false;
-		if(e.altKey) return false;
+		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		const xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 		if (document.documentElement.namespaceURI == xulURI) {
@@ -801,14 +804,14 @@ function AVIM()	{
 				findbar: "findbar-textbox", searchvalue: "input",
 				"sb-locationbar-textbox": "textbox"
 			};
-			if (!anonEl && el.localName == "sb-servicepane" && el.mTreePane &&
-				el.mTreePane.mTree) {
-				anonEl = el.mTreePane.mTree.inputField;
-			}
 			var anonID = xulAnonIDs[el.localName];
 			if (!anonEl && anonID) {
 				anonEl = document.getAnonymousElementByAttribute(el, "anonid",
 																 anonID);
+			}
+			if (!anonEl && el.localName == "sb-servicepane" && el.mTreePane &&
+				el.mTreePane.mTree) {
+				anonEl = el.mTreePane.mTree.inputField;
 			}
 			if (!anonEl && el.wrappedJSObject) {
 				var anonWrapper = el.wrappedJSObject;
