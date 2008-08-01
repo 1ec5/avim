@@ -791,8 +791,6 @@ function AVIM()	{
 		const xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 		if (document.documentElement.namespaceURI == xulURI) {
-//			// Ignore XUL pages embedded inside XUL windows.
-//			if (document.documentElement.localName == "page") return false;
 			// Ignore about:config.
 			if (el.parentNode && el.parentNode.id == "filterRow") return false;
 		}
