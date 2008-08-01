@@ -99,10 +99,5 @@
 		</menu>
 	</menupopup>
 	
-	<!-- Status bar menu -->
-	<statusbar id="status-bar">
-		<statusbarpanel id="avim-status" label="&AVIM.label;" disabledLabel="&avim-disabled.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" />
-	</statusbar>
-	
 	<script type="text/javascript" src="chrome://avim/content/avim.js" />
 </overlay>
