@@ -129,5 +129,6 @@ Version ${Version} (${Date})
  - Added support for alpha versions of Firefox 3.1.
  - Added support for the googlebar, StumbleUpon, and Venkman extensions.
  - The first word typed into a rich textbox is no longer flipped around.
+ - Fixed an issue where words beginning with Z were accepted.
  - Words that begin with Q but not QU are considered malformed.
  - Vinova can now be automatically disabled on webpages via a hidden preference.

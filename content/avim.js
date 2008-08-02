@@ -117,64 +117,47 @@ function AVIM()	{
 	this.ckspell = function(w, k) {
 		if (!AVIMConfig.ckSpell) return false;
 		w = this.unV(w);
-		var exc = "UOU,IEU".split(','), z, next = true, noE = "UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','), noBE = "YEU";
-		var check = true, noM = "UE,UYE,IU,EU,UY".split(','), noMT = "AY,AU".split(','), noT = "UA", t = -1, notV2 = "IAO";
+		var z, next = true, noE = "UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','), noBE = "YEU";
+		var check = true, noM = "UE,UYE,IU,EU,UY".split(','), noMT = "AY,AU".split(','), noT = "UA", notV2 = "IAO";
 		var uw = this.up(w), tw = uw, update = false, gi = "IO", noAOEW = "OE,OO,AO,EO,IA,AI".split(','), noAOE = "OA", test, a, b;
-		var notViet = "AA,AE,EE,OU,YY,YI,IY,EY,EA,EI,II,IO,YO,YA,OOO".split(','), uk = this.up(k), twE, uw2 = this.unV2(uw);
+		var uk = this.up(k), twE, uw2 = this.unV2(uw);
 		var vSConsonant = "B,C,D,G,H,K,L,M,N,P,Q,R,S,T,V,X".split(','), vDConsonant = "CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',');
-		var vDConsonantE = "CH,NG,NH".split(','),sConsonant = "C,P,T,CH".split(','),vSConsonantE = "C,M,N,P,T".split(',');
+		var vDConsonantE = "CH,NG,NH".split(','),vSConsonantE = "C,M,N,P,T".split(',');
 		if (AVIMConfig.informal) {
 			vSConsonant.push("F");
 			vDConsonant.push("DZ");
 		}
 		var noNHE = "O,U,IE,Ô,Ơ,Ư,IÊ,Ă,Â,UYE,UYÊ,UO,ƯƠ,ƯO,UƠ,UA,ƯA,OĂ,OE,OÊ".split(','),oMoc = "UU,UOU".split(',');
-		if(this.FRX.indexOf(uk) >= 0) {
-			for(a = 0; a < sConsonant.length; a++) {
-				if(uw.substr(uw.length - sConsonant[a].length, sConsonant[a].length) == sConsonant[a]) {
-					return true;
-				}
-			}
-		}
+		
+		// Final consonants with ` ? ~ tones: invalid
+		if (this.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) return true;
+		
+		// Initial non-Vietnamese consonants: invalid
 		if (/[JW0-9]/.test(uw)) return true;
 		if (AVIMConfig.informal) {
 			if (/^Z|.DZ|.F|[^D]Z/.test(uw)) return true;
 		}
-		else if (uw.indexOf("F") >= 0 || uw.indexOf("W") >= 0) return true;
+		else if (/[FZ]/.test(uw)) return true;
 		
-		// From Mudim issue #16
-		if (/^Q[^U]|^C[IEÊ]|^NG[IEÊ]/.test(uw)) return true;
+		// From Mudim issue #16: invalid
+		if (/^C[IE]|^NG[IEY]|^NGH[AOUY]|^Q[^U]/.test(uw)) return true;
+		// TODO: Handle QU + consonants + diacritic
+		if (uw == "QU" && (this.DAWEO || this.SFJRX)) return true;
 		
-		for(a = 0; a < uw.length; a++) {
-			for(b = 0; b < notViet.length; b++) {
-				if(uw2.substr(a, notViet[b].length) == notViet[b]) {
-					for(z = 0; z < exc.length; z++) {
-						if(uw2.indexOf(exc[z]) >= 0) {
-							next=false;
-						}
-					}
-					if(next && ((gi.indexOf(notViet[b]) < 0) || (a <= 0) || (uw2.substr(a - 1, 1) != 'G'))) {
-						return true;
-					}
-				}
-			}
+		// Non-Vietnamese vowel sequences: invalid
+		var b = /(?:A[AE]|E[AEIY]|I[IY]|[^G]IO|^IO|OOO|OU|Y[AIOY])/.exec(uw2);
+		if (b && !/UOU|IEU/.test(uw2)) return true;
+		
+		// Initial digraphs and trigraphs: valid
+		var t = new RegExp("^" + vDConsonant.join("|"), "i").exec(tw);
+		if (t && t[0]) {
+			tw = tw.substr(t[0].length);
 		}
-		for(b = 0; b < vDConsonant.length; b++) {
-			if(tw.indexOf(vDConsonant[b]) == 0) {
-				tw = tw.substr(vDConsonant[b].length);
-				update = true;
-				t = b;
-				break;
-			}
+		// Initial single consonants: valid
+		else if (new RegExp("^[" + vSConsonant.join("") + "]", "i").exec(tw)) {
+			tw = tw.substr(1);
 		}
-		if(!update) {
-			for(b = 0; b < vSConsonant.length; b++) {
-				if(tw.indexOf(vSConsonant[b]) == 0) {
-					tw=tw.substr(1);
-					break;
-				}
-			}
-		}
-		update=false;
+		
 		twE=tw;
 		for(b = 0; b < vDConsonantE.length; b++) {
 			if(tw.substr(tw.length - vDConsonantE[b].length) == vDConsonantE[b]) {
@@ -214,13 +197,6 @@ function AVIM()	{
 					return true;
 				}
 			}
-		}
-		test = tw.substr(0, 1);
-		if((t == 3) && ((test == "A") || (test == "O") || (test == "U") || (test == "Y"))) {
-			return true;
-		}
-		if((t == 5) && ((test == "E") || (test == "I") || (test == "Y"))) {
-			return true;
 		}
 		uw2 = this.unV2(tw);
 		if(uw2 == notV2) {
@@ -1317,7 +1293,12 @@ function AVIM()	{
 		var editor = this.getEditor(el);
 //		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
-		this.start(el, e);
+		try {
+			this.start(el, e);
+		}
+		catch (e) {
+			dump("AVIM.keyPressHandler called AVIM.start: " + e + "\n");		// debug
+		}
 		if (editor && editor.endTransaction) editor.endTransaction();
 		if (this.changed) {
 			this.changed=false;
