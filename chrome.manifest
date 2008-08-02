@@ -81,8 +81,10 @@ overlay	chrome://flock/content/blog/imageProperties.xul			chrome://avim/content/
 
 ### Songbird ###################################################################
 
+# Main window
 overlay	chrome://songbird/content/xul/layoutWithBrowserOverlay.xul		chrome://avim/content/generalOverlay.xul
 overlay	chrome://songbird/content/xul/layoutWithoutBrowserOverlay.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://gonzo/content/xul/mainplayer.xul						chrome://avim/content/generalOverlay.xul
 # Open URL dialog
 overlay	chrome://songbird/content/xul/openURL.xul						chrome://avim/content/generalOverlay.xul
 # Edit Bookmark dialog
