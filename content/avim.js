@@ -114,20 +114,25 @@ function AVIM()	{
 		return sf;
 	};
 	
+	/**
+	 * Returns whether the given word, taking into account the given dead key,
+	 * is a well-formed Vietnamese word.
+	 *
+	 * @param w	{string}	The word to check.
+	 * @param k	{string}	The dead key applied to the word.
+	 * @returns {boolean}	True if the word is well-formed; false otherwise.
+	 */
 	this.ckspell = function(w, k) {
 		if (!AVIMConfig.ckSpell) return false;
 		w = this.unV(w);
-		var z, next = true, noE = "UU,UOU,UOI,IEU,AO,IA,AI,AY,AU,AO".split(','), noBE = "YEU";
-		var check = true, noM = "UE,UYE,IU,EU,UY".split(','), noMT = "AY,AU".split(','), noT = "UA", notV2 = "IAO";
-		var uw = this.up(w), tw = uw, update = false, gi = "IO", noAOEW = "OE,OO,AO,EO,IA,AI".split(','), noAOE = "OA", test, a, b;
+		var uw = this.up(w), tw = uw;
 		var uk = this.up(k), twE, uw2 = this.unV2(uw);
-		var vSConsonant = "B,C,D,G,H,K,L,M,N,P,Q,R,S,T,V,X".split(','), vDConsonant = "CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',');
-		var vDConsonantE = "CH,NG,NH".split(','),vSConsonantE = "C,M,N,P,T".split(',');
+		var vSConsonant = "BCDGHKLMNPQRSTVX";
+		var vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
 		if (AVIMConfig.informal) {
-			vSConsonant.push("F");
-			vDConsonant.push("DZ");
+			vSConsonant += "F";
+			vDConsonant += "|DZ";
 		}
-		var noNHE = "O,U,IE,Ô,Ơ,Ư,IÊ,Ă,Â,UYE,UYÊ,UO,ƯƠ,ƯO,UƠ,UA,ƯA,OĂ,OE,OÊ".split(','),oMoc = "UU,UOU".split(',');
 		
 		// Final consonants with ` ? ~ tones: invalid
 		if (this.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) return true;
@@ -140,126 +145,74 @@ function AVIM()	{
 		else if (/[FZ]/.test(uw)) return true;
 		
 		// From Mudim issue #16: invalid
-		if (/^C[IE]|^NG[IEY]|^NGH[AOUY]|^Q[^U]/.test(uw)) return true;
+		if (/^C[IE]|^NG[IEY]|^NGH[AOUY]|^Q[^U]/.test(uw2)) return true;
 		// TODO: Handle QU + consonants + diacritic
 		if (uw == "QU" && (this.DAWEO || this.SFJRX)) return true;
 		
-		// Non-Vietnamese vowel sequences: invalid
-		var b = /(?:A[AE]|E[AEIY]|I[IY]|[^G]IO|^IO|OOO|OU|Y[AIOY])/.exec(uw2);
-		if (b && !/UOU|IEU/.test(uw2)) return true;
+		// Non-Vietnamese diphthongs and triphthongs: invalid
+		var dip = /(?:A[AE]|E[AEIY]|I[IY]|[^G]IO|^IO|OOO|OU|Y[AIOY])/.test(uw2);
+		if (dip && !/UOU|IEU/.test(uw2)) return true;
+		
+		// Remove initial consonants.
 		
 		// Initial digraphs and trigraphs: valid
-		var t = new RegExp("^" + vDConsonant.join("|"), "i").exec(tw);
-		if (t && t[0]) {
-			tw = tw.substr(t[0].length);
-		}
+		var dblCons = new RegExp("^(?:" + vDConsonant + ")").exec(tw);
+		if (dblCons && dblCons[0]) tw = tw.substr(dblCons[0].length);
 		// Initial single consonants: valid
-		else if (new RegExp("^[" + vSConsonant.join("") + "]", "i").exec(tw)) {
+		else if (new RegExp("^[" + vSConsonant + "]").exec(tw)) {
 			tw = tw.substr(1);
 		}
-		
 		twE=tw;
-		for(b = 0; b < vDConsonantE.length; b++) {
-			if(tw.substr(tw.length - vDConsonantE[b].length) == vDConsonantE[b]) {
-				tw = tw.substr(0, tw.length - vDConsonantE[b].length);
-				if(b == 2){
-					for(z = 0; z < noNHE.length; z++) {
-						if(tw == noNHE[z]) {
-							return true;
-						}
-					}
-					if((uk == this.trang) && ((tw == "OA") || (tw == "A"))) {
-						return true;
-					}
-				}
-				update = true;
-				break;
-			}
-		}
-		if(!update) {
-			for(b = 0; b < vSConsonantE.length; b++) {
-				if(tw.substr(tw.length - 1) == vSConsonantE[b]) {
-					tw = tw.substr(0, tw.length - 1);
-					break;
-				}
-			}
-		}
-		if(tw) {
-			for(a = 0; a < vDConsonant.length; a++) {
-				for(b = 0; b < tw.length; b++) {
-					if(tw.substr(b, vDConsonant[a].length) == vDConsonant[a]) {
-						return true;
-					}
-				}
-			}
-			for(a = 0; a < vSConsonant.length; a++) {
-				if(tw.indexOf(vSConsonant[a]) >= 0) {
+		
+		// Remove final consonants.
+		
+		// Final digraphs: valid
+		var dblEndCons = /CH$|N[GH]$/.exec(tw);
+		if (dblEndCons && dblEndCons[0]) {
+			tw = tw.substr(0, tw.length - dblEndCons[0].length);
+			// NH after incompatible diphthongs and triphthongs: invalid
+			if (dblEndCons[0] == "NH") {
+				if (/^(?:[ĂÂÔƠ]|I[EÊ]|O[ĂEÊ]?|[UƯ][AOƠ]?|UY[EÊ])$/.test(tw)) {
 					return true;
 				}
+				if (uk == this.trang && (tw == "A" || tw == "OA")) return true;
 			}
 		}
+		// Final single consonants: valid
+		else if (/[CMNPT]$/.test(tw)) tw = tw.substr(0, tw.length - 1);
+		
+		// Extraneous consonants: invalid
+		if (tw && new RegExp("(?:" + vDConsonant + "|[" +
+							 vSConsonant + "])").test(tw)) {
+			return true;
+		}
+		
 		uw2 = this.unV2(tw);
-		if(uw2 == notV2) {
-			return true;
-		}
-		if(tw != twE) {
-			for(z = 0; z < noE.length; z++) {
-				if(uw2 == noE[z]) {
-					return true;
-				}
+		if (uw2 == "IAO") return true;
+		
+		// Invalid standalone diphthongs and triphthongs: invalid
+		if (tw != twE && /A[IOUY]|IA|IEU|UU|UO[UI]/.test(uw2)) return true;
+		
+		if (tw != uw && uw2 == "YEU") return true;
+		if (uk != this.moc && (tw == "UU" || tw == "UOU")) return true;
+		
+		if (this.them.indexOf(uk) >= 0 && !/^.UYE/.test(uw2) && uk != "E") {
+			if (/A[IO]|EO|IA|O[EO]/.test(uw2)) return true;
+			
+			if (uk == this.trang) {
+				if (this.trang != "W" && uw2 == "UA") return true;
 			}
-		}
-		if((tw != uw) && (uw2 == noBE)) {
-			return true;
-		}
-		if(uk != this.moc) {
-			for(z = 0; z < oMoc.length; z++) {
-				if(tw == oMoc[z]) return true;
-			}
-		}
-		if((uw2.indexOf('UYE')>0) && (uk == 'E')) {
-			check=false;
-		}
-		if((this.them.indexOf(uk) >= 0) && check) {
-			for(a = 0; a < noAOEW.length; a++) {
-				if(uw2.indexOf(noAOEW[a]) >= 0) {
-					return true;
-				}
-			}
-			if(uk != this.trang) {
-				if(uw2 == noAOE) {
-					return true;
-				}
-			}
-			if((uk == this.trang) && (this.trang != 'W')) {
-				if(uw2 == noT) {
-					return true;
-				}
-			}
-			if(uk == this.moc) {
-				for(a = 0; a < noM.length; a++) {
-					if(uw2 == noM[a]) {
-						return true;
-					}
-				}
-			}
-			if((uk == this.moc) || (uk == this.trang)) {
-				for(a = 0; a < noMT.length; a++) {
-					if(uw2 == noMT[a]) {
-						return true;
-					}
-				}
+			else if (uw2 == "OA") return true;
+			
+			if (uk == this.moc && /^(?:[EI]U|UE|UYE?)$/.test(uw2)) return true;
+			if (uk == this.moc || uk == this.trang) {
+				if (uw2 == "AU" || uw2 == "AY") return true;
 			}
 		}
 		this.tw5 = tw;
-		if((uw2.charCodeAt(0) == 272) || (uw2.charCodeAt(0) == 273)) {
-			if(uw2.length > 4) {
-				return true;
-			}
-		} else if(uw2.length > 3) {
-			return true;
-		}
-		return false;
+		
+		// Catch-all for words with too many interior letters
+		return /$[Đđ]?....+/.test(uw2);
 	};
 	
 	/**
