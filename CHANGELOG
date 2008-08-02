@@ -125,7 +125,6 @@ Version 20080224.139 (Tuesday, July 29, 2008)
    general.useragent.locale has been modified.
 
 Version ${Version} (${Date})
- - First release powered by avim.js 20080728.
  - Added support for Songbird.
  - Added support for alpha versions of Firefox 3.1.
  - Added support for the googlebar, StumbleUpon, and Venkman extensions.
