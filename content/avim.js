@@ -32,7 +32,7 @@ var AVIMConfig = {
 	// Script monitor
 	disabledScripts: {
 		enabled: true,
-		AVIM: true, CHIM: false, Mudim: false, mViet: true, VietIMEW: false,
+		AVIM: true, CHIM: false, Mudim: false, MViet: true, VietIMEW: false,
 		VietTyping: true, VietUni: true, Vinova: false
 	}
 };
@@ -154,7 +154,7 @@ function AVIM()	{
 		else if (/[FZ]/.test(uw)) return true;
 		
 		// From Mudim issue #16: invalid
-		if (/^C[IE]|^NG[IEY]|^NGH[AOUY]|^Q[^U]/.test(uw2)) return true;
+		if (/^C[IEY]|^NG[IEY]|^NGH[AOUY]|^Q[^U]/.test(uw2)) return true;
 		// TODO: Handle QU + consonants + diacritic
 		if (uw == "QU" && (this.DAWEO || this.SFJRX)) return true;
 		
@@ -1304,14 +1304,14 @@ function AVIM()	{
 			
 			// Script monitor
 			"scriptMonitor.enabled": AVIMConfig.disabledScripts.enabled,
-			"scriptMonitor.avim": AVIMConfig.disabledScripts.avim,
-			"scriptMonitor.chim": AVIMConfig.disabledScripts.chim,
-			"scriptMonitor.mudim": AVIMConfig.disabledScripts.mudim,
-			"scriptMonitor.mViet": AVIMConfig.disabledScripts.mViet,
-			"scriptMonitor.vietImeW": AVIMConfig.disabledScripts.vietImeW,
-			"scriptMonitor.vietTyping": AVIMConfig.disabledScripts.vietTyping,
-			"scriptMonitor.vietUni": AVIMConfig.disabledScripts.vietUni,
-			"scriptMonitor.vinova": AVIMConfig.disabledScripts.vinova
+			"scriptMonitor.avim": AVIMConfig.disabledScripts.AVIM,
+			"scriptMonitor.chim": AVIMConfig.disabledScripts.CHIM,
+			"scriptMonitor.mudim": AVIMConfig.disabledScripts.Mudim,
+			"scriptMonitor.mViet": AVIMConfig.disabledScripts.MViet,
+			"scriptMonitor.vietImeW": AVIMConfig.disabledScripts.VietIMEW,
+			"scriptMonitor.vietTyping": AVIMConfig.disabledScripts.VietTyping,
+			"scriptMonitor.vietUni": AVIMConfig.disabledScripts.VietUni,
+			"scriptMonitor.vinova": AVIMConfig.disabledScripts.Vinova
 		};
 		if (changedPref && changedPref in boolPrefs) {
 			prefs.setBoolPref(changedPref, !!boolPrefs[changedPref]);
@@ -1414,7 +1414,7 @@ function AVIM()	{
 					prefs.getBoolPref("scriptMonitor.mudim");
 				if (specificPref) break;
 			case "scriptMonitor.mViet":
-				AVIMConfig.disabledScripts.mViet =
+				AVIMConfig.disabledScripts.MViet =
 					prefs.getBoolPref("scriptMonitor.mViet");
 				if (specificPref) break;
 			case "scriptMonitor.vietImeW":
@@ -1467,7 +1467,7 @@ function AVIM()	{
 			else win.CHIM.Toggle();
 		},
 		MViet: function(win) {
-			if (!AVIMConfig.disabledScripts.mViet) return;
+			if (!AVIMConfig.disabledScripts.MViet) return;
 			if (typeof(win.MVOff) == "boolean" && win.MVOff) return;
 			if ("MVietOnOffButton" in win) win.MVietOnOffButton();
 			else if ("button" in win) win.button(0);
@@ -1513,10 +1513,10 @@ function AVIM()	{
 		"telexingVietUC": disablers.VietUni,
 		// Mudim since version 0.3 (r2)
 		"Mudim": disablers.Mudim,
-		// mViet 12 AC
+		// MViet 12 AC
 		"evBX": disablers.MViet,
-		// mViet 14 RTE
-		"MVietOnOffButton": disablers.mViet,
+		// MViet 14 RTE
+		"MVietOnOffButton": disablers.MViet,
 		// CHIM since version 0.9.3
 		"CHIM": disablers.CHIM,
 		// CHIM (xvnkb.js) versions 0.8-0.9.2 and BIM 0.00.01-0.0.3
@@ -1574,8 +1574,8 @@ function AVIM()	{
 			if (this.disableOther(win, marker)) return;
 		}
 		
-		// mViet 14 RTE
-		if (!AVIMConfig.disabledScripts.mViet) return;
+		// MViet 14 RTE
+		if (!AVIMConfig.disabledScripts.MViet) return;
 		if (win.frameElement) win = win.parent;
 		var marker = "MVietOnOffButton";
 		if (marker in win) disablers.MViet(win);
