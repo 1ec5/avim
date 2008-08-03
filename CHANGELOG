@@ -130,7 +130,8 @@ Version ${Version} (${Date})
  - Added support for the googlebar, StumbleUpon, and Venkman extensions.
  - The first word typed into a rich textbox is no longer flipped around.
  - Fixed an issue where words beginning with Z were accepted.
- - Words that begin with Q but not QU are considered malformed.
+ - Words that begin with Q but not QU are considered malformed. So are words
+   that begin with KA, KO, or KU.
  - Fixed an issue where special textboxes in Firefox, such as the search and
    find bars, could not be ignored.
  - Fixed an issue where some in-page scripts would not be disabled.

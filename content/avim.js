@@ -154,7 +154,10 @@ function AVIM()	{
 		else if (/[FZ]/.test(uw)) return true;
 		
 		// From Mudim issue #16: invalid
-		if (/^C[IEY]|^NG[IEY]|^NGH[AOUY]|^Q[^U]/.test(uw2)) return true;
+		if (/^(?:C[IEY]|CO[AE]|CUY|K[AOU]|NG[IEY]|NGH[AOUY]|P[^H]|Q[^U]|QUU)/
+			.test(uw2)) {
+			return true;
+		}
 		// TODO: Handle QU + consonants + diacritic
 		if (uw == "QU" && (this.DAWEO || this.SFJRX)) return true;
 		
