@@ -153,51 +153,45 @@ function AVIM()	{
 		}
 		else if (/[FZ]/.test(uw)) return true;
 		
-		// From Mudim issue #16: invalid
-		if (/^(?:C[IEY]|CO[AE]|CUY|K[AOU]|NG[IEY]|NGH[AOUY]|P[^H]|Q[^U]|QUU)/
+		// Incompatible vowels following certain consonants, mostly thanks to
+		// Mudim issue #16: invalid
+		if (/^(?:C[IEY]|C[HU]Y|CO[AE]|G[EY]|K[AOU]|NG[IEY]|NGH[AOUY]|P[^H]|Q[^U]|QUU|TRY|[NRX]Y|[NPT]HY)/
 			.test(uw2)) {
 			return true;
 		}
 		// TODO: Handle QU + consonants + diacritic
-		if (uw == "QU" && (this.DAWEO || this.SFJRX)) return true;
+		if (uw2 == "QU" && (this.DAWEO || this.SFJRX)) return true;
 		
 		// Non-Vietnamese diphthongs and triphthongs: invalid
-		var dip = /(?:A[AE]|E[AEIY]|I[IY]|[^G]IO|^IO|OOO|OU|Y[AIOY])/.test(uw2);
+		var dip = /(?:A[AE]|E[AEIY]|I[IY]|^IO|OOO|OU|Y[AIOY]|[^G]IO)/.test(uw2);
 		if (dip && !/UOU|IEU/.test(uw2)) return true;
 		
 		// Remove initial consonants.
 		
 		// Initial digraphs and trigraphs: valid
-		var dblCons = new RegExp("^(?:" + vDConsonant + ")").exec(tw);
-		if (dblCons && dblCons[0]) tw = tw.substr(dblCons[0].length);
-		// Initial single consonants: valid
-		else if (new RegExp("^[" + vSConsonant + "]").exec(tw)) {
-			tw = tw.substr(1);
-		}
+		var consRe = new RegExp("(?:" + vDConsonant + "|[" + vSConsonant +
+								"])");
+		var cons = consRe.exec(tw);
+		if (cons && cons[0]) tw = tw.substr(cons[0].length);
 		twE=tw;
 		
 		// Remove final consonants.
 		
-		// Final digraphs: valid
-		var dblEndCons = /CH$|N[GH]$/.exec(tw);
-		if (dblEndCons && dblEndCons[0]) {
-			tw = tw.substr(0, tw.length - dblEndCons[0].length);
+		// Final consonants: valid
+		var endCons = /(?:[MPT]|CH?|N[GH]?)$/.exec(tw);
+		if (endCons && endCons[0]) {
+			tw = tw.substr(0, tw.length - endCons[0].length);
 			// NH after incompatible diphthongs and triphthongs: invalid
-			if (dblEndCons[0] == "NH") {
+			if (endCons[0] == "NH") {
 				if (/^(?:[ĂÂÔƠ]|I[EÊ]|O[ĂEÊ]?|[UƯ][AOƠ]?|UY[EÊ])$/.test(tw)) {
 					return true;
 				}
 				if (uk == this.trang && (tw == "A" || tw == "OA")) return true;
 			}
 		}
-		// Final single consonants: valid
-		else if (/[CMNPT]$/.test(tw)) tw = tw.substr(0, tw.length - 1);
 		
 		// Extraneous consonants: invalid
-		if (tw && new RegExp("(?:" + vDConsonant + "|[" +
-							 vSConsonant + "])").test(tw)) {
-			return true;
-		}
+		if (tw && consRe.test(tw)) return true;
 		
 		uw2 = this.unV2(tw);
 		if (uw2 == "IAO") return true;
