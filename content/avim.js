@@ -76,34 +76,43 @@ function AVIM()	{
 	this.whit = false;
 	this.db1 = [273,272];
 	this.ds1 = ['d','D'];
-	this.os1 = "o,O,ơ,Ơ,ó,Ó,ò,Ò,ọ,Ọ,ỏ,Ỏ,õ,Õ,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ".split(",");
-	this.ob1 = "ô,Ô,ô,Ô,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ".split(",");
-	this.mocs1 = "o,O,ô,Ô,u,U,ó,Ó,ò,Ò,ọ,Ọ,ỏ,Ỏ,õ,Õ,ú,Ú,ù,Ù,ụ,Ụ,ủ,Ủ,ũ,Ũ,ố,Ố,ồ,Ồ,ộ,Ộ,ổ,Ổ,ỗ,Ỗ".split(",");
-	this.mocb1 = "ơ,Ơ,ơ,Ơ,ư,Ư,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ,ứ,Ứ,ừ,Ừ,ự,Ự,ử,Ử,ữ,Ữ,ớ,Ớ,ờ,Ờ,ợ,Ợ,ở,Ở,ỡ,Ỡ".split(",");
-	this.trangs1 = "a,A,â,Â,á,Á,à,À,ạ,Ạ,ả,Ả,ã,Ã,ấ,Ấ,ầ,Ầ,ậ,Ậ,ẩ,Ẩ,ẫ,Ẫ".split(",");
-	this.trangb1 = "ă,Ă,ă,Ă,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ".split(",");
-	this.as1 = "a,A,ă,Ă,á,Á,à,À,ạ,Ạ,ả,Ả,ã,Ã,ắ,Ắ,ằ,Ằ,ặ,Ặ,ẳ,Ẳ,ẵ,Ẵ,ế,Ế,ề,Ề,ệ,Ệ,ể,Ể,ễ,Ễ".split(",");
-	this.ab1 = "â,Â,â,Â,ấ,Ấ,ầ,Ầ,ậ,Ậ,ẩ,Ẩ,ẫ,Ẫ,ấ,Ấ,ầ,Ầ,ậ,Ậ,ẩ,Ẩ,ẫ,Ẫ,é,É,è,È,ẹ,Ẹ,ẻ,Ẻ,ẽ,Ẽ".split(",");
-	this.es1 = "e,E,é,É,è,È,ẹ,Ẹ,ẻ,Ẻ,ẽ,Ẽ".split(",");
-	this.eb1 = "ê,Ê,ế,Ế,ề,Ề,ệ,Ệ,ể,Ể,ễ,Ễ".split(",");
+	this.os1 = "oOơƠóÓòÒọỌỏỎõÕớỚờỜợỢởỞỡỠ".split("");
+	this.ob1 = "ôÔôÔốỐồỒộỘổỔỗỖốỐồỒộỘổỔỗỖ".split("");
+	this.mocs1 = "oOôÔuUóÓòÒọỌỏỎõÕúÚùÙụỤủỦũŨốỐồỒộỘổỔỗỖ".split("");
+	this.mocb1 = "ơƠơƠưƯớỚờỜợỢởỞỡỠứỨừỪựỰửỬữỮớỚờỜợỢởỞỡỠ".split("");
+	this.trangs1 = "aAâÂáÁàÀạẠảẢãÃấẤầẦậẬẩẨẫẪ".split("");
+	this.trangb1 = "ăĂăĂắẮằẰặẶẳẲẵẴắẮằẰặẶẳẲẵẴ".split("");
+	this.as1 = "aAăĂáÁàÀạẠảẢãÃắẮằẰặẶẳẲẵẴếẾềỀệỆểỂễỄ".split("");
+	this.ab1 = "âÂâÂấẤầẦậẬẩẨẫẪấẤầẦậẬẩẨẫẪéÉèÈẹẸẻẺẽẼ".split("");
+	this.es1 = "eEéÉèÈẹẸẻẺẽẼ".split("");
+	this.eb1 = "êÊếẾềỀệỆểỂễỄ".split("");
 	this.english = "ĐÂĂƠƯÊÔ";
 	this.lowen = "đâăơưêô";
-	this.arA = "á,à,ả,ã,ạ,a,Á,À,Ả,Ã,Ạ,A".split(',');
-	this.mocrA = "ó,ò,ỏ,õ,ọ,o,ú,ù,ủ,ũ,ụ,u,Ó,Ò,Ỏ,Õ,Ọ,O,Ú,Ù,Ủ,Ũ,Ụ,U".split(',');
-	this.erA = "é,è,ẻ,ẽ,ẹ,e,É,È,Ẻ,Ẽ,Ẹ,E".split(',');
-	this.orA = "ó,ò,ỏ,õ,ọ,o,Ó,Ò,Ỏ,Õ,Ọ,O".split(',');
-	this.aA = "ấ,ầ,ẩ,ẫ,ậ,â,Ấ,Ầ,Ẩ,Ẫ,Ậ,Â".split(',');
-	this.oA = "ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',');
-	this.mocA = "ớ,ờ,ở,ỡ,ợ,ơ,ứ,ừ,ử,ữ,ự,ư,Ớ,Ờ,Ở,Ỡ,Ợ,Ơ,Ứ,Ừ,Ử,Ữ,Ự,Ư".split(',');
-	this.trangA = "ắ,ằ,ẳ,ẵ,ặ,ă,Ắ,Ằ,Ẳ,Ẵ,Ặ,Ă".split(',');
-	this.eA = "ế,ề,ể,ễ,ệ,ê,Ế,Ề,Ể,Ễ,Ệ,Ê".split(',');
-	this.oA = "ố,ồ,ổ,ỗ,ộ,ô,Ố,Ồ,Ổ,Ỗ,Ộ,Ô".split(',');
-	this.skey2 = "a,a,a,e,e,i,o,o,o,u,u,y,A,A,A,E,E,I,O,O,O,U,U,Y".split(',');
+	this.arA = "áàảãạaÁÀẢÃẠA".split('');
+	this.mocrA = "óòỏõọoúùủũụuÓÒỎÕỌOÚÙỦŨỤU".split('');
+	this.erA = "éèẻẽẹeÉÈẺẼẸE".split('');
+	this.orA = "óòỏõọoÓÒỎÕỌO".split('');
+	this.aA = "ấầẩẫậâẤẦẨẪẬÂ".split('');
+	this.oA = "ốồổỗộôỐỒỔỖỘÔ".split('');
+	this.mocA = "ớờởỡợơứừửữựưỚỜỞỠỢƠỨỪỬỮỰƯ".split('');
+	this.trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
+	this.eA = "ếềểễệêẾỀỂỄỆÊ".split('');
+	this.oA = "ốồổỗộôỐỒỔỖỘÔ".split('');
+	this.skey2 = "aaaeeiooouuyAAAEEIOOOUUY".split('');
 	
+	// Local functions that don't require access to AVIM's fields.
 	var fcc = String.fromCharCode;
 	
 	var $ = function (id) {
 		return document.getElementById(id);
+	};
+	
+	var nan = function(w) {
+		return isNaN(w) || w == 'e';
+	};
+	
+	var up = function(w) {
+		return w.toUpperCase();
 	};
 	
 	this.getSF = function() {
@@ -125,8 +134,8 @@ function AVIM()	{
 	this.ckspell = function(w, k) {
 		if (!AVIMConfig.ckSpell) return false;
 		w = this.unV(w);
-		var uw = this.up(w), tw = uw;
-		var uk = this.up(k), twE, uw2 = this.unV2(uw);
+		var uw = up(w), tw = uw;
+		var uk = up(k), twE, uw2 = this.unV2(uw);
 		var vSConsonant = "BCDGHKLMNPQRSTVX";
 		var vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
 		if (AVIMConfig.informal) {
@@ -422,7 +431,7 @@ function AVIM()	{
 	this.start = function(obj, key) {
 		var w = "", method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell, uni, uni2 = false, uni3 = false, uni4 = false;
 		this.oc=obj;
-		var telex = "D,A,E,O,W,W".split(','), vni = "9,6,6,6,7,8".split(','), viqr = "D,^,^,^,+,(".split(','), viqr2 = "D,^,^,^,*,(".split(','), a, noNormC;
+		var telex = "DAEOWW".split(""), vni = "966678".split(""), viqr = "D^^^+(".split(""), viqr2 = "D^^^*(".split(""), a, noNormC;
 		if(method == 0) {
 			var arr = [], check = [AVIMConfig.autoMethods.telex, AVIMConfig.autoMethods.vni, AVIMConfig.autoMethods.viqr, AVIMConfig.autoMethods.viqrStar];
 			var value1 = [telex, vni, viqr, viqr2], uniA = [uni, uni2, uni3, uni4], D2A = ["DAWEO", "6789", "D^+(", "D^*("];
@@ -465,7 +474,7 @@ function AVIM()	{
 		if(!w || obj.sel) {
 			return;
 		}
-		if(this.D2.indexOf(this.up(key)) >= 0) {
+		if(this.D2.indexOf(up(key)) >= 0) {
 			noNormC = true;
 		} else {
 			noNormC = false;
@@ -489,7 +498,7 @@ function AVIM()	{
 		if(w && uni4 && !this.changed) {
 			this.main(w[0], key, w[1], uni4, noNormC);
 		}
-		if(this.D2.indexOf(this.up(key)) >= 0) {
+		if(this.D2.indexOf(up(key)) >= 0) {
 			w = this.mozGetText(obj);
 			if(!w) {
 				return;
@@ -500,57 +509,43 @@ function AVIM()	{
 	
 	this.findC = function(w, k, sf) {
 		var method = AVIMConfig.method;
-		if(((method == 3) || (method == 4)) && (w.substr(w.length - 1, 1) == "\\")) {
+		if ((method == 3 || method == 4) && w.substr(-2) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
-		var str = "", res, cc = "", pc = "", tE = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = this.up(w), tv, g;
-		var DAWEOFA = this.up(this.aA.join() + this.eA.join() + this.mocA.join() + this.trangA.join() + this.oA.join() + this.english), h, uc;
-		for(g = 0; g < sf.length; g++) {
-			if(this.nan(sf[g])) {
-				str += sf[g];
-			} else {
-				str += fcc(sf[g]);
-			}
+		var str = "", res, cc = "", pc = "", tE = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
+		var DAWEOFA = up(this.aA.join() + this.eA.join() + this.mocA.join() + this.trangA.join() + this.oA.join() + this.english), h, uc;
+		for (var g = 0; g < sf.length; g++) {
+			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
-		var uk = this.up(k), uni_array = this.repSign(k), w2 = this.up(this.unV2(this.unV(w))), dont = "ƯA,ƯU".split(',');
+		var uk = up(k), uni_array = this.repSign(k), w2 = up(this.unV2(this.unV(w))), dont = "ƯA,ƯU".split(',');
+		
 		if (this.DAWEO.indexOf(uk) >= 0) {
-			if(uk == this.moc) {
-				if((w2.indexOf("UU") >= 0) && (this.tw5 != dont[1])) {
-					if(w2.indexOf("UU") == (w.length - 2)) {
-						res=2;
-					} else {
-						return false;
-					}
-				} else if(w2.indexOf("UOU") >= 0) {
-					if(w2.indexOf("UOU") == (w.length-3)) {
-						res=2;
-					} else {
-						return false;
-					}
+			// Horned diphthongs and triphthongs
+			if (uk == this.moc) {
+				res = 2;
+				if (w2.indexOf("UU") >= 0 && this.tw5 != dont[1]) {
+					if (w2.substr(-2) != "UU") return false;
 				}
+				else if (w2.indexOf("UOU") >= 0) {
+					if (w2.substr(-3) != "UOU") return false;
+				}
+				else res = undefined;
 			}
-			if(!res) {
-				for(g = 1; g <= w.length; g++) {
-					cc = w.substr(w.length - g, 1);
-					pc = this.up(w.substr(w.length - g - 1, 1));
-					uc = this.up(cc);
-					for(h = 0; h < dont.length; h++) {
-						if((this.tw5 == dont[h]) && (this.tw5 == this.unV(pc + uc))) {
-							dn = true;
-						}
-					}
-					if(dn) {
-						dn = false;
+			
+			if (!res) {
+				for (var g = 1; g <= w.length; g++) {
+					cc = w.substr(-g, 1);
+					pc = up(w.substr(-g - 1, 1));
+					uc = up(cc);
+					if (this.tw5 == this.unV(pc + uc) &&
+						dont.indexOf(this.tw5) >= 0) {
 						continue;
 					}
-					if(str.indexOf(uc) >= 0) {
-						if(((uk == this.moc) && (this.unV(uc) == "U") && (this.up(this.unV(w.substr(w.length - g + 1, 1))) == "A")) || ((uk == this.trang) && (this.unV(uc) == 'A') && (this.unV(pc) == 'U'))) {
-							if(this.unV(uc) == "U") {
-								tv=1;
-							} else {
-								tv=2;
-							}
-							var ccc = this.up(w.substr(w.length - g - tv, 1));
+					if (str.indexOf(uc) >= 0) {
+						if ((uk == this.moc && this.unV(uc) == "U" && up(this.unV(w.substr(-g + 1, 1))) == "A") ||
+							(uk == this.trang && this.unV(uc) == "A" && this.unV(pc) == "U")) {
+							tv = 1 + (this.unV(uc) != "U");
+							var ccc = up(w.substr(-g - tv, 1));
 							if(ccc != "Q") {
 								res = g + tv - 1;
 							} else if(uk == this.trang) {
@@ -579,6 +574,7 @@ function AVIM()	{
 				}
 			}
 		}
+		
 		if((uk != this.Z) && (this.DAWEO.indexOf(uk) < 0)) {
 			var tEC = this.retKC(uk);
 			for(g = 0;g < tEC.length; g++) {
@@ -587,22 +583,22 @@ function AVIM()	{
 		}
 		for(g = 1; g <= w.length; g++) {
 			if(this.DAWEO.indexOf(uk) < 0) {
-				cc = this.up(w.substr(w.length - g, 1));
-				pc = this.up(w.substr(w.length - g - 1, 1));
+				cc = up(w.substr(-g, 1));
+				pc = up(w.substr(-g - 1, 1));
 				if(str.indexOf(cc) >= 0) {
 					if(cc == 'U') {
 						if(pc != 'Q') {
 							c++;
-							vowA[vowA.length] = g;
+							vowA.push(g);
 						}
 					} else if(cc == 'I') {
 						if((pc != 'G') || (c <= 0)) {
 							c++;
-							vowA[vowA.length] = g;
+							vowA.push(g);
 						}
 					} else {
 						c++;
-						vowA[vowA.length] = g;
+						vowA.push(g);
 					}
 				} else if(uk != this.Z) {
 					for(h = 0; h < uni_array.length; h++) if(uni_array[h] == w.charCodeAt(w.length - g)) {
@@ -619,18 +615,16 @@ function AVIM()	{
 				}
 			}
 		}
-		if((uk != this.Z) && (typeof(res) != 'object')) {
-			if(this.ckspell(w, k)) {
-				return false;
-			}
+		if(uk != this.Z && typeof(res) != 'object' && this.ckspell(w, k)) {
+			return false;
 		}
 		if(this.DAWEO.indexOf(uk) < 0) {
 			for(g = 1; g <= w.length; g++) {
-				if((uk != this.Z) && (s.indexOf(w.substr(w.length - g, 1)) >= 0)) {
+				if((uk != this.Z) && (s.indexOf(w.substr(-g, 1)) >= 0)) {
 					return g;
-				} else if(tE.indexOf(w.substr(w.length - g, 1)) >= 0) {
+				} else if(tE.indexOf(w.substr(-g, 1)) >= 0) {
 					for(h = 0; h < tEC.length; h++) {
-						if(w.substr(w.length - g, 1).charCodeAt(0) == tEC[h]) {
+						if(w.charCodeAt(w.length - g) == tEC[h]) {
 							return [g, fcc(this.skey[h])];
 						}
 					}
@@ -644,18 +638,18 @@ function AVIM()	{
 			return vowA[0];
 		} else if(c == 2) {
 			var v = 2;
-			if(w.substr(w.length - 1) == " ") {
+			if(w.substr(-1) == " ") {
 				v = 3;
 			}
-			var ttt = this.up(w.substr(w.length - v, 2));
-			if((!AVIMConfig.oldAccent) && ((ttt == "UY") || (ttt == "OA") || (ttt == "OE"))) {
+			var ttt = up(w.substr(-v, 2));
+			if(!AVIMConfig.oldAccent && /^(?:UY|O[AE])$/.test(ttt)) {
 				return vowA[0];
 			}
-			var c2 = 0, fdconsonant, sc = "BCD" + fcc(272) + "GHKLMNPQRSTVX", dc = "CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',');
+			var c2 = 0, fdconsonant, sc = "BCDĐGHKLMNPQRSTVX", dc = "CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',');
 			for(h = 1; h <= w.length; h++) {
 				fdconsonant=false;
 				for(g = 0; g < dc.length; g++) {
-					if(this.up(w.substr(w.length - h - dc[g].length + 1, dc[g].length)).indexOf(dc[g])>=0) {
+					if(up(w.substr(-h - dc[g].length + 1, dc[g].length)).indexOf(dc[g])>=0) {
 						c2++;
 						fdconsonant = true;
 						if(dc[g] != 'NGH') {
@@ -666,7 +660,7 @@ function AVIM()	{
 					}
 				}
 				if(!fdconsonant) {
-					if(sc.indexOf(this.up(w.substr(w.length - h, 1))) >= 0) {
+					if(sc.indexOf(up(w.substr(-h, 1))) >= 0) {
 						c2++;
 					} else { 
 						break;
@@ -729,32 +723,24 @@ function AVIM()	{
 	
 	this.replaceChar = function(o, pos, c) {
 		var bb = false;
-		if(!this.nan(c)) {
-			var replaceBy = fcc(c), wfix = this.up(this.unV(fcc(c)));
+		if(!nan(c)) {
+			var replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
 			this.changed = true;
 		} else {
 			var replaceBy = c;
-			if((this.up(c) == "O") && this.whit) {
+			if((up(c) == "O") && this.whit) {
 				bb=true;
 			}
 		}
 		if(!o.data) {
-			var savePos = o.selectionStart, sst = o.scrollTop;
-			if ((this.up(o.value.substr(pos - 1, 1)) == 'U') && (pos < savePos - 1) && (this.up(o.value.substr(pos - 2, 1)) != 'Q')) {
-				if((wfix == "Ơ") || bb) {
-					if (o.value.substr(pos-1,1) == 'u') {
-						var r = fcc(432);
-					} else {
-						var r = fcc(431);
-					}
+			var savePos = o.selectionStart, sst = o.scrollTop, r;
+			if ((up(o.value.substr(pos - 1, 1)) == 'U') && (pos < savePos - 1) && (up(o.value.substr(pos - 2, 1)) != 'Q')) {
+				if (wfix == "Ơ" || bb) {
+					r = (o.value.substr(pos - 1,1) == 'u') ? "ư" : "Ư";
 				}
-				if(bb) {
+				if (bb) {
 					this.changed = true;
-					if(c == "o") {
-						replaceBy = "ơ";
-					} else {
-						replaceBy = "Ơ";
-					}
+					replaceBy = (c == "o") ? "ơ" : "Ơ";
 				}
 			}
 			var replaceLen = 1 + !!r;
@@ -768,21 +754,14 @@ function AVIM()	{
 			o.setSelectionRange(savePos, savePos);
 			o.scrollTop = sst;
 		} else {
-			if ((this.up(o.data.substr(pos - 1, 1)) == 'U') && (pos < o.pos - 1)) {
-				if((wfix == "Ơ") || bb) {
-					if (o.data.substr(pos - 1, 1) == 'u') {
-						var r = fcc(432);
-					} else {
-						var r = fcc(431);
-					}
+			var r;
+			if ((up(o.data.substr(pos - 1, 1)) == 'U') && (pos < o.pos - 1)) {
+				if (wfix == "Ơ" || bb) {
+					r = (o.data.substr(pos - 1, 1) == 'u') ? "ư" : "Ư";
 				}
-				if(bb) {
+				if (bb) {
 					this.changed = true;
-					if(c == "o") {
-						replaceBy = "ơ";
-					} else {
-						replaceBy = "Ơ";
-					}
+					replaceBy = (c == "o") ? "ơ" : "Ơ";
 				}
 			}
 			o.deleteData(pos, 1);
@@ -792,9 +771,7 @@ function AVIM()	{
 				o.insertData(pos - 1, r);
 			}
 		}
-		if(this.whit) {
-			this.whit=false;
-		}
+		this.whit = false;
 	};
 	
 	this.tr = function(k, w, by, sf, i) {
@@ -803,16 +780,16 @@ function AVIM()	{
 			if(pos[1]) {
 				return this.replaceChar(this.oc, i-pos[0], pos[1]);
 			} else {
-				var c, pC = w.substr(w.length - pos, 1), cmp;
+				var c, pC = w.substr(-pos, 1), cmp;
 				r = sf;
 				for(g = 0; g < r.length; g++) {
-					if(this.nan(r[g]) || (r[g] == "e")) {
+					if(nan(r[g]) || (r[g] == "e")) {
 						cmp = pC;
 					} else {
 						cmp = pC.charCodeAt(0);
 					}
 					if(cmp == r[g]) {
-						if(!this.nan(by[g])) {
+						if(!nan(by[g])) {
 							c = by[g];
 						} else {
 							c = by[g].charCodeAt(0);
@@ -826,7 +803,7 @@ function AVIM()	{
 	};
 	
 	this.main = function(w, k, i, a, noNormC) {
-		var uk = this.up(k), bya = [this.db1, this.ab1, this.eb1, this.ob1, this.mocb1, this.trangb1], got = false, t = "d,D,a,A,a,A,o,O,u,U,e,E,o,O".split(",");
+		var uk = up(k), bya = [this.db1, this.ab1, this.eb1, this.ob1, this.mocb1, this.trangb1], got = false, t = "dDaAaAoOuUeEoO".split("");
 		var sfa = [this.ds1, this.as1, this.es1, this.os1, this.mocs1, this.trangs1], by = [], sf = [], method = AVIMConfig.method, h, g;
 		if((method == 2) || ((method == 0) && (a[0] == "9"))) {
 			this.DAWEO = "6789";
@@ -909,16 +886,15 @@ function AVIM()	{
 		} else if(uk == this.Z) {
 			sf = this.repSign(null);
 			for(h = 0; h < this.english.length; h++) {
-				sf[sf.length] = this.lowen.charCodeAt(h);
-				sf[sf.length] = this.english.charCodeAt(h);
+				sf.push(this.lowen.charCodeAt(h), this.english.charCodeAt(h));
 			}
 			for(h = 0; h < 5; h++) {
 				for(g = 0; g < this.skey.length; g++) {
-					by[by.length] = this.skey[g];
+					by.push(this.skey[g]);
 				}
 			}
 			for(h = 0; h < t.length; h++) {
-				by[by.length] = t[h];
+				by.push(t[h]);
 			}
 			got = true;
 		} else {
@@ -951,7 +927,7 @@ function AVIM()	{
 	};
 	
 	this.normC = function(w, k, i) {
-		var uk = this.up(k), u = this.repSign(null), fS, c, j, h, space = k.charCodeAt(0) == 32;
+		var uk = up(k), u = this.repSign(null), fS, c, j, h, space = k.charCodeAt(0) == 32;
 		if(space) {
 			return "";
 		}
@@ -1030,23 +1006,25 @@ function AVIM()	{
 		}
 	};
 	
+	/**
+	 * Returns an array of character codes corresponding to the following
+	 * characters with the given dead key applied:
+	 * 	a â ă e ê i o ô ơ u ư y A Â Ă E Ê I O Ô Ơ U Ư Y
+	 *
+	 * @param k	{string}	The dead key to apply to each character.
+	 */
 	this.retKC = function(k) {
-		if(k == this.S) {
-			return [225,7845,7855,233,7871,237,243,7889,7899,250,7913,253,193,7844,7854,201,7870,205,211,7888,7898,218,7912,221];
+		var chars = "";
+		switch (k) {
+			case this.S: chars = "áấắéếíóốớúứýÁẤẮÉẾÍÓỐỚÚỨÝ"; break;
+			case this.F: chars = "àầằèềìòồờùừỳÀẦẰÈỀÌÒỒỜÙỪỲ"; break;
+			case this.J: chars = "ạậặẹệịọộợụựỵẠẬẶẸỆỊỌỘỢỤỰỴ"; break;
+			case this.R: chars = "ảẩẳẻểỉỏổởủửỷẢẨẲẺỂỈỎỔỞỦỬỶ"; break;
+			case this.X: chars = "ãẫẵẽễĩõỗỡũữỹÃẪẴẼỄĨÕỖỠŨỮỸ";
 		}
-		if(k == this.F) {
-			return [224,7847,7857,232,7873,236,242,7891,7901,249,7915,7923,192,7846,7856,200,7872,204,210,7890,7900,217,7914,7922];
-		}
-		if(k == this.J) {
-			return [7841,7853,7863,7865,7879,7883,7885,7897,7907,7909,7921,7925,7840,7852,7862,7864,7878,7882,7884,7896,7906,7908,7920,7924];
-		}
-		if(k == this.R) {
-			return [7843,7849,7859,7867,7875,7881,7887,7893,7903,7911,7917,7927,7842,7848,7858,7866,7874,7880,7886,7892,7902,7910,7916,7926];
-		}
-		if(k == this.X) {
-			return [227,7851,7861,7869,7877,297,245,7895,7905,361,7919,7929,195,7850,7860,7868,7876,296,213,7894,7904,360,7918,7928];
-		}
-		return [];
+		var codes = [];
+		for (var i = 0; i < chars.length; i++) codes.push(chars.charCodeAt(i));
+		return codes;
 	};
 	
 	this.unV = function(w) {
@@ -1076,9 +1054,9 @@ function AVIM()	{
 	this.repSign = function(k) {
 		var t = [], u = [], a, b;
 		for(a = 0; a < 5; a++) {
-			if((k == null)||(this.SFJRX.substr(a, 1) != this.up(k))) {
+			if((k == null)||(this.SFJRX.substr(a, 1) != up(k))) {
 				t = this.retKC(this.SFJRX.substr(a, 1));
-				for(b = 0; b < t.length; b++) u[u.length] = t[b];
+				for(b = 0; b < t.length; b++) u.push(t[b]);
 			}
 		}
 		return u;
@@ -1098,7 +1076,7 @@ function AVIM()	{
 	};
 	
 	this.retUni = function(w, k, pos) {
-		var u = this.retKC(this.up(k)), uC, lC, c = w.charCodeAt(w.length - pos), a, t = fcc(c);
+		var u = this.retKC(up(k)), uC, lC, c = w.charCodeAt(w.length - pos), a, t = fcc(c);
 		for(a = 0; a < this.skey.length; a++) {
 			if(this.skey[a] == c) {
 				if(a < 12) {
@@ -1108,7 +1086,7 @@ function AVIM()	{
 					lC = a - 12;
 					uC=a;
 				}
-				if(t != this.up(t)) {
+				if(t != up(t)) {
 					return u[lC];
 				}
 				return u[uC];
@@ -1178,15 +1156,6 @@ function AVIM()	{
 		return (str.indexOf(w)>=0)
 	};
 	
-	this.nan = function(w) {
-		return isNaN(w) || w == 'e';
-	};
-	
-	this.up = function(w) {
-		w = w.toUpperCase();
-		return w;
-	}
-	
 	this.findIgnore=function(el) {
 		return el.id && AVIMConfig.exclude.indexOf(el.id.toLowerCase()) >= 0;
 	}
@@ -1211,6 +1180,7 @@ function AVIM()	{
 			// Ignore about:config.
 			if (el.parentNode && el.parentNode.id == "filterRow") return false;
 		}
+		if (this.findIgnore(el)) return false;
 		// If the XUL element is actually an XBL-bound element, get the
 		// anonymous inner element.
 		if (el.namespaceURI == xulURI) {
@@ -1240,9 +1210,6 @@ function AVIM()	{
 			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
 		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
 		this.sk = fcc(code);
-		if(this.findIgnore(el)) {
-			return false;
-		}
 		var editor = this.getEditor(el);
 //		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
@@ -1250,7 +1217,13 @@ function AVIM()	{
 			this.start(el, e);
 		}
 		catch (e) {
-			dump("AVIM.keyPressHandler called AVIM.start: " + e + "\n");		// debug
+			dump("AVIM.keyPressHandler called AVIM.start, which threw:\n");
+			dump("\tname:\t\t" + e.name + "\n");
+			dump("\tmessage:\t" + e.message + "\n");
+			if (e instanceof TypeError) {
+				dump("\tline:\t\t" + e.lineNumber + "\n");
+				dump("\tstack:\t\t" + e.stack + "\n");
+			}
 		}
 		if (editor && editor.endTransaction) editor.endTransaction();
 		if (this.changed) {

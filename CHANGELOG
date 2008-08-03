@@ -131,4 +131,6 @@ Version ${Version} (${Date})
  - The first word typed into a rich textbox is no longer flipped around.
  - Fixed an issue where words beginning with Z were accepted.
  - Words that begin with Q but not QU are considered malformed.
+ - Fixed an issue where special textboxes in Firefox, such as the search and
+   find bars, could not be ignored.
  - Vinova can now be automatically disabled on webpages via a hidden preference.
