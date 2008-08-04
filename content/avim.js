@@ -369,113 +369,77 @@ function AVIM()	{
 	};
 	
 	this.mozGetText = function(obj) {
-		var v, pos, w = "", g = 1;
-		v = (obj.data) ? obj.data : obj.value;
-		if(v.length <= 0) {
-			return false;
-		}
-		if(!obj.data) {
-			if(!obj.setSelectionRange) {
-				return false;
-			}
+		var pos, w = "";
+		var v = (obj.data) ? obj.data : obj.value;
+		if (!v || !v.length) return false;
+		if (obj.data) pos = obj.pos;
+		else {
+			if (!obj.setSelectionRange) return false;
 			pos = obj.selectionStart;
-		} else {
-			pos = obj.pos;
 		}
-		if(obj.selectionStart != obj.selectionEnd) {
-			return ["", pos];
-		}
-		while(1) {
-			if(pos - g < 0) {
-				break;
-			} else if(this.notWord(v.substr(pos - g, 1))) {
-				if(v.substr(pos - g, 1) == "\\") {
-					w = v.substr(pos - g, 1) + w;
-				}
-				break;
-			} else {
-				w = v.substr(pos - g, 1) + w;
-			}
-			g++;
+		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
+		for (var g = pos - 1; g >= 0; g--) {
+			if (v[g] == "\\") w = v[g] + w;
+			if (this.notWord(v[g])) break;
+			w = v[g] + w;
 		}
 		return [w, pos];
 	};
 	
+	const telex = "DAEOWW".split("");
+	const vni = "966678".split("");
+	const viqr = "D^^^+(".split("");
+	const viqr2 = "D^^^*(".split("");
 	this.start = function(obj, key) {
-		var w = "", method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell, uni, uni2 = false, uni3 = false, uni4 = false;
+		var w = "", method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
 		this.oc=obj;
-		var telex = "DAEOWW".split(""), vni = "966678".split(""), viqr = "D^^^+(".split(""), viqr2 = "D^^^*(".split(""), a, noNormC;
-		if(method == 0) {
-			var arr = [], check = [AVIMConfig.autoMethods.telex, AVIMConfig.autoMethods.vni, AVIMConfig.autoMethods.viqr, AVIMConfig.autoMethods.viqrStar];
-			var value1 = [telex, vni, viqr, viqr2], uniA = [uni, uni2, uni3, uni4], D2A = ["DAWEO", "6789", "D^+(", "D^*("];
-			for(a = 0; a < check.length; a++) {
-				if(check[a]) {
-					arr[arr.length] = value1[a];
-				} else {
-					D2A[a] = "";
+		var uniA = [];
+		switch (method) {
+			case 0:
+				var arr = [], check = [AVIMConfig.autoMethods.telex, AVIMConfig.autoMethods.vni, AVIMConfig.autoMethods.viqr, AVIMConfig.autoMethods.viqrStar];
+				var value1 = [telex, vni, viqr, viqr2], D2A = ["DAWEO", "6789", "D^+(", "D^*("];
+				for (var a = 0; a < check.length; a++) {
+					if (check[a]) arr[a] = value1[a];
+					else {
+						arr[a] = false;
+						D2A[a] = "";
+					}
 				}
-			}
-			for(a = 0; a < arr.length; a++) {
-				uniA[a] = arr[a];
-			}
-			uni = uniA[0];
-			uni2 = uniA[1];
-			uni3 = uniA[2];
-			uni4 = uniA[3];
-			this.D2 = D2A.join();
-			if(!uni) {
-				return;
-			}
-		} else if(method == 1) {
-			uni = telex;
-			this.D2 = "DAWEO";
+				uniA = arr;
+				this.D2 = D2A.join();
+				if (!uniA[0]) return;
+				break;
+			case 1: uniA[0] = telex; this.D2 = "DAWEO"; break;
+			case 2: uniA[0] = vni; this.D2 = "6789"; break;
+			case 3: uniA[0] = viqr; this.D2 = "D^+("; break;
+			case 4: uniA[0] = viqr2; this.D2 = "D^*(";
 		}
-		else if(method == 2) {
-			uni = vni;
-			this.D2 = "6789";
-		}
-		else if(method == 3) {
-			uni = viqr;
-			this.D2 = "D^+(";
-		}
-		else if(method == 4) {
-			uni = viqr2;
-			this.D2 = "D^*(";
-		}
+		
 		key = fcc(key.which);
 		w = this.mozGetText(obj);
-		if(!w || obj.sel) {
-			return;
+		if (!w || obj.sel) return;
+		var noNormC = this.D2.indexOf(up(key)) >= 0;
+		
+		this.main(w[0], key, w[1], uniA[0], noNormC);
+		if (!dockspell) w = this.mozGetText(obj);
+		
+		if (w && uniA[1] && !this.changed) {
+			this.main(w[0], key, w[1], uniA[1], noNormC);
 		}
-		if(this.D2.indexOf(up(key)) >= 0) {
-			noNormC = true;
-		} else {
-			noNormC = false;
+		if (!dockspell) w = this.mozGetText(obj);
+		
+		if (w && uniA[2] && !this.changed) {
+			this.main(w[0], key, w[1], uniA[2], noNormC);
 		}
-		this.main(w[0], key, w[1], uni, noNormC);
-		if(!dockspell) {
+		if (!dockspell) w = this.mozGetText(obj);
+		
+		if (w && uniA[3] && !this.changed) {
+			this.main(w[0], key, w[1], uniA[3], noNormC);
+		}
+		
+		if (this.D2.indexOf(up(key)) >= 0) {
 			w = this.mozGetText(obj);
-		}
-		if(w && uni2 && !this.changed) {
-			this.main(w[0], key, w[1], uni2, noNormC);
-		}
-		if(!dockspell) {
-			w = this.mozGetText(obj);
-		}
-		if(w && uni3 && !this.changed) {
-			this.main(w[0], key, w[1], uni3, noNormC);
-		}
-		if(!dockspell) {
-			w = this.mozGetText(obj);
-		}
-		if(w && uni4 && !this.changed) {
-			this.main(w[0], key, w[1], uni4, noNormC);
-		}
-		if(this.D2.indexOf(up(key)) >= 0) {
-			w = this.mozGetText(obj);
-			if(!w) {
-				return;
-			}
+			if (!w) return;
 			this.normC(w[0], key, w[1]);
 		}
 	};
@@ -762,9 +726,11 @@ function AVIM()	{
 		return false;
 	};
 	
+	const bya = [db1, ab1, eb1, ob1, mocb1, trangb1];
+	const sfa = [ds1, as1, es1, os1, mocs1, trangs1];
 	this.main = function(w, k, i, a, noNormC) {
-		var uk = up(k), bya = [db1, ab1, eb1, ob1, mocb1, trangb1], got = false, t = "dDaAaAoOuUeEoO".split("");
-		var sfa = [ds1, as1, es1, os1, mocs1, trangs1], by = [], sf = [], method = AVIMConfig.method, h, g;
+		var uk = up(k), got = false, t = "dDaAaAoOuUeEoO".split("");
+		var by = [], sf = [], method = AVIMConfig.method, h, g;
 		if (method == 0) {
 			if (a[0] == "9") method = 2;
 			else if (a[4] == "+") method = 3;
@@ -883,9 +849,9 @@ function AVIM()	{
 		return "";
 	};
 	
+	const ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
 	this.DAWEOF = function(cc, k, g) {
 		var ret = [g], kA = [this.A, this.moc, this.trang, this.E, this.O];
-		var ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
 		for (var a = 0; a < kA.length; a++) {
 			if (k != kA[a]) continue;
 			for (var z = 0; z < ccA[a].length; z++) {
