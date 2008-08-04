@@ -39,69 +39,33 @@ var AVIMConfig = {
 
 function AVIM()	{
 	// IDs of user interface elements
-	this.commands = {
+	const commands = {
 		method: "avim-method-cmd",
 		prevMethod: "avim-prev-method-cmd",
 		nextMethod: "avim-next-method-cmd",
 		spell: "avim-spell-cmd",
 		oldAccents: "avim-oldaccents-cmd"
 	};
-	this.broadcasters = {
+	const broadcasters = {
 		enabled: "avim-enabled-bc",
 		methods: ["avim-auto-bc", "avim-telex-bc", "avim-vni-bc",
 				  "avim-viqr-bc", "avim-viqr-star-bc"],
 		spell: "avim-spell-bc",
 		oldAccents: "avim-oldaccents-bc"
 	};
-	this.keys = {
-		enabled: "avim-enabled-key",
-		prevMethod: "avim-prev-method-key",
-		nextMethod: "avim-next-method-key",
-		spell: "avim-spell-key",
-		oldAccents: "avim-oldaccents-key"
-	};
-//	this.menuItems = {
-//		methods: ["avim-menu-auto", "avim-menu-telex", "avim-menu-vni",
-//				  "avim-menu-viqr", "avim-menu-viqr-star"]
-//	};
-	this.panel = "avim-status";
-	
-	this.attached = [];
-	this.changed = false;
-	this.alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM\ ";
-	this.specialChange = false;
-	this.kl = 0;
-	this.skey = [97,226,259,101,234,105,111,244,417,117,432,121,65,194,258,69,202,73,79,212,416,85,431,89];
-	this.range = null;
-	this.whit = false;
-	this.db1 = [273,272];
-	this.ds1 = ['d','D'];
-	this.os1 = "oOơƠóÓòÒọỌỏỎõÕớỚờỜợỢởỞỡỠ".split("");
-	this.ob1 = "ôÔôÔốỐồỒộỘổỔỗỖốỐồỒộỘổỔỗỖ".split("");
-	this.mocs1 = "oOôÔuUóÓòÒọỌỏỎõÕúÚùÙụỤủỦũŨốỐồỒộỘổỔỗỖ".split("");
-	this.mocb1 = "ơƠơƠưƯớỚờỜợỢởỞỡỠứỨừỪựỰửỬữỮớỚờỜợỢởỞỡỠ".split("");
-	this.trangs1 = "aAâÂáÁàÀạẠảẢãÃấẤầẦậẬẩẨẫẪ".split("");
-	this.trangb1 = "ăĂăĂắẮằẰặẶẳẲẵẴắẮằẰặẶẳẲẵẴ".split("");
-	this.as1 = "aAăĂáÁàÀạẠảẢãÃắẮằẰặẶẳẲẵẴếẾềỀệỆểỂễỄ".split("");
-	this.ab1 = "âÂâÂấẤầẦậẬẩẨẫẪấẤầẦậẬẩẨẫẪéÉèÈẹẸẻẺẽẼ".split("");
-	this.es1 = "eEéÉèÈẹẸẻẺẽẼ".split("");
-	this.eb1 = "êÊếẾềỀệỆểỂễỄ".split("");
-	this.english = "ĐÂĂƠƯÊÔ";
-	this.lowen = "đâăơưêô";
-	this.arA = "áàảãạaÁÀẢÃẠA".split('');
-	this.mocrA = "óòỏõọoúùủũụuÓÒỎÕỌOÚÙỦŨỤU".split('');
-	this.erA = "éèẻẽẹeÉÈẺẼẸE".split('');
-	this.orA = "óòỏõọoÓÒỎÕỌO".split('');
-	this.aA = "ấầẩẫậâẤẦẨẪẬÂ".split('');
-	this.oA = "ốồổỗộôỐỒỔỖỘÔ".split('');
-	this.mocA = "ớờởỡợơứừửữựưỚỜỞỠỢƠỨỪỬỮỰƯ".split('');
-	this.trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
-	this.eA = "ếềểễệêẾỀỂỄỆÊ".split('');
-	this.oA = "ốồổỗộôỐỒỔỖỘÔ".split('');
-	this.skey2 = "aaaeeiooouuyAAAEEIOOOUUY".split('');
+	const panelID = "avim-status";
 	
 	// Local functions that don't require access to AVIM's fields.
+	
 	var fcc = String.fromCharCode;
+	
+	var codesFromChars = function(chars) {
+		var codes = [];
+		for (var i = 0; i < chars.length; i++) {
+			codes.push(chars[i].charCodeAt(0));
+		}
+		return codes;
+	};
 	
 	var $ = function (id) {
 		return document.getElementById(id);
@@ -115,63 +79,40 @@ function AVIM()	{
 		return w.toUpperCase();
 	};
 	
-	this.getSF = function() {
-		var sf = [], x;
-		for(x = 0; x < this.skey.length; x++) {
-			sf[sf.length] = fcc(this.skey[x]);
-		}
-		return sf;
-	};
+	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM\ ";
+	const skey_chars = "aâăeêioôơuưyAÂĂEÊIOÔƠUƯY".split("");
+	const skey = codesFromChars(skey_chars);
+	const db1 = codesFromChars(["đ", "Đ"]);
+	const ds1 = ['d','D'];
+	const os1 = "oOơƠóÓòÒọỌỏỎõÕớỚờỜợỢởỞỡỠ".split("");
+	const ob1 = "ôÔôÔốỐồỒộỘổỔỗỖốỐồỒộỘổỔỗỖ".split("");
+	const mocs1 = "oOôÔuUóÓòÒọỌỏỎõÕúÚùÙụỤủỦũŨốỐồỒộỘổỔỗỖ".split("");
+	const mocb1 = "ơƠơƠưƯớỚờỜợỢởỞỡỠứỨừỪựỰửỬữỮớỚờỜợỢởỞỡỠ".split("");
+	const trangs1 = "aAâÂáÁàÀạẠảẢãÃấẤầẦậẬẩẨẫẪ".split("");
+	const trangb1 = "ăĂăĂắẮằẰặẶẳẲẵẴắẮằẰặẶẳẲẵẴ".split("");
+	const as1 = "aAăĂáÁàÀạẠảẢãÃắẮằẰặẶẳẲẵẴếẾềỀệỆểỂễỄ".split("");
+	const ab1 = "âÂâÂấẤầẦậẬẩẨẫẪấẤầẦậẬẩẨẫẪéÉèÈẹẸẻẺẽẼ".split("");
+	const es1 = "eEéÉèÈẹẸẻẺẽẼ".split("");
+	const eb1 = "êÊếẾềỀệỆểỂễỄ".split("");
+	const english = "ĐÂĂƠƯÊÔ";
+	const lowen = "đâăơưêô";
+	const arA = "áàảãạaÁÀẢÃẠA".split('');
+	const mocrA = "óòỏõọoúùủũụuÓÒỎÕỌOÚÙỦŨỤU".split('');
+	const erA = "éèẻẽẹeÉÈẺẼẸE".split('');
+	const orA = "óòỏõọoÓÒỎÕỌO".split('');
+	const aA = "ấầẩẫậâẤẦẨẪẬÂ".split('');
+	const oA = "ốồổỗộôỐỒỔỖỘÔ".split('');
+	const mocA = "ớờởỡợơứừửữựưỚỜỞỠỢƠỨỪỬỮỰƯ".split('');
+	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
+	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
+	const skey2 = "aaaeeiooouuyAAAEEIOOOUUY".split('');
 	
-//	/**
-//	 * An incomplete, experimental rewrite of ckspell() relying on a whitelist,
-//	 * rather than a blacklist. DO NOT USE!
-//	 */
-//	this.ckspell2 = function(w, k) {
-//		if (!AVIMConfig.ckSpell) return false;
-//		w = this.unV(w);
-//		var uw = up(w), tw = uw;
-//		var uk = up(k), twE, uw2 = this.unV2(uw);
-//		
-//		// Shortcuts
-//		if (uw == "D" && uk == this.D) return false;
-//		if (uw2 == "GI") return false;
-//		
-//		// unV2() doesn't distinguish between D and Đ.
-//		if (uw[0] == "Đ") uw2[0] = "Đ";
-//		
-//		// Read the initial consonant, digraph, or trigraph. GI and QU are also
-//		// matched. Punt if followed by incompatible vowel.
-//		var startCons = "";
-//		if ("AEIOUY".indexOf(uw2[0]) < 0) {
-//			// On their own, many of these accepted patterns are not words, but
-//			// they are prefixes for words. We also treat GI and QU as digraphs.
-//			startCons = /^(?:[BĐFNR](?=[AEIOU])|[CG](?=[AOU])|[CKNP]H(?=[AEIOU])|DZ?(?=[AEIOU])|GI(?=[AEOU]$)|[HLMSTVX](?=[AEIOUY])|K(?=[EIY])|N?GH(?=[EI])|NG(?=[AOU])|QU(?=[AEIOY])|T[HR](?=[AEIOU]))/.exec(uw2);
-//			if (startCons) startCons = startCons[0];
-//			else return true;
-//			
-//			// Punt informal spellings if not enabled.
-//			if (!AVIMConfig.informal &&
-//				(startCons == "F" || startCons == "DZ")) {
-//				return true;
-//			}
-//			
-//			// Remove initial consonant, digraph, or trigraph.
-//			tw = tw.substr(startCons.length);
-//			if (!tw) return false;
-//			uw2 = uw2.substr(startCons.length);
-//		}
-//		
-//		// Read the inner vowel, diphthong, or triphthong. Punt if followed by
-//		// an incompatible consonant or digraph.
-//		if ("AEIOUY".indexOf(uw2[0]) < 0) return true;
-//		else if (tw.length == 1) return false;
-//		var inVow = /^(?:[AEIOU](?=[MPT])|A[IOUY]|A(?=CH?|N[GH]?)|E[OU]|[EI](?=CH|NH?)|IA|IE?U?|IE(?=[MPT]|NG?)|OA[IY]?|OA(?=NG?)|OE(?=T)?|OO(?=C|NG)?|[OU]I|[OU](?=C|NG?)|UA(?=[NT])?|UE(?=CH|NH)?|UO?U?|UO(?=[CMPT]|NG?)|UY[AU]?|UYE(?=N)?|UY(?=T|NH)|YE[MN]?)$/.exec(uw2);
-//		if (!inVow) return true;
-//		
-//		this.tw5 = tw.substr(0, inVow.length);
-//		return false;
-//	};
+	this.attached = [];
+	this.changed = false;
+	this.specialChange = false;
+	this.kl = 0;
+	this.range = null;
+	this.whit = false;
 	
 	/**
 	 * Returns whether the given word, taking into account the given dead key,
@@ -315,8 +256,8 @@ function AVIM()	{
 		
 		var method = AVIMConfig.method;
 		method += distance;
-		if (method < 0) method += this.broadcasters.methods.length;
-		method %= this.broadcasters.methods.length;
+		if (method < 0) method += broadcasters.methods.length;
+		method %= broadcasters.methods.length;
 		AVIMConfig.method = method;
 		
 		this.setPrefs("method");
@@ -388,46 +329,36 @@ function AVIM()	{
 	 */
 	this.updateUI = function() {
 		// Enabled/disabled
-		var bc_enabled = $(this.broadcasters.enabled);
+		var bc_enabled = $(broadcasters.enabled);
 		if (bc_enabled) {
 			bc_enabled.setAttribute("checked", "" + AVIMConfig.onOff);
 		}
 		
 		// Disable methods and options if AVIM is disabled
-		for each (var cmd in this.commands) {
+		for each (var cmd in commands) {
 			$(cmd).setAttribute("disabled", "" + !AVIMConfig.onOff);
 		}
 		
 		// Method
-		for each (var bc in this.broadcasters.methods) {
+		for each (var bc in broadcasters.methods) {
 			$(bc).removeAttribute("checked");
 			$(bc).removeAttribute("key");
 		}
-		var bc_sel = $(this.broadcasters.methods[AVIMConfig.method]);
+		var bc_sel = $(broadcasters.methods[AVIMConfig.method]);
 		if (bc_sel) bc_sel.setAttribute("checked", "true");
 		
-//		var prev_bc_idx = AVIMConfig.method - 1;
-//		if (prev_bc_idx < 0) prev_bc_idx += this.menuItems.methods.length;
-//		var prev_bc = $(this.menuItems.methods[prev_bc_idx]);
-//		if (prev_bc) prev_bc.setAttribute("key", this.keys.prevMethod);
-//		
-//		var next_bc_idx =
-//			(AVIMConfig.method + 1) % this.menuItems.methods.length;
-//		var next_bc = $(this.menuItems.methods[next_bc_idx]);
-//		if (next_bc) next_bc.setAttribute("key", this.keys.nextMethod);
-		
 		// Options
-		var bc_spell = $(this.broadcasters.spell);
+		var bc_spell = $(broadcasters.spell);
 		if (bc_spell) {
 			bc_spell.setAttribute("checked", "" + AVIMConfig.ckSpell);
 		}
-		var bc_old = $(this.broadcasters.oldAccents);
+		var bc_old = $(broadcasters.oldAccents);
 		if (bc_old) {
 			bc_old.setAttribute("checked", "" + AVIMConfig.oldAccent);
 		}
 		
 		// Status bar panel
-		var panel = $(this.panel);
+		var panel = $(panelID);
 		if (!panel) return;
 		if (AVIMConfig.onOff) {
 			panel.setAttribute("label", bc_sel.getAttribute("label"));
@@ -435,8 +366,6 @@ function AVIM()	{
 		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
 		panel.style.display =
 			AVIMConfig.statusBarPanel ? "-moz-box" : "none";
-//		var bc_panel = $(this.broadcasters.statusBarPanel);
-//		bc_panel.setAttribute("checked", "" + AVIMConfig.statusBarPanel);
 	};
 	
 	this.mozGetText = function(obj) {
@@ -557,7 +486,7 @@ function AVIM()	{
 			return [1, k.charCodeAt(0)];
 		}
 		var str = "", res, cc = "", pc = "", tE = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
-		var DAWEOFA = up(this.aA.join() + this.eA.join() + this.mocA.join() + this.trangA.join() + this.oA.join() + this.english), h, uc;
+		var DAWEOFA = up(aA.join() + eA.join() + mocA.join() + trangA.join() + oA.join() + english), h, uc;
 		for (var g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
@@ -653,7 +582,7 @@ function AVIM()	{
 					}
 					for(h = 0; h < tEC.length; h++) {
 						if(tEC[h] == w.charCodeAt(w.length - g)) {
-							return [g, fcc(this.skey[h])];
+							return [g, fcc(skey[h])];
 						}
 					}
 				}
@@ -669,7 +598,7 @@ function AVIM()	{
 				} else if(tE.indexOf(w.substr(-g, 1)) >= 0) {
 					for(h = 0; h < tEC.length; h++) {
 						if(w.charCodeAt(w.length - g) == tEC[h]) {
-							return [g, fcc(this.skey[h])];
+							return [g, fcc(skey[h])];
 						}
 					}
 				}
@@ -819,190 +748,115 @@ function AVIM()	{
 	};
 	
 	this.tr = function(k, w, by, sf, i) {
-		var r, pos = this.findC(w, k, sf), g;
-		if(pos) {
-			if(pos[1]) {
-				return this.replaceChar(this.oc, i-pos[0], pos[1]);
-			} else {
-				var c, pC = w.substr(-pos, 1), cmp;
-				r = sf;
-				for(g = 0; g < r.length; g++) {
-					if(nan(r[g]) || (r[g] == "e")) {
-						cmp = pC;
-					} else {
-						cmp = pC.charCodeAt(0);
-					}
-					if(cmp == r[g]) {
-						if(!nan(by[g])) {
-							c = by[g];
-						} else {
-							c = by[g].charCodeAt(0);
-						}
-						return this.replaceChar(this.oc, i - pos, c);
-					}
-				}
+		var pos = this.findC(w, k, sf);
+		if (!pos) return false;
+		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1]);
+		var pC = w.substr(-pos, 1);
+		for (var g = 0; g < sf.length; g++) {
+			var cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
+			if (cmp == sf[g]) {
+				var c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
+				return this.replaceChar(this.oc, i - pos, c);
 			}
 		}
 		return false;
 	};
 	
 	this.main = function(w, k, i, a, noNormC) {
-		var uk = up(k), bya = [this.db1, this.ab1, this.eb1, this.ob1, this.mocb1, this.trangb1], got = false, t = "dDaAaAoOuUeEoO".split("");
-		var sfa = [this.ds1, this.as1, this.es1, this.os1, this.mocs1, this.trangs1], by = [], sf = [], method = AVIMConfig.method, h, g;
-		if((method == 2) || ((method == 0) && (a[0] == "9"))) {
-			this.DAWEO = "6789";
-			this.SFJRX = "12534";
-			this.S = "1";
-			this.F = "2";
-			this.J = "5";
-			this.R = "3";
-			this.X = "4";
-			this.Z = "0";
-			this.D = "9";
-			this.FRX = "234";
-			this.AEO = "6";
-			this.moc = "7";
-			this.trang = "8";
-			this.them = "678";
-			this.A = "^";
-			this.E = "^";
-			this.O = "^";
-		} else if((method == 3) || ((method == 0) && (a[4] == "+"))) {
-			this.DAWEO = "^+(D";
-			this.SFJRX = "'`.?~";
-			this.S = "'";
-			this.F = "`";
-			this.J = ".";
-			this.R = "?";
-			this.X = "~";
-			this.Z = "-";
-			this.D = "D";
-			this.FRX = "`?~";
-			this.AEO = "^";
-			this.moc = "+";
-			this.trang = "(";
-			this.them = "^+(";
-			this.A = "^";
-			this.E = "^";
-			this.O = "^";
-		} else if((method == 4) || ((method == 0) && (a[4] == "*"))) {
-			this.DAWEO = "^*(D";
-			this.SFJRX = "'`.?~";
-			this.S = "'";
-			this.F = "`";
-			this.J = ".";
-			this.R = "?";
-			this.X = "~";
-			this.Z = "-";
-			this.D = "D";
-			this.FRX = "`?~";
-			this.AEO = "^";
-			this.moc = "*";
-			this.trang = "(";
-			this.them = "^*(";
-			this.A = "^";
-			this.E = "^";
-			this.O = "^";
-		} else if((method == 1) || ((method == 0) && (a[0] == "D"))) {
-			this.SFJRX = "SFJRX";
-			this.DAWEO = "DAWEO";
-			this.D = 'D';
-			this.S = 'S';
-			this.F = 'F';
-			this.J = 'J';
-			this.R = 'R';
-			this.X = 'X';
-			this.Z = 'Z';
-			this.FRX = "FRX";
-			this.them = "AOEW";
-			this.trang = "W";
-			this.moc = "W";
-			this.A = "A";
-			this.E = "E";
-			this.O = "O";
+		var uk = up(k), bya = [db1, ab1, eb1, ob1, mocb1, trangb1], got = false, t = "dDaAaAoOuUeEoO".split("");
+		var sfa = [ds1, as1, es1, os1, mocs1, trangs1], by = [], sf = [], method = AVIMConfig.method, h, g;
+		if (method == 0) {
+			if (a[0] == "9") method = 2;
+			else if (a[4] == "+") method = 3;
+			else if (a[4] == "*") method = 4;
+			else if (a[0] == "D") method = 1;
 		}
+		switch (method) {
+			case 1:
+				this.SFJRX = "SFJRX"; this.DAWEO = "DAWEO";
+				this.S = 'S'; this.F = 'F'; this.J = 'J'; this.R = 'R';
+				this.X = 'X'; this.Z = 'Z'; this.D = 'D'; this.FRX = "FRX";
+				this.them = "AOEW"; this.trang = "W"; this.moc = "W";
+				this.A = "A"; this.E = "E"; this.O = "O";
+				break;
+			case 2:
+				this.DAWEO = "6789"; this.SFJRX = "12534";
+				this.S = "1"; this.F = "2"; this.J = "5"; this.R = "3";
+				this.X = "4"; this.Z = "0"; this.D = "9"; this.FRX = "234";
+				this.AEO = "6"; this.moc = "7"; this.trang = "8";
+				this.them = "678"; this.A = "^"; this.E = "^"; this.O = "^";
+				break;
+			case 3:
+				this.DAWEO = "^+(D"; this.SFJRX = "'`.?~";
+				this.S = "'"; this.F = "`"; this.J = "."; this.R = "?";
+				this.X = "~"; this.Z = "-"; this.D = "D"; this.FRX = "`?~";
+				this.AEO = "^"; this.moc = "+"; this.trang = "(";
+				this.them = "^+("; this.A = "^"; this.E = "^"; this.O = "^";
+				break;
+			case 4:
+				this.DAWEO = "^*(D"; this.SFJRX = "'`.?~";
+				this.S = "'"; this.F = "`"; this.J = "."; this.R = "?";
+				this.X = "~"; this.Z = "-"; this.D = "D"; this.FRX = "`?~";
+				this.AEO = "^"; this.moc = "*"; this.trang = "(";
+				this.them = "^*("; this.A = "^"; this.E = "^"; this.O = "^";
+//				break;
+		}
+		
 		if(this.SFJRX.indexOf(uk) >= 0) {
 			var ret = this.sr(w,k,i);
 			got=true;
-			if(ret) {
-				return ret;
-			}
-		} else if(uk == this.Z) {
+			if (ret) return ret;
+		}
+		else if (uk == this.Z) {
 			sf = this.repSign(null);
-			for(h = 0; h < this.english.length; h++) {
-				sf.push(this.lowen.charCodeAt(h), this.english.charCodeAt(h));
+			for(h = 0; h < english.length; h++) {
+				sf.push(lowen.charCodeAt(h), english.charCodeAt(h));
 			}
-			for(h = 0; h < 5; h++) {
-				for(g = 0; g < this.skey.length; g++) {
-					by.push(this.skey[g]);
-				}
-			}
-			for(h = 0; h < t.length; h++) {
-				by.push(t[h]);
-			}
+			by = skey.concat(skey, skey, skey, skey, t);
 			got = true;
-		} else {
-			for(h = 0; h < a.length; h++) {
-				if(a[h] == uk) {
-					got = true;
-					by = by.concat(bya[h]);
-					sf = sf.concat(sfa[h]);
-				}
+		}
+		else for (h = 0; h < a.length; h++) {
+			if (a[h] == uk) {
+				got = true;
+				by = by.concat(bya[h]);
+				sf = sf.concat(sfa[h]);
 			}
 		}
-		if(uk == this.moc) {
-			this.whit = true;
-		}
-		if(!got) {
-			if(noNormC) {
-				return "";
-			} else {
-				return this.normC(w, k, i);
-			}
-		}
-		return this.DAWEOZ(k, w, by, sf, i, uk);
+		if (uk == this.moc) this.whit = true;
+		if (got) return this.DAWEOZ(k, w, by, sf, i, uk);
+		if (noNormC) return "";
+		return this.normC(w, k, i);
 	};
 	
 	this.DAWEOZ = function(k, w, by, sf, i, uk) {
-		if((this.DAWEO.indexOf(uk) >= 0) || (this.Z.indexOf(uk) >= 0)) {
-			return this.tr(k, w, by, sf, i);
-		}
-		return false;
+		if (this.DAWEO.indexOf(uk) < 0 && this.Z.indexOf(uk) < 0) return false;
+		return this.tr(k, w, by, sf, i);
 	};
 	
 	this.normC = function(w, k, i) {
-		var uk = up(k), u = this.repSign(null), fS, c, j, h, space = k.charCodeAt(0) == 32;
-		if(space) {
-			return "";
-		}
-		for(j = 1; j <= w.length; j++) {
-			for(h = 0; h < u.length; h++) {
+		var uk = up(k), u = this.repSign(null), fS, space = k.charCodeAt(0) == 32;
+		if (space) return "";
+		for(var j = 1; j <= w.length; j++) {
+			for(var h = 0; h < u.length; h++) {
 				if(u[h] == w.charCodeAt(w.length - j)) {
-					if(h <= 23) {
-						fS = this.S;
-					} else if(h <= 47) {
-						fS = this.F;
-					} else if(h <= 71) {
-						fS = this.J;
-					} else if(h <= 95) {
-						fS = this.R;
-					} else {
-						fS = this.X;
-					}
-					c = this.skey[h % 24];
-					if((this.alphabet.indexOf(uk) < 0) && (this.D2.indexOf(uk) < 0)) {
+					if (h <= 23) fS = this.S;
+					else if (h <= 47) fS = this.F;
+					else if (h <= 71) fS = this.J;
+					else if (h <= 95) fS = this.R;
+					else fS = this.X;
+					var c = skey[h % 24];
+					if((alphabet.indexOf(uk) < 0) && (this.D2.indexOf(uk) < 0)) {
 						return w;
 					}
 					w = this.unV(w);
-					if(!space && !this.changed) {
-						w += k;
-					}
+					if(!space && !this.changed) w += k;
 					var sp = this.oc.selectionStart, pos = sp;
 					if(!this.changed) {
 						var sst = this.oc.scrollTop;
 						pos += k.length;
 						if(!this.oc.data) {
-							this.oc.value = this.oc.value.substr(0, sp) + k + this.oc.value.substr(this.oc.selectionEnd);
+							this.oc.value = this.oc.value.substr(0, sp) + k +
+								this.oc.value.substr(this.oc.selectionEnd);
 							this.changed = true;
 							this.oc.scrollTop = sst;
 						} else {
@@ -1012,9 +866,7 @@ function AVIM()	{
 							this.specialChange = true;
 						}
 					}
-					if(!this.oc.data) {
-						this.oc.setSelectionRange(pos, pos);
-					}
+					if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 					if(!this.ckspell(w, fS)) {
 						this.replaceChar(this.oc, i - j, c);
 						if(!this.oc.data) {
@@ -1032,22 +884,16 @@ function AVIM()	{
 	};
 	
 	this.DAWEOF = function(cc, k, g) {
-		var ret = [g], kA = [this.A, this.moc, this.trang, this.E, this.O], z, a;
-		var ccA = [this.aA, this.mocA, this.trangA, this.eA, this.oA], ccrA = [this.arA, this.mocrA, this.arA, this.erA, this.orA];
-		for(a = 0; a < kA.length; a++) {
-			if(k == kA[a]) {
-				for(z = 0; z < ccA[a].length; z++) {
-					if(cc == ccA[a][z]) {
-						ret[1] = ccrA[a][z];
-					}
-				}
+		var ret = [g], kA = [this.A, this.moc, this.trang, this.E, this.O];
+		var ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
+		for (var a = 0; a < kA.length; a++) {
+			if (k != kA[a]) continue;
+			for (var z = 0; z < ccA[a].length; z++) {
+				if (cc == ccA[a][z]) ret[1] = ccrA[a][z];
 			}
 		}
-		if(ret[1]) {
-			return ret;
-		} else {
-			return false;
-		}
+		if (ret[1]) return ret;
+		return false;
 	};
 	
 	/**
@@ -1066,9 +912,7 @@ function AVIM()	{
 			case this.R: chars = "ảẩẳẻểỉỏổởủửỷẢẨẲẺỂỈỎỔỞỦỬỶ"; break;
 			case this.X: chars = "ãẫẵẽễĩõỗỡũữỹÃẪẴẼỄĨÕỖỠŨỮỸ";
 		}
-		var codes = [];
-		for (var i = 0; i < chars.length; i++) codes.push(chars.charCodeAt(i));
-		return codes;
+		return codesFromChars(chars);
 	};
 	
 	this.unV = function(w) {
@@ -1076,7 +920,7 @@ function AVIM()	{
 		for(a = 1; a <= w.length; a++) {
 			for(b = 0; b < u.length; b++) {
 				if(u[b] == w.charCodeAt(w.length - a)) {
-					w = w.substr(0, w.length - a) + fcc(this.skey[b % 24]) + w.substr(w.length - a + 1);
+					w = w.substr(0, w.length - a) + fcc(skey[b % 24]) + w.substr(w.length - a + 1);
 				}
 			}
 		}
@@ -1086,9 +930,9 @@ function AVIM()	{
 	this.unV2 = function(w) {
 		var a, b;
 		for(a = 1; a <= w.length; a++) {
-			for(b = 0; b < this.skey.length; b++) {
-				if(this.skey[b] == w.charCodeAt(w.length - a)) {
-					w = w.substr(0, w.length - a) + this.skey2[b] + w.substr(w.length - a + 1);
+			for(b = 0; b < skey.length; b++) {
+				if(skey[b] == w.charCodeAt(w.length - a)) {
+					w = w.substr(0, w.length - a) + skey2[b] + w.substr(w.length - a + 1);
 				}
 			}
 		}
@@ -1107,7 +951,7 @@ function AVIM()	{
 	};
 	
 	this.sr = function(w, k, i) {
-		var sf = this.getSF(), pos = this.findC(w, k, sf);
+		var sf = skey_chars, pos = this.findC(w, k, sf);
 		if(pos) {
 			if(pos[1]) {
 				this.replaceChar(this.oc, i-pos[0], pos[1]);
@@ -1121,8 +965,8 @@ function AVIM()	{
 	
 	this.retUni = function(w, k, pos) {
 		var u = this.retKC(up(k)), uC, lC, c = w.charCodeAt(w.length - pos), a, t = fcc(c);
-		for(a = 0; a < this.skey.length; a++) {
-			if(this.skey[a] == c) {
+		for(a = 0; a < skey.length; a++) {
+			if(skey[a] == c) {
 				if(a < 12) {
 					lC=a;
 					uC=a+12;
@@ -1398,7 +1242,7 @@ function AVIM()	{
 				AVIMConfig.method = prefs.getIntPref("method");
 				// In case someone enters an invalid method ID in about:config
 				var method = AVIMConfig.method;
-				if (method < 0 || method >= this.broadcasters.methods.length) {
+				if (method < 0 || method >= broadcasters.methods.length) {
 					Components.classes["@mozilla.org/preferences-service;1"]
 						.getService(Components.interfaces.nsIPrefService)
 						.getDefaultBranch("extensions.avim.")
