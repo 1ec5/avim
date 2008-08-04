@@ -394,25 +394,19 @@ function AVIM()	{
 		var w = "", method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
 		this.oc=obj;
 		var uniA = [];
-		switch (method) {
-			case 0:
-				var arr = [], check = [AVIMConfig.autoMethods.telex, AVIMConfig.autoMethods.vni, AVIMConfig.autoMethods.viqr, AVIMConfig.autoMethods.viqrStar];
-				var value1 = [telex, vni, viqr, viqr2], D2A = ["DAWEO", "6789", "D^+(", "D^*("];
-				for (var a = 0; a < check.length; a++) {
-					if (check[a]) arr[a] = value1[a];
-					else {
-						arr[a] = false;
-						D2A[a] = "";
-					}
-				}
-				uniA = arr;
-				this.D2 = D2A.join();
-				if (!uniA[0]) return;
-				break;
-			case 1: uniA[0] = telex; this.D2 = "DAWEO"; break;
-			case 2: uniA[0] = vni; this.D2 = "6789"; break;
-			case 3: uniA[0] = viqr; this.D2 = "D^+("; break;
-			case 4: uniA[0] = viqr2; this.D2 = "D^*(";
+		this.D2 = "";
+		
+		if (method == 1 || (method == 0 && AVIMConfig.autoMethods.telex)) {
+			uniA.push(telex); this.D2 += "DAWEO";
+		}
+		if (method == 2 || (method == 0 && AVIMConfig.autoMethods.vni)) {
+			uniA.push(vni); this.D2 += "6789";
+		}
+		if (method == 3 || (method == 0 && AVIMConfig.autoMethods.viqr)) {
+			uniA.push(viqr); this.D2 += "D^+(";
+		}
+		if (method == 4 || (method == 0 && AVIMConfig.autoMethods.viqrStar)) {
+			uniA.push(viqr2); this.D2 += "D^*(";
 		}
 		
 		key = fcc(key.which);
@@ -420,21 +414,10 @@ function AVIM()	{
 		if (!w || obj.sel) return;
 		var noNormC = this.D2.indexOf(up(key)) >= 0;
 		
-		this.main(w[0], key, w[1], uniA[0], noNormC);
-		if (!dockspell) w = this.mozGetText(obj);
-		
-		if (w && uniA[1] && !this.changed) {
-			this.main(w[0], key, w[1], uniA[1], noNormC);
-		}
-		if (!dockspell) w = this.mozGetText(obj);
-		
-		if (w && uniA[2] && !this.changed) {
-			this.main(w[0], key, w[1], uniA[2], noNormC);
-		}
-		if (!dockspell) w = this.mozGetText(obj);
-		
-		if (w && uniA[3] && !this.changed) {
-			this.main(w[0], key, w[1], uniA[3], noNormC);
+		for (var i = 0; i < uniA.length; i++) {
+			if (!dockspell) w = this.mozGetText(obj);
+			if (!w || this.changed) break;
+			this.main(w[0], key, w[1], uniA[i], noNormC);
 		}
 		
 		if (this.D2.indexOf(up(key)) >= 0) {
@@ -444,13 +427,15 @@ function AVIM()	{
 		}
 	};
 	
+	const DAWEOFA = up(aA.join() + eA.join() + mocA.join() + trangA.join() +
+					   oA.join() + english);
 	this.findC = function(w, k, sf) {
 		var method = AVIMConfig.method;
 		if ((method == 3 || method == 4) && w.substr(-2) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
 		var str = "", res, cc = "", pc = "", tE = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
-		var DAWEOFA = up(aA.join() + eA.join() + mocA.join() + trangA.join() + oA.join() + english), h, uc;
+		var h, uc;
 		for (var g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
