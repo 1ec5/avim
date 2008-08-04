@@ -1,7 +1,7 @@
 /*
  *  AVIM JavaScript Vietnamese Input Method Source File dated 28-07-2008
  *
- *	Copyright (C) 2004-2008 Hieu Tran Dang <lt2hieu2004 (at) users (dot) sf (dot) net
+ *	Copyright (C) 2004-2008 Hieu Tran Dang <lt2hieu2004 (at) users (dot) sf (dot) net>
  *	Website:	http://noname00.com/hieu
  *
  *	You are allowed to use this software in any way you want providing:
@@ -123,19 +123,70 @@ function AVIM()	{
 		return sf;
 	};
 	
+//	/**
+//	 * An incomplete, experimental rewrite of ckspell() relying on a whitelist,
+//	 * rather than a blacklist. DO NOT USE!
+//	 */
+//	this.ckspell2 = function(w, k) {
+//		if (!AVIMConfig.ckSpell) return false;
+//		w = this.unV(w);
+//		var uw = up(w), tw = uw;
+//		var uk = up(k), twE, uw2 = this.unV2(uw);
+//		
+//		// Shortcuts
+//		if (uw == "D" && uk == this.D) return false;
+//		if (uw2 == "GI") return false;
+//		
+//		// unV2() doesn't distinguish between D and Đ.
+//		if (uw[0] == "Đ") uw2[0] = "Đ";
+//		
+//		// Read the initial consonant, digraph, or trigraph. GI and QU are also
+//		// matched. Punt if followed by incompatible vowel.
+//		var startCons = "";
+//		if ("AEIOUY".indexOf(uw2[0]) < 0) {
+//			// On their own, many of these accepted patterns are not words, but
+//			// they are prefixes for words. We also treat GI and QU as digraphs.
+//			startCons = /^(?:[BĐFNR](?=[AEIOU])|[CG](?=[AOU])|[CKNP]H(?=[AEIOU])|DZ?(?=[AEIOU])|GI(?=[AEOU]$)|[HLMSTVX](?=[AEIOUY])|K(?=[EIY])|N?GH(?=[EI])|NG(?=[AOU])|QU(?=[AEIOY])|T[HR](?=[AEIOU]))/.exec(uw2);
+//			if (startCons) startCons = startCons[0];
+//			else return true;
+//			
+//			// Punt informal spellings if not enabled.
+//			if (!AVIMConfig.informal &&
+//				(startCons == "F" || startCons == "DZ")) {
+//				return true;
+//			}
+//			
+//			// Remove initial consonant, digraph, or trigraph.
+//			tw = tw.substr(startCons.length);
+//			if (!tw) return false;
+//			uw2 = uw2.substr(startCons.length);
+//		}
+//		
+//		// Read the inner vowel, diphthong, or triphthong. Punt if followed by
+//		// an incompatible consonant or digraph.
+//		if ("AEIOUY".indexOf(uw2[0]) < 0) return true;
+//		else if (tw.length == 1) return false;
+//		var inVow = /^(?:[AEIOU](?=[MPT])|A[IOUY]|A(?=CH?|N[GH]?)|E[OU]|[EI](?=CH|NH?)|IA|IE?U?|IE(?=[MPT]|NG?)|OA[IY]?|OA(?=NG?)|OE(?=T)?|OO(?=C|NG)?|[OU]I|[OU](?=C|NG?)|UA(?=[NT])?|UE(?=CH|NH)?|UO?U?|UO(?=[CMPT]|NG?)|UY[AU]?|UYE(?=N)?|UY(?=T|NH)|YE[MN]?)$/.exec(uw2);
+//		if (!inVow) return true;
+//		
+//		this.tw5 = tw.substr(0, inVow.length);
+//		return false;
+//	};
+	
 	/**
 	 * Returns whether the given word, taking into account the given dead key,
-	 * is a well-formed Vietnamese word.
+	 * is a malformed Vietnamese word.
 	 *
 	 * @param w	{string}	The word to check.
 	 * @param k	{string}	The dead key applied to the word.
-	 * @returns {boolean}	True if the word is well-formed; false otherwise.
+	 * @returns {boolean}	True if the word is malformed; false otherwise.
 	 */
 	this.ckspell = function(w, k) {
 		if (!AVIMConfig.ckSpell) return false;
 		w = this.unV(w);
 		var uw = up(w), tw = uw;
 		var uk = up(k), twE, uw2 = this.unV2(uw);
+		
 		var vSConsonant = "BCDGHKLMNPQRSTVX";
 		var vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
 		if (AVIMConfig.informal) {
@@ -147,31 +198,27 @@ function AVIM()	{
 		if (this.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) return true;
 		
 		// Initial non-Vietnamese consonants: invalid
-		if (/[JW0-9]/.test(uw)) return true;
-		if (AVIMConfig.informal) {
-			if (/^Z|.DZ|.F|[^D]Z/.test(uw)) return true;
-		}
-		else if (/[FZ]/.test(uw)) return true;
+		var nonViet = "[JW0-9" + (AVIMConfig.informal ? "]|^Z|[^D]Z" : "FZ]");
+		if (new RegExp(nonViet).test(uw)) return true;
 		
-		// Incompatible vowels following certain consonants, mostly thanks to
+		// Incompatible vowels following certain consonants, partly thanks to
 		// Mudim issue #16: invalid
-		if (/^(?:C[IEY]|C[HU]Y|CO[AE]|G[EY]|K[AOU]|NG[IEY]|NGH[AOUY]|P[^H]|Q[^U]|QUU|TRY|[NRX]Y|[NPT]HY)/
+		if (/^(?:C[IEY]|C[HU]Y|CO[AE]|G[EY]|GI[^AEOU]|K[AOU]|NG[IEY]|NGH[AOUY]|P[^H]|Q[^U]|QU[^AEIOY]|TRY|[NRX]Y|[NPT]HY)/
 			.test(uw2)) {
 			return true;
 		}
-		// TODO: Handle QU + consonants + diacritic
 		if (uw2 == "QU" && (this.DAWEO || this.SFJRX)) return true;
 		
 		// Non-Vietnamese diphthongs and triphthongs: invalid
-		var dip = /(?:A[AE]|E[AEIY]|I[IY]|^IO|OOO|OU|Y[AIOY]|[^G]IO)/.test(uw2);
-		if (dip && !/UOU|IEU/.test(uw2)) return true;
+		if (/A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|Y[AIOY]/.test(uw2)) {
+			return true;
+		}
 		
 		// Remove initial consonants.
 		
 		// Initial digraphs and trigraphs: valid
-		var consRe = new RegExp("(?:" + vDConsonant + "|[" + vSConsonant +
-								"])");
-		var cons = consRe.exec(tw);
+		var consRe = vDConsonant + "|[" + vSConsonant + "]";
+		var cons = new RegExp("^(?:" + consRe + ")").exec(tw);
 		if (cons && cons[0]) tw = tw.substr(cons[0].length);
 		twE=tw;
 		
@@ -191,7 +238,7 @@ function AVIM()	{
 		}
 		
 		// Extraneous consonants: invalid
-		if (tw && consRe.test(tw)) return true;
+		if (tw && new RegExp(consRe).test(tw)) return true;
 		
 		uw2 = this.unV2(tw);
 		if (uw2 == "IAO") return true;

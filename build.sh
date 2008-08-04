@@ -137,6 +137,17 @@ zip -r ../$APP_NAME.xpi *
 echo "Generating $APP_NAME-$VERSION.xpi..."
 zip -r ../$APP_NAME-$VERSION.xpi *
 
+# Get metadata about the XPI file
+echo "Build results:"
+echo "	Version:	$VERSION (r$REV_NUM)"
+echo "	Date:		$REV_DATE"
+declare -i XPI_SIZE XPI_SIZE_KB
+XPI_SIZE=`stat -f '%z' ../$APP_NAME.xpi`
+XPI_SIZE_KB=XPI_SIZE/1024
+echo "	File size:	$XPI_SIZE B ($XPI_SIZE_KB kB)"
+HASH=`openssl sha1 ../$APP_NAME.xpi`
+echo "	Hash:		$HASH"
+
 cd "$ROOT_DIR"
 
 echo "Cleanup..."
