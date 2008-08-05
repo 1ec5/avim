@@ -841,35 +841,32 @@ function AVIM()	{
 	};
 	
 	this.unV = function(w) {
-		var u = this.repSign(null), b, a;
-		for(a = 1; a <= w.length; a++) {
-			for(b = 0; b < u.length; b++) {
-				if(u[b] == w.charCodeAt(w.length - a)) {
-					w = w.substr(0, w.length - a) + skey_str[b % 24] + w.substr(w.length - a + 1);
-				}
-			}
+		var u = this.repSign(null);
+		var unW = "";
+		for (var a = w.length - 1; a >= 0; a--) {
+			var pos = u.indexOf(w.charCodeAt(a));
+			if (pos >= 0) unW = skey_str[pos % 24] + unW;
+			else unW = w[a] + unW;
 		}
-		return w;
+		return unW;
 	};
 	
 	this.unV2 = function(w) {
-		var a, b;
-		for(a = 1; a <= w.length; a++) {
-			for(b = 0; b < skey.length; b++) {
-				if(skey[b] == w.charCodeAt(w.length - a)) {
-					w = w.substr(0, w.length - a) + skey2[b] + w.substr(w.length - a + 1);
-				}
-			}
+		var unW = "";
+		for (var a = w.length - 1; a >= 0; a--) {
+			var pos = skey.indexOf(w.charCodeAt(a));
+			if (pos >= 0) unW = skey2[pos] + unW;
+			else unW = w[a] + unW;
 		}
-		return w;
+		return unW;
 	};
 	
 	this.repSign = function(k) {
-		var t = [], u = [], a, b;
-		for(a = 0; a < 5; a++) {
-			if((k == null)||(this.SFJRX.substr(a, 1) != up(k))) {
-				t = this.retKC(this.SFJRX.substr(a, 1));
-				for(b = 0; b < t.length; b++) u.push(t[b]);
+		var u = [];
+		for (var a = 0; a < 5; a++) {
+			if (!k || this.SFJRX[a] != up(k)) {
+				var t = this.retKC(this.SFJRX[a]);
+				u = u.concat(this.retKC(this.SFJRX[a]));
 			}
 		}
 		return u;
@@ -889,23 +886,17 @@ function AVIM()	{
 	};
 	
 	this.retUni = function(w, k, pos) {
-		var u = this.retKC(up(k)), uC, lC, c = w.charCodeAt(w.length - pos), a, t = fcc(c);
-		for(a = 0; a < skey.length; a++) {
-			if(skey[a] == c) {
-				if(a < 12) {
-					lC=a;
-					uC=a+12;
-				} else {
-					lC = a - 12;
-					uC=a;
-				}
-				if(t != up(t)) {
-					return u[lC];
-				}
-				return u[uC];
-			}
+		var u = this.retKC(up(k)), uC, lC, t = fcc(c);
+		var idx = skey_str.indexOf(w.substr(-pos, 1));
+		if (idx < 0) return false;
+		if (idx < 12) {
+			lC = idx; uC = idx + 12;
 		}
-		return false;
+		else {
+			lC = idx - 12; uC = idx;
+		}
+		if (t != up(t)) return u[lC];
+		return u[uC];
 	};
 	
 	this.ifInit = function(w) {
