@@ -80,8 +80,8 @@ function AVIM()	{
 	};
 	
 	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM\ ";
-	const skey_chars = "aâăeêioôơuưyAÂĂEÊIOÔƠUƯY".split("");
-	const skey = codesFromChars(skey_chars);
+	const skey_str = "aâăeêioôơuưyAÂĂEÊIOÔƠUƯY".split("");
+	const skey = codesFromChars(skey_str);
 	const db1 = codesFromChars(["đ", "Đ"]);
 	const ds1 = ['d','D'];
 	const os1 = "oOơƠóÓòÒọỌỏỎõÕớỚờỜợỢởỞỡỠ".split("");
@@ -434,7 +434,7 @@ function AVIM()	{
 		if ((method == 3 || method == 4) && w.substr(-2) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
-		var str = "", res, cc = "", pc = "", tE = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
+		var str = "", res, cc = "", pc = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
 		var h, uc;
 		for (var g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
@@ -444,14 +444,14 @@ function AVIM()	{
 		if (this.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
 			if (uk == this.moc) {
-				res = 2;
 				if (w2.indexOf("UU") >= 0 && this.tw5 != dont[1]) {
 					if (w2.substr(-2) != "UU") return false;
+					res = 2;
 				}
 				else if (w2.indexOf("UOU") >= 0) {
 					if (w2.substr(-3) != "UOU") return false;
+					res = 2;
 				}
-				else res = undefined;
 			}
 			
 			if (!res) {
@@ -497,42 +497,41 @@ function AVIM()	{
 			}
 		}
 		
-		if((uk != this.Z) && (this.DAWEO.indexOf(uk) < 0)) {
-			var tEC = this.retKC(uk);
-			for(g = 0;g < tEC.length; g++) {
-				tE += fcc(tEC[g]);
-			}
+		var tE = "", tEC;
+		if (uk != this.Z && this.DAWEO.indexOf(uk) < 0) {
+			tE = this.retKC(uk, true);
 		}
-		for(g = 1; g <= w.length; g++) {
-			if(this.DAWEO.indexOf(uk) < 0) {
-				cc = up(w.substr(-g, 1));
-				pc = up(w.substr(-g - 1, 1));
-				if(str.indexOf(cc) >= 0) {
-					if(cc == 'U') {
-						if(pc != 'Q') {
-							c++;
-							vowA.push(g);
-						}
-					} else if(cc == 'I') {
-						if((pc != 'G') || (c <= 0)) {
-							c++;
-							vowA.push(g);
-						}
-					} else {
+		if (this.DAWEO.indexOf(uk) < 0) for (var g = 1; g <= w.length; g++) {
+			cc = up(w.substr(-g, 1));
+			pc = up(w.substr(-g - 1, 1));
+			if(str.indexOf(cc) >= 0) {
+				if(cc == 'U') {
+					if(pc != 'Q') {
 						c++;
 						vowA.push(g);
 					}
-				} else if(uk != this.Z) {
-					for(h = 0; h < uni_array.length; h++) if(uni_array[h] == w.charCodeAt(w.length - g)) {
+				} else if(cc == 'I') {
+					if((pc != 'G') || (c <= 0)) {
+						c++;
+						vowA.push(g);
+					}
+				} else {
+					c++;
+					vowA.push(g);
+				}
+			}
+			else if (uk != this.Z) {
+				for (var h = 0; h < uni_array.length; h++) {
+					if (uni_array[h] == w.charCodeAt(w.length - g)) {
 						if(this.ckspell(w, k)) {
 							return false;
 						}
-						return [g, tEC[h % 24]];
+						return [g, tE.charCodeAt(h % 24)];
 					}
-					for(h = 0; h < tEC.length; h++) {
-						if(tEC[h] == w.charCodeAt(w.length - g)) {
-							return [g, fcc(skey[h])];
-						}
+				}
+				for (var h = 0; h < tE.length; h++) {
+					if(tE.charCodeAt(h) == w.charCodeAt(w.length - g)) {
+						return [g, skey_str[h]];
 					}
 				}
 			}
@@ -540,63 +539,34 @@ function AVIM()	{
 		if(uk != this.Z && typeof(res) != 'object' && this.ckspell(w, k)) {
 			return false;
 		}
-		if(this.DAWEO.indexOf(uk) < 0) {
-			for(g = 1; g <= w.length; g++) {
-				if((uk != this.Z) && (s.indexOf(w.substr(-g, 1)) >= 0)) {
-					return g;
-				} else if(tE.indexOf(w.substr(-g, 1)) >= 0) {
-					for(h = 0; h < tEC.length; h++) {
-						if(w.charCodeAt(w.length - g) == tEC[h]) {
-							return [g, fcc(skey[h])];
-						}
-					}
+		if (this.DAWEO.indexOf(uk) < 0) {
+			for (var g = 1; g <= w.length; g++) {
+				if (uk != this.Z && s.indexOf(w.substr(-g, 1)) >= 0) return g;
+				if (tE.indexOf(w.substr(-g, 1)) >= 0) {
+					var pos = tE.indexOf(w.substr(-g, 1));
+					if (pos >= 0) return [g, skey_str[pos]];
 				}
 			}
 		}
-		if(res) {
-			return res;
-		}
-		if((c == 1) || (uk == this.Z)) {
-			return vowA[0];
-		} else if(c == 2) {
-			var v = 2;
-			if(w.substr(-1) == " ") {
-				v = 3;
-			}
-			var ttt = up(w.substr(-v, 2));
-			if(!AVIMConfig.oldAccent && /^(?:UY|O[AE])$/.test(ttt)) {
+		if (res) return res;
+		if (c == 1 || uk == this.Z) return vowA[0];
+		else if (c == 2) {
+			var upW = up(w);
+			if (!AVIMConfig.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
 				return vowA[0];
 			}
-			var c2 = 0, fdconsonant, sc = "BCDĐGHKLMNPQRSTVX", dc = "CH,GI,KH,NGH,GH,NG,NH,PH,QU,TH,TR".split(',');
-			for(h = 1; h <= w.length; h++) {
-				fdconsonant=false;
-				for(g = 0; g < dc.length; g++) {
-					if(up(w.substr(-h - dc[g].length + 1, dc[g].length)).indexOf(dc[g])>=0) {
-						c2++;
-						fdconsonant = true;
-						if(dc[g] != 'NGH') {
-							h++;
-						} else {
-							h+=2;
-						}
-					}
-				}
-				if(!fdconsonant) {
-					if(sc.indexOf(up(w.substr(-h, 1))) >= 0) {
-						c2++;
-					} else { 
-						break;
-					}
-				}
+			// Count final consonants.
+			var cons = upW.match(/[BCDĐGHKLMNPQRSTVX]+$/);
+			if (cons) {
+				// Group digraphs and trigraphs.
+				cons = cons[0]
+					   .match(/NGH?|[CGKNPT]H|GI|QU|TR|[BCDĐGHKLMNPQRSTVX]/g);
+				if (cons && cons.length < 3) return vowA[0];
 			}
-			if((c2 == 1) || (c2 == 2)) {
-				return vowA[0];
-			} else {
-				return vowA[1];
-			}
-		} else if(c == 3) {
 			return vowA[1];
-		} else return false;
+		}
+		else if (c == 3) return vowA[1];
+		return false;
 	};
 	
 	/**
@@ -604,7 +574,7 @@ function AVIM()	{
 	 * XUL or HTML element.
 	 *
 	 * @param el	{object}	The XUL or HTML element.
-	 * @returns {object}	The associated nsIEditor instance.
+	 * @returns	{object}	The associated nsIEditor instance.
 	 */
 	this.getEditor = function(el) {
 		if (el.editor) return el.editor;
@@ -836,25 +806,29 @@ function AVIM()	{
 	
 	const ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
 	this.DAWEOF = function(cc, k, g) {
-		var ret = [g], kA = [this.A, this.moc, this.trang, this.E, this.O];
-		for (var a = 0; a < kA.length; a++) {
-			if (k != kA[a]) continue;
-			for (var z = 0; z < ccA[a].length; z++) {
-				if (cc == ccA[a][z]) ret[1] = ccrA[a][z];
-			}
-		}
-		if (ret[1]) return ret;
-		return false;
+		var kA = [this.A, this.moc, this.trang, this.E, this.O];
+		
+		var posK = kA.indexOf(k);
+		if (posK < 0) return false;
+		
+		var posCC = ccA[posK].indexOf(cc);
+		if (posCC < 0) return false;
+		
+		return [ccrA[posK][posCC]];
 	};
 	
 	/**
-	 * Returns an array of character codes corresponding to the following
-	 * characters with the given dead key applied:
+	 * Returns an array of characters corresponding to the following characters
+	 * with the given dead key applied:
 	 * 	a â ă e ê i o ô ơ u ư y A Â Ă E Ê I O Ô Ơ U Ư Y
 	 *
-	 * @param k	{string}	The dead key to apply to each character.
+	 * @param k			{string}	The dead key to apply to each character.
+	 * @param giveChars	{string}	True if the characters themselves should be
+	 * 								returned; false if they should be converted
+	 * 								to character codes.
+	 * @returns {object}	An array of characters or character codes.
 	 */
-	this.retKC = function(k) {
+	this.retKC = function(k, giveChars) {
 		var chars = "";
 		switch (k) {
 			case this.S: chars = "áấắéếíóốớúứýÁẤẮÉẾÍÓỐỚÚỨÝ"; break;
@@ -863,7 +837,7 @@ function AVIM()	{
 			case this.R: chars = "ảẩẳẻểỉỏổởủửỷẢẨẲẺỂỈỎỔỞỦỬỶ"; break;
 			case this.X: chars = "ãẫẵẽễĩõỗỡũữỹÃẪẴẼỄĨÕỖỠŨỮỸ";
 		}
-		return codesFromChars(chars);
+		return giveChars ? chars : codesFromChars(chars);
 	};
 	
 	this.unV = function(w) {
@@ -871,7 +845,7 @@ function AVIM()	{
 		for(a = 1; a <= w.length; a++) {
 			for(b = 0; b < u.length; b++) {
 				if(u[b] == w.charCodeAt(w.length - a)) {
-					w = w.substr(0, w.length - a) + fcc(skey[b % 24]) + w.substr(w.length - a + 1);
+					w = w.substr(0, w.length - a) + skey_str[b % 24] + w.substr(w.length - a + 1);
 				}
 			}
 		}
@@ -902,7 +876,7 @@ function AVIM()	{
 	};
 	
 	this.sr = function(w, k, i) {
-		var sf = skey_chars, pos = this.findC(w, k, sf);
+		var sf = skey_str, pos = this.findC(w, k, sf);
 		if(pos) {
 			if(pos[1]) {
 				this.replaceChar(this.oc, i-pos[0], pos[1]);
