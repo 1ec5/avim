@@ -38,22 +38,27 @@ var AVIMConfig = {
 };
 
 function AVIM()	{
+	// If true, AVIM displays a typing test suite. The variable is set at build
+	// time by build.sh.
+	const DEBUG = isNaN(parseInt("${Year}"));
+	
 	// IDs of user interface elements
-	const commands = {
+	const commandIds = {
 		method: "avim-method-cmd",
 		prevMethod: "avim-prev-method-cmd",
 		nextMethod: "avim-next-method-cmd",
 		spell: "avim-spell-cmd",
 		oldAccents: "avim-oldaccents-cmd"
 	};
-	const broadcasters = {
+	const broadcasterIds = {
 		enabled: "avim-enabled-bc",
 		methods: ["avim-auto-bc", "avim-telex-bc", "avim-vni-bc",
 				  "avim-viqr-bc", "avim-viqr-star-bc"],
 		spell: "avim-spell-bc",
 		oldAccents: "avim-oldaccents-bc"
 	};
-	const panelID = "avim-status";
+	const menuId = "avim-menu";
+	const panelId = "avim-status";
 	
 	// Local functions that don't require access to AVIM's fields.
 	
@@ -256,8 +261,8 @@ function AVIM()	{
 		
 		var method = AVIMConfig.method;
 		method += distance;
-		if (method < 0) method += broadcasters.methods.length;
-		method %= broadcasters.methods.length;
+		if (method < 0) method += broadcasterIds.methods.length;
+		method %= broadcasterIds.methods.length;
 		AVIMConfig.method = method;
 		
 		this.setPrefs("method");
@@ -329,39 +334,35 @@ function AVIM()	{
 	 */
 	this.updateUI = function() {
 		// Enabled/disabled
-		var bc_enabled = $(broadcasters.enabled);
-		if (bc_enabled) {
-			bc_enabled.setAttribute("checked", "" + AVIMConfig.onOff);
+		var enabledBcId = $(broadcasterIds.enabled);
+		if (enabledBcId) {
+			enabledBcId.setAttribute("checked", "" + AVIMConfig.onOff);
 		}
 		
 		// Disable methods and options if AVIM is disabled
-		for each (var cmd in commands) {
-			$(cmd).setAttribute("disabled", "" + !AVIMConfig.onOff);
+		for each (var cmdId in commandIds) {
+			$(cmdId).setAttribute("disabled", "" + !AVIMConfig.onOff);
 		}
 		
 		// Method
-		for each (var bc in broadcasters.methods) {
-			$(bc).removeAttribute("checked");
-			$(bc).removeAttribute("key");
+		for each (var bcId in broadcasterIds.methods) {
+			$(bcId).removeAttribute("checked");
+			$(bcId).removeAttribute("key");
 		}
-		var bc_sel = $(broadcasters.methods[AVIMConfig.method]);
-		if (bc_sel) bc_sel.setAttribute("checked", "true");
+		var selBc = $(broadcasterIds.methods[AVIMConfig.method]);
+		if (selBc) selBc.setAttribute("checked", "true");
 		
 		// Options
-		var bc_spell = $(broadcasters.spell);
-		if (bc_spell) {
-			bc_spell.setAttribute("checked", "" + AVIMConfig.ckSpell);
-		}
-		var bc_old = $(broadcasters.oldAccents);
-		if (bc_old) {
-			bc_old.setAttribute("checked", "" + AVIMConfig.oldAccent);
-		}
+		var spellBc = $(broadcasterIds.spell);
+		if (spellBc) spellBc.setAttribute("checked", "" + AVIMConfig.ckSpell);
+		var oldBc = $(broadcasterIds.oldAccents);
+		if (oldBc) oldBc.setAttribute("checked", "" + AVIMConfig.oldAccent);
 		
 		// Status bar panel
-		var panel = $(panelID);
+		var panel = $(panelId);
 		if (!panel) return;
 		if (AVIMConfig.onOff) {
-			panel.setAttribute("label", bc_sel.getAttribute("label"));
+			panel.setAttribute("label", selBc.getAttribute("label"));
 		}
 		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
 		panel.style.display =
@@ -865,7 +866,6 @@ function AVIM()	{
 		var u = [];
 		for (var a = 0; a < 5; a++) {
 			if (!k || this.SFJRX[a] != up(k)) {
-				var t = this.retKC(this.SFJRX[a]);
 				u = u.concat(this.retKC(this.SFJRX[a]));
 			}
 		}
@@ -886,7 +886,7 @@ function AVIM()	{
 	};
 	
 	this.retUni = function(w, k, pos) {
-		var u = this.retKC(up(k)), uC, lC, t = fcc(c);
+		var uC, lC;
 		var idx = skey_str.indexOf(w.substr(-pos, 1));
 		if (idx < 0) return false;
 		if (idx < 12) {
@@ -895,6 +895,8 @@ function AVIM()	{
 		else {
 			lC = idx - 12; uC = idx;
 		}
+		var t = w.substr(-pos);
+		var u = this.retKC(up(k));
 		if (t != up(t)) return u[lC];
 		return u[uC];
 	};
@@ -957,7 +959,7 @@ function AVIM()	{
 	this.notWord=function(w) {
 		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t" +
 			"“”‘’\xab\xbb‹›–—…−×÷°″′";
-		return (str.indexOf(w)>=0)
+		return str.indexOf(w) >= 0;
 	};
 	
 	this.findIgnore=function(el) {
@@ -1068,7 +1070,7 @@ function AVIM()	{
 	 * Unregisters the preferences observer as the window is being closed.
 	 */
 	this.unregisterPrefs = function() {
-		this.setPrefs();
+//		this.setPrefs();
 		prefs.removeObserver("", this);
 	};
 	
@@ -1158,7 +1160,7 @@ function AVIM()	{
 				AVIMConfig.method = prefs.getIntPref("method");
 				// In case someone enters an invalid method ID in about:config
 				var method = AVIMConfig.method;
-				if (method < 0 || method >= broadcasters.methods.length) {
+				if (method < 0 || method >= broadcasterIds.methods.length) {
 					Components.classes["@mozilla.org/preferences-service;1"]
 						.getService(Components.interfaces.nsIPrefService)
 						.getDefaultBranch("extensions.avim.")
@@ -1309,32 +1311,32 @@ function AVIM()	{
 	};
 	var markers = {
 		// HIM and AVIM since at least version 1.13 (build 20050810)
-		"DAWEOF": disablers.HIM,
+		DAWEOF: disablers.HIM,
 		// VietTyping, various versions
-		"UNIZZ": disablers.VietTyping,
+		UNIZZ: disablers.VietTyping,
 		// VietUni, including vietuni8.js (2001-10-19) and version 14.0 by Tran
 		// Kien Duc (2004-01-07)
-		"telexingVietUC": disablers.VietUni,
+		telexingVietUC: disablers.VietUni,
 		// Mudim since version 0.3 (r2)
-		"Mudim": disablers.Mudim,
+		Mudim: disablers.Mudim,
 		// MViet 12 AC
-		"evBX": disablers.MViet,
+		evBX: disablers.MViet,
 		// MViet 14 RTE
-		"MVietOnOffButton": disablers.MViet,
+		MVietOnOffButton: disablers.MViet,
 		// CHIM since version 0.9.3
-		"CHIM": disablers.CHIM,
+		CHIM: disablers.CHIM,
 		// CHIM (xvnkb.js) versions 0.8-0.9.2 and BIM 0.00.01-0.0.3
-		"vnMethod": disablers.xvnkb,
+		vnMethod: disablers.xvnkb,
 		// HIM since at least version 1.1 (build 20050430)
-		"DAWEO": disablers.HIM,
+		DAWEO: disablers.HIM,
 		// HIM since version 1.0
-		"findCharToChange": disablers.HIM,
+		findCharToChange: disablers.HIM,
 		// AVIM after build 20071102
-		"AVIMObj": disablers.AVIM,
+		AVIMObj: disablers.AVIM,
 		// Vinova (2008-05-23)
-		"vinova": disablers.Vinova,
+		vinova: disablers.Vinova,
 		// VietIMEW
-		"GetVnVowelIndex": disablers.VietIMEW
+		GetVnVowelIndex: disablers.VietIMEW
 	};
 	
 	/**
@@ -1386,25 +1388,26 @@ function AVIM()	{
 	};
 };
 
-if (!avim && !window.frameElement) {
-	var avim=new AVIM();
-	addEventListener("load", function (e) {
+if (!window.avim && !window.frameElement) {
+	window.avim = new AVIM();
+	addEventListener("load", function () {
 		avim.registerPrefs();
 	}, false);
-	addEventListener("unload", function (e) {
+	addEventListener("unload", function () {
 		avim.unregisterPrefs();
 	}, false);
 	addEventListener("keypress", function (e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
 //		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
-		var doc = e.target.ownerDocument;
+		var target = e.target;
+		var doc = target.ownerDocument;
 		avim.disableOthers(doc);
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
 		var wysiwyg =
 			(doc.designMode && doc.designMode.toLowerCase() == "on") ||
-			(e.target.contentEditable &&
-			 e.target.contentEditable.toLowerCase() == "true");
+			(target.contentEditable &&
+			 target.contentEditable.toLowerCase() == "true");
 		if (wysiwyg) return avim.ifMoz(e);
 		
 		return avim.keyPressHandler(e);

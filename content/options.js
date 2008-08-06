@@ -2,25 +2,34 @@
  * A controller for the AVIM Options panel.
  */
 function AVIMOptionsPanel() {
+	// If true, AVIM displays a typing test suite. The variable is set at build
+	// time by build.sh.
+	const DEBUG = isNaN(parseInt("${Year}"));
+	// GUID of the Mudim extension
 	const MUDIM_ID = "mudim@svol.ru";
 	
-	this.broadcasters = {
+	const broadcasterIds = {
 		disabled: "disabled-bc",
 		spellOptions: "spell-options-bc"
 	};
 	
-	this.notificationBoxId = "general-note";
+	const notificationBoxId = "general-note";
 	
-	this.tabBoxId = "general-tabbox";
-	this.tabsId = "general-tabs";
+	const tabBoxId = "general-tabbox";
+	const tabsId = "general-tabs";
 	
-	this.ignoreTextBoxId = "ignore-text";
-	this.ignoreButtonId = "ignore-button";
-	this.idListId = "ignoredids-list";
-	this.removeButtonId = "remove-button";
+	const testerBoxId = "tester-box";
+	const testerButtonId = "tester-button";
 	
-	this.ignoredIdsDelimiter = /\s+/;
-	this.macTabBoxMargin = 4 + "px";
+	const ignoreTextBoxId = "ignore-text";
+	const idListId = "ignoredids-list";
+	const removeButtonId = "remove-button";
+	
+	const ignoredIdsDelimiter = /\s+/;
+	const macTabBoxMargin = 4 + "px";
+	
+	const stringBundleId = "bundle";
+	const noteValue = "mudim-note";
 	
 	const isMac = Components.classes["@mozilla.org/xre/app-info;1"]
 							.getService(Components.interfaces.nsIXULRuntime).OS
@@ -37,7 +46,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateIgnoreButton = function() {
 		var ignoreButton = document.getElementById(this.ignoreButtonId);
-		var ignoreTextBox = document.getElementById(this.ignoreTextBoxId);
+		var ignoreTextBox = document.getElementById(ignoreTextBoxId);
 		ignoreButton.disabled = !ignoreTextBox.value;
 	};
 	
@@ -47,9 +56,9 @@ function AVIMOptionsPanel() {
 	 * listed in the preference too.
 	 */
 	this.ignoreIdsInTextBox = function() {
-		var ignoreTextBox = document.getElementById(this.ignoreTextBoxId);
-		var idList = document.getElementById(this.idListId);
-		var ids = ignoreTextBox.value.split(this.ignoredIdsDelimiter);
+		var ignoreTextBox = document.getElementById(ignoreTextBoxId);
+		var idList = document.getElementById(idListId);
+		var ids = ignoreTextBox.value.split(ignoredIdsDelimiter);
 		for (var i = 0; i < ids.length; i++) {
 			var dupes = idList.getElementsByAttribute("value", ids[i]);
 			if (ids[i] && !dupes.length) idList.appendItem(ids[i], ids[i]);
@@ -59,12 +68,12 @@ function AVIMOptionsPanel() {
 	};
 	
 	/**
-	 * Enables or disables the Remove ID buton, based on whether any rows are
+	 * Enables or disables the Remove ID button, based on whether any rows are
 	 * selected in the Ignored IDs list.
 	 */
 	this.validateRemoveButton = function() {
-		var removeButton = document.getElementById(this.removeButtonId);
-		var idList = document.getElementById(this.idListId);
+		var removeButton = document.getElementById(removeButtonId);
+		var idList = document.getElementById(idListId);
 //		dump("First row: " + idList.getItemAtIndex(0).value + ".\n");								// debug
 		removeButton.disabled = !idList.selectedCount;
 	};
@@ -92,19 +101,16 @@ function AVIMOptionsPanel() {
 	 */
 	this.updateIgnoredIds = function() {
 		// Clear the list.
-		var idList = document.getElementById(this.idListId);
+		var idList = document.getElementById(idListId);
 		var items = [];
 		for (var i = 0; i < idList.getRowCount(); i++) {
 			items.push(idList.getItemAtIndex(i));
 		}
-		for (var i = 0; i < items.length; i++) {
-			idList.removeChild(items[i]);
-//			idList.removeItemAt(idList.getIndexOfItem(items[i]));
-		}
+		for (var i = 0; i < items.length; i++) idList.removeChild(items[i]);
 		
 		// Repopulate the list.
 		var ignoredIds = prefs.getCharPref("ignoredFieldIds");
-		ignoredIds = ignoredIds.split(this.ignoredIdsDelimiter);
+		ignoredIds = ignoredIds.split(ignoredIdsDelimiter);
 		ignoredIds = this.normalizeArray(ignoredIds, true);
 //		dump("Got ignoredIds: " + ignoredIds.join(",") + ".\n");				// debug
 		for (var i = 0; i < ignoredIds.length; i++) {
@@ -119,7 +125,7 @@ function AVIMOptionsPanel() {
 	 * hides the Mudim conflict warning based on whether there is a conflict.
 	 */
 	this.validateForEnabled = function() {
-		var bc = document.getElementById(this.broadcasters.disabled);
+		var bc = document.getElementById(broadcasterIds.disabled);
 		bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
 		
 		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
@@ -134,7 +140,7 @@ function AVIMOptionsPanel() {
 	 * disabled.
 	 */
 	this.validateForSpellingEnforced = function() {
-		var bc = document.getElementById(this.broadcasters.spellOptions);
+		var bc = document.getElementById(broadcasterIds.spellOptions);
 		var enabled = prefs.getBoolPref("enabled");
 		var enforced = prefs.getBoolPref("ignoreMalformed");
 		bc.setAttribute("disabled", "" + (!enabled || !enforced));
@@ -153,7 +159,7 @@ function AVIMOptionsPanel() {
 				// startup, when we want to get all the preferences.
 				specificPref = false;
 			case "enabled":
-				var bc = document.getElementById(this.broadcasters.disabled);
+				var bc = document.getElementById(broadcasterIds.disabled);
 				bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
 				this.validateForEnabled();
 				if (specificPref) break;
@@ -172,7 +178,7 @@ function AVIMOptionsPanel() {
 	 * the preference, either.
 	 */
 	this.removeSelectedIds = function() {
-		var idList = document.getElementById(this.idListId);
+		var idList = document.getElementById(idListId);
 		var sel_items = [];
 		for (var i = 0; i < idList.selectedCount; i++) {
 			var row = idList.getSelectedItem(i);
@@ -214,7 +220,7 @@ function AVIMOptionsPanel() {
 	 * Updates the stored preferences to reflect the panel's current state.
 	 */
 	this.setPrefs = function() {
-		var idList = document.getElementById(this.idListId);
+		var idList = document.getElementById(idListId);
 		var ignoredIds = [];
 		for (var i = 0; i < idList.getRowCount(); i++) {
 			var row = idList.getItemAtIndex(i);
@@ -234,15 +240,50 @@ function AVIMOptionsPanel() {
 	};
 	
 	/**
+	 * Opens the test suite window.
+	 */
+	this.openTester = function() {
+		document.documentElement.openWindow("avim:tester",
+											"chrome://avim/content/tester.xul",
+											"", null);
+	};
+	
+	/**
+	 * Creates and adds a button to the Input Editing tab that launches the test
+	 * suite.
+	 */
+	this.exposeTester = function() {
+		if (!DEBUG) return;
+		
+		var box = document.getElementById(testerBoxId);
+		if (!box) return;
+		
+		var stringBundle = document.getElementById(stringBundleId);
+		if (!stringBundle) return;
+		var buttonLabel = stringBundle.getString("tester-button.label");
+		if (!buttonLabel) return;
+		var buttonAccessKey =
+			stringBundle.getString("tester-button.accesskey");
+		if (!buttonAccessKey) return;
+		
+		var button = document.createElement("button");
+		button.id = testerButtonId;
+		button.addEventListener("command", this.openTester, false);
+		button.setAttribute("label", buttonLabel);
+		button.setAttribute("accesskey", buttonAccessKey);
+		box.appendChild(button);
+	};
+	
+	/**
 	 * Tweaks the styling on the tab box on the Mac, to work around some bugs in
 	 * the default stylesheet.
 	 */
 	this.fixTabBoxStyle = function() {
-		var tabBox = document.getElementById(this.tabBoxId);
-		var margin = this.macTabBoxMargin;
+		var tabBox = document.getElementById(tabBoxId);
+		var margin = macTabBoxMargin;
 		tabBox.style.marginLeft = tabBox.style.marginRight = margin;
 		
-		var tabs = document.getElementById(this.tabsId);
+		var tabs = document.getElementById(tabsId);
 		tabs.style.position = "relative";
 	};
 	
@@ -251,7 +292,7 @@ function AVIMOptionsPanel() {
 	 * tab, so that the panel doesn't get cut off at the bottom.
 	 */
 	this.fixDescriptionStyle = function() {
-		var tabBox = document.getElementById(this.tabBoxId);
+		var tabBox = document.getElementById(tabBoxId);
 		var descs = tabBox.getElementsByTagName("description");
 		for (var i = 0; i < descs.length; i++) {
 			var style = getComputedStyle(descs[i], null);
@@ -269,11 +310,13 @@ function AVIMOptionsPanel() {
 	 * be called once the panel itself has finished loading.
 	 */
 	this.initialize = function() {
-		this.mudimMonitor = new MudimMonitor(prefs, this.notificationBoxId);
+		this.mudimMonitor = new MudimMonitor();
 		this.mudimMonitor.registerPrefs();
 		
 		this.registerPrefs();
 		this.validateRemoveButton();
+		
+		this.exposeTester();
 		
 		if (isMac) this.fixTabBoxStyle();
 		this.fixDescriptionStyle();
@@ -290,13 +333,7 @@ function AVIMOptionsPanel() {
 	/**
 	 * An inner class that detects when Mudim is installed and enabled.
 	 */
-	function MudimMonitor(avimPrefs, notificationBoxId) {
-		this.avimPrefs = avimPrefs;
-		this.notificationBoxId = notificationBoxId;
-		
-		this.stringBundleId = "bundle";
-		this.noteValue = "mudim-note";
-		
+	function MudimMonitor() {
 		// Mudim itself
 		if (window.Application) {
 			this.mudim = Application.extensions.get(MUDIM_ID);
@@ -332,7 +369,7 @@ function AVIMOptionsPanel() {
 		 * 						otherwise.
 		 */
 		this.conflicts = function() {
-			var avimEnabled = this.avimPrefs.getBoolPref("enabled");
+			var avimEnabled = prefs.getBoolPref("enabled");
 			return avimEnabled && this.mudim && this.mudim.enabled &&
 				mPrefs.getIntPref("method") != 0;
 		};
@@ -365,10 +402,10 @@ function AVIMOptionsPanel() {
 		 * Displays a notification that Mudim is enabled.
 		 */
 		this.displayWarning = function() {
-			var noteBox = document.getElementById(this.notificationBoxId);
-			if (noteBox.getNotificationWithValue(this.noteValue)) return;
+			var noteBox = document.getElementById(notificationBoxId);
+			if (noteBox.getNotificationWithValue(noteValue)) return;
 			
-			var stringBundle = document.getElementById(this.stringBundleId);
+			var stringBundle = document.getElementById(stringBundleId);
 			var noteLabel = stringBundle.getString("mudim-note.label");
 			var noteBtns = [{
 				accessKey: stringBundle.getString("mudim-button.accesskey"),
@@ -376,7 +413,7 @@ function AVIMOptionsPanel() {
 				label: stringBundle.getString("mudim-button.label"),
 				popup: null
 			}];
-			noteBox.appendNotification(noteLabel, this.noteValue,
+			noteBox.appendNotification(noteLabel, noteValue,
 									   URI_NOTIFICATION_ICON_WARNING,
 									   noteBox.PRIORITY_WARNING_MEDIUM,
 									   noteBtns);
@@ -386,8 +423,8 @@ function AVIMOptionsPanel() {
 		 * Hides the notification that Mudim is enabled.
 		 */
 		this.hideWarning = function() {
-			var noteBox = document.getElementById(this.notificationBoxId);
-			var note = noteBox.getNotificationWithValue(this.noteValue);
+			var noteBox = document.getElementById(notificationBoxId);
+			var note = noteBox.getNotificationWithValue(noteValue);
 			if (note) noteBox.removeNotification(note);
 		};
 		

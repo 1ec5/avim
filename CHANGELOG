@@ -135,4 +135,7 @@ Version ${Version} (${Date})
  - Fixed an issue where special textboxes in Firefox, such as the search and
    find bars, could not be ignored.
  - Fixed an issue where some in-page scripts would not be disabled.
+ - Fixed issues where the AVIM preference dialog would not behave like a normal
+   window in Mac OS X. Now the menu bar remains visible, standard key
+   combinations work, and AVIM recognizes the dialog's Textbox ID textbox.
  - Vinova can now be automatically disabled on webpages via a hidden preference.

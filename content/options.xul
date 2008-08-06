@@ -1,108 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://browser/skin/preferences/preferences.css" type="text/css"?>
 
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://browser/content/macBrowserOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
+<?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
+
 <!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
 
-<prefwindow id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="&avim-preferences.title;" style="&avim-preferences.style;">
+<prefwindow id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" windowtype="avim:options" title="&avim-preferences.title;" style="&avim-preferences.style;">
 	<script type="application/x-javascript" src="chrome://mozapps/content/extensions/extensions.js" />
 	<script type="application/x-javascript" src="chrome://avim/content/options.js" />
 	
-	<stringbundleset>
+	<stringbundleset id="stringbundleset">
 		<stringbundle id="bundle" src="chrome://avim/locale/options.properties" />
 	</stringbundleset>
 	
-	<commandset>
+	<commandset id="mainCommandSet">
 		<command id="ignore-cmd" oncommand="options.ignoreIdsInTextBox();" />
 		<command id="remove-cmd" oncommand="options.removeSelectedIds();" />
 	</commandset>
+	<commandset id="baseMenuCommandSet" />
+	<commandset id="placesCommands" />
 	
-	<broadcasterset>
+	<keyset id="mainKeyset" />
+	<keyset id="baseMenuKeyset" />
+	<keyset id="editMenuKeys" />
+	
+	<broadcasterset id="mainBroadcasterSet">
 		<broadcaster id="disabled-bc" />
 		<broadcaster id="spell-options-bc" />
 	</broadcasterset>
 	
-		<prefpane id="general-pane" label="&avim-preferences.title;">
-			<preferences>
-				<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" />
-				<preference id="method-pref" name="extensions.avim.method" type="int" />
-				<preference id="spell-pref" name="extensions.avim.ignoreMalformed" type="bool" />
-				<preference id="informal-pref" name="extensions.avim.informal" type="bool" />
-				<preference id="oldaccents-pref" name="extensions.avim.oldAccents" type="bool" />
-				<preference id="statuspanel-pref" name="extensions.avim.statusBarPanel" type="bool" />
-				<!-- <preference id="ignoredids-pref" name="extensions.avim.ignoredFieldIds" type="unichar" /> -->
-				<preference id="auto-telex-pref" name="extensions.avim.auto.telex" type="bool" />
-				<preference id="auto-vni-pref" name="extensions.avim.auto.vni" type="bool" />
-				<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
-				<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
-				<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" />
-			</preferences>
+	<prefpane id="general-pane" label="&avim-preferences.title;">
+		<preferences>
+			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" />
+			<preference id="method-pref" name="extensions.avim.method" type="int" />
+			<preference id="spell-pref" name="extensions.avim.ignoreMalformed" type="bool" />
+			<preference id="informal-pref" name="extensions.avim.informal" type="bool" />
+			<preference id="oldaccents-pref" name="extensions.avim.oldAccents" type="bool" />
+			<preference id="statuspanel-pref" name="extensions.avim.statusBarPanel" type="bool" />
+			<!-- <preference id="ignoredids-pref" name="extensions.avim.ignoredFieldIds" type="unichar" /> -->
+			<preference id="auto-telex-pref" name="extensions.avim.auto.telex" type="bool" />
+			<preference id="auto-vni-pref" name="extensions.avim.auto.vni" type="bool" />
+			<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
+			<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
+			<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" />
+		</preferences>
+		
+		<vbox flex="1">
+			<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" oncommand="options.validateForEnabled(); return true;" />
 			
-			<vbox flex="1">
-				<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" oncommand="options.validateForEnabled(); return true;" />
-				
-				<tabbox id="general-tabbox">
-					<tabs id="general-tabs">
-						<tab label="&input-panel.label;" linkedpanel="input-panel" />
-						<tab label="&ignored-panel.label;" linkedpanel="ignored-panel" />
-					</tabs>
-					<tabpanels>
-						<tabpanel id="input-panel" orient="vertical">
-							<notificationbox id="general-note" flex="1">
-								<hbox align="center">
-									<label accesskey="&method-menu.accesskey;" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
-									<menulist id="method-menu" preference="method-pref" observes="disabled-bc">
-										<menupopup>
-											<menuitem id="method-auto-item" value="0" label="&method-auto-item.label;" />
-											<menuitem id="method-telex-item" value="1" label="&method-telex-item.label;" />
-											<menuitem id="method-vni-item" value="2" label="&method-vni-item.label;" />
-											<menuitem id="method-viqr-item" value="3" label="&method-viqr-item.label;" />
-											<menuitem id="method-viqr-star-item" value="4" label="&method-viqr-star-item.label;" />
-										</menupopup>
-									</menulist>
-								</hbox>
-								
-								<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" oncommand="options.validateForSpellingEnforced(); return true;" />
-								<vbox id="spell-options-box" class="indent">
-									<checkbox id="informal-check" preference="informal-pref" label="&informal-check.label;" accesskey="&informal-check.accesskey;" observes="spell-options-bc" />
-								</vbox>
-								<checkbox id="oldaccents-check" preference="oldaccents-pref" label="&oldaccents-check.label;" accesskey="&oldaccents-check.accesskey;" observes="disabled-bc" />
-								
-								<separator class="thin" />
-								
-								<label observes="disabled-bc">&auto-methods.label;</label>
-								<hbox id="auto-methods-box" class="indent">
-									<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-auto-item.label;" accesskey="&auto-telex-check.accesskey;" observes="disabled-bc" />
-									<checkbox id="auto-vni-check" preference="auto-vni-pref" label="&method-vni-item.label;" accesskey="&auto-vni-check.accesskey;" observes="disabled-bc" />
-									<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="disabled-bc" />
-									<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="disabled-bc" />
-								</hbox>
-								
-								<separator class="thin" />
-								
-								<checkbox id="script-enabled-check" preference="script-enabled-pref" label="&script-enabled-check.label;" accesskey="&script-enabled-check.accesskey;" observes="disabled-bc" />
-							</notificationbox>
-						</tabpanel>
-						
-						<tabpanel id="ignored-panel" orient="vertical">
-							<description id="ignored-desc" linecount="&ignored-desc.line-count;">&ignored-desc.label;</description>
-							<description id="ignored-instructions" linecount="&ignored-instructions.line-count;">&ignored-instructions.label;</description>
+			<tabbox id="general-tabbox">
+				<tabs id="general-tabs">
+					<tab label="&input-panel.label;" linkedpanel="input-panel" />
+					<tab label="&ignored-panel.label;" linkedpanel="ignored-panel" />
+				</tabs>
+				<tabpanels>
+					<tabpanel id="input-panel" orient="vertical">
+						<notificationbox id="general-note" flex="1">
 							<hbox align="center">
-								<label control="ignore-text">&ignore-text.label;</label>
-								<textbox id="ignore-text" flex="1" oninput="options.validateIgnoreButton();" />
-								<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
+								<label id="method-label" accesskey="&method-menu.accesskey;" aria-labelledby="method-label method-menu" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
+								<menulist id="method-menu" preference="method-pref" aria-labelledby="method-label" observes="disabled-bc">
+									<menupopup>
+										<menuitem id="method-auto-item" value="0" label="&method-auto-item.label;" />
+										<menuitem id="method-telex-item" value="1" label="&method-telex-item.label;" />
+										<menuitem id="method-vni-item" value="2" label="&method-vni-item.label;" />
+										<menuitem id="method-viqr-item" value="3" label="&method-viqr-item.label;" />
+										<menuitem id="method-viqr-star-item" value="4" label="&method-viqr-star-item.label;" />
+									</menupopup>
+								</menulist>
 							</hbox>
+							
+							<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" oncommand="options.validateForSpellingEnforced(); return true;" />
+							<vbox id="spell-options-box" class="indent">
+								<checkbox id="informal-check" preference="informal-pref" label="&informal-check.label;" accesskey="&informal-check.accesskey;" observes="spell-options-bc" />
+							</vbox>
+							<checkbox id="oldaccents-check" preference="oldaccents-pref" label="&oldaccents-check.label;" accesskey="&oldaccents-check.accesskey;" observes="disabled-bc" />
+							
 							<separator class="thin" />
-							<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="options.validateRemoveButton();" />
-							<hbox class="actionButtons">
-								<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
-							</hbox>
-						</tabpanel>
-					</tabpanels>
-				</tabbox>
-				
-				<!-- Display -->
-				<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
-			</vbox>
-		</prefpane>
+							
+							<label observes="disabled-bc">&auto-methods.label;</label>
+							<vbox id="auto-methods-box" class="indent">
+								<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-auto-item.label;" accesskey="&auto-telex-check.accesskey;" observes="disabled-bc" />
+								<checkbox id="auto-vni-check" preference="auto-vni-pref" label="&method-vni-item.label;" accesskey="&auto-vni-check.accesskey;" observes="disabled-bc" />
+								<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="disabled-bc" />
+								<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="disabled-bc" />
+							</vbox>
+							
+							<separator class="thin" />
+							
+							<checkbox id="script-enabled-check" preference="script-enabled-pref" label="&script-enabled-check.label;" accesskey="&script-enabled-check.accesskey;" observes="disabled-bc" />
+							
+							<hbox id="tester-box" />
+						</notificationbox>
+					</tabpanel>
+					
+					<tabpanel id="ignored-panel" orient="vertical">
+						<description id="ignored-desc" linecount="&ignored-desc.line-count;">&ignored-desc.label;</description>
+						<description id="ignored-instructions" linecount="&ignored-instructions.line-count;">&ignored-instructions.label;</description>
+						<hbox align="center">
+							<label control="ignore-text">&ignore-text.label;</label>
+							<textbox id="ignore-text" flex="1" oninput="options.validateIgnoreButton();" />
+							<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
+						</hbox>
+						<separator class="thin" />
+						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="options.validateRemoveButton();" />
+						<hbox class="actionButtons">
+							<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
+						</hbox>
+					</tabpanel>
+				</tabpanels>
+			</tabbox>
+			
+			<!-- Display -->
+			<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
+		</vbox>
+	</prefpane>
+	
+	<!-- Just to get the confounded menu bar to show up in Mac OS X. -->
+	<menubar id="main-menubar" style="border: 0px; padding: 0px; margin: 0px; -moz-appearance: none;" />
 </prefwindow>

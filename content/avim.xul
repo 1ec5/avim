@@ -3,6 +3,12 @@
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://avim/content/avim.js" />
+	
+	<stringbundleset>
+		<stringbundle id="bundle" src="chrome://avim/locale/avim.properties" />
+	</stringbundleset>
+	
 	<commandset>
 		<command id="avim-enabled-cmd" oncommand="avim.toggle();" />
 		<command id="avim-method-cmd" oncommand="avim.setMethod(this.value || this.getAttribute('value'));" />
@@ -98,6 +104,4 @@
 			</menupopup>
 		</menu>
 	</menupopup>
-	
-	<script type="text/javascript" src="chrome://avim/content/avim.js" />
 </overlay>
