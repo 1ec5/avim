@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
 
-<!DOCTYPE window SYSTEM "chrome://avim/locale/tester.dtd">
+<!-- <!DOCTYPE window SYSTEM "chrome://avim/locale/tester.dtd"> -->
 
 <window id="avim-tester" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml" class="windowDialog" windowtype="avim:tester" title="AVIM Test Suite" width="600" height="400" screenX="20" screenY="20" persist="screenX screenY width height">
 	<stringbundleset id="stringbundleset" />
@@ -23,11 +23,38 @@
 	
 	<broadcasterset id="mainBroadcasterSet" />
 	
+	<groupbox id="config-group">
+		<caption label="Configuration" />
+		
+		<hbox align="baseline">
+			<label id="input-label" value="Input file (plain text format):" accesskey="I" control="input-file" aria-labelledby="input-label input-file" />
+			<!-- <filefield id="input-file" flex="1" /> -->
+			<html:input id="input-file" type="file" aria-labelledby="input-label" />
+		</hbox>
+	</groupbox>
+	
 	<hbox>
-		<label id="input-label" value="Input file (tab-delimited CSV format):" aria-labelledby="input-label input-file" />
-		<!-- <filefield id="input-file" flex="1" /> -->
-		<html:input id="input-file" type="file" aria-labelledby="input-label" />
+		<textbox id="input-textbox" style="display: none;" />
+		<spacer flex="1" />
+		<button id="run-button" label="Run Tests" accesskey="R" />
 	</hbox>
+	
+	<tree id="results-tree" flex="1" enableColumnDrag="true">
+		<treecols>
+			<treecol id="results-input-col" label="Input" flex="2" />
+			<treecol id="results-output-col" label="Output" flex="2" />
+			<treecol id="results-result-col" label="Result" flex="1" />
+		</treecols>
+		<treechildren>
+			<treeitem>
+				<treerow>
+					<treecell label="pho+?" />
+					<treecell label="phở" />
+					<treecell label="Pass" />
+				</treerow>
+			</treeitem>
+		</treechildren>
+	</tree>
 	
 	<!-- Just to get the confounded menu bar to show up in Mac OS X. -->
 	<menubar id="main-menubar" style="border: 0px; padding: 0px; margin: 0px; -moz-appearance: none;" />

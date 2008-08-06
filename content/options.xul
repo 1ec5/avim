@@ -62,7 +62,7 @@
 					<tabpanel id="input-panel" orient="vertical">
 						<notificationbox id="general-note" flex="1">
 							<hbox align="center">
-								<label id="method-label" accesskey="&method-menu.accesskey;" aria-labelledby="method-label method-menu" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
+								<label id="method-label" accesskey="&method-menu.accesskey;" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
 								<menulist id="method-menu" preference="method-pref" aria-labelledby="method-label" observes="disabled-bc">
 									<menupopup>
 										<menuitem id="method-auto-item" value="0" label="&method-auto-item.label;" />
