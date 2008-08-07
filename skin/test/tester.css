@@ -6,5 +6,6 @@
 	background-color: #ffe4e1;
 }
 #results-tree treechildren::-moz-tree-cell-text(fail) {
+	font-weight: bold;
 	text-transform: uppercase;
 }
