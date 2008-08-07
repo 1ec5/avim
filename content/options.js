@@ -20,6 +20,7 @@ function AVIMOptionsPanel() {
 	
 	const testerBoxId = "tester-box";
 	const testerButtonId = "tester-button";
+	const testerUrl = "chrome://avim/content/test/tester.xul";
 	
 	const ignoreTextBoxId = "ignore-text";
 	const idListId = "ignoredids-list";
@@ -243,9 +244,7 @@ function AVIMOptionsPanel() {
 	 * Opens the test suite window.
 	 */
 	this.openTester = function() {
-		document.documentElement.openWindow("avim:tester",
-											"chrome://avim/content/tester.xul",
-											"", null);
+		document.documentElement.openWindow("avim:tester", testerUrl, "", null);
 	};
 	
 	/**
@@ -455,13 +454,12 @@ function AVIMOptionsPanel() {
 		};
 	}
 }
-var options;
-if (!options) {
-	options = new AVIMOptionsPanel();
-	window.addEventListener("load", function (e) {
-		options.initialize();
+if (!window.optionsPanel) {
+	window.optionsPanel = new AVIMOptionsPanel();
+	addEventListener("load", function (e) {
+		optionsPanel.initialize();
 	}, false);
-	window.addEventListener("unload", function (e) {
-		options.finalize();
+	addEventListener("unload", function (e) {
+		optionsPanel.finalize();
 	}, false);
 }

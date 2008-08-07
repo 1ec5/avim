@@ -1386,17 +1386,16 @@ function AVIM()	{
 		var marker = "MVietOnOffButton";
 		if (marker in win) disablers.MViet(win);
 	};
-};
-
-if (!window.avim && !window.frameElement) {
-	window.avim = new AVIM();
-	addEventListener("load", function () {
-		avim.registerPrefs();
-	}, false);
-	addEventListener("unload", function () {
-		avim.unregisterPrefs();
-	}, false);
-	addEventListener("keypress", function (e) {
+	
+	var avim = this;
+	/**
+	 * First responder for keypress events.
+	 *
+	 * @param e	{object}	The generated event.
+	 * @returns {boolean}	True if AVIM modified the textbox as a result of the
+	 * 						keypress.
+	 */
+	this.onKeyPress = function(e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
 //		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
 		var target = e.target;
@@ -1411,5 +1410,18 @@ if (!window.avim && !window.frameElement) {
 		if (wysiwyg) return avim.ifMoz(e);
 		
 		return avim.keyPressHandler(e);
+	};
+};
+
+if (!window.avim && !window.frameElement) {
+	window.avim = new AVIM();
+	addEventListener("load", function () {
+		avim.registerPrefs();
+	}, false);
+	addEventListener("unload", function () {
+		avim.unregisterPrefs();
+	}, false);
+	addEventListener("keypress", function (e) {
+		avim.onKeyPress(e);
 	}, true);
 }

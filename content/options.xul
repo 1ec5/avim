@@ -19,8 +19,8 @@
 	</stringbundleset>
 	
 	<commandset id="mainCommandSet">
-		<command id="ignore-cmd" oncommand="options.ignoreIdsInTextBox();" />
-		<command id="remove-cmd" oncommand="options.removeSelectedIds();" />
+		<command id="ignore-cmd" oncommand="optionsPanel.ignoreIdsInTextBox();" />
+		<command id="remove-cmd" oncommand="optionsPanel.removeSelectedIds();" />
 	</commandset>
 	<commandset id="baseMenuCommandSet" />
 	<commandset id="placesCommands" />
@@ -51,7 +51,7 @@
 		</preferences>
 		
 		<vbox flex="1">
-			<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" oncommand="options.validateForEnabled(); return true;" />
+			<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" oncommand="optionsPanel.validateForEnabled(); return true;" />
 			
 			<tabbox id="general-tabbox">
 				<tabs id="general-tabs">
@@ -74,7 +74,7 @@
 								</menulist>
 							</hbox>
 							
-							<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" oncommand="options.validateForSpellingEnforced(); return true;" />
+							<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" oncommand="optionsPanel.validateForSpellingEnforced(); return true;" />
 							<vbox id="spell-options-box" class="indent">
 								<checkbox id="informal-check" preference="informal-pref" label="&informal-check.label;" accesskey="&informal-check.accesskey;" observes="spell-options-bc" />
 							</vbox>
@@ -103,11 +103,11 @@
 						<description id="ignored-instructions" linecount="&ignored-instructions.line-count;">&ignored-instructions.label;</description>
 						<hbox align="center">
 							<label control="ignore-text">&ignore-text.label;</label>
-							<textbox id="ignore-text" flex="1" oninput="options.validateIgnoreButton();" />
+							<textbox id="ignore-text" flex="1" oninput="optionsPanel.validateIgnoreButton();" />
 							<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
 						</hbox>
 						<separator class="thin" />
-						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="options.validateRemoveButton();" />
+						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="optionsPanel.validateRemoveButton();" />
 						<hbox class="actionButtons">
 							<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
 						</hbox>
