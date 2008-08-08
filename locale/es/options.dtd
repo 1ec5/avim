@@ -52,6 +52,9 @@
 <!ENTITY remove-button.label "Borrar ID">
 <!ENTITY remove-button.accesskey "B">
 
+<!ENTITY reset-button.label "Restaurar el valor por defecto"><!-- Preferences > Main uses "Restaurar al valor por omisión", but that doesn't sound right at all. -->
+<!ENTITY reset-button.accesskey "d">
+
 <!-- Display options -->
 
 <!ENTITY statuspanel-check.label "Mostrar en la barra de estado">

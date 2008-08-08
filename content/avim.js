@@ -993,7 +993,7 @@ function AVIM()	{
 			var anonEl = el.textbox || el.inputField || el.mInputField;
 			var xulAnonIDs = {
 				findbar: "findbar-textbox", searchvalue: "input",
-				"sb-locationbar-textbox": "textbox"
+				"sb-locationbar-textbox": "textbox", conversation: "input"
 			};
 			var anonID = xulAnonIDs[el.localName];
 			if (!anonEl && anonID) {

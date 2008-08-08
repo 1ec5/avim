@@ -43,18 +43,14 @@ function AVIMTester() {
 	const methodMap = {
 		telex: {
 			"'": "s", "`": "f", "?": "r", "~": "x", ".": "j",
-			"^": function(str, offset) {
-				return str[offset - (offset > 0)];
+			"^": function(base) {
+				return base;
 			},
 			"+": "w", "(": "w"
 		},
 		vni: {
 			"'": "1", "`": "2", "?": "3", "~": "4", ".": "5",
-			"^": "6", "+": "7", "(": "8",
-			"d": function(str, offset) {
-				if (offset > 0 && str[offset - 1] == "d") return "9";
-				else return "d";
-			}
+			"^": "6", "+": "7", "(": "8", "d": "9"
 		},
 		viqr: {},
 		viqrStar: {"+": "*"}
@@ -109,20 +105,63 @@ function AVIMTester() {
 	 * @returns {string}	The transformed word.
 	 */
 	this.prepareWord = function(word, method) {
+		// Convert word to VIQR.
 		var viqrWord = "";
 		for (var i = 0; i < word.length; i++) {
 			var chr = word[i];
 			viqrWord += sequences[chr] || chr;
 		}
 		
-		var viqrToMethod = function (match, offset, str) {
-			var trans = methodMap[method][match];
-			if (trans instanceof Function) trans = trans(str, offset);
-			return trans || match;
-		};
-		word = viqrWord.replace(/['`?~.^+(d]/gi, viqrToMethod);
+		// Separate base letters from diacritics.
+		var letters = [];
+		var accents = [];
+		var circumVowels = [];
+		for (var i = 0; i < viqrWord.length; i++) {
+			var cur = viqrWord[i];
+			// Special-case "d" because it can also appear by itself.
+			if (cur.toLowerCase() == "d") {
+				if (i && cur.toLowerCase() == viqrWord[i - 1].toLowerCase()) {
+					accents.push(cur);
+					circumVowels.push(null);
+				}
+				else letters.push(cur);
+			}
+			// "+" should already be duplicated if necessary.
+			else if (cur == "+" && accents.indexOf("+") >= 0) continue;
+			else if ("'`?~.^+(d".indexOf(cur) >= 0) {
+				accents.push(cur);
+				circumVowels.push((i && cur == "^") ? viqrWord[i - 1] : null);
+			}
+			else letters.push(cur);
+		}
 		
-		return word;
+		// Convert word to given method.
+		if (method != "viqr") {
+			var transAccents = [];
+			for (var i = 0; i < accents.length; i++) {
+				var trans = methodMap[method][accents[i]];
+				if (trans instanceof Function) trans = trans(circumVowels[i]);
+				transAccents.push(trans || accents[i]);
+			}
+			accents = transAccents;
+		}
+		
+//		for (var i = 0; i < viqrWord.length; i++) {
+//			var base = viqrWord[i];
+//			letters += base;
+//			
+//			if ("adeiouy".indexOf(base.toLowerCase()) < 0) continue;
+//			var next;
+//			while ((next = viqrWord[i + 1]) &&
+//				   "'`?~.^+(d".indexOf(next.toLowerCase()) >= 0) {
+//				var trans = methodMap[method][next];
+//				if (trans instanceof Function) trans = trans(base);
+//				accents += trans || next;
+//				i++;
+//			}
+//		}
+		
+		return letters.join("") + accents.join("");
 	};
 	
 	/**

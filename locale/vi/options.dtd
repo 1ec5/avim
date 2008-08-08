@@ -52,6 +52,9 @@
 <!ENTITY remove-button.label "Dời ID">
 <!ENTITY remove-button.accesskey "D"><!-- Conflicts with oldaccents-check.accesskey, but they're in different tabs. -->
 
+<!ENTITY reset-button.label "Mặc định lại giá trị">
+<!ENTITY reset-button.accesskey "M">
+
 <!-- Display options -->
 
 <!ENTITY statuspanel-check.label "Hiển thị trên thanh trạng thái">

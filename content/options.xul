@@ -21,6 +21,7 @@
 	<commandset id="mainCommandSet">
 		<command id="ignore-cmd" oncommand="optionsPanel.ignoreIdsInTextBox();" />
 		<command id="remove-cmd" oncommand="optionsPanel.removeSelectedIds();" />
+		<command id="reset-cmd" oncommand="optionsPanel.resetIgnoredIds();" />
 	</commandset>
 	<commandset id="baseMenuCommandSet" />
 	<commandset id="placesCommands" />
@@ -110,6 +111,8 @@
 						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="optionsPanel.validateRemoveButton();" />
 						<hbox class="actionButtons">
 							<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
+							<spacer flex="1" />
+							<button id="reset-button" label="&reset-button.label;" accesskey="&reset-button.accesskey;" command="reset-cmd" />
 						</hbox>
 					</tabpanel>
 				</tabpanels>

@@ -103,6 +103,19 @@ overlay	chrome://mozapps/content/downloads/downloads.xul				chrome://avim/conten
 # Preferences dialog
 overlay	chrome://browser/content/preferences/preferences.xul			chrome://avim/content/generalOverlay.xul
 
+### Instantbird ################################################################
+
+# Account Properties window
+overlay	chrome://instantbird/content/account.xul		chrome://avim/content/generalOverlay.xul
+# New Account wizard
+overlay	chrome://instantbird/content/accountWizard.ul	chrome://avim/content/generalOverlay.xul
+# Add Buddy dialog
+overlay	chrome://instantbird/content/addbuddy.xul		chrome://avim/content/generalOverlay.xul
+# Conversation window
+overlay	chrome://instantbird/content/instantbird.xul	chrome://avim/content/generalOverlay.xul
+# Join Chat dialog
+overlay	chrome://instantbird/content/joinchat.xul		chrome://avim/content/generalOverlay.xul
+
 ### ChatZilla ##################################################################
 
 overlay	chrome://chatzilla/content/chatzilla.xul	chrome://avim/content/generalOverlay.xul

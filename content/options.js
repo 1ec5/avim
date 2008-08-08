@@ -195,6 +195,16 @@ function AVIMOptionsPanel() {
 	};
 	
 	/**
+	 * Resets the ignored IDs list to the "factory default".
+	 */
+	this.resetIgnoredIds = function() {
+		Components.classes["@mozilla.org/preferences-service;1"]
+				  .getService(Components.interfaces.nsIPrefService)
+				  .getDefaultBranch("extensions.avim.")
+				  .clearUserPref("ignoredFieldIds");
+	};
+	
+	/**
 	 * Registers an observer so that the Ignored Textboxes panel reflects the
 	 * latest IDs in the preferences system.
 	 */

@@ -25,7 +25,7 @@
 <!ENTITY informal-check.accesskey "Z">
 
 <!ENTITY oldaccents-check.label "Place tone marks on the first vowel in a final diphthong (old-style accent marks)">
-<!ENTITY oldaccents-check.accesskey "d">
+<!ENTITY oldaccents-check.accesskey "o">
 
 <!ENTITY auto-methods.label "Accept keystrokes from the following input methods when &method-auto-item.label; is selected:">
 <!ENTITY auto-telex-check.accesskey "T">
@@ -51,6 +51,9 @@
 
 <!ENTITY remove-button.label "Remove ID">
 <!ENTITY remove-button.accesskey "R"><!-- Conflicts with auto-viqr-star-check.accesskey, but they're in different tabs. -->
+
+<!ENTITY reset-button.label "Restore to Default">
+<!ENTITY reset-button.accesskey "D"><!-- Conflicts with oldaccents-check.accesskey, but they're in different tabs. -->
 
 <!-- Display options -->
 

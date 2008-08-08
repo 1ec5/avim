@@ -52,6 +52,9 @@
 <!ENTITY remove-button.label "Enlever l’ID">
 <!ENTITY remove-button.accesskey "E">
 
+<!ENTITY reset-button.label "Restaurer la valeur par défaut">
+<!ENTITY reset-button.accesskey "d">
+
 <!-- Display options -->
 
 <!ENTITY statuspanel-check.label "L’afficher sur le bar d’état">

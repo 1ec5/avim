@@ -125,9 +125,10 @@ Version 20080224.139 (Tuesday, July 29, 2008)
    general.useragent.locale has been modified.
 
 Version ${Version} (${Date})
- - Added support for Songbird.
+ - Added support for Songbird and Instantbird.
  - Added support for alpha versions of Firefox 3.1.
  - Added support for the googlebar, StumbleUpon, and Venkman extensions.
+ - Rewrote core functions for increased performance.
  - The first word typed into a rich textbox is no longer flipped around.
  - Fixed an issue where words beginning with Z were accepted.
  - Words that begin with Q but not QU are considered malformed. So are words
@@ -135,7 +136,9 @@ Version ${Version} (${Date})
  - Fixed an issue where special textboxes in Firefox, such as the search and
    find bars, could not be ignored.
  - Fixed an issue where some in-page scripts would not be disabled.
- - Fixed issues where the AVIM preference dialog would not behave like a normal
-   window in Mac OS X. Now the menu bar remains visible, standard key
-   combinations work, and AVIM recognizes the dialog's Textbox ID textbox.
+ - Added a Restore to Default button to the Ignored Textboxes tab of the
+   preference panel.
+ - Fixed issues where the preference panel would not behave like a normal window
+   in Mac OS X. Now the menu bar remains visible, standard key combinations
+   work, and AVIM recognizes the panel's Textbox ID textbox.
  - Vinova can now be automatically disabled on webpages via a hidden preference.
