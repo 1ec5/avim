@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://browser/skin/preferences/preferences.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://browser/content/macBrowserOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
-<?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
 

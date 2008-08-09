@@ -57,7 +57,6 @@ function AVIM()	{
 		spell: "avim-spell-bc",
 		oldAccents: "avim-oldaccents-bc"
 	};
-	const menuId = "avim-menu";
 	const panelId = "avim-status";
 	
 	// Local functions that don't require access to AVIM's fields.
@@ -341,11 +340,13 @@ function AVIM()	{
 		
 		// Disable methods and options if AVIM is disabled
 		for each (var cmdId in commandIds) {
+			if (!$(cmdId)) continue;
 			$(cmdId).setAttribute("disabled", "" + !AVIMConfig.onOff);
 		}
 		
 		// Method
 		for each (var bcId in broadcasterIds.methods) {
+			if (!$(bcId)) continue;
 			$(bcId).removeAttribute("checked");
 			$(bcId).removeAttribute("key");
 		}
@@ -1051,9 +1052,9 @@ function AVIM()	{
 	// Integration with Mozilla preferences service
 	
 	// Root for AVIM preferences
-	var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-						  .getService(Components.interfaces.nsIPrefService)
-						  .getBranch("extensions.avim.");
+	const prefs = Components.classes["@mozilla.org/preferences-service;1"]
+							.getService(Components.interfaces.nsIPrefService)
+							.getBranch("extensions.avim.");
 	
 	/**
 	 * Registers an observer so that AVIM automatically reflects changes to its

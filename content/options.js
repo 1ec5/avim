@@ -37,9 +37,9 @@ function AVIMOptionsPanel() {
 				  == "Darwin";
 	
 	// Root for AVIM preferences
-	var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-						  .getService(Components.interfaces.nsIPrefService)
-						  .getBranch("extensions.avim.");
+	const prefs = Components.classes["@mozilla.org/preferences-service;1"]
+							.getService(Components.interfaces.nsIPrefService)
+							.getBranch("extensions.avim.");
 	
 	/**
 	 * Enables or disables the Ignore button, based on whether the associated
@@ -48,7 +48,9 @@ function AVIMOptionsPanel() {
 	this.validateIgnoreButton = function() {
 		var ignoreButton = document.getElementById(this.ignoreButtonId);
 		var ignoreTextBox = document.getElementById(ignoreTextBoxId);
-		ignoreButton.disabled = !ignoreTextBox.value;
+		if (ignoreButton && ignoreTextBox) {
+			ignoreButton.disabled = !ignoreTextBox.value;
+		}
 	};
 	
 	/**
@@ -59,6 +61,8 @@ function AVIMOptionsPanel() {
 	this.ignoreIdsInTextBox = function() {
 		var ignoreTextBox = document.getElementById(ignoreTextBoxId);
 		var idList = document.getElementById(idListId);
+		if (!ignoreTextBox || !idList) return;
+		
 		var ids = ignoreTextBox.value.split(ignoredIdsDelimiter);
 		for (var i = 0; i < ids.length; i++) {
 			var dupes = idList.getElementsByAttribute("value", ids[i]);
@@ -76,7 +80,9 @@ function AVIMOptionsPanel() {
 		var removeButton = document.getElementById(removeButtonId);
 		var idList = document.getElementById(idListId);
 //		dump("First row: " + idList.getItemAtIndex(0).value + ".\n");								// debug
-		removeButton.disabled = !idList.selectedCount;
+		if (removeButton && idList) {
+			removeButton.disabled = !idList.selectedCount;
+		}
 	};
 	
 	/**
@@ -103,6 +109,7 @@ function AVIMOptionsPanel() {
 	this.updateIgnoredIds = function() {
 		// Clear the list.
 		var idList = document.getElementById(idListId);
+		if (!idList) return;
 		var items = [];
 		for (var i = 0; i < idList.getRowCount(); i++) {
 			items.push(idList.getItemAtIndex(i));
@@ -128,7 +135,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateForEnabled = function() {
 		var bc = document.getElementById(broadcasterIds.disabled);
-		bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
+		if (bc) bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
 		
 		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
 		else this.mudimMonitor.hideWarning();
@@ -143,6 +150,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateForSpellingEnforced = function() {
 		var bc = document.getElementById(broadcasterIds.spellOptions);
+		if (!bc) return;
 		var enabled = prefs.getBoolPref("enabled");
 		var enforced = prefs.getBoolPref("ignoreMalformed");
 		bc.setAttribute("disabled", "" + (!enabled || !enforced));
@@ -162,7 +170,10 @@ function AVIMOptionsPanel() {
 				specificPref = false;
 			case "enabled":
 				var bc = document.getElementById(broadcasterIds.disabled);
-				bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
+				if (bc) {
+					bc.setAttribute("disabled",
+									"" + !prefs.getBoolPref("enabled"));
+				}
 				this.validateForEnabled();
 				if (specificPref) break;
 			case "ignoreMalformed":
@@ -181,6 +192,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.removeSelectedIds = function() {
 		var idList = document.getElementById(idListId);
+		if (!idList) return;
 		var sel_items = [];
 		for (var i = 0; i < idList.selectedCount; i++) {
 			var row = idList.getSelectedItem(i);
@@ -250,6 +262,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.setPrefs = function() {
 		var idList = document.getElementById(idListId);
+		if (!idList) return;
 		var ignoredIds = [];
 		for (var i = 0; i < idList.getRowCount(); i++) {
 			var row = idList.getItemAtIndex(i);
@@ -306,12 +319,11 @@ function AVIMOptionsPanel() {
 	 * the default stylesheet.
 	 */
 	this.fixTabBoxStyle = function() {
-		var tabBox = document.getElementById(tabBoxId);
-		var margin = macTabBoxMargin;
-		tabBox.style.marginLeft = tabBox.style.marginRight = margin;
+		var box = document.getElementById(tabBoxId);
+		if (box) box.style.marginLeft = box.style.marginRight = macTabBoxMargin;
 		
 		var tabs = document.getElementById(tabsId);
-		tabs.style.position = "relative";
+		if (tabs) tabs.style.position = "relative";
 	};
 	
 	/**
@@ -320,6 +332,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.fixDescriptionStyle = function() {
 		var tabBox = document.getElementById(tabBoxId);
+		if (!tabBox) return;
 		var descs = tabBox.getElementsByTagName("description");
 		for (var i = 0; i < descs.length; i++) {
 			var style = getComputedStyle(descs[i], null);
@@ -367,9 +380,10 @@ function AVIMOptionsPanel() {
 		}
 		
 		// Root for Mudim preferences
-		var mPrefs = Components.classes["@mozilla.org/preferences-service;1"]
-							   .getService(Components.interfaces.nsIPrefService)
-							   .getBranch("chimmudim.settings.");
+		const mPrefs =
+			Components.classes["@mozilla.org/preferences-service;1"]
+					  .getService(Components.interfaces.nsIPrefService)
+					  .getBranch("chimmudim.settings.");
 		
 		/**
 		 * Registers an observer so that a warning is displayed if Mudim is
@@ -430,9 +444,10 @@ function AVIMOptionsPanel() {
 		 */
 		this.displayWarning = function() {
 			var noteBox = document.getElementById(notificationBoxId);
-			if (noteBox.getNotificationWithValue(noteValue)) return;
+			if (!noteBox || noteBox.getNotificationWithValue(noteValue)) return;
 			
 			var stringBundle = document.getElementById(stringBundleId);
+			if (!stringBundle) return;
 			var noteLabel = stringBundle.getString("mudim-note.label");
 			var noteBtns = [{
 				accessKey: stringBundle.getString("mudim-button.accesskey"),
@@ -451,6 +466,7 @@ function AVIMOptionsPanel() {
 		 */
 		this.hideWarning = function() {
 			var noteBox = document.getElementById(notificationBoxId);
+			if (!noteBox) return;
 			var note = noteBox.getNotificationWithValue(noteValue);
 			if (note) noteBox.removeNotification(note);
 		};

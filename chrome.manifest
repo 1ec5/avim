@@ -12,30 +12,47 @@ locale	avim	vi-VN	locale/vi/
 
 skin	avim	classic/1.0	skin/
 
-overlay chrome://global/content/globalOverlay.xul	chrome://avim/content/generalOverlay.xul
-overlay chrome://global/content/editMenuOverlay.xul	chrome://avim/content/generalOverlay.xul
-overlay chrome://global/content/commonDialog.xul	chrome://avim/content/generalOverlay.xul
-overlay chrome://global/content/dialogOverlay.xul	chrome://avim/content/generalOverlay.xul
+overlay chrome://global/content/globalOverlay.xul		chrome://avim/content/generalOverlay.xul
+overlay chrome://global/content/editMenuOverlay.xul		chrome://avim/content/generalOverlay.xul
+overlay chrome://global/content/commonDialog.xul		chrome://avim/content/generalOverlay.xul
+overlay chrome://global/content/dialogOverlay.xul		chrome://avim/content/generalOverlay.xul
+
+style	chrome://global/content/customizeToolbar.xul	chrome://avim/skin/avim.css
+
+### AVIM #######################################################################
+
+# Mac menu bar in Firefox
+overlay	chrome://avim/content/options.xul		chrome://browser/content/macBrowserOverlay.xul	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}	os=Darwin
+overlay	chrome://avim/content/test/tester.xul	chrome://browser/content/macBrowserOverlay.xul	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}	os=Darwin
+# Mac menu bar in Flock
+overlay	chrome://avim/content/options.xul		chrome://browser/content/macBrowserOverlay.xul	application={a463f10c-3994-11da-9945-000d60ca027b}	os=Darwin
+overlay	chrome://avim/content/test/tester.xul	chrome://browser/content/macBrowserOverlay.xul	application={a463f10c-3994-11da-9945-000d60ca027b}	os=Darwin
+
+style	chrome://avim/content/options.xul		chrome://browser/skin/preferences/preferences.css	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/preferences.css	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+
+style	chrome://avim/content/options.xul		chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
+style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
 
 ### Firefox ####################################################################
 
-# overlay	chrome://browser/content/browser.xul						chrome://avim/content/generalOverlay.xul
-
-style	chrome://browser/content/browser.xul			chrome://avim/skin/avim.css
-style	chrome://global/content/customizeToolbar.xul	chrome://avim/skin/avim.css
+style	chrome://browser/content/browser.xul							chrome://avim/skin/avim.css
 
 # Bookmark Properties dialog, now part of Places
 overlay	chrome://browser/content/places/bookmarkProperties.xul			chrome://avim/content/generalOverlay.xul
-# overlay	chrome://browser/content/places/editBookmarkOverlay.xul		chrome://avim/content/generalOverlay.xul
-# overlay	chrome://browser/content/bookmarks/bookmarksProperties.xul	chrome://avim/content/generalOverlay.xul
 # Bookmark All Tabs dialog
 overlay	chrome://browser/content/places/bookmarkProperties2.xul			chrome://avim/content/generalOverlay.xul
 # Cookies list
-# overlay	chrome://browser/content/preferences/cookies.xul			chrome://avim/content/generalOverlay.xul
 # File > Open Location...
 overlay	chrome://browser/content/openLocation.xul						chrome://avim/content/generalOverlay.xul
 # Help > Report Broken Web Site...
 overlay	chrome://reporter/content/reportWizard.xul						chrome://avim/content/generalOverlay.xul
+
+# Old stuff
+# overlay	chrome://browser/content/browser.xul						chrome://avim/content/generalOverlay.xul
+# overlay	chrome://browser/content/places/editBookmarkOverlay.xul		chrome://avim/content/generalOverlay.xul
+# overlay	chrome://browser/content/bookmarks/bookmarksProperties.xul	chrome://avim/content/generalOverlay.xul
+# overlay	chrome://browser/content/preferences/cookies.xul			chrome://avim/content/generalOverlay.xul
 
 ### Thunderbird ################################################################
 
