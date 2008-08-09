@@ -119,6 +119,7 @@ function AVIMOptionsPanel() {
 		}
 		
 		this.validateRemoveButton();
+		this.validateResetButton();
 	};
 	
 	/**
@@ -195,13 +196,30 @@ function AVIMOptionsPanel() {
 	};
 	
 	/**
+	 * Enables or disables the Restore to Default button, based on whether the
+	 * current ignored ID list is equivalent to the default list.
+	 */
+	this.validateResetButton = function() {
+		const iface = Components.interfaces.nsIPrefService;
+		var defaults = Components.classes["@mozilla.org/preferences-service;1"]
+								 .getService(iface)
+								 .getDefaultBranch("extensions.avim.");
+		var defaultIds = defaults.getCharPref("ignoredFieldIds");
+		var prefIds = prefs.getCharPref("ignoredFieldIds");
+		return defaultIds != prefIds;
+	};
+	
+	/**
 	 * Resets the ignored IDs list to the "factory default".
 	 */
 	this.resetIgnoredIds = function() {
-		Components.classes["@mozilla.org/preferences-service;1"]
-				  .getService(Components.interfaces.nsIPrefService)
-				  .getDefaultBranch("extensions.avim.")
-				  .clearUserPref("ignoredFieldIds");
+		const iface = Components.interfaces.nsIPrefService;
+		var defaults = Components.classes["@mozilla.org/preferences-service;1"]
+								 .getService(iface)
+								 .getDefaultBranch("extensions.avim.");
+		var defaultIds = defaults.getCharPref("ignoredFieldIds");
+		var prefIds = prefs.getCharPref("ignoredFieldIds");
+		if (defaultIds != prefIds) defaults.clearUserPref("ignoredFieldIds");
 	};
 	
 	/**
