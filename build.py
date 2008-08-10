@@ -242,7 +242,7 @@ def main():
                                             stdout=subprocess.PIPE,
                                             shell=True).communicate()[0]
     version = "%i.%s" % (AVIM_VERSION, revision) if AVIM_VERSION else revision
-    today = DATE or date.today().strftime("%A, %B %e, %Y")
+    today = (DATE or date.today()).strftime("%A, %B %e, %Y")
     year = date.today().year
     
     # Read arguments from command line.
