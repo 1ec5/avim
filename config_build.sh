@@ -12,5 +12,8 @@ REV_YEAR=`date -u '+%Y'`
 VERSION="20080728.$REV_NUM"
 #"*CVS*"
 PRUNE_DIRS="*.svn*"
-BEFORE_BUILD=
+BEFORE_BUILD=`echo "*** WARNING ***\
+build.sh is deprecated and will be removed in a future release of AVIM! Please\
+use build.py instead.\
+"`
 AFTER_BUILD=
