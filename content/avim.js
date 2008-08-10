@@ -1,15 +1,3 @@
-/*
- *  AVIM JavaScript Vietnamese Input Method Source File dated 28-07-2008
- *
- *	Copyright (C) 2004-2008 Hieu Tran Dang <lt2hieu2004 (at) users (dot) sf (dot) net>
- *	Website:	http://noname00.com/hieu
- *
- *	You are allowed to use this software in any way you want providing:
- *		1. You must retain this copyright notice at all time
- *		2. You must not claim that you or any other third party is the author
- *		   of this software in any way.
- */
-
 /**
  * Default preferences. Be sure to update defaults/preferences/avim.js to
  * reflect any changes to the default preferences.
@@ -38,10 +26,6 @@ var AVIMConfig = {
 };
 
 function AVIM()	{
-	// If true, AVIM displays a typing test suite. The variable is set at build
-	// time by build.sh.
-	const DEBUG = isNaN(parseInt("${Year}"));
-	
 	// IDs of user interface elements
 	const commandIds = {
 		method: "avim-method-cmd",

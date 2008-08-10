@@ -2,9 +2,12 @@
  * A controller for the AVIM Options panel.
  */
 function AVIMOptionsPanel() {
+// $if{Debug}
 	// If true, AVIM displays a typing test suite. The variable is set at build
 	// time by build.sh.
-	const DEBUG = isNaN(parseInt("${Year}"));
+	const DEBUG = true;
+// $endif{}
+	
 	// GUID of the Mudim extension
 	const MUDIM_ID = "mudim@svol.ru";
 	
@@ -281,6 +284,8 @@ function AVIMOptionsPanel() {
 		prefs.removeObserver("", this);
 	};
 	
+// $if{Debug}
+	
 	/**
 	 * Opens the test suite window.
 	 */
@@ -313,6 +318,8 @@ function AVIMOptionsPanel() {
 		button.setAttribute("accesskey", buttonAccessKey);
 		box.appendChild(button);
 	};
+	
+// $endif{}
 	
 	/**
 	 * Tweaks the styling on the tab box on the Mac, to work around some bugs in
