@@ -363,7 +363,9 @@ function AVIMOptionsPanel() {
 		this.registerPrefs();
 		this.validateRemoveButton();
 		
+// $if{Debug}
 		this.exposeTester();
+// $endif{}
 		
 		if (isMac) this.fixTabBoxStyle();
 		this.fixDescriptionStyle();
