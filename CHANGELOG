@@ -124,7 +124,7 @@ Version 20080224.139 (Tuesday, July 29, 2008)
  - The preferences panel now displays correctly on the Mac even if
    general.useragent.locale has been modified.
 
-Version ${Version} (${Date})
+Version 20080728.177 (Sunday, August 10, 2008)
  - Added support for Songbird and Instantbird.
  - Added support for alpha versions of Firefox 3.1.
  - Added support for the googlebar, StumbleUpon, and Venkman extensions.
@@ -142,3 +142,5 @@ Version ${Version} (${Date})
    in Mac OS X. Now the menu bar remains visible, standard key combinations
    work, and AVIM recognizes the panel's Textbox ID textbox.
  - Vinova can now be automatically disabled on webpages via a hidden preference.
+
+Version ${Version} (${Date})

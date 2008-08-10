@@ -44,6 +44,12 @@ DEBUG = False
 # extension's version string.
 AVIM_VERSION = 20080728
 
+# Revision number in the Subversion repository.
+REVISION = None
+
+# Build date.
+DATE = date(2008, 8, 10)
+
 # Name to use in the build's directories.
 PACKAGE_NAME = "avim"
 
@@ -232,10 +238,11 @@ def main():
     # Defaults
     config_file = None
     package_name = PACKAGE_NAME
-    revision = subprocess.Popen("svnversion -n", stdout=subprocess.PIPE,
-                                shell=True).communicate()[0]
+    revision = REVISION or subprocess.Popen("svnversion -n",
+                                            stdout=subprocess.PIPE,
+                                            shell=True).communicate()[0]
     version = "%i.%s" % (AVIM_VERSION, revision) if AVIM_VERSION else revision
-    today = date.today().strftime("%A, %B %e, %Y")
+    today = DATE or date.today().strftime("%A, %B %e, %Y")
     year = date.today().year
     
     # Read arguments from command line.
