@@ -35,6 +35,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE."""
 
 from os import path
+from datetime import date
 
 # True if the script should produce a testing build; false if it should produce
 # a release build.
@@ -43,6 +44,12 @@ DEBUG = False
 # Version number of the avim.js release used in this build. Included in the
 # extension's version string.
 AVIM_VERSION = 20080728
+
+# Revision number in the Subversion repository.
+REVISION = 177
+
+# Build date.
+DATE = date(2008, 8, 10)
 
 # Name to use in the build's directories.
 PACKAGE_NAME = "avim"
@@ -92,7 +99,6 @@ EXT_PROLOGS = {"py": "#!", "xhtml": "<?xml", "xml": "<?xml", "rdf": "<?xml",
                "mml": "<?xml", "pl": "#!", "rb": "#!", "sh": "#!"}
 
 import sys, subprocess, os, shutil, zipfile, re, hashlib, decimal
-from datetime import date
 
 def print_help(version):
     """Prints help information to the command line."""
@@ -232,10 +238,11 @@ def main():
     # Defaults
     config_file = None
     package_name = PACKAGE_NAME
-    revision = subprocess.Popen("svnversion -n", stdout=subprocess.PIPE,
-                                shell=True).communicate()[0]
+    revision = REVISION or subprocess.Popen("svnversion -n",
+                                            stdout=subprocess.PIPE,
+                                            shell=True).communicate()[0]
     version = "%i.%s" % (AVIM_VERSION, revision) if AVIM_VERSION else revision
-    today = date.today().strftime("%A, %B %e, %Y")
+    today = DATE or date.today().strftime("%A, %B %e, %Y")
     year = date.today().year
     
     # Read arguments from command line.
