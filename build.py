@@ -35,6 +35,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE."""
 
 from os import path
+from datetime import date
 
 # True if the script should produce a testing build; false if it should produce
 # a release build.
@@ -98,7 +99,6 @@ EXT_PROLOGS = {"py": "#!", "xhtml": "<?xml", "xml": "<?xml", "rdf": "<?xml",
                "mml": "<?xml", "pl": "#!", "rb": "#!", "sh": "#!"}
 
 import sys, subprocess, os, shutil, zipfile, re, hashlib, decimal
-from datetime import date
 
 def print_help(version):
     """Prints help information to the command line."""
