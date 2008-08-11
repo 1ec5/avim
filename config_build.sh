@@ -6,9 +6,9 @@ CLEAN_UP=1
 ROOT_FILES="CHANGELOG LICENSE"
 ROOT_DIRS="defaults"
 VAR_FILES="install.rdf CHANGELOG LICENSE content/options.js"
-REV_NUM=`svnversion -n | cat`
-REV_DATE=`date -u '+%A, %B %e, %Y'`
-REV_YEAR=`date -u '+%Y'`
+REV_NUM=181
+REV_DATE="Sunday, August 10, 2008"
+REV_YEAR=2008
 VERSION="20080728.$REV_NUM"
 #"*CVS*"
 PRUNE_DIRS="*.svn*"

@@ -46,7 +46,7 @@ DEBUG = False
 AVIM_VERSION = 20080728
 
 # Revision number in the Subversion repository.
-REVISION = None
+REVISION = 181
 
 # Build date.
 DATE = date(2008, 8, 10)
