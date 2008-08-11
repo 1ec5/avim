@@ -25,6 +25,7 @@ function AVIMOptionsPanel() {
 	const testerButtonId = "tester-button";
 	const testerUrl = "chrome://avim/content/test/tester.xul";
 	
+	const ignoreButtonId = "ignore-button";
 	const ignoreTextBoxId = "ignore-text";
 	const idListId = "ignoredids-list";
 	const removeButtonId = "remove-button";
@@ -49,7 +50,7 @@ function AVIMOptionsPanel() {
 	 * textbox contains text.
 	 */
 	this.validateIgnoreButton = function() {
-		var ignoreButton = document.getElementById(this.ignoreButtonId);
+		var ignoreButton = document.getElementById(ignoreButtonId);
 		var ignoreTextBox = document.getElementById(ignoreTextBoxId);
 		if (ignoreButton && ignoreTextBox) {
 			ignoreButton.disabled = !ignoreTextBox.value;

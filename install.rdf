@@ -67,6 +67,15 @@
 			</Description>
 		</em:targetApplication>
 		
+		<!-- Pencil -->
+		<em:targetApplication>
+			<Description>
+				<em:id>pencil@evolus.vn</em:id>
+				<em:minVersion>1.0</em:minVersion>
+				<em:maxVersion>1.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
 		<!-- Mozilla Toolkit -->
 		<em:targetApplication>
 			<Description>

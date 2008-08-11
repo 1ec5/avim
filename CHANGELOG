@@ -130,7 +130,7 @@ Version 20080728.177 (Sunday, August 10, 2008)
  - Added support for the googlebar, StumbleUpon, and Venkman extensions.
  - Rewrote core functions for increased performance.
  - The first word typed into a rich textbox is no longer flipped around.
- - Fixed an issue where words beginning with Z were accepted.
+ - Fixed an issue where words beginning with "z" were accepted.
  - Words that begin with "q" but not "qu" are rejected. So are words that begin
    with "ka", "ko", or "ku".
  - Fixed an issue where special textboxes in Firefox, such as the search and
@@ -144,3 +144,6 @@ Version 20080728.177 (Sunday, August 10, 2008)
  - Vinova can now be automatically disabled on webpages via a hidden preference.
 
 Version ${Version} (${Date})
+ - Added support for Pencil as a standalone application.
+ - Fixed the Ignore button, which remained disabled even when the adjacent
+   textbox was filled out.
