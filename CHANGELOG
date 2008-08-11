@@ -143,7 +143,9 @@ Version 20080728.177 (Sunday, August 10, 2008)
    work, and AVIM recognizes the panel's Textbox ID textbox.
  - Vinova can now be automatically disabled on webpages via a hidden preference.
 
-Version ${Version} (${Date})
+Version 20080728.181 (Sunday, August 10, 2008)
  - Added support for Pencil as a standalone application.
  - Fixed the Ignore button, which remained disabled even when the adjacent
    textbox was filled out.
+
+Version ${Version} (${Date})

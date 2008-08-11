@@ -49,7 +49,7 @@ AVIM_VERSION = 20080728
 REVISION = None
 
 # Build date.
-DATE = date(2008, 8, 10)
+DATE = date.today()
 
 # Name to use in the build's directories.
 PACKAGE_NAME = "avim"
