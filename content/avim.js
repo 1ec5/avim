@@ -372,10 +372,6 @@ function AVIM()	{
 		return [w, pos];
 	};
 	
-	const telex = "DAEOWW".split("");
-	const vni = "966678".split("");
-	const viqr = "D^^^+(".split("");
-	const viqr2 = "D^^^*(".split("");
 	this.start = function(obj, key) {
 		var w = "", method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
 		this.oc=obj;
@@ -383,16 +379,16 @@ function AVIM()	{
 		this.D2 = "";
 		
 		if (method == 1 || (method == 0 && AVIMConfig.autoMethods.telex)) {
-			uniA.push(telex); this.D2 += "DAWEO";
+			uniA.push("DAEOWW".split("")); this.D2 += "DAWEO";
 		}
 		if (method == 2 || (method == 0 && AVIMConfig.autoMethods.vni)) {
-			uniA.push(vni); this.D2 += "6789";
+			uniA.push("966678".split("")); this.D2 += "6789";
 		}
 		if (method == 3 || (method == 0 && AVIMConfig.autoMethods.viqr)) {
-			uniA.push(viqr); this.D2 += "D^+(";
+			uniA.push("D^^^+(".split("")); this.D2 += "D^+(";
 		}
 		if (method == 4 || (method == 0 && AVIMConfig.autoMethods.viqrStar)) {
-			uniA.push(viqr2); this.D2 += "D^*(";
+			uniA.push("D^^^*(".split("")); this.D2 += "D^*(";
 		}
 		
 		key = fcc(key.which);
@@ -627,8 +623,6 @@ function AVIM()	{
 				pos--;
 			}
 			this.splice(o, pos, replaceLen, replaceBy);
-//			o.value = o.value.substr(0, pos) + replaceBy + o.value.substr(pos + 1);
-//			if(r) o.value = o.value.substr(0, pos - 1) + r + o.value.substr(pos);
 			o.setSelectionRange(savePos, savePos);
 			o.scrollTop = sst;
 		} else {
@@ -1007,16 +1001,14 @@ function AVIM()	{
 		try {
 			this.start(el, e);
 		}
-		catch (e) {
-			dump("AVIM.keyPressHandler called AVIM.start, which threw:\n");
-			dump("\tname:\t\t" + e.name + "\n");
-			dump("\tmessage:\t" + e.message + "\n");
-			if (e instanceof TypeError) {
-				dump("\tline:\t\t" + e.lineNumber + "\n");
-				dump("\tstack:\t\t" + e.stack + "\n");
-			}
+		catch (exc) {
+			throw exc;
 		}
-		if (editor && editor.endTransaction) editor.endTransaction();
+		finally {
+			// If we don't put this line in a finally clause, an error in
+			// start() will render Firefox inoperable.
+			if (editor && editor.endTransaction) editor.endTransaction();
+		}
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
@@ -1055,7 +1047,6 @@ function AVIM()	{
 	 * Unregisters the preferences observer as the window is being closed.
 	 */
 	this.unregisterPrefs = function() {
-//		this.setPrefs();
 		prefs.removeObserver("", this);
 	};
 	

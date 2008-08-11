@@ -149,3 +149,5 @@ Version 20080728.181 (Sunday, August 10, 2008)
    textbox was filled out.
 
 Version ${Version} (${Date})
+ - Relaxed spelling rules, since the spelling feature is intended to reject only
+   words that would be unpronounceable in Vietnamese.
