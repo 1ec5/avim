@@ -59,7 +59,7 @@ CHROME_PROVIDERS = ["content", "locale", "skin"]
 
 # Paths to miscellaneous files that should be included in the build's root
 # directory. install.rdf and chrome.manifest are automatically included.
-ROOT_FILES = ["CHANGELOG", "LICENSE"]
+ROOT_FILES = ["LICENSE"]
 
 # Paths to directories that should be included, uncompressed, in the build's
 # root directory.

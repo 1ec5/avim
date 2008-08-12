@@ -156,3 +156,6 @@ Version 20080728.185 (Tuesday, August 12, 2008)
    no longer rejected. Also, "gin`" is allowed again.
 
 Version ${Version} (${Date})
+ - This CHANGELOG is no longer included in packaged versions of this extension,
+   to reduce download size. A history of changes to AVIM can be viewed at the
+   project's homepage.
