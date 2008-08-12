@@ -132,8 +132,8 @@ function AVIM()	{
 		
 		// Incompatible vowels following certain consonants, partly thanks to
 		// Mudim issue #16: invalid
-		if (/^(?:C[IEY]|C[HU]Y|CO[AE]|G[EY]|GI[^AEOU]|NG[IEY]|NGH[AOUY]|P[^H]|Q[^U]|QU[^AEIOY]|TRY|[NRX]Y|[NPT]HY)/
-			.test(uw2)) {
+		if (/^(?:C[IEY]|C[HU]Y|CO[AE]|G[EY]|NG[IEY]|NGH[AOUY]|Q[^U]|QU[^AEIOY]|TRY|[NRX]Y|[NPT]HY)/
+			.test(uw2)) { // K[AOU]|P[^H]
 			return true;
 		}
 		if (uw2 == "QU" && (this.DAWEO || this.SFJRX)) return true;
@@ -874,7 +874,7 @@ function AVIM()	{
 		else {
 			lC = idx - 12; uC = idx;
 		}
-		var t = w.substr(-pos);
+		var t = w.substr(-pos, 1);
 		var u = this.retKC(up(k));
 		if (t != up(t)) return u[lC];
 		return u[uC];
