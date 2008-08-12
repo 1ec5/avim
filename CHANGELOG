@@ -148,9 +148,11 @@ Version 20080728.181 (Sunday, August 10, 2008)
  - Fixed the Ignore button, which remained disabled even when the adjacent
    textbox was filled out.
 
-Version ${Version} (${Date})
+Version 20080728.185 (Tuesday, August 12, 2008)
  - Fixed an issue where adding a tone mark at the end of a word forced the
    entire word to lowercase.
  - Relaxed spelling rules, since the spelling feature is intended to reject only
    words that would be unpronounceable in Vietnamese. "Ka", "ko", and "ku" are
    no longer rejected. Also, "gin`" is allowed again.
+
+Version ${Version} (${Date})
