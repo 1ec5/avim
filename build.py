@@ -37,9 +37,17 @@ OTHER DEALINGS IN THE SOFTWARE."""
 from os import path
 from datetime import date
 
+class BuildConfig:
+    """An enumeration of build configurations."""
+    RELEASE = "Release"
+    DEBUG = "Debug"
+    L10N = "BabelZilla"
+
+### Configuration ##############################################################
+
 # True if the script should produce a testing build; false if it should produce
 # a release build.
-DEBUG = False
+CONFIG = BuildConfig.RELEASE
 
 # Version number of the avim.js release used in this build. Included in the
 # extension's version string.
@@ -98,6 +106,8 @@ EXT_PROLOGS = {"py": "#!", "xhtml": "<?xml", "xml": "<?xml", "rdf": "<?xml",
                "xul": "<?xml", "xsl": "<?xml", "xslt": "<?xml", "svg": "<?xml",
                "mml": "<?xml", "pl": "#!", "rb": "#!", "sh": "#!"}
 
+################################################################################
+
 import sys, subprocess, os, shutil, zipfile, re, hashlib, decimal
 
 def print_help(version):
@@ -106,6 +116,7 @@ def print_help(version):
 Usage: python build.py [OPTIONS]
 Package AVIM into an XPInstall file.
 
+      --babelzilla          Produce a BabelZilla-compatible build.
   -d, --debug               Produce a testing build.
   -h, --help                Display this help message.
       --use-name NAME       Override package name. Default is %(name)s.
@@ -133,7 +144,7 @@ def list_files(root, excluded_dirs, excluded_files):
     files = []
     for parent, dirs, leaves in os.walk(root):
         # Omit testing components from release build.
-        if not DEBUG and parent in DEBUG_DIRS:
+        if CONFIG != BuildConfig.DEBUG and parent in DEBUG_DIRS:
             for d in dirs:
                 dirs.remove(d)
             continue
@@ -214,7 +225,7 @@ def preprocess(src, debug=False, vals=None):
        when the file is parsed as code. Note that general if-test support has
        not been implemented."""
     # Remove testing code. We don't have real if-test support yet.
-    if not DEBUG:
+    if CONFIG is BuildConfig.RELEASE:
         debug_re = re.compile(r"^[^\r\n]*\$if\{Debug\}.*?\$endif\{\}[^\r\n]*$",
                              re.M | re.S)
         src = debug_re.sub(r"", src)
@@ -225,6 +236,14 @@ def preprocess(src, debug=False, vals=None):
 
     return src
 
+def l10n_compat(src):
+    """Remove <em:localized> tags for compatibility with BabelZilla."""
+    if CONFIG is BuildConfig.L10N:
+        tag_re = re.compile(r"<em:localized(?:\s+[^>]*)?>.*?</em:localized>",
+                            re.S)
+        src = tag_re.sub(r"", src)
+    return src
+
 def local_to_jar(src, package_name):
     """Substitute local paths with JAR paths (for chrome.manifest)."""
     jar_re = re.compile(r"^((?:content|override|(?:skin|locale)\s+\S+)\s+\S+\s+"
@@ -233,10 +252,10 @@ def local_to_jar(src, package_name):
     return src
 
 def main():
-    global DEBUG
+    global CONFIG
     
     # Defaults
-    config_file = None
+##    config_file = None
     package_name = PACKAGE_NAME
     revision = REVISION or subprocess.Popen("svnversion -n",
                                             stdout=subprocess.PIPE,
@@ -259,7 +278,12 @@ def main():
 
         # Produce a testing build.
         if arg in ["-d", "--debug"]:
-            DEBUG = True
+            CONFIG = BuildConfig.DEBUG
+            continue
+        
+        # Produce a BabelZilla-compatible build.
+        if arg in ["--babelzilla"]:
+            CONFIG = BuildConfig.L10N
             continue
 
         # Use a different package name.
@@ -365,7 +389,9 @@ def main():
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
-        if path.basename(f) == "chrome.manifest":
+        if path.basename(f) == "install.rdf":
+            src = l10n_compat(src)
+        elif path.basename(f) == "chrome.manifest":
             src = local_to_jar(src, package_name)
         src_file.close()
         xpi.writestr(f, src)
@@ -385,7 +411,7 @@ def main():
     xpi = file(xpi_paths[0], "rb")
     sha.update(xpi.read())
     xpi.close()
-    props = [("Configuration", "Debug" if DEBUG else "Release"),
+    props = [("Configuration", CONFIG),
              ("Version", "%s (r%s)" % (version, revision)),
              ("Date", today),
              ("Size", "%i B (%s kB)" % (size, size_kb)),
