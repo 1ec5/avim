@@ -81,6 +81,10 @@ VAR_FILES = ["install.rdf", "chrome.manifest", "CHANGELOG", "LICENSE",
 # Paths to directories that should be omitted from a release build.
 DEBUG_DIRS = [path.join("content", "test"), path.join("skin", "test")]
 
+# Dictionary mapping subdirectories of locale/ to BabelZilla-compatible locale
+# codes.
+LOCALE_DIRS = {"en-US": "en-US", "es": "es-ES", "fr-FR": "fr-FR", "vi": "vi-VN"}
+
 # Paths to files to which a license block will be prepended.
 LICENSE_FILES = [path.join("content", "avim.js")]
 
@@ -116,6 +120,7 @@ def print_help(version):
 Usage: python build.py [OPTIONS]
 Package AVIM into an XPInstall file.
 
+Available options:
       --babelzilla          Produce a BabelZilla-compatible build.
   -d, --debug               Produce a testing build.
   -h, --help                Display this help message.
@@ -236,12 +241,45 @@ def preprocess(src, debug=False, vals=None):
 
     return src
 
-def l10n_compat(src):
+def l10n_compat_locale(file_path):
+    """Changes the given file path so that BabelZilla recognizes it as pointing
+       to a valid locale."""
+    locale_dir = "locale" + os.sep
+    if CONFIG != BuildConfig.L10N or not file_path.startswith(locale_dir):
+        return file_path
+    
+    # Winnow the file path down to the language.
+    locale = file_path[len(locale_dir):]
+    rhs_idx = locale.find(os.sep)
+    locale, rhs = locale[:rhs_idx], locale[rhs_idx:]
+    
+    # Attempt to replace the locale.
+    try:
+        return locale_dir + LOCALE_DIRS[locale] + rhs
+    except KeyError:
+        return file_path
+
+def l10n_compat_install(src):
     """Remove <em:localized> tags for compatibility with BabelZilla."""
     if CONFIG is BuildConfig.L10N:
         tag_re = re.compile(r"<em:localized(?:\s+[^>]*)?>.*?</em:localized>",
                             re.S)
         src = tag_re.sub(r"", src)
+    return src
+
+def l10n_compat_sub(match):
+    """Attempts to substitute the locale in a matched path to a
+       BabelZilla-compatible locale."""
+    try:
+        return match.group(1) + LOCALE_DIRS[match.group(2)] + match.group(3)
+    except KeyError:
+        return match.group(0)
+
+def l10n_compat_manifest(src):
+    """Adjust file paths to reflect the effects of l10n_compat_locale()."""
+    if CONFIG is BuildConfig.L10N:
+        path_re = re.compile(r"^(locale\s+\S+\s+\S+\s+locale/)(.*?)(/.*)", re.M)
+        src = path_re.sub(l10n_compat_sub, src)
     return src
 
 def local_to_jar(src, package_name):
@@ -359,6 +397,8 @@ def main():
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
+        # Move locale files to BabelZilla-compatible locations.
+        f = l10n_compat_locale(f)
         src_file.close()
         jar.writestr(f, src)
     jar.close()
@@ -390,8 +430,9 @@ def main():
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
         if path.basename(f) == "install.rdf":
-            src = l10n_compat(src)
+            src = l10n_compat_install(src)
         elif path.basename(f) == "chrome.manifest":
+            src = l10n_compat_manifest(src)
             src = local_to_jar(src, package_name)
         src_file.close()
         xpi.writestr(f, src)
