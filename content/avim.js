@@ -132,8 +132,8 @@ function AVIM()	{
 		
 		// Incompatible vowels following certain consonants, partly thanks to
 		// Mudim issue #16: invalid
-		if (/^(?:C[IEY]|C[HU]Y|CO[AE]|G[EY]|NG[IEY]|NGH[AOUY]|Q[^U]|QU[^AEIOY]|TRY|[NRX]Y|[NPT]HY)/
-			.test(uw2)) { // K[AOU]|P[^H]
+		if (/^(?:C[IEY]|CUY|CO[AE]|G[EY]|NG[IEY]|NGH[AOUY]|Q[^U]|QU[^AEIOY])/
+			.test(uw2)) { // CHY|K[AOU]|P[^H]|TRY|[NRX]Y|[NPT]HY
 			return true;
 		}
 		if (uw2 == "QU" && (this.DAWEO || this.SFJRX)) return true;
