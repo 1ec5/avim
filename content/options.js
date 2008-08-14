@@ -21,9 +21,11 @@ function AVIMOptionsPanel() {
 	const tabBoxId = "general-tabbox";
 	const tabsId = "general-tabs";
 	
+// $if{Debug}
 	const testerBoxId = "tester-box";
 	const testerButtonId = "tester-button";
 	const testerUrl = "chrome://avim/content/test/tester.xul";
+// $endif{}
 	
 	const ignoreButtonId = "ignore-button";
 	const ignoreTextBoxId = "ignore-text";

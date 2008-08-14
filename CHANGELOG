@@ -159,3 +159,5 @@ Version ${Version} (${Date})
  - This CHANGELOG is no longer included in packaged versions of this extension,
    to reduce download size. A history of changes to AVIM can be viewed at the
    project's homepage.
+ - Fixed removing diacritics by repeating them (e.g., entering "o^^" should
+   produce "o^").

@@ -413,7 +413,7 @@ function AVIM()	{
 					   oA.join() + english);
 	this.findC = function(w, k, sf) {
 		var method = AVIMConfig.method;
-		if ((method == 3 || method == 4) && w.substr(-2) == "\\") {
+		if ((method == 3 || method == 4) && w.substr(-1) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
 		var str = "", res, cc = "", pc = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
@@ -794,7 +794,8 @@ function AVIM()	{
 		var posCC = ccA[posK].indexOf(cc);
 		if (posCC < 0) return false;
 		
-		return [ccrA[posK][posCC]];
+		var repl = ccrA[posK][posCC];
+		return repl ? [g, repl] : false;
 	};
 	
 	/**
