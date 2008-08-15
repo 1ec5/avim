@@ -161,3 +161,6 @@ Version ${Version} (${Date})
    project's homepage.
  - Fixed removing diacritics by repeating them (e.g., entering "o^^" should
    produce "o^").
+ - Relaxed the spelling rules further, allowing "p" at the beginning of a word.
+   By request, "y" is also allowed where "i" would normally be used.
+ - Fixed a typo in the Spanish localization.
