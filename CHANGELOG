@@ -159,8 +159,12 @@ Version ${Version} (${Date})
  - This CHANGELOG is no longer included in packaged versions of this extension,
    to reduce download size. A history of changes to AVIM can be viewed at the
    project's homepage.
+ - Added Simplified and Traditional Chinese localizations, thanks to Karan
+   Misra.
  - Fixed removing diacritics by repeating them (e.g., entering "o^^" should
    produce "o^").
  - Relaxed the spelling rules further, allowing "p" at the beginning of a word.
    By request, "y" is also allowed where "i" would normally be used.
+ - Fixed an issue where "uu" ("u+u", "uu+", etc.) in the middle of a word was
+   accepted.
  - Fixed a typo in the Spanish localization.

@@ -139,9 +139,8 @@ function AVIM()	{
 		if (uw2 == "QU" && (this.DAWEO || this.SFJRX)) return true;
 		
 		// Non-Vietnamese diphthongs and triphthongs: invalid
-		if (/A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|Y[AIOY]/.test(uw2)) {
-			return true;
-		}
+		var vowRe = /A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|UU.|Y[AIOY]/;
+		if (vowRe.test(uw2)) return true;
 		
 		// Remove initial consonants.
 		

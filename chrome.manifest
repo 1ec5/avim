@@ -4,6 +4,9 @@ locale	avim	en		locale/en-US/
 locale	avim	es		locale/es/
 locale	avim	fr		locale/fr-FR/
 locale	avim	vi		locale/vi/
+locale	avim	zh		locale/zh-CN/
+locale	avim	zh-CN	locale/zh-CN/
+locale	avim	zh-TW	locale/zh-TW/
 # Explicit locales for BabelZilla
 locale	avim	en-US	locale/en-US/
 locale	avim	es-ES	locale/es/

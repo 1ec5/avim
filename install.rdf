@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#" xmlns:NC="http://home.netscape.com/NC-rdf#">
-	<Description about="urn:mozilla:extension:file:avim.jar">
-		<em:package>content/</em:package>
-		<em:locale>locale/en-US/</em:locale>
-		<em:locale>locale/es/</em:locale>
-		<em:locale>locale/fr-FR/</em:locale>
-		<em:locale>locale/vi/</em:locale>
-	</Description>
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}</em:id>
 		<em:type>2</em:type><!-- extension -->
@@ -114,7 +107,7 @@
 				<em:description>Teclar en vietnamita con todos los acentos, directamente en cualquier página Web o caja de diálogo, usando un teclado estándar.</em:description>
 				<em:creator>Minh Nguyen</em:creator>
 				<em:contributor>Hieu Dang</em:contributor>
-				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+				<em:homepageURL>http://www.1ec5.org/software/avim/index.es.html</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -127,6 +120,32 @@
 				<em:creator>Nguyễn Xuân Minh</em:creator>
 				<em:contributor>Đặng Trần Hiếu</em:contributor>
 				<em:homepageURL>http://www.1ec5.org/software/avim/index.vi.html</em:homepageURL>
+			</Description>
+		</em:localized>
+		
+		<!-- Simplified Chinese -->
+		<em:localized>
+			<Description>
+				<em:locale>zh-CN</em:locale>
+				<em:name>AVIM</em:name>
+				<em:description>仅用普通的键盘将完全带着调号的越南文输入到任何网页或对话框。</em:description>
+				<em:creator>阮春明</em:creator>
+				<em:contributor>邓陈孝</em:contributor>
+				<em:translator>Karan Misra</em:translator>
+				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+			</Description>
+		</em:localized>
+		
+		<!-- Traditional Chinese -->
+		<em:localized>
+			<Description>
+				<em:locale>zh-TW</em:locale>
+				<em:name>AVIM</em:name>
+				<em:description>僅用普通的鍵盤將完全帶著調號的越南文輸入到任何網頁或對話框。</em:description>
+				<em:creator>阮春明</em:creator>
+				<em:contributor>鄧陳孝</em:contributor>
+				<em:translator>Karan Misra</em:translator>
+				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
 			</Description>
 		</em:localized>
 	</Description>

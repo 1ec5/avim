@@ -1,0 +1,61 @@
+<!-- General options -->
+
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-preferences.title "&AVIM.label;">
+<!ENTITY avim-preferences.style "width: 45em;"><!-- Based on <chrome://browser/locale/preferences/preferences.dtd>. -->
+
+<!ENTITY enabled-check.label "啟用&AVIM.label;以輸入越南文">
+<!ENTITY enabled-check.accesskey "E">
+
+<!-- Input Editing tab -->
+
+<!ENTITY input-panel.label "輸入法編輯">
+
+<!ENTITY method-menu.label "輸入法：">
+<!ENTITY method-menu.accesskey "M">
+<!ENTITY method-auto-item.label "自動">
+<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-vni-item.label "VNI">
+<!ENTITY method-viqr-item.label "VIQR">
+<!ENTITY method-viqr-star-item.label "VIQR*">
+
+<!ENTITY spell-check.label "堅持正確拼寫法">
+<!ENTITY spell-check.accesskey "S">
+<!ENTITY informal-check.label "在字詞前面允許DZ或F">
+<!ENTITY informal-check.accesskey "Z">
+
+<!ENTITY oldaccents-check.label "僅在遵循越南文拼寫法標準的字詞上擺放調號（舊式調號）">
+<!ENTITY oldaccents-check.accesskey "O">
+
+<!ENTITY auto-methods.label "用&method-auto-item.label;時從下面的輸入法接受按鍵：">
+<!ENTITY auto-telex-check.accesskey "T">
+<!ENTITY auto-vni-check.accesskey "N">
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!ENTITY auto-viqr-star-check.accesskey "R">
+
+<!ENTITY script-enabled-check.label "在網頁內停用輸入法編輯描述語言">
+<!ENTITY script-enabled-check.accesskey "W">
+
+<!-- Ignored Textboxes tab -->
+
+<!ENTITY ignored-panel.label "忽略的文本框">
+
+<!ENTITY ignore-text.label "文本框標識符：">
+<!ENTITY ignore-button.label "忽略">
+<!ENTITY ignore-button.accesskey "I">
+
+<!ENTITY ignored-desc.label "您可以選擇&AVIM.label;該忽略哪些文件框。例如您可以使&AVIM.label;忽略包含網址的某個文件框，因為此輸入法也許會影響輸入該網址。">
+<!ENTITY ignored-desc.line-count "2">
+<!ENTITY ignored-instructions.label "為了忽略某個文件框，請先從包含該文件框網頁的源代碼裡將標識符找出來，再在下面輸入標識符，最後點擊&ignore-button.label;。">
+<!ENTITY ignored-instructions.line-count "2">
+
+<!ENTITY remove-button.label "刪除標識符">
+<!ENTITY remove-button.accesskey "R"><!-- Conflicts with auto-viqr-star-check.accesskey, but they're in different tabs. -->
+
+<!ENTITY reset-button.label "將設置還原成默認">
+<!ENTITY reset-button.accesskey "D"><!-- Conflicts with oldaccents-check.accesskey, but they're in different tabs. -->
+
+<!-- Display options -->
+
+<!ENTITY statuspanel-check.label "在狀態欄上顯示">
+<!ENTITY statuspanel-check.accesskey "B">

@@ -78,12 +78,15 @@ ROOT_DIRS = ["defaults"]
 VAR_FILES = ["install.rdf", "chrome.manifest", "CHANGELOG", "LICENSE",
              path.join("content", "options.js")]
 
+# Names of files to be preprocessed.
+VAR_NAMES = ["options.properties"]
+
 # Paths to directories that should be omitted from a release build.
 DEBUG_DIRS = [path.join("content", "test"), path.join("skin", "test")]
 
 # Dictionary mapping subdirectories of locale/ to BabelZilla-compatible locale
-# codes.
-LOCALE_DIRS = {"en-US": "en-US", "es": "es-ES", "fr-FR": "fr-FR", "vi": "vi-VN"}
+# codes. Locale names that are already compatible can be omitted.
+LOCALE_DIRS = {"es": "es-ES", "vi": "vi-VN"}
 
 # Paths to files to which a license block will be prepended.
 LICENSE_FILES = [path.join("content", "avim.js")]
@@ -393,7 +396,7 @@ def main():
         if f in LICENSE_FILES:
             src = insert_license(f, src)
         # Preprocess the file.
-        if f in VAR_FILES:
+        if f in VAR_FILES or path.basename(f) in VAR_NAMES:
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
@@ -425,7 +428,7 @@ def main():
         if f in LICENSE_FILES:
             src = insert_license(f, src)
         # Preprocess the file.
-        if f in VAR_FILES:
+        if f in VAR_FILES or path.basename(f) in VAR_NAMES:
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
