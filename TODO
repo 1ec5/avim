@@ -1,17 +1,10 @@
- - Investigate using the nsIPlaintextEditor interface to handle
-   outputting more seamlessly. [1]
- - Figure out why the first word entered into a designMode document is flipped
-   around (i.e., "DDa'nh" turns into "a'nhDD").
  - Support <searchvalue> elements in Thunderbird.
  - Add a preference to specify allowed initial consonant clusters, like mViet
    does. [2]
- - Support editable trees. [3]
  - Add key mapping for the dong sign.
  - Optionally remember on/off state per-site, using FUEL or the Content
    Preferences service. [4] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
 
-[1] http://www.xulplanet.com/references/xpcomref/ifaces/nsIPlaintextEditor.html
 [2] http://www.dactai.com/mviet/mviet12AC/index.htm
-[3] http://wiki.mozilla.org/XUL:Tree
 [4] http://developer.mozilla.org/en/docs/Using_content_preferences

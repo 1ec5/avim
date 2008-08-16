@@ -821,6 +821,12 @@ function AVIM()	{
 		return giveChars ? chars : codesFromChars(chars);
 	};
 	
+	/**
+	 * Returns the given word with tone marks removed.
+	 *
+	 * @param w	{string}	The word with tone marks.
+	 * @returns {string}	The word without tone marks.
+	 */
 	this.unV = function(w) {
 		var u = this.repSign(null);
 		var unW = "";
@@ -832,6 +838,12 @@ function AVIM()	{
 		return unW;
 	};
 	
+	/**
+	 * Returns the given word with all diacritical marks removed.
+	 *
+	 * @param w	{string}	The word with diacritical marks.
+	 * @returns {string}	The word without diacritical marks.
+	 */
 	this.unV2 = function(w) {
 		var unW = "";
 		for (var a = w.length - 1; a >= 0; a--) {
