@@ -155,7 +155,7 @@ Version 20080728.185 (Tuesday, August 12, 2008)
    words that would be unpronounceable in Vietnamese. "Ka", "ko", and "ku" are
    no longer rejected. Also, "gin`" is allowed again.
 
-Version ${Version} (${Date})
+Version 20080728.195 (Saturday, August 16, 2008)
  - This CHANGELOG is no longer included in packaged versions of this extension,
    to reduce download size. A history of changes to AVIM can be viewed at the
    project's homepage.
@@ -168,3 +168,5 @@ Version ${Version} (${Date})
  - Fixed an issue where "uu" ("u+u", "uu+", etc.) in the middle of a word was
    accepted.
  - Fixed typos in the Spanish localization.
+
+Version ${Version} (${Date})
