@@ -948,7 +948,7 @@ function AVIM()	{
 	};
 	
 	this.notWord=function(w) {
-		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'~|^\@\&\t" +
+		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'`~|^\@\&\t" +
 			"“”‘’\xab\xbb‹›–—…−×÷°″′";
 		return str.indexOf(w) >= 0;
 	};

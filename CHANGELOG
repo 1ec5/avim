@@ -159,8 +159,7 @@ Version 20080728.195 (Saturday, August 16, 2008)
  - This CHANGELOG is no longer included in packaged versions of this extension,
    to reduce download size. A history of changes to AVIM can be viewed at the
    project's homepage.
- - Added Simplified and Traditional Chinese localizations, thanks to Karan
-   Misra.
+ - Added simplified and traditional Chinese localizations by Karan Misra.
  - Fixed removing diacritics by repeating them (e.g., entering "o^^" should
    produce "o^").
  - Relaxed the spelling rules further, allowing "p" at the beginning of a word.
@@ -170,3 +169,5 @@ Version 20080728.195 (Saturday, August 16, 2008)
  - Fixed typos in the Spanish localization.
 
 Version ${Version} (${Date})
+ - Fixed an issue with VIQR and VIQR* where entering "o```" added the tone mark
+   back onto the vowel.
