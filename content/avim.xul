@@ -48,7 +48,7 @@
 	
 	<popupset>
 		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
-		<menupopup id="avim-status-popup">
+		<menupopup id="avim-status-popup" position="before_end">
 			<menuitem id="avim-status-enabled" type="checkbox" label="&avim-enabled.label;" observes="avim-enabled-bc" />
 			
 			<!-- Input methods -->

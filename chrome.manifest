@@ -4,14 +4,10 @@ locale	avim	en		locale/en-US/
 locale	avim	es		locale/es/
 locale	avim	fr		locale/fr-FR/
 locale	avim	vi		locale/vi/
-locale	avim	zh		locale/zh-CN/
+locale	avim	zh		locale/zh-TW/
 locale	avim	zh-CN	locale/zh-CN/
-locale	avim	zh-TW	locale/zh-TW/
-# Explicit locales for BabelZilla
-locale	avim	en-US	locale/en-US/
-locale	avim	es-ES	locale/es/
-locale	avim	fr-FR	locale/fr-FR/
-locale	avim	vi-VN	locale/vi/
+locale	avim	zh-SG	locale/zh-CN/
+locale	avim	zh-MY	locale/zh-CN/
 
 skin	avim	classic/1.0	skin/
 

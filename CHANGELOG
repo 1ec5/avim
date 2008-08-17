@@ -167,4 +167,4 @@ Version ${Version} (${Date})
    By request, "y" is also allowed where "i" would normally be used.
  - Fixed an issue where "uu" ("u+u", "uu+", etc.) in the middle of a word was
    accepted.
- - Fixed a typo in the Spanish localization.
+ - Fixed typos in the Spanish localization.

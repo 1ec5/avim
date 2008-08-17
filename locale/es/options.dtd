@@ -9,7 +9,7 @@
 
 <!-- Input Editing tab -->
 
-<!ENTITY input-panel.label "Edición de Entrada">
+<!ENTITY input-panel.label "Edición de entrada">
 
 <!ENTITY method-menu.label "Método de entrada:">
 <!ENTITY method-menu.accesskey "M">
@@ -38,7 +38,7 @@
 
 <!-- Ignored Textboxes tab -->
 
-<!ENTITY ignored-panel.label "Cajas de Texto para Ignorar">
+<!ENTITY ignored-panel.label "Cajas de texto para ignorar">
 
 <!ENTITY ignore-text.label "ID de la caja de texto:">
 <!ENTITY ignore-button.label "Ignorar">
