@@ -684,7 +684,7 @@ function AVIM()	{
 				this.S = "1"; this.F = "2"; this.J = "5"; this.R = "3";
 				this.X = "4"; this.Z = "0"; this.D = "9"; this.FRX = "234";
 				this.AEO = "6"; this.moc = "7"; this.trang = "8";
-				this.them = "678"; this.A = "^"; this.E = "^"; this.O = "^";
+				this.them = "678"; this.A = "6"; this.E = "6"; this.O = "6";
 				break;
 			case 3:
 				this.DAWEO = "^+(D"; this.SFJRX = "'`.?~";
@@ -786,15 +786,16 @@ function AVIM()	{
 	const ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
 	this.DAWEOF = function(cc, k, g) {
 		var kA = [this.A, this.moc, this.trang, this.E, this.O];
-		
-		var posK = kA.indexOf(k);
-		if (posK < 0) return false;
-		
-		var posCC = ccA[posK].indexOf(cc);
-		if (posCC < 0) return false;
-		
-		var repl = ccrA[posK][posCC];
-		return repl ? [g, repl] : false;
+		for (var i = 0; i < kA.length; i++) {
+			if (k != kA[i]) continue;
+			
+			var posCC = ccA[i].indexOf(cc);
+			if (posCC < 0) continue;
+			
+			var repl = ccrA[i][posCC];
+			return repl ? [g, repl] : false;
+		}
+		return false;
 	};
 	
 	/**
@@ -948,8 +949,8 @@ function AVIM()	{
 	};
 	
 	this.notWord=function(w) {
-		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]\'`~|^\@\&\t" +
-			"“”‘’\xab\xbb‹›–—…−×÷°″′";
+		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]'`~|^@&\t“”‘’" +
+			"\xab\xbb‹›–—…−×÷°″′";
 		return str.indexOf(w) >= 0;
 	};
 	
