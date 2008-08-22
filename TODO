@@ -1,10 +1,11 @@
  - Support <searchvalue> elements in Thunderbird.
+ - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
  - Add a preference to specify allowed initial consonant clusters, like mViet
-   does. [2]
+   does. [1]
  - Add key mapping for the dong sign.
  - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [4] Maybe limit this feature to bookmarks (FUEL), since
+   Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
 
-[2] http://www.dactai.com/mviet/mviet12AC/index.htm
-[4] http://developer.mozilla.org/en/docs/Using_content_preferences
+[1] http://www.dactai.com/mviet/mviet12AC/index.htm
+[2] http://developer.mozilla.org/en/docs/Using_content_preferences
