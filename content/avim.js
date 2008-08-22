@@ -403,8 +403,7 @@ function AVIM()	{
 		
 		if (this.D2.indexOf(up(key)) >= 0) {
 			w = this.mozGetText(obj);
-			if (!w) return;
-			this.normC(w[0], key, w[1]);
+			if (w) this.normC(w[0], key, w[1]);
 		}
 	};
 	
@@ -807,7 +806,8 @@ function AVIM()	{
 	 * @param giveChars	{string}	True if the characters themselves should be
 	 * 								returned; false if they should be converted
 	 * 								to character codes.
-	 * @returns {object}	An array of characters or character codes.
+	 * @returns {string}	A string of accented characters.
+	 * 			{object}	An array of character codes.
 	 */
 	this.retKC = function(k, giveChars) {
 		var chars = "";
@@ -904,8 +904,12 @@ function AVIM()	{
 	 */
 	this.ifMoz = function(e) {
 		var code = e.which;
-		var cwi = e.target.ownerDocument.defaultView;
+		var target = e.target;
+		var cwi = target.ownerDocument.defaultView;
 		if(e.ctrlKey || e.metaKey || e.altKey) return;
+		if (this.findIgnore(target) || this.findIgnore(cwi.frameElement)) {
+			return;
+		}
 		this.ifInit(cwi);
 		var node = this.range.endContainer, newPos;
 		this.sk = fcc(code);
@@ -921,9 +925,7 @@ function AVIM()	{
 		}
 		this.range.setEnd(node, this.range.endOffset);
 		this.range.setStart(node, 0);
-		if(!node.data) {
-			return;
-		}
+		if(!node.data) return;
 		node.value = node.data;
 		node.pos = node.data.length;
 		node.which = code;
@@ -972,13 +974,9 @@ function AVIM()	{
 		var el = e.target, code = e.which;
 //		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
+		if (this.findIgnore(target)) return false;
 		const xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-		if (document.documentElement.namespaceURI == xulURI) {
-			// Ignore about:config.
-			if (el.parentNode && el.parentNode.id == "filterRow") return false;
-		}
-		if (this.findIgnore(el)) return false;
 		// If the XUL element is actually an XBL-bound element, get the
 		// anonymous inner element.
 		if (el.namespaceURI == xulURI) {
@@ -1389,16 +1387,16 @@ function AVIM()	{
 //		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
 		var target = e.target;
 		var doc = target.ownerDocument;
-		avim.disableOthers(doc);
+		this.disableOthers(doc);
 		
 		// Handle key press either in WYSIWYG mode or normal mode.
 		var wysiwyg =
 			(doc.designMode && doc.designMode.toLowerCase() == "on") ||
 			(target.contentEditable &&
 			 target.contentEditable.toLowerCase() == "true");
-		if (wysiwyg) return avim.ifMoz(e);
+		if (wysiwyg) return this.ifMoz(e);
 		
-		return avim.keyPressHandler(e);
+		return this.keyPressHandler(e);
 	};
 };
 

@@ -47,6 +47,8 @@ overlay	chrome://browser/content/places/bookmarkProperties2.xul			chrome://avim/
 # Cookies list
 # File > Open Location...
 overlay	chrome://browser/content/openLocation.xul						chrome://avim/content/generalOverlay.xul
+# Add-ons Manager
+overlay	chrome://mozapps/content/extensions/extensions.xul				chrome://avim/content/generalOverlay.xul
 # Help > Report Broken Web Site...
 overlay	chrome://reporter/content/reportWizard.xul						chrome://avim/content/generalOverlay.xul
 
@@ -161,6 +163,10 @@ overlay	chrome://inspector/content/viewers/domNode/domNodeDialog.xul		chrome://a
 # Insert Node dialog
 overlay	chrome://inspector/content/viewers/dom/insertDialog.xul				chrome://avim/content/generalOverlay.xul
 
+### Firebug ####################################################################
+
+overlay	chrome://firebug/content/firebug.xul								chrome://avim/content/generalOverlay.xul
+
 ### googlebar ##################################################################
 
 overlay	chrome://googlebar/content/googlebarPrefDialog.xul	chrome://avim/content/generalOverlay.xul
@@ -194,6 +200,10 @@ overlay	chrome://qls/content/qlssettings.xul	chrome://avim/content/generalOverla
 overlay	chrome://scrapbook/content/property.xul	chrome://avim/content/generalOverlay.xul
 # Manage Items dialog
 overlay	chrome://scrapbook/content/manage.xul	chrome://avim/content/generalOverlay.xul
+
+### ScribeFire #################################################################
+
+overlay	chrome://performancing/content/scribefire.xul	chrome://avim/content/generalOverlay.xul
 
 ### Songbird Developer Tools ###################################################
 
