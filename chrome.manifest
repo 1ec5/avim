@@ -52,12 +52,6 @@ overlay	chrome://mozapps/content/extensions/extensions.xul				chrome://avim/cont
 # Help > Report Broken Web Site...
 overlay	chrome://reporter/content/reportWizard.xul						chrome://avim/content/generalOverlay.xul
 
-# Old stuff
-# overlay	chrome://browser/content/browser.xul						chrome://avim/content/generalOverlay.xul
-# overlay	chrome://browser/content/places/editBookmarkOverlay.xul		chrome://avim/content/generalOverlay.xul
-# overlay	chrome://browser/content/bookmarks/bookmarksProperties.xul	chrome://avim/content/generalOverlay.xul
-# overlay	chrome://browser/content/preferences/cookies.xul			chrome://avim/content/generalOverlay.xul
-
 ### Thunderbird ################################################################
 
 # Main messenger window and associated dialogs

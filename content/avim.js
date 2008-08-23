@@ -988,16 +988,21 @@ function AVIM()	{
 														   attrValue);
 		};
 		
-		// Common XBL controls
+		// Simple XBL controls
 		var anonIds = {
-			findbar: "findbar-textbox", searchvalue: "input",
-			"sb-locationbar-textbox": "textbox", conversation: "input"
+			findbar: "findbar-textbox", "sb-locationbar-textbox": "textbox",
+			conversation: "input"
 		};
 		if (anonIds[name]) return $attr(root, "anonid", anonIds[name]);
+		var ids = {
+			zoterotagselector: "tags-search",
+			partviewer: "partviewer-filter-textbox"
+		};
+		if (ids[name]) return $attr(root, "id", ids[name]);
+		var classes = {searchvalue: "search-value-textbox"};
+		if (classes[name]) return $attr(root, "class", classes[name]);
 		
 		// Zotero
-		var ids = {zoterotagselector: "tags-search"};
-		if (ids[name]) return $attr(root, "id", ids[name]);
 		if (name == "noteeditor") {
 			var linksBox = $attr(root, "id", "links");
 			var popup = $attr(linksBox, "id", "tagsPopup");
