@@ -169,6 +169,8 @@ Version 20080728.195 (Saturday, August 16, 2008)
  - Fixed typos in the Spanish localization.
 
 Version ${Version} (${Date})
+ - Added rudimentary support for alpha versions of Komodo IDE 5.0 and Komodo
+   Edit 5.0.
  - Fixed removing diacritics by repeating them, this time for VNI and VIQR.
  - Fixed an issue with VIQR and VIQR* where entering "o```" added the tone mark
    back onto the vowel.

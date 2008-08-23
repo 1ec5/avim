@@ -974,7 +974,7 @@ function AVIM()	{
 		var el = e.target, code = e.which;
 //		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
-		if (this.findIgnore(target)) return false;
+		if (this.findIgnore(el)) return false;
 		const xulURI =
 			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 		// If the XUL element is actually an XBL-bound element, get the
@@ -1374,7 +1374,6 @@ function AVIM()	{
 		if (marker in win) disablers.MViet(win);
 	};
 	
-	var avim = this;
 	/**
 	 * First responder for keypress events.
 	 *

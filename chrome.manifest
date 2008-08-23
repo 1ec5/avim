@@ -124,6 +124,30 @@ overlay	chrome://mozapps/content/downloads/downloads.xul				chrome://avim/conten
 # Preferences dialog
 overlay	chrome://browser/content/preferences/preferences.xul			chrome://avim/content/generalOverlay.xul
 
+### Komodo IDE and Komodo Edit #################################################
+
+overlay	chrome://komodo/content/komodo.xul							chrome://avim/content/komodoOverlay.xul
+# New File dialog
+overlay	chrome://komodo/content/templates/new.xul					chrome://avim/content/generalOverlay.xul
+# Find dialog
+overlay	chrome://komodo/content/find/find2.xul						chrome://avim/content/generalOverlay.xul
+# Rename dialog
+overlay	chrome://komodo/content/dialogs/prompt.xul					chrome://avim/content/generalOverlay.xul
+# Macro Properties dialog
+overlay	chrome://komodo/content/project/macroProperties.xul			chrome://avim/content/generalOverlay.xul
+# Run Command dialog
+overlay	chrome://komodo/content/run/run.xul							chrome://avim/content/generalOverlay.xul
+# Edit Variable dialog
+overlay	chrome://komodo/content/dialogs/editEnvVar.xul				chrome://avim/content/generalOverlay.xul
+# Check Spelling dialog
+overlay	chrome://komodospellchecker/content/koSpellCheck.xul		chrome://avim/content/generalOverlay.xul
+# Preferences window
+overlay	chrome://komodo/content/pref/pref.xul						chrome://avim/content/generalOverlay.xul
+# URI Mapping dialog
+overlay	chrome://komodo/content/dialogs/editPathMap.xul				chrome://avim/content/generalOverlay.xul
+# Help window
+overlay	chrome://help/content/help.xul								chrome://avim/content/generalOverlay.xul
+
 ### Instantbird ################################################################
 
 # Account Properties window
