@@ -174,6 +174,20 @@ overlay	chrome://colorzilla/content/colorzillaColorPickerDialog.xul	chrome://avi
 # Statusbar Format dialog
 overlay	chrome://colorzilla/content/colorzillaStatusbarFormat.xul	chrome://avim/content/generalOverlay.xul
 
+### Deepest Sender #############################################################
+
+overlay	chrome://deepestsender/content/deepestsender.xul						chrome://avim/content/generalOverlay.xul
+# Edit Entry window
+overlay	chrome://deepestsender/content/protocols/blogger/blogger.xul			chrome://avim/content/generalOverlay.xul
+# Post Options dialog
+overlay	chrome://deepestsender/content/protocols/livejournal/postoptions.xul	chrome://avim/content/generalOverlay.xul
+# Userpic Browser dialog
+overlay	chrome://deepestsender/content/protocols/livejournal/userpics.xul		chrome://avim/content/generalOverlay.xul
+# Edit Friends dialog
+overlay	chrome://deepestsender/content/protocols/livejournal/friends.xul		chrome://avim/content/generalOverlay.xul
+# LiveJournal Console window
+overlay	chrome://deepestsender/content/protocols/livejournal/console.xul		chrome://avim/content/generalOverlay.xul
+
 ### DOM Inspector ##############################################################
 
 overlay	chrome://inspector/content/commandOverlay.xul						chrome://avim/content/generalOverlay.xul
@@ -200,6 +214,13 @@ overlay	chrome://googlebar/content/googlebarPrefDialog.xul	chrome://avim/content
 # AutoFill Options dialog
 overlay chrome://google-toolbar/content/options-auto-fill.xul	chrome://avim/content/generalOverlay.xul
 
+### iMacros ####################################################################
+
+# Edit Steps dialog
+overlay	chrome://imacros/content/edit.xul		chrome://avim/content/generalOverlay.xul
+# Preferences dialog
+overlay	chrome://imacros/content/options.xul	chrome://avim/content/generalOverlay.xul
+
 ### Nightly Tester Tools #######################################################
 
 # Options dialog
@@ -217,6 +238,18 @@ overlay	chrome://refractor/content/install-shortcut.xul	chrome://avim/content/ge
 ### Quick Locale Switcher ######################################################
 
 overlay	chrome://qls/content/qlssettings.xul	chrome://avim/content/generalOverlay.xul
+
+### ReminderFox ################################################################
+
+overlay	chrome://reminderfox/content/addreminder-dialog.xul				chrome://avim/content/generalOverlay.xul
+# Add Reminder dialog
+overlay	chrome://reminderfox/content/editing/reminderOptionsDialog.xul	chrome://avim/content/generalOverlay.xul
+# Add ToDo dialog
+overlay	chrome://reminderfox/content/editing/todoOptionsDialog.xul		chrome://avim/content/generalOverlay.xul
+# Quick Alarm dialog
+overlay	chrome://reminderfox/content/alarms/quickAlarmDialog.xul		chrome://avim/content/generalOverlay.xul
+# Options dialog
+overlay	chrome://reminderfox/content/options/options.xul				chrome://avim/content/generalOverlay.xul
 
 ### ScrapBook ##################################################################
 
@@ -258,3 +291,16 @@ overlay	chrome://webdeveloper/content/dialogs/cookie.xul					chrome://avim/conte
 overlay	chrome://webdeveloper/content/options/dialogs/tool.xul				chrome://avim/content/generalOverlay.xul
 # Add View Source With dialog
 overlay	chrome://webdeveloper/content/options/dialogs/view_source_with.xul	chrome://avim/content/generalOverlay.xul
+
+### Zotero #####################################################################
+
+# Add Note dialog
+overlay	chrome://zotero/content/note.xul					chrome://avim/content/generalOverlay.xul
+# Select Items dialog
+overlay	chrome://zotero/content/selectItemsDialog.xul		chrome://avim/content/generalOverlay.xul
+# Saved Search dialog
+overlay	chrome://zotero/content/searchDialog.xul			chrome://avim/content/generalOverlay.xul
+# Advanced Search dialog
+overlay	chrome://zotero/content/advancedSearch.xul			chrome://avim/content/generalOverlay.xul
+# Preferences dialog
+overlay	chrome://zotero/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
