@@ -904,8 +904,9 @@ function AVIM()	{
 	 */
 	this.ifMoz = function(e) {
 		var code = e.which;
-		var target = e.target;
-		var cwi = target.ownerDocument.defaultView;
+		var doc = e.originalTarget.ownerDocument;
+		var target = doc.documentElement;
+		var cwi = doc.defaultView;
 		if(e.ctrlKey || e.metaKey || e.altKey) return;
 		if (this.findIgnore(target)) return;
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;

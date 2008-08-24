@@ -180,3 +180,4 @@ Version ${Version} (${Date})
  - Added support for the Add-ons Manager's search bar.
  - Added support for Firebug and ScribeFire when opened in separate windows.
  - Added support for search dialogs in Thunderbird.
+ - Added support for obscure types of textboxes, such as HTML's <isindex> tag.
