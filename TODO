@@ -1,11 +1,12 @@
- - Support <searchvalue> elements in Thunderbird.
+ - Convert XUL overlays into XBL bindings on XUL's root elements, to support
+   absolutely every window.
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
+ - Add key mapping for the dong sign.
  - Add a preference to specify allowed initial consonant clusters, like mViet
    does. [1]
- - Add key mapping for the dong sign.
  - Optionally remember on/off state per-site, using FUEL or the Content
    Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
 
-[1] http://www.dactai.com/mviet/mviet12AC/index.htm
+[1] http://www.dactai.com/mviet/mviet12AC/
 [2] http://developer.mozilla.org/en/docs/Using_content_preferences

@@ -1,29 +1,9 @@
 /**
  * Default preferences. Be sure to update defaults/preferences/avim.js to
- * reflect any changes to the default preferences.
+ * reflect any changes to the default preferences. Initially, this variable
+ * should only contain objects whose properties will be modified later on.
  */
-var AVIMConfig = {
-	method: 0, //Default input method: 0=AUTO, 1=TELEX, 2=VNI, 3=VIQR, 4=VIQR*
-	onOff: true, //Starting status: false=Off, true=On
-	ckSpell: true, //Spell Check: true=Off, false=On
-	oldAccent: true, //false: New way (oa`, oe`, uy`), true: The good old day (o`a, o`e, u`y)
-	informal: false,
-	statusBarPanel: true, // Display status bar panel
-	//IDs of the fields you DON'T want to let users type Vietnamese in
-	exclude: ["colorzilla-textbox-hex",	// Hex box, Color Picker, ColorZilla
-			  "email", "e-mail",		// don't want it for e-mail fields in general
-			  "textboxeval",			// Code bar, Firefox Error Console
-			  "tx_tagname",				// Tag Name, Insert Node, DOM Inspector
-			  ],
-	// Default input methods to contribute to Auto.
-	autoMethods: {telex: true, vni: true, viqr: false, viqrStar: false},
-	// Script monitor
-	disabledScripts: {
-		enabled: true,
-		AVIM: true, CHIM: false, Mudim: false, MViet: true, VietIMEW: false,
-		VietTyping: true, VietUni: true, Vinova: false
-	}
-};
+var AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 
 function AVIM()	{
 	// IDs of user interface elements
@@ -65,6 +45,68 @@ function AVIM()	{
 	
 	var up = function(w) {
 		return w.toUpperCase();
+	};
+	
+	/**
+	 * Returns the nsIEditor (or subclass) instance associated with the given
+	 * XUL or HTML element.
+	 *
+	 * @param el	{object}	The XUL or HTML element.
+	 * @returns	{object}	The associated nsIEditor instance.
+	 */
+	var getEditor = function(el) {
+		if (el.editor) return el.editor;
+		try {
+			const iface = Components.interfaces.nsIDOMNSEditableElement;
+			return el.QueryInterface(iface).editor;
+//				iface = Components.interfaces.nsIPlaintextEditor;
+//				editor = editableEl.QueryInterface(iface);
+		}
+		catch (e) {
+//			dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");	// debug
+			return undefined;
+		}
+	};
+	
+	/**
+	 * Returns the string contents of the given textbox, optionally starting and
+	 * ending with the given range. If no range is given, the entire string
+	 * contents are returned.
+	 *
+	 * @param el	{object}	The textbox's DOM node.
+	 * @param start	{number}	The return value's starting index within the
+	 *							entire content string.
+	 * @param len	{number}	The length of the substring to return.
+	 * @returns {string}	The textbox's string contents.
+	 */
+	var text = function(el, start, len) {
+		var val = el.value;
+		if (start) val = val.substr(start);
+		if (len) val = val.substr(0, len);
+		return val;
+	};
+	
+	/**
+	 * Replaces the substring inside the given textbox, starting at an index and
+	 * spanning the given number of characters, with the given string.
+	 *
+	 * @param el		{object}	The textbox's DOM node.
+	 * @param index		{number}	The index at which to begin replacing.
+	 * @param len		{number}	The number of characters to replace.
+	 * @param newStr	{string}	The string to insert.
+	 */
+	var splice = function(el, index, len, newStr) {
+//		var editor = getEditor(el);
+//		dump("AVIM.splice -- editor: " + editor + "; newStr: " + newStr + "\n");	// debug
+//		if (editor && editor.insertText) {
+//			var selStart = el.selectionStart;
+//			el.setSelectionRange(index, index + len);
+//			editor.insertText(newStr);
+//			el.setSelectionRange(selStart + newStr.length - len);
+//			return;
+//		}
+		var val = el.value;
+		el.value = val.substr(0, index) + newStr + val.substr(index + len);
 	};
 	
 	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM\ ";
@@ -355,7 +397,7 @@ function AVIM()	{
 	
 	this.mozGetText = function(obj) {
 		var pos, w = "";
-		var v = (obj.data) ? obj.data : obj.value;
+		var v = (obj.data) ? obj.data : text(obj);
 		if (!v || !v.length) return false;
 		if (obj.data) pos = obj.pos;
 		else {
@@ -549,50 +591,6 @@ function AVIM()	{
 		return false;
 	};
 	
-	/**
-	 * Returns the nsIEditor (or subclass) instance associated with the given
-	 * XUL or HTML element.
-	 *
-	 * @param el	{object}	The XUL or HTML element.
-	 * @returns	{object}	The associated nsIEditor instance.
-	 */
-	this.getEditor = function(el) {
-		if (el.editor) return el.editor;
-		try {
-			const iface = Components.interfaces.nsIDOMNSEditableElement;
-			return el.QueryInterface(iface).editor;
-//				iface = Components.interfaces.nsIPlaintextEditor;
-//				editor = editableEl.QueryInterface(iface);
-		}
-		catch (e) {
-//			dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");	// debug
-			return undefined;
-		}
-	};
-	
-	/**
-	 * Replaces the substring inside the given textbox, starting at an index and
-	 * spanning the given number of characters, with the given string.
-	 *
-	 * @param obj		{object}	The textbox's node.
-	 * @param index		{number}	The index at which to begin replacing.
-	 * @param len		{number}	The number of characters to replace.
-	 * @param newStr	{string}	The string to insert.
-	 */
-	this.splice = function(el, index, len, newStr) {
-//		var editor = this.getEditor(el);
-//		dump("AVIM.splice -- editor: " + editor + "; newStr: " + newStr + "\n");	// debug
-//		if (editor && editor.insertText) {
-//			var selStart = el.selectionStart;
-//			el.setSelectionRange(index, index + len);
-//			editor.insertText(newStr);
-//			el.setSelectionRange(selStart + newStr.length - len);
-//			return;
-//		}
-		var val = el.value;
-		el.value = val.substr(0, index) + newStr + val.substr(index + len);
-	};
-	
 	this.replaceChar = function(o, pos, c) {
 		var bb = false;
 		if(!nan(c)) {
@@ -606,9 +604,9 @@ function AVIM()	{
 		}
 		if(!o.data) {
 			var savePos = o.selectionStart, sst = o.scrollTop, r;
-			if ((up(o.value.substr(pos - 1, 1)) == 'U') && (pos < savePos - 1) && (up(o.value.substr(pos - 2, 1)) != 'Q')) {
+			if (up(text(o, pos - 1, 1)) == 'U' && pos < savePos - 1 && up(text(o, pos - 2, 1)) != 'Q') {
 				if (wfix == "Ơ" || bb) {
-					r = (o.value.substr(pos - 1,1) == 'u') ? "ư" : "Ư";
+					r = (text(o, pos - 1, 1) == 'u') ? "ư" : "Ư";
 				}
 				if (bb) {
 					this.changed = true;
@@ -620,7 +618,7 @@ function AVIM()	{
 				replaceBy = r + replaceBy;
 				pos--;
 			}
-			this.splice(o, pos, replaceLen, replaceBy);
+			splice(o, pos, replaceLen, replaceBy);
 			o.setSelectionRange(savePos, savePos);
 			o.scrollTop = sst;
 		} else {
@@ -754,8 +752,10 @@ function AVIM()	{
 						var sst = this.oc.scrollTop;
 						pos += k.length;
 						if(!this.oc.data) {
-							this.oc.value = this.oc.value.substr(0, sp) + k +
-								this.oc.value.substr(this.oc.selectionEnd);
+//							this.oc.value = this.oc.value.substr(0, sp) + k +
+//								this.oc.value.substr(this.oc.selectionEnd);
+							splice(this.oc, sp, this.oc.selectionEnd - k.length,
+								   k);
 							this.changed = true;
 							this.oc.scrollTop = sst;
 						} else {
@@ -965,9 +965,8 @@ function AVIM()	{
 	 */
 	this.findIgnore=function(el) {
 		if (!el) return true;
-		var id = el.id;
-		// Zotero's <noteeditor> tag makes id a function for some reason.
-		if (!id || id instanceof Function) return false;
+		var id = el.id || el.getAttribute("id");
+		if (!id) return false;
 		return AVIMConfig.exclude.indexOf(id.toLowerCase()) >= 0;
 	}
 	
@@ -983,13 +982,13 @@ function AVIM()	{
 	 */
 	this.keyPressHandler = function(e) {
 		var el = e.originalTarget || e.target, code = e.which;
-//		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
+//		dump("AVIM.keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(el)) return false;
 		var isHTML = el.type == "textarea" || el.type == "text";
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
-		var editor = this.getEditor(el);
+		var editor = getEditor(el);
 //		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {

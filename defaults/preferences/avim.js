@@ -28,6 +28,11 @@ pref("extensions.avim.statusBarPanel", true);
  * Ignore any fields that contain e-mail addresses, as well as the code
  * evaluation bar in the Error Console. Field IDs are case-insensitive and
  * separated by spaces.
+ *
+ * 	"colorzilla-textbox-hex"			Hex box, Color Picker, ColorZilla
+ * 	"email", "e-mail", "emailconfirm"	e-mail fields in general
+ * 	"textboxeval"						Code bar, Firefox Error Console
+ * 	"tx_tagname"						Tag Name, Insert Node, DOM Inspector
  */
 pref("extensions.avim.ignoredFieldIds",
 	 "colorzilla-textbox-hex e-mail email emailconfirm textboxeval tx_tagname");
