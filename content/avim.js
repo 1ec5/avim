@@ -907,9 +907,8 @@ function AVIM()	{
 		var target = e.target;
 		var cwi = target.ownerDocument.defaultView;
 		if(e.ctrlKey || e.metaKey || e.altKey) return;
-		if (this.findIgnore(target) || this.findIgnore(cwi.frameElement)) {
-			return;
-		}
+		if (this.findIgnore(target)) return;
+		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
 		this.ifInit(cwi);
 		var node = this.range.endContainer, newPos;
 		this.sk = fcc(code);
@@ -964,89 +963,12 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.findIgnore=function(el) {
+		if (!el) return true;
 		var id = el.id;
 		// Zotero's <noteeditor> tag makes id a function for some reason.
 		if (!id || id instanceof Function) return false;
 		return AVIMConfig.exclude.indexOf(id.toLowerCase()) >= 0;
 	}
-	
-	/**
-	 * Returns the raw HTML or XUL input element contained in the given root
-	 * element's XBL binding. The returned node can be treated just like an
-	 * ordinary textbox.
-	 *
-	 * @param root	{object}	A DOM node representing an input element.
-	 * @returns {object}	A DOM node representing the raw input element.
-	 */
-	this.getAnonymousInputField = function(root) {
-		var name = root.localName;
-		var field = root.textbox || root.inputField || root.mInputField;
-		if (field) return field;
-		
-		var $attr = function(elt, attrName, attrValue) {
-			return document.getAnonymousElementByAttribute(elt, attrName,
-														   attrValue);
-		};
-		
-		// Simple XBL controls
-		var anonIds = {
-			findbar: "findbar-textbox", "sb-locationbar-textbox": "textbox",
-			conversation: "input"
-		};
-		if (anonIds[name]) return $attr(root, "anonid", anonIds[name]);
-		var ids = {
-			zoterotagselector: "tags-search",
-			partviewer: "partviewer-filter-textbox"
-		};
-		if (ids[name]) return $attr(root, "id", ids[name]);
-		var classes = {searchvalue: "search-value-textbox"};
-		if (classes[name]) return $attr(root, "class", classes[name]);
-		
-		// Zotero
-		if (name == "noteeditor") {
-			var linksBox = $attr(root, "id", "links");
-			var popup = $attr(linksBox, "id", "tagsPopup");
-			if (!popup || popup.state == "closed") {
-				return $attr(root, "id", "noteField");
-			}
-			root = $attr(linksBox, "id", "tags");
-			name = "tagsbox";
-		}
-		if (name == "tagsbox") {
-			var rows = $attr(root, "id", "tagRows").childNodes;
-			for (var i = 0; i < rows.length; i++) {
-				var row = rows[i];
-				var childNodes = row.childNodes;
-				for (var i = 0; i < childNodes.length; i++) {
-					var child = childNodes[i];
-					if (child.inputField) return child;
-				}
-			}
-			return null;
-		}
-		if (name == "zoterosearch") {
-			var conds = $attr(root, "id", "conditions");
-			conds = conds.childNodes;
-			for (var i = 0; i < conds.length; i++) {
-				var cond = conds[i];
-				field = $attr(cond, "id", "valuefield");
-				field = $attr(field, "id", "search-textbox");
-				if (field && field.focused) return field;
-			}
-			return null;
-		}
-		
-		// Songbird
-		if (name == "sb-servicepane" && root.mTreePane &&
-			root.mTreePane.mTree) {
-			return root.mTreePane.mTree.inputField;
-		}
-		
-		// XBL controls in webpages
-		root = root.wrappedJSObject;
-		if (!root) return null;
-		return root.inputField || root.mInputField;
-	};
 	
 	/**
 	 * Handles key presses in the current window. This function is triggered as
@@ -1059,23 +981,12 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.keyPressHandler = function(e) {
-		var el = e.target, code = e.which;
+		var el = e.originalTarget || e.target, code = e.which;
 //		dump("keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(el)) return false;
-		const xulURI =
-			"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-		// If the XUL element is actually an XBL-bound element, get the
-		// anonymous inner element.
-		if (el.namespaceURI == xulURI) {
-			var anonEl = this.getAnonymousInputField(el);
-			if (anonEl) el = anonEl;
-		}
 		var isHTML = el.type == "textarea" || el.type == "text";
-		var xulTags = ["textbox"];
-		var isXUL = el.namespaceURI == xulURI &&
-			xulTags.indexOf(el.localName) >= 0 && el.type != "password";
-		if((!isHTML && !isXUL) || this.checkCode(code)) return false;
+		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
 		var editor = this.getEditor(el);
 //		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
@@ -1096,9 +1007,7 @@ function AVIM()	{
 			e.preventDefault();
 			// A bit of a hack to prevent single-line textboxes from scrolling
 			// to the beginning of the line.
-			var multiline = (isXUL && el.getAttribute("multiline") == "true") ||
-				el.type == "textarea";
-			if (window.goDoCommand && !multiline) {
+			if (window.goDoCommand && el.type != "textarea") {
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}
@@ -1454,7 +1363,7 @@ function AVIM()	{
 	 */
 	this.onKeyPress = function(e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
-//		dump("keyPressHandler -- target: " + e.target.nodeName + "\n");			// debug
+//		dump("keyPressHandler -- target: " + e.target.nodeName + "; id: " + e.target.id + "; originalTarget: " + e.originalTarget + "\n");	// debug
 		var target = e.target;
 		var doc = target.ownerDocument;
 		this.disableOthers(doc);
