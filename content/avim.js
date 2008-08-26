@@ -26,6 +26,7 @@ function AVIM()	{
 	// Local functions that don't require access to AVIM's fields.
 	
 	var fcc = String.fromCharCode;
+	var up = String.toUpperCase;
 	
 	var codesFromChars = function(chars) {
 		var codes = [];
@@ -41,10 +42,6 @@ function AVIM()	{
 	
 	var nan = function(w) {
 		return isNaN(w) || w == 'e';
-	};
-	
-	var up = function(w) {
-		return w.toUpperCase();
 	};
 	
 	/**
@@ -111,6 +108,7 @@ function AVIM()	{
 	
 	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM\ ";
 	const skey_str = "aâăeêioôơuưyAÂĂEÊIOÔƠUƯY".split("");
+	const skey2 = "aaaeeiooouuyAAAEEIOOOUUY".split('');
 	const skey = codesFromChars(skey_str);
 	const db1 = codesFromChars(["đ", "Đ"]);
 	const ds1 = ['d','D'];
@@ -135,7 +133,6 @@ function AVIM()	{
 	const mocA = "ớờởỡợơứừửữựưỚỜỞỠỢƠỨỪỬỮỰƯ".split('');
 	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
 	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
-	const skey2 = "aaaeeiooouuyAAAEEIOOOUUY".split('');
 	
 	this.attached = [];
 	this.changed = false;
@@ -461,7 +458,7 @@ function AVIM()	{
 		for (var g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
-		var uk = up(k), uni_array = this.repSign(k), w2 = up(this.unV2(this.unV(w))), dont = "ƯA,ƯU".split(',');
+		var uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = "ƯA,ƯU".split(',');
 		
 		if (this.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
@@ -543,13 +540,10 @@ function AVIM()	{
 				}
 			}
 			else if (uk != this.Z) {
-				for (var h = 0; h < uni_array.length; h++) {
-					if (uni_array[h] == w.charCodeAt(w.length - g)) {
-						if(this.ckspell(w, k)) {
-							return false;
-						}
-						return [g, tE.charCodeAt(h % 24)];
-					}
+				var h = this.repSign(k).indexOf(w.charCodeAt(w.length - g));
+				if (h >= 0) {
+					if (this.ckspell(w, k)) return false;
+					return [g, tE.charCodeAt(h % 24)];
 				}
 				for (var h = 0; h < tE.length; h++) {
 					if(tE.charCodeAt(h) == w.charCodeAt(w.length - g)) {
@@ -613,12 +607,11 @@ function AVIM()	{
 					replaceBy = (c == "o") ? "ơ" : "Ơ";
 				}
 			}
-			var replaceLen = 1 + !!r;
 			if (r) {
 				replaceBy = r + replaceBy;
 				pos--;
 			}
-			splice(o, pos, replaceLen, replaceBy);
+			splice(o, pos, 1 + !!r, replaceBy);
 			o.setSelectionRange(savePos, savePos);
 			o.scrollTop = sst;
 		} else {
@@ -700,9 +693,8 @@ function AVIM()	{
 		}
 		
 		if(this.SFJRX.indexOf(uk) >= 0) {
-			var ret = this.sr(w,k,i);
+			this.sr(w,k,i);
 			got=true;
-			if (ret) return ret;
 		}
 		else if (uk == this.Z) {
 			sf = this.repSign(null);
@@ -731,51 +723,47 @@ function AVIM()	{
 	};
 	
 	this.normC = function(w, k, i) {
-		var uk = up(k), u = this.repSign(null), fS, space = k.charCodeAt(0) == 32;
-		if (space) return "";
+		if (k[0] == " ") return "";
+		var uk = up(k);
+		if (alphabet.indexOf(uk) < 0 && this.D2.indexOf(uk) < 0) return w;
+		var u = this.repSign(null);
 		for(var j = 1; j <= w.length; j++) {
-			for(var h = 0; h < u.length; h++) {
-				if(u[h] == w.charCodeAt(w.length - j)) {
-					if (h <= 23) fS = this.S;
-					else if (h <= 47) fS = this.F;
-					else if (h <= 71) fS = this.J;
-					else if (h <= 95) fS = this.R;
-					else fS = this.X;
-					var c = skey[h % 24];
-					if((alphabet.indexOf(uk) < 0) && (this.D2.indexOf(uk) < 0)) {
-						return w;
-					}
-					w = this.unV(w);
-					if(!space && !this.changed) w += k;
-					var sp = this.oc.selectionStart, pos = sp;
-					if(!this.changed) {
-						var sst = this.oc.scrollTop;
-						pos += k.length;
-						if(!this.oc.data) {
+			var h = u.indexOf(w.charCodeAt(w.length - j));
+			if (h < 0) continue;
+			
+			var fS;
+			if (h <= 23) fS = this.S;
+			else if (h <= 47) fS = this.F;
+			else if (h <= 71) fS = this.J;
+			else if (h <= 95) fS = this.R;
+			else fS = this.X;
+			
+			var c = skey[h % 24];
+			var sp = pos = this.oc.selectionStart;
+			w = this.unV(w);
+			if(!this.changed) {
+				w += k;
+				var sst = this.oc.scrollTop;
+				pos += k.length;
+				if(!this.oc.data) {
 //							this.oc.value = this.oc.value.substr(0, sp) + k +
 //								this.oc.value.substr(this.oc.selectionEnd);
-							splice(this.oc, sp, this.oc.selectionEnd - k.length,
-								   k);
-							this.changed = true;
-							this.oc.scrollTop = sst;
-						} else {
-							this.oc.insertData(this.oc.pos, k);
-							this.oc.pos++;
-							this.range.setEnd(this.oc, this.oc.pos);
-							this.specialChange = true;
-						}
-					}
-					if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
-					if(!this.ckspell(w, fS)) {
-						this.replaceChar(this.oc, i - j, c);
-						if(!this.oc.data) {
-							var a = [this.D];
-							this.main(w, fS, pos, a, false);
-						} else {
-							var ww = this.mozGetText(this.oc), a = [this.D];
-							this.main(ww[0], fS, ww[1], a, false);
-						}
-					}
+					splice(this.oc, sp, this.oc.selectionEnd - k.length, k);
+					this.changed = true;
+					this.oc.scrollTop = sst;
+				} else {
+					this.oc.insertData(this.oc.pos, k);
+					this.range.setEnd(this.oc, ++this.oc.pos);
+					this.specialChange = true;
+				}
+			}
+			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
+			if(!this.ckspell(w, fS)) {
+				this.replaceChar(this.oc, i - j, c);
+				if(!this.oc.data) this.main(w, fS, pos, [this.D], false);
+				else {
+					var ww = this.mozGetText(this.oc);
+					this.main(ww[0], fS, ww[1], [this.D], false);
 				}
 			}
 		}
@@ -865,16 +853,10 @@ function AVIM()	{
 	};
 	
 	this.sr = function(w, k, i) {
-		var sf = skey_str, pos = this.findC(w, k, sf);
-		if(pos) {
-			if(pos[1]) {
-				this.replaceChar(this.oc, i-pos[0], pos[1]);
-			} else {
-				var c = this.retUni(w, k, pos);
-				this.replaceChar(this.oc, i-pos, c);
-			}
-		}
-		return false;
+		var pos = this.findC(w, k, skey_str);
+		if (!pos) return;
+		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1]);
+		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos));
 	};
 	
 	this.retUni = function(w, k, pos) {
