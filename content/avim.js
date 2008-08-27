@@ -746,9 +746,9 @@ function AVIM()	{
 				var sst = this.oc.scrollTop;
 				pos += k.length;
 				if(!this.oc.data) {
-//							this.oc.value = this.oc.value.substr(0, sp) + k +
-//								this.oc.value.substr(this.oc.selectionEnd);
-					splice(this.oc, sp, this.oc.selectionEnd - k.length, k);
+//					this.oc.value = this.oc.value.substr(0, sp) + k +
+//						this.oc.value.substr(this.oc.selectionEnd);
+					splice(this.oc, sp, this.oc.selectionEnd - sp, k);
 					this.changed = true;
 					this.oc.scrollTop = sst;
 				} else {
