@@ -405,6 +405,9 @@ def main():
         src_file.close()
         jar.writestr(f, src)
     jar.close()
+    jar = zipfile.ZipFile(jar_path, "r")
+    assert not jar.testzip()
+    jar.close()
 
     # Include uncompressed files and directories.
     xpi_files = []
@@ -439,6 +442,9 @@ def main():
             src = local_to_jar(src, package_name)
         src_file.close()
         xpi.writestr(f, src)
+    xpi.close()
+    xpi = zipfile.ZipFile(xpi_paths[0], "r")
+    assert not xpi.testzip()
     xpi.close()
     for f in xpi_paths[1:]:
         shutil.copy2(xpi_paths[0], f)
