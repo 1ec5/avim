@@ -403,10 +403,9 @@ def main():
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
         src_file.close()
-        jar.writestr(f, src)
-    jar.close()
-    jar = zipfile.ZipFile(jar_path, "r")
-    assert not jar.testzip()
+        info = zipfile.ZipInfo(f)
+        info.external_attr = (0660 << 16L) | (010 << 28L)
+        jar.writestr(info, src)
     jar.close()
 
     # Include uncompressed files and directories.
@@ -441,10 +440,9 @@ def main():
             src = l10n_compat_manifest(src)
             src = local_to_jar(src, package_name)
         src_file.close()
-        xpi.writestr(f, src)
-    xpi.close()
-    xpi = zipfile.ZipFile(xpi_paths[0], "r")
-    assert not xpi.testzip()
+        info = zipfile.ZipInfo(f)
+        info.external_attr = (0660 << 16L) | (010 << 28L)
+        xpi.writestr(info, src)
     xpi.close()
     for f in xpi_paths[1:]:
         shutil.copy2(xpi_paths[0], f)
