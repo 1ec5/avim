@@ -966,7 +966,7 @@ function AVIM()	{
 		var el = e.originalTarget || e.target, code = e.which;
 //		dump("AVIM.keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
-		if (this.findIgnore(el)) return false;
+		if (this.findIgnore(e.target)) return false;
 		var isHTML = el.type == "textarea" || el.type == "text";
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
