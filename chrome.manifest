@@ -245,6 +245,11 @@ overlay	chrome://reminderfox/content/alarms/quickAlarmDialog.xul		chrome://avim/
 # Options dialog
 overlay	chrome://reminderfox/content/options/options.xul				chrome://avim/content/generalOverlay.xul
 
+### Selenium IDE ###############################################################
+
+# Options dialog
+overlay	chrome://selenium-ide/content/optionsDialog.xul	chrome://avim/content/generalOverlay.xul
+
 ### ScrapBook ##################################################################
 
 # Item Properties dialog
