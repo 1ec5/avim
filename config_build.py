@@ -13,10 +13,10 @@ CONFIG = BuildConfig.RELEASE
 AVIM_VERSION = 20080728
 
 # Revision number in the Subversion repository.
-REVISION = None
+REVISION = 217
 
 # Build date.
-DATE = None
+DATE = date(2008, 9, 21)
 
 # Name to use in the build's directories.
 PACKAGE_NAME = "avim"
