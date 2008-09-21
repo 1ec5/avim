@@ -237,15 +237,6 @@ def main():
     # Read arguments from command line.
     override_file = override_name = override_version = False
     for arg in sys.argv[1:]:
-##        # Read configuration from file.
-##        if arg in ["-f", "--config-file"]:
-##            override_file = True
-##            continue
-##        if override_file:
-##            override_file = False
-##            config_file = FILE
-##            continue
-
         # Produce a testing build.
         if arg in ["-d", "--debug"]:
             CONFIG = BuildConfig.DEBUG

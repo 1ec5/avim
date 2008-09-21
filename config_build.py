@@ -5,8 +5,7 @@ from os import path
 from datetime import date
 from build import BuildConfig
 
-# True if the script should produce a testing build; false if it should produce
-# a release build.
+# Type of build to produce.
 CONFIG = BuildConfig.RELEASE
 
 # Version number of the avim.js release used in this build. Included in the
