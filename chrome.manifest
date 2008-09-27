@@ -205,16 +205,20 @@ overlay	chrome://googlebar/content/googlebarPrefDialog.xul	chrome://avim/content
 
 ### Google Toolbar #############################################################
 
+# Gadget popup
+overlay chrome://google-toolbar/content/gadget-popup-win.xul		chrome://avim/content/generalOverlay.xul
 # Add Bookmark dialog
-overlay	chrome://google-toolbar/content/bookmarks-edit.xul		chrome://avim/content/generalOverlay.xul
+overlay	chrome://google-toolbar/content/bookmarks-edit.xul			chrome://avim/content/generalOverlay.xul
+# Rename Label dialog
+overlay	chrome://google-toolbar/content/bookmarks-rename-dialog.xul	chrome://avim/content/generalOverlay.xul
 # Options dialog
-overlay	chrome://google-toolbar/content/options.xul				chrome://avim/content/generalOverlay.xul
+overlay	chrome://google-toolbar/content/options.xul					chrome://avim/content/generalOverlay.xul
 # AutoFill Options dialog
-overlay chrome://google-toolbar/content/options-auto-fill.xul	chrome://avim/content/generalOverlay.xul
+overlay chrome://google-toolbar/content/options-auto-fill.xul		chrome://avim/content/generalOverlay.xul
 # Edit Custom Button dialog
-overlay	chrome://google-toolbar/content/custom-buttons-edit.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://google-toolbar/content/custom-buttons-edit.xul		chrome://avim/content/generalOverlay.xul
 # Uninstall dialog
-overlay	chrome://google-toolbar/content/uninstall.xul			chrome://avim/content/generalOverlay.xul
+overlay	chrome://google-toolbar/content/uninstall.xul				chrome://avim/content/generalOverlay.xul
 
 ### iMacros ####################################################################
 
