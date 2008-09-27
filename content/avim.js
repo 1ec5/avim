@@ -946,9 +946,9 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.findIgnore=function(el) {
-		if (!el) return true;
+		if (!el || !el.getAttribute) return true;
 		var id = el.id || el.getAttribute("id");
-		if (!id) return false;
+		if (!id || !id.toLowerCase) return false;
 		return AVIMConfig.exclude.indexOf(id.toLowerCase()) >= 0;
 	}
 	

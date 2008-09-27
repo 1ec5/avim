@@ -186,3 +186,5 @@ Version 20080728.217 (Sunday, September 21, 2008)
  - Fixed an issue that prevented certain textboxes from being ignored.
 
 Version ${Version} (${Date})
+ - Added support for Google Toolbar 5.
+ - Fixed error in Zotero's Advanced Search dialog.

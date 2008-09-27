@@ -205,8 +205,16 @@ overlay	chrome://googlebar/content/googlebarPrefDialog.xul	chrome://avim/content
 
 ### Google Toolbar #############################################################
 
+# Add Bookmark dialog
+overlay	chrome://google-toolbar/content/bookmarks-edit.xul		chrome://avim/content/generalOverlay.xul
+# Options dialog
+overlay	chrome://google-toolbar/content/options.xul				chrome://avim/content/generalOverlay.xul
 # AutoFill Options dialog
 overlay chrome://google-toolbar/content/options-auto-fill.xul	chrome://avim/content/generalOverlay.xul
+# Edit Custom Button dialog
+overlay	chrome://google-toolbar/content/custom-buttons-edit.xul	chrome://avim/content/generalOverlay.xul
+# Uninstall dialog
+overlay	chrome://google-toolbar/content/uninstall.xul			chrome://avim/content/generalOverlay.xul
 
 ### iMacros ####################################################################
 
@@ -301,5 +309,6 @@ overlay	chrome://zotero/content/selectItemsDialog.xul		chrome://avim/content/gen
 overlay	chrome://zotero/content/searchDialog.xul			chrome://avim/content/generalOverlay.xul
 # Advanced Search dialog
 overlay	chrome://zotero/content/advancedSearch.xul			chrome://avim/content/generalOverlay.xul
+
 # Preferences dialog
 overlay	chrome://zotero/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
