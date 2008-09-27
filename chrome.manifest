@@ -294,6 +294,11 @@ overlay	chrome://stumbleupon/content/signinDialog.xul	chrome://avim/content/gene
 # Tagging dialog
 overlay	chrome://stumbleupon/content/taggingDialog.xul	chrome://avim/content/generalOverlay.xul
 
+### WebChunks ##################################################################
+
+# Subscribe dialog
+overlay	chrome://webchunks/content/addWebchunkDlg.xul	chrome://avim/content/generalOverlay.xul
+
 ### Web Developer ##############################################################
 
 # Add Cookie dialog
