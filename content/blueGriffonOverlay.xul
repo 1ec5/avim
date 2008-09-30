@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<?xul-overlay href="chrome://avim/content/avim.xul"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
+
+<overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<!-- Edit > Vietnamese Input menu not supported, because #editMenu/menupopup doesn't have an ID. -->
+	
+	<!-- Status bar menu -->
+	<hbox id="editorBar">
+		<statusbarpanel id="avim-status" label="&AVIM.label;" disabledLabel="&avim-disabled.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" ondblclick="avim.toggle();" />
+	</hbox>
+</overlay>

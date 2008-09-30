@@ -78,6 +78,15 @@
 			</Description>
 		</em:targetApplication>
 		
+		<!-- BlueGriffon -->
+		<em:targetApplication>
+			<Description>
+				<em:id>{8fa6f1b4-7ed3-4895-bac6-01f1cc206ab3}</em:id>
+				<em:minVersion>0.1</em:minVersion>
+				<em:maxVersion>0.1</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
 		<!-- Pencil -->
 		<em:targetApplication>
 			<Description>

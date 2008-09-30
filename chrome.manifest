@@ -142,6 +142,10 @@ overlay	chrome://komodo/content/dialogs/editPathMap.xul				chrome://avim/content
 # Help window
 overlay	chrome://help/content/help.xul								chrome://avim/content/generalOverlay.xul
 
+### BlueGriffon ################################################################
+
+overlay	chrome://bluegriffon/content/bluegriffon.xul	chrome://avim/content/blueGriffonOverlay.xul
+
 ### Instantbird ################################################################
 
 # Account Properties window
@@ -240,6 +244,10 @@ overlay	chrome://pencil/content/UI/Window.xul	chrome://avim/content/generalOverl
 
 # Install Shortcut dialog
 overlay	chrome://refractor/content/install-shortcut.xul	chrome://avim/content/generalOverlay.xul
+
+### pyshell ####################################################################
+
+overlay	chrome://pyshell/content/pyshell.xul	chrome://avim/content/generalOverlay.xul
 
 ### Quick Locale Switcher ######################################################
 
