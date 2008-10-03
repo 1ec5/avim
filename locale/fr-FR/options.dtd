@@ -2,51 +2,51 @@
 
 <!ENTITY AVIM.label "AVIM">
 <!ENTITY avim-preferences.title "&AVIM.label;">
-<!ENTITY avim-preferences.style "width: 45em;"><!-- Based on <chrome://browser/locale/preferences/preferences.dtd>. -->
+<!ENTITY avim-preferences.style "width: 50em;"><!-- Based on <chrome://browser/locale/preferences/preferences.dtd>. -->
 
-<!ENTITY enabled-check.label "Allumer &AVIM.label; pour taper Vietnamien">
+<!ENTITY enabled-check.label "Allumer &AVIM.label; pour écrire en vietnamien">
 <!ENTITY enabled-check.accesskey "A">
 
 <!-- Input Editing tab -->
 
-<!ENTITY input-panel.label "L’entrée éditant">
+<!ENTITY input-panel.label "Édition de la saisie">
 
-<!ENTITY method-menu.label "Méthode d’entrée&#x00a0;:">
+<!ENTITY method-menu.label "Méthode de saisie&#x00a0;:">
 <!ENTITY method-menu.accesskey "M">
 <!ENTITY method-auto-item.label "Automatique">
-<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-telex-item.label "Télex">
 <!ENTITY method-vni-item.label "VNI">
 <!ENTITY method-viqr-item.label "VIQR">
 <!ENTITY method-viqr-star-item.label "VIQR*">
 
-<!ENTITY spell-check.label "Appliquer les règles d’orthographe de Vietnamien">
+<!ENTITY spell-check.label "Appliquer les règles d’orthographe du vietnamien">
 <!ENTITY spell-check.accesskey "o">
-<!ENTITY informal-check.label "Permettre DZ ou F au début d’un mot">
+<!ENTITY informal-check.label "Autoriser DZ ou F au début d’un mot">
 <!ENTITY informal-check.accesskey "Z">
 
-<!ENTITY oldaccents-check.label "Placer les marques de ton sur la première voyelle dans une diphtongue finale (l’accent de vieux-style marque)">
+<!ENTITY oldaccents-check.label "Placer les marques de tonalité sur la première voyelle dans une diphtongue finale (accent de vieux-style)">
 <!ENTITY oldaccents-check.accesskey "P">
 
-<!ENTITY auto-methods.label "Accepter des frappes du suivre les méthodes d’entrée quand &method-auto-item.label; est choisi&#x00a0;:">
+<!ENTITY auto-methods.label "Accepter les raccourcis clavier pour les méthodes de saisie suivantes quand &method-auto-item.label; est sélectionné&#x00a0;:">
 <!ENTITY auto-telex-check.accesskey "T">
 <!ENTITY auto-vni-check.accesskey "V">
 <!ENTITY auto-viqr-check.accesskey "Q">
 <!ENTITY auto-viqr-star-check.accesskey "R">
 
-<!ENTITY script-enabled-check.label "Désactiver des manuscrits de l’entrée éditant dans les pages Web">
+<!ENTITY script-enabled-check.label "Désactiver les scripts d’édition de saisie dans les pages Web">
 <!ENTITY script-enabled-check.accesskey "W">
 
 <!-- Ignored Textboxes tab -->
 
-<!ENTITY ignored-panel.label "Négliger les boîtes de texte">
+<!ENTITY ignored-panel.label "Négliger les zones de texte">
 
-<!ENTITY ignore-text.label "ID de boîte de texte&#x00a0;:">
+<!ENTITY ignore-text.label "ID de zone de texte&#x00a0;:">
 <!ENTITY ignore-button.label "Négliger">
 <!ENTITY ignore-button.accesskey "N">
 
-<!ENTITY ignored-desc.label "Vous pouvez spécifier quelle boîte de texte &AVIM.label; doit négliger. Par exemple, vous pouvez vouloir que &AVIM.label; néglige une boîte de texte qui contient une adresse de web, parce que la méthode d’entrée peut interférer avec tape l’adresse.">
+<!ENTITY ignored-desc.label "Vous pouvez préciser quelles zones de texte &AVIM.label; doit ignorer. Par exemple, vous pouvez souhaiter que &AVIM.label; ignore une certaine zone de texte contenant une adresse Web, car la méthode de saisie semble y interférer avec la saisie d’adresse.">
 <!ENTITY ignored-desc.line-count "3">
-<!ENTITY ignored-instructions.label "Pour négliger une boîte de texte, d’abord, chercher son ID en regardant le code de source du page Web qui contient la boîte de texte. Puis taper l’ID dans la boîte suivante et cliqueter &ignore-button.label;.">
+<!ENTITY ignored-instructions.label "Pour ignorer une zone de texte, trouvez d’abord son ID en regardant le code source de la page Web contenant la boîte de saisie. Ensuite, tapez l’ID ci-dessous et cliquez sur &ignore-button.label;.">
 <!ENTITY ignored-instructions.line-count "2">
 
 <!ENTITY remove-button.label "Enlever l’ID">
@@ -57,5 +57,5 @@
 
 <!-- Display options -->
 
-<!ENTITY statuspanel-check.label "L’afficher sur le bar d’état">
+<!ENTITY statuspanel-check.label "Afficher dans la barre d’état">
 <!ENTITY statuspanel-check.accesskey "b">

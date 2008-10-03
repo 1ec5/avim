@@ -199,9 +199,16 @@ overlay	chrome://inspector/content/viewers/domNode/domNodeDialog.xul		chrome://a
 # Insert Node dialog
 overlay	chrome://inspector/content/viewers/dom/insertDialog.xul				chrome://avim/content/generalOverlay.xul
 
+### ErrorZilla Plus ############################################################
+
+# Add Proxy dialog
+overlay	chrome://errorzillaplus/content/addproxy.xul	chrome://avim/content/generalOverlay.xul
+# Edit Proxy dialog
+overlay	chrome://errorzillaplus/content/editproxy.xul	chrome://avim/content/generalOverlay.xul
+
 ### Firebug ####################################################################
 
-overlay	chrome://firebug/content/firebug.xul								chrome://avim/content/generalOverlay.xul
+overlay	chrome://firebug/content/firebug.xul	chrome://avim/content/generalOverlay.xul
 
 ### googlebar ##################################################################
 
@@ -274,6 +281,10 @@ overlay	chrome://selenium-ide/content/optionsDialog.xul	chrome://avim/content/ge
 
 # Item Properties dialog
 overlay	chrome://scrapbook/content/property.xul	chrome://avim/content/generalOverlay.xul
+# Capture Detail dialog
+overlay	chrome://scrapbook/content/detail.xul	chrome://avim/content/generalOverlay.xul
+# Capture Multiple URLs dialog
+overlay	chrome://scrapbook/content/multiple.xul	chrome://avim/content/generalOverlay.xul
 # Manage Items dialog
 overlay	chrome://scrapbook/content/manage.xul	chrome://avim/content/generalOverlay.xul
 
