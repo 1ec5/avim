@@ -144,7 +144,13 @@ overlay	chrome://help/content/help.xul								chrome://avim/content/generalOverl
 
 ### BlueGriffon ################################################################
 
-overlay	chrome://bluegriffon/content/bluegriffon.xul	chrome://avim/content/blueGriffonOverlay.xul
+overlay	chrome://bluegriffon/content/bluegriffon.xul				chrome://avim/content/blueGriffonOverlay.xul
+# Open Location dialog
+overlay	chrome://bluegriffon/content/dialogs/openLocation.xul		chrome://avim/content/blueGriffonOverlay.xul
+# Page Properties dialog
+overlay	chrome://bluegriffon/content/dialogs/pageProperties.xul		chrome://avim/content/blueGriffonOverlay.xul
+# Standalone Sidebar window
+overlay	chrome://bluegriffon/content/dialogs/standaloneSidebar.xul	chrome://avim/content/blueGriffonOverlay.xul
 
 ### Instantbird ################################################################
 
