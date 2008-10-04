@@ -187,6 +187,7 @@ Version 20080728.217 (Sunday, September 21, 2008)
 
 Version ${Version} (${Date})
  - Added support for BlueGriffon and Komodo IDE 5 alpha 3.
+ - Corrected errors in the French localization.
  - Fixed error in Zotero's Advanced Search dialog.
  - Added support for gadgets in Google Toolbar 5.
  - Added support for the ErrorZilla Plus, WebChunks, and pyshell extensions.
