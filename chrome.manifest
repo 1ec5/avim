@@ -90,6 +90,32 @@ overlay	chrome://editor/content/EdImageProps.xul							chrome://avim/content/gen
 overlay	chrome://editor/content/EdSpellCheck.xul							chrome://avim/content/generalOverlay.xul
 overlay	chrome://editor/content/EdDictionary.xul							chrome://avim/content/generalOverlay.xul
 
+### SeaMonkey ##################################################################
+
+# Preferences window and associated dialogs
+overlay	chrome://communicator/content/pref/preferences.xul					chrome://avim/content/generalOverlay.xul
+overlay	chrome://communicator/content/pref/pref-languages-add.xul			chrome://avim/content/generalOverlay.xul
+overlay	chrome://communicator/content/permissions/cookieViewer.xul			chrome://avim/content/generalOverlay.xul
+overlay	chrome://communicator/content/permissions/permissionsManager.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://pippki/content/exceptionDialog.xul							chrome://avim/content/generalOverlay.xul
+
+# Find in This Page dialog
+overlay	chrome://global/content/finddialog.xul								chrome://avim/content/generalOverlay.xul
+# Error Console window
+overlay	chrome://global/content/console.xul									chrome://avim/content/generalOverlay.xul
+# Create Profile Wizard
+overlay	chrome://mozapps/content/profile/createProfileWizard.xul			chrome://avim/content/generalOverlay.xul
+
+### SeaMonkey Navigator ########################################################
+
+# Open Web Location dialog
+overlay chrome://communicator/content/openLocation.xul				chrome://avim/content/generalOverlay.xul
+
+# Bookmarks Manager window and associated dialogs
+overlay	chrome://communicator/content/bookmarks/addBookmark.xul		chrome://avim/content/generalOverlay.xul
+overlay	chrome://communicator/content/bookmarks/findBookmark.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://communicator/content/bookmarks/bm-props.xul		chrome://avim/content/generalOverlay.xul
+
 ### Prism ######################################################################
 
 overlay	chrome://webrunner/content/webrunner.xul	chrome://avim/content/prismOverlay.xul
