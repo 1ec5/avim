@@ -108,6 +108,8 @@ overlay	chrome://mozapps/content/profile/createProfileWizard.xul			chrome://avim
 
 ### SeaMonkey Navigator ########################################################
 
+overlay	chrome://navigator/content/navigator.xul					chrome://avim/content/navigatorOverlay.xul
+
 # Open Web Location dialog
 overlay chrome://communicator/content/openLocation.xul				chrome://avim/content/generalOverlay.xul
 
