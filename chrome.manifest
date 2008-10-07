@@ -99,6 +99,15 @@ overlay	chrome://communicator/content/permissions/cookieViewer.xul			chrome://av
 overlay	chrome://communicator/content/permissions/permissionsManager.xul	chrome://avim/content/generalOverlay.xul
 overlay	chrome://pippki/content/exceptionDialog.xul							chrome://avim/content/generalOverlay.xul
 
+# Navigator window and associated dialogs
+overlay	chrome://navigator/content/navigator.xul							chrome://avim/content/navigatorOverlay.xul
+overlay chrome://communicator/content/openLocation.xul						chrome://avim/content/generalOverlay.xul
+
+# Bookmarks Manager window and associated dialogs
+overlay	chrome://communicator/content/bookmarks/addBookmark.xul				chrome://avim/content/generalOverlay.xul
+overlay	chrome://communicator/content/bookmarks/findBookmark.xul			chrome://avim/content/generalOverlay.xul
+overlay	chrome://communicator/content/bookmarks/bm-props.xul				chrome://avim/content/generalOverlay.xul
+
 # Find in This Page dialog
 overlay	chrome://global/content/finddialog.xul								chrome://avim/content/generalOverlay.xul
 # Error Console window
@@ -106,17 +115,22 @@ overlay	chrome://global/content/console.xul									chrome://avim/content/genera
 # Create Profile Wizard
 overlay	chrome://mozapps/content/profile/createProfileWizard.xul			chrome://avim/content/generalOverlay.xul
 
-### SeaMonkey Navigator ########################################################
-
-overlay	chrome://navigator/content/navigator.xul					chrome://avim/content/navigatorOverlay.xul
-
-# Open Web Location dialog
-overlay chrome://communicator/content/openLocation.xul				chrome://avim/content/generalOverlay.xul
-
-# Bookmarks Manager window and associated dialogs
-overlay	chrome://communicator/content/bookmarks/addBookmark.xul		chrome://avim/content/generalOverlay.xul
-overlay	chrome://communicator/content/bookmarks/findBookmark.xul	chrome://avim/content/generalOverlay.xul
-overlay	chrome://communicator/content/bookmarks/bm-props.xul		chrome://avim/content/generalOverlay.xul
+# Composer window and associated dialogs
+overlay	chrome://editor/content/editor.xul									chrome://avim/content/composerOverlay.xul
+overlay	chrome://editor/content/EditorPublish.xul							chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdReplace.xul								chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EditorPublishSettings.xul					chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdAdvancedEdit.xul							chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdNamedAnchorProps.xul						chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdInsSrc.xul								chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdPageProps.xul								chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdFormProps.xul								chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdInputProps.xul							chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdInputImage.xul							chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdTextAreaProps.xul							chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdSelectProps.xul							chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdButtonProps.xul							chrome://avim/content/generalOverlay.xul
+overlay	chrome://editor/content/EdFieldSetProps.xul							chrome://avim/content/generalOverlay.xul
 
 ### Prism ######################################################################
 
