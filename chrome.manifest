@@ -187,6 +187,8 @@ overlay	chrome://help/content/help.xul								chrome://avim/content/generalOverl
 ### BlueGriffon ################################################################
 
 overlay	chrome://bluegriffon/content/bluegriffon.xul				chrome://avim/content/blueGriffonOverlay.xul
+# Properties dialog
+overlay	chrome://bluegriffon/content/propertiesDeck.xul				chrome://avim/content/blueGriffonOverlay.xul
 # Open Location dialog
 overlay	chrome://bluegriffon/content/dialogs/openLocation.xul		chrome://avim/content/blueGriffonOverlay.xul
 # Page Properties dialog

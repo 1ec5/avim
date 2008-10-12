@@ -186,9 +186,10 @@ Version 20080728.217 (Sunday, September 21, 2008)
  - Fixed an issue that prevented certain textboxes from being ignored.
 
 Version ${Version} (${Date})
- - Added partial support for SeaMonkey 2.0.
+ - Added functional support for SeaMonkey 2.0; the menu may not appear in all
+   windows.
  - Added support for BlueGriffon and Komodo IDE 5 alpha 3.
  - Corrected errors in the French localization.
- - Fixed error in Zotero's Advanced Search dialog.
+ - Fixed an error in Zotero's Advanced Search dialog.
  - Added support for gadgets in Google Toolbar 5.
  - Added support for the ErrorZilla Plus, WebChunks, and pyshell extensions.
