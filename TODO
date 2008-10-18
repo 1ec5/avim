@@ -1,3 +1,5 @@
+ - Bug: "đt" (dtd)
+ - Bug: "kilo^mét" (kilômét)
  - Convert XUL overlays into XBL bindings on XUL's root elements, to support
    absolutely every window. Most importantly, add the AVIM panel to all
    <statusbar>s and the Vietnamese Input submenu to all Edit menus.

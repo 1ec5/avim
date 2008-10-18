@@ -90,6 +90,14 @@ overlay	chrome://editor/content/EdImageProps.xul							chrome://avim/content/gen
 overlay	chrome://editor/content/EdSpellCheck.xul							chrome://avim/content/generalOverlay.xul
 overlay	chrome://editor/content/EdDictionary.xul							chrome://avim/content/generalOverlay.xul
 
+### Fennec #####################################################################
+
+overlay	chrome://browser/content/browser.xul	chrome://avim/content/generalOverlay.xul	application={a23983c0-fd0e-11dc-95ff-0800200c9a66}
+
+### Prism ######################################################################
+
+overlay	chrome://webrunner/content/webrunner.xul	chrome://avim/content/prismOverlay.xul
+
 ### SeaMonkey ##################################################################
 
 # Preferences window and associated dialogs
@@ -131,10 +139,6 @@ overlay	chrome://editor/content/EdTextAreaProps.xul							chrome://avim/content/
 overlay	chrome://editor/content/EdSelectProps.xul							chrome://avim/content/generalOverlay.xul
 overlay	chrome://editor/content/EdButtonProps.xul							chrome://avim/content/generalOverlay.xul
 overlay	chrome://editor/content/EdFieldSetProps.xul							chrome://avim/content/generalOverlay.xul
-
-### Prism ######################################################################
-
-overlay	chrome://webrunner/content/webrunner.xul	chrome://avim/content/prismOverlay.xul
 
 ### Flock ######################################################################
 
