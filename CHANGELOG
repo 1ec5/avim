@@ -188,7 +188,8 @@ Version 20080728.217 (Sunday, September 21, 2008)
 Version ${Version} (${Date})
  - Added functional support for SeaMonkey 2.0; the menu may not appear in all
    windows.
- - Added support for Firefox 3.1 beta 1, BlueGriffon, and Komodo IDE 5 alpha 3.
+ - Added support for Firefox 3.1 beta 1, Fennec, BlueGriffon, and Komodo IDE 5
+   alpha 3.
  - Corrected errors in the French localization.
  - Fixed an error in Zotero's Advanced Search dialog.
  - Added support for gadgets in Google Toolbar 5.
