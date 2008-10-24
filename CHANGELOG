@@ -185,7 +185,7 @@ Version 20080728.210 (Tuesday, August 26, 2008)
 Version 20080728.217 (Sunday, September 21, 2008)
  - Fixed an issue that prevented certain textboxes from being ignored.
 
-Version ${Version} (${Date})
+Version 20080728.237 (Thursday, October 23, 2008)
  - Added functional support for SeaMonkey 2.0; the menus may not appear in some
    types of windows.
  - Added support for Firefox 3.1 beta 1, Fennec, BlueGriffon, Komodo IDE 5 alpha
@@ -196,3 +196,5 @@ Version ${Version} (${Date})
  - Fixed an error in Zotero's Advanced Search dialog.
  - Added support for gadgets in Google Toolbar 5.
  - Added support for the ErrorZilla Plus, WebChunks, and pyshell extensions.
+
+Version ${Version} (${Date})
