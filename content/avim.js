@@ -202,6 +202,8 @@ function AVIM()	{
 				}
 				if (uk == this.trang && (tw == "A" || tw == "OA")) return true;
 			}
+			// Disallow DCD etc.
+			if (!tw) return true;
 		}
 		
 		// Extraneous consonants: invalid

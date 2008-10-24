@@ -186,11 +186,12 @@ Version 20080728.217 (Sunday, September 21, 2008)
  - Fixed an issue that prevented certain textboxes from being ignored.
 
 Version ${Version} (${Date})
- - Added functional support for SeaMonkey 2.0; the menu may not appear in all
-   windows.
- - Added support for Firefox 3.1 beta 1, Fennec, BlueGriffon, and Komodo IDE 5
-   alpha 3.
+ - Added functional support for SeaMonkey 2.0; the menus may not appear in some
+   types of windows.
+ - Added support for Firefox 3.1 beta 1, Fennec, BlueGriffon, Komodo IDE 5 alpha
+   3, and the upcoming Songbird 1.0 release.
  - Corrected errors in the French localization.
+ - Fixed an issue where entering "dcd" or "dmd" added a stroke on the "d".
  - Fixed an error in Zotero's Advanced Search dialog.
  - Added support for gadgets in Google Toolbar 5.
  - Added support for the ErrorZilla Plus, WebChunks, and pyshell extensions.

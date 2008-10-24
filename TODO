@@ -1,5 +1,6 @@
- - Bug: "đt" (dtd)
+ - Bug: "đt" (dtd), same with dcd, dmd, dnd
  - Bug: "kilo^mét" (kilômét)
+ - Bug: "xoa" (xoá) in rich text editors, including Thunderbird and Composer.
  - Convert XUL overlays into XBL bindings on XUL's root elements, to support
    absolutely every window. Most importantly, add the AVIM panel to all
    <statusbar>s and the Vietnamese Input submenu to all Edit menus.
