@@ -190,6 +190,7 @@ Version ${Version} (${Date})
    types of windows.
  - Added support for Firefox 3.1 beta 1, Fennec, BlueGriffon, Komodo IDE 5 alpha
    3, and the upcoming Songbird 1.0 release.
+ - Reduced installer package size to August 2008 levels.
  - Corrected errors in the French localization.
  - Fixed an issue where entering "dcd" or "dmd" added a stroke on the "d".
  - Fixed an error in Zotero's Advanced Search dialog.

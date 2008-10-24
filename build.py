@@ -45,6 +45,7 @@ class BuildConfig:
     RELEASE = "Release"
     DEBUG = "Debug"
     L10N = "BabelZilla"
+    SB = "Songbird"
 
 def print_help(version):
     """Prints help information to the command line."""
@@ -56,6 +57,8 @@ Available options:
       --babelzilla          Produce a BabelZilla-compatible build.
   -d, --debug               Produce a testing build.
   -h, --help                Display this help message.
+      --songbird            Produce a build compatible with the Songbird Add-ons
+                                site. The package will be significantly larger.
       --use-name NAME       Override package name. Default is %(name)s.
       --use-version VERSION Override version string. Default is %(version)s.
   -v, --version             Print version information.\
@@ -246,6 +249,11 @@ def main():
         if arg in ["--babelzilla"]:
             CONFIG = BuildConfig.L10N
             continue
+        
+        # Produce a build compatible with the Songbird Add-ons site.
+        if arg in ["--songbird"]:
+            CONFIG = BuildConfig.SB
+            continue
 
         # Use a different package name.
         if arg in ["--use-name"]:
@@ -323,9 +331,12 @@ def main():
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
         src_file.close()
-        info = zipfile.ZipInfo(f)
-        info.external_attr = (0660 << 16L) | (010 << 28L)
-        jar.writestr(info, src)
+        if CONFIG == BuildConfig.SB:
+            info = zipfile.ZipInfo(f)
+            info.external_attr = (0660 << 16L) | (010 << 28L)
+            jar.writestr(info, src)
+        else:
+            jar.writestr(f, src)
     jar.close()
 
     # Include uncompressed files and directories.
@@ -360,9 +371,12 @@ def main():
             src = l10n_compat_manifest(src)
             src = local_to_jar(src, package_name)
         src_file.close()
-        info = zipfile.ZipInfo(f)
-        info.external_attr = (0660 << 16L) | (010 << 28L)
-        xpi.writestr(info, src)
+        if CONFIG == BuildConfig.SB:
+            info = zipfile.ZipInfo(f)
+            info.external_attr = (0660 << 16L) | (010 << 28L)
+            xpi.writestr(info, src)
+        else:
+            xpi.writestr(f, src)
     xpi.close()
     for f in xpi_paths[1:]:
         shutil.copy2(xpi_paths[0], f)
