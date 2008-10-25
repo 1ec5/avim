@@ -1004,8 +1004,8 @@ function AVIM()	{
 	
 	// Root for AVIM preferences
 	const prefs = Components.classes["@mozilla.org/preferences-service;1"]
-							.getService(Components.interfaces.nsIPrefService)
-							.getBranch("extensions.avim.");
+		.getService(Components.interfaces.nsIPrefService)
+		.getBranch("extensions.avim.");
 	
 	/**
 	 * Registers an observer so that AVIM automatically reflects changes to its
@@ -1015,7 +1015,6 @@ function AVIM()	{
 		prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		prefs.addObserver("", this, false);
 		this.getPrefs();
-		this.updateUI();
 	};
 	
 	/**
@@ -1365,9 +1364,7 @@ function AVIM()	{
 
 if (!window.avim && !window.frameElement) {
 	window.avim = new AVIM();
-	addEventListener("load", function () {
-		avim.registerPrefs();
-	}, false);
+	avim.registerPrefs();
 	addEventListener("unload", function () {
 		avim.unregisterPrefs();
 	}, false);

@@ -198,3 +198,5 @@ Version 20080728.237 (Thursday, October 23, 2008)
  - Added support for the ErrorZilla Plus, WebChunks, and pyshell extensions.
 
 Version ${Version} (${Date})
+ - AVIM now works on all XUL windows and dialog boxes in the supported
+   applications, whether built-in or provided by third-party extensions.

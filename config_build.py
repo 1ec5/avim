@@ -30,7 +30,7 @@ ROOT_FILES = ["LICENSE"]
 
 # Paths to directories that should be included, uncompressed, in the build's
 # root directory.
-ROOT_DIRS = ["defaults"]
+ROOT_DIRS = ["components", "defaults"]
 
 # Paths to files to be preprocessed. These files contain placeholders that
 # should be interpreted as variables.
