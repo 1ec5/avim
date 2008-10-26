@@ -26,38 +26,10 @@ AVIM.prototype = {
 	// Register AVIM as a service that runs at application startup.
 	_xpcom_categories: [{category: "app-startup", service: true}],
 	
-	QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver,
-										   Ci.nsIDOMEventListener])
+	QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver])
 };
 
 // nsIObserver implementation
-
-/**
- * Attaches the AVIM overlay to each window when it loads.
- * 
- * @param subject	{object}	the window that loaded.
- * @param topic		{string}	the type of event that occurred.
- * @param data		{string}	
- */
-AVIM.prototype.observe = function (subject, topic, data) {
-	const xreSvc = Cc["@mozilla.org/xre/app-info;1"]
-		.getService(Ci.nsIXULRuntime);
-	if (xreSvc.inSafeMode) return;
-	
-	const observerSvc = Cc["@mozilla.org/observer-service;1"]
-		.getService(Ci.nsIObserverService);
-	switch (topic) {
-		case "app-startup":
-			observerSvc.addObserver(this, "domwindowopened", false);
-			break;
-		case "domwindowopened":
-			this.overlayObs = new AVIMOverlayObserver(subject);
-			subject.addEventListener("load", this, true);
-//			break;
-	}
-};
-
-// nsIDOMEventListener implementation
 
 /**
  * Returns the chrome: URL of the overlay that corresponds to the window at the
@@ -67,7 +39,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
  * 								applied to.
  * @returns {string}	URL of the overlay to apply.
  */
-AVIM.prototype.getOverlayUrl = function (windowUrl) {
+AVIM.getOverlayUrl = function (windowUrl) {
 //	var ID = Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULAppInfo).ID;
 	var urls = {
 		// SeaMonkey
@@ -92,15 +64,41 @@ AVIM.prototype.getOverlayUrl = function (windowUrl) {
 }
 
 /**
- * Loads the AVIM overlay onto the window.
+ * Loads the AVIM overlay onto the given window.
  *
- * @param event	{object}	an onload event.
+ * @param window	{object}	the window onto which AVIM should be attached.
  */
-AVIM.prototype.handleEvent = function (event) {
-	var document = event.originalTarget;
-	if (document.location && document.location.protocol == "chrome:") {
-		document.loadOverlay(this.getOverlayUrl(document.location),
-							 this.overlayObs);
+AVIM.prototype.onWindowOpen = function (window) {
+	window.addEventListener("DOMContentLoaded", function (event) {
+		var document = event.originalTarget;
+		if (document.location && document.location.protocol == "chrome:") {
+			document.loadOverlay(AVIM.getOverlayUrl(document.location),
+								 new AVIMOverlayObserver(window));
+		}
+	}, true);
+}
+
+/**
+ * Listens for window load events.
+ * 
+ * @param subject	{object}	the window that loaded.
+ * @param topic		{string}	the type of event that occurred.
+ * @param data		{string}	
+ */
+AVIM.prototype.observe = function (subject, topic, data) {
+	const xreSvc = Cc["@mozilla.org/xre/app-info;1"]
+		.getService(Ci.nsIXULRuntime);
+	if (xreSvc.inSafeMode) return;
+	
+	const observerSvc = Cc["@mozilla.org/observer-service;1"]
+		.getService(Ci.nsIObserverService);
+	switch (topic) {
+		case "app-startup":
+			observerSvc.addObserver(this, "domwindowopened", false);
+			break;
+		case "domwindowopened":
+			this.onWindowOpen(subject);
+//			break;
 	}
 };
 
