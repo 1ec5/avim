@@ -40,27 +40,30 @@ AVIM.prototype = {
  * @returns {string}	URL of the overlay to apply.
  */
 AVIM.getOverlayUrl = function (windowUrl) {
-//	var ID = Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULAppInfo).ID;
-	var urls = {
-		// SeaMonkey
-		"chrome://navigator/content/navigator.xul":
-			"chrome://avim/content/navigatorOverlay.xul",
-		"chrome://editor/content/editor.xul":
-			"chrome://avim/content/composerOverlay.xul",
-		
+	var id = Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULAppInfo).ID;
+//	var isFf = id == "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
+	var isSm = id == "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
+	
+	switch (windowUrl) {
+		// Sunbird
+		case "chrome://sunbird/content/calendar.xul":
+			return "chrome://avim/content/calendarOverlay.xul";
+		// SeaMonkey Composer
+		case "chrome://editor/content/editor.xul":
+			return "chrome://avim/content/composerOverlay.xul";
 		// Prism
-		"chrome://webrunner/content/webrunner.xul":
-			"chrome://avim/content/prismOverlay.xul",
-		
+		case "chrome://webrunner/content/webrunner.xul":
+			return "chrome://avim/content/prismOverlay.xul";
 		// Komodo and Komodo Edit
-		"chrome://komodo/content/komodo.xul":
-			"chrome://avim/content/komodoOverlay.xul",
-		
+		case "chrome://komodo/content/komodo.xul":
+			return "chrome://avim/content/komodoOverlay.xul";
 		// BlueGriffon
-		"chrome://bluegriffon/content/bluegriffon.xul":
-			"chrome://avim/content/blueGriffonOverlay.xul"
-	};
-	return urls[windowUrl] || "chrome://avim/content/generalOverlay.xul";
+		case "chrome://bluegriffon/content/bluegriffon.xul":
+			return "chrome://avim/content/blueGriffonOverlay.xul";
+		default:
+			if (isSm) return "chrome://avim/content/navigatorOverlay.xul";
+			return "chrome://avim/content/generalOverlay.xul";
+	}
 }
 
 /**
@@ -72,7 +75,7 @@ AVIM.prototype.onWindowOpen = function (window) {
 	window.addEventListener("DOMContentLoaded", function (event) {
 		var document = event.originalTarget;
 		if (document.location && document.location.protocol == "chrome:") {
-			document.loadOverlay(AVIM.getOverlayUrl(document.location),
+			document.loadOverlay(AVIM.getOverlayUrl(document.location.href),
 								 new AVIMOverlayObserver(window));
 		}
 	}, true);
