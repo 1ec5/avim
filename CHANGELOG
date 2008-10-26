@@ -201,3 +201,4 @@ Version ${Version} (${Date})
  - AVIM now works on all XUL windows and dialog boxes in the supported
    applications, whether built-in or provided by third-party extensions.
  - Added support for Sunbird 1.0 nightlies.
+ - Added Edit > Vietnamese Input menu to most SeaMonkey windows.

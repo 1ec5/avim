@@ -72,13 +72,15 @@ AVIM.getOverlayUrl = function (windowUrl) {
  * @param window	{object}	the window onto which AVIM should be attached.
  */
 AVIM.prototype.onWindowOpen = function (window) {
-	window.addEventListener("DOMContentLoaded", function (event) {
+	var handleEvent = function (event) {
 		var document = event.originalTarget;
 		if (document.location && document.location.protocol == "chrome:") {
 			document.loadOverlay(AVIM.getOverlayUrl(document.location.href),
 								 new AVIMOverlayObserver(window));
 		}
-	}, true);
+		window.removeEventListener("DOMContentLoaded", handleEvent, true);
+	};
+	window.addEventListener("DOMContentLoaded", handleEvent, true);
 }
 
 /**
