@@ -64,7 +64,7 @@ AVIM.getOverlayUrl = function (windowUrl) {
 			if (isSm) return "chrome://avim/content/navigatorOverlay.xul";
 			return "chrome://avim/content/generalOverlay.xul";
 	}
-}
+};
 
 /**
  * Loads the AVIM overlay onto the given window.
@@ -81,7 +81,7 @@ AVIM.prototype.onWindowOpen = function (window) {
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 	};
 	window.addEventListener("DOMContentLoaded", handleEvent, true);
-}
+};
 
 /**
  * Listens for window load events.
@@ -125,7 +125,7 @@ function AVIMOverlayObserver(aWindow) {
  */
 AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
 	if (topic == "xul-overlay-merged") this.window.avim.updateUI();
-}
+};
 
 function NSGetModule(compMgr, fileSpec) {
 	return XPCOMUtils.generateModule([AVIM]);

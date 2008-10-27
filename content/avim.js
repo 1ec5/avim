@@ -106,7 +106,7 @@ function AVIM()	{
 		el.value = val.substr(0, index) + newStr + val.substr(index + len);
 	};
 	
-	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM\ ";
+	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ";
 	const skey_str = "aâăeêioôơuưyAÂĂEÊIOÔƠUƯY".split("");
 	const skey2 = "aaaeeiooouuyAAAEEIOOOUUY".split('');
 	const skey = codesFromChars(skey_str);
@@ -298,7 +298,7 @@ function AVIM()	{
 	 * @param enabled	{boolean}	true to use old-style diacritics; false to
 	 * 								use new-style diacritics.
 	 */
-	this.setDauCu=function(enabled) {
+	this.setDauCu = function(enabled) {
 		AVIMConfig.oldAccent = enabled;
 		this.setPrefs("oldAccents");
 	};
@@ -319,7 +319,7 @@ function AVIM()	{
 	 *
 	 * @param enabled	{boolean}	true to enforce spelling; false otherwise.
 	 */
-	this.setSpell=function(enabled) {
+	this.setSpell = function(enabled) {
 		AVIMConfig.ckSpell = enabled;
 		this.setPrefs("ignoreMalformed");
 	};
@@ -341,7 +341,7 @@ function AVIM()	{
 	 */
 	this.setStatusPanel = function(shown) {
 		AVIMConfig.statusBarPanel = shown;
-		this.setPrefs("statusBarPanel")
+		this.setPrefs("statusBarPanel");
 	}
 	
 	/**
@@ -935,7 +935,7 @@ function AVIM()	{
 	};
 	
 	this.notWord=function(w) {
-		var str = "\ \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]'`~|^@&\t“”‘’" +
+		var str = " \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]'`~|^@&\t“”‘’" +
 			"\xab\xbb‹›–—…−×÷°″′";
 		return str.indexOf(w) >= 0;
 	};
