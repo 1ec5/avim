@@ -37,8 +37,8 @@
 		<em:targetApplication>
 			<Description>
 				<em:id>{a23983c0-fd0e-11dc-95ff-0800200c9a66}</em:id>
-				<em:minVersion>1.0a1</em:minVersion>
-				<em:maxVersion>1.0a1</em:maxVersion>
+				<em:minVersion>0.1</em:minVersion>
+				<em:maxVersion>1.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
@@ -96,34 +96,7 @@
 			</Description>
 		</em:targetApplication>
 		
-		<!-- Instantbird -->
-		<em:targetApplication>
-			<Description>
-				<em:id>{33cb9019-c295-46dd-be21-8c4936574bee}</em:id>
-				<em:minVersion>0.1.2</em:minVersion>
-				<em:maxVersion>0.1.*</em:maxVersion>
-			</Description>
-		</em:targetApplication>
-		
-		<!-- BlueGriffon -->
-		<em:targetApplication>
-			<Description>
-				<em:id>{8fa6f1b4-7ed3-4895-bac6-01f1cc206ab3}</em:id>
-				<em:minVersion>0.1</em:minVersion>
-				<em:maxVersion>0.1</em:maxVersion>
-			</Description>
-		</em:targetApplication>
-		
-		<!-- Pencil -->
-		<em:targetApplication>
-			<Description>
-				<em:id>pencil@evolus.vn</em:id>
-				<em:minVersion>1.0</em:minVersion>
-				<em:maxVersion>1.*</em:maxVersion>
-			</Description>
-		</em:targetApplication>
-		
-		<!-- Mozilla Toolkit -->
+		<!-- Catch-all for Mozilla-based applications -->
 		<em:targetApplication>
 			<Description>
 				<em:id>toolkit@mozilla.org</em:id>
