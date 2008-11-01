@@ -60,6 +60,9 @@ AVIM.getOverlayUrl = function (windowUrl) {
 		// BlueGriffon
 		case "chrome://bluegriffon/content/bluegriffon.xul":
 			return "chrome://avim/content/blueGriffonOverlay.xul";
+		// Spicebird
+		case "chrome://collab/content/collab.xul":
+			return "chrome://avim/content/collabOverlay.xul";
 		default:
 			if (isSm) return "chrome://avim/content/navigatorOverlay.xul";
 			return "chrome://avim/content/generalOverlay.xul";
