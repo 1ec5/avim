@@ -37,7 +37,7 @@
 		<em:targetApplication>
 			<Description>
 				<em:id>{a23983c0-fd0e-11dc-95ff-0800200c9a66}</em:id>
-				<em:minVersion>0.1</em:minVersion>
+				<em:minVersion>0.7</em:minVersion>
 				<em:maxVersion>1.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
@@ -93,6 +93,15 @@
 				<em:id>{b1042fb5-9e9c-11db-b107-000d935d3368}</em:id>
 				<em:minVersion>5.0.0-alpha1</em:minVersion>
 				<em:maxVersion>5.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
+		<!-- Spicebird -->
+		<em:targetApplication>
+			<Description>
+				<em:id>{ee53ece0-255c-4cc6-8a7e-81a8b6e5ba2c}</em:id>
+				<em:minVersion>0.7pre</em:minVersion>
+				<em:maxVersion>0.7</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
