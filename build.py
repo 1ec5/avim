@@ -38,6 +38,8 @@ OTHER DEALINGS IN THE SOFTWARE."""
 import sys, subprocess, os, shutil, zipfile, re, hashlib, decimal
 from os import path
 from datetime import date
+from StringIO import StringIO
+from jsmin import JavascriptMinify
 from config_build import *
 
 class BuildConfig:
@@ -55,7 +57,8 @@ Package AVIM into an XPInstall file.
 
 Available options:
       --babelzilla          Produce a BabelZilla-compatible build.
-  -d, --debug               Produce a testing build.
+  -d, --debug               Produce a testing build with uncompressed JavaScript
+                            code.
   -h, --help                Display this help message.
       --songbird            Produce a build compatible with the Songbird Add-ons
                                 site. The package will be significantly larger.
@@ -174,6 +177,16 @@ def preprocess(src, debug=False, vals=None):
     for k, v in vals.iteritems():
         src = src.replace("${%s}" % k, str(v))
 
+    return src
+
+def minify_js(src):
+    """Returns a minified version of the given JavaScript source string."""
+    in_str = StringIO(src)
+    out_str = StringIO()
+    JavascriptMinify().minify(in_str, out_str)
+    src = out_str.getvalue()
+    in_str.close()
+    out_str.close()
     return src
 
 def l10n_compat_locale(file_path):
@@ -328,6 +341,9 @@ def main():
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
+        # Minify JavaScript files
+        if CONFIG == BuildConfig.RELEASE and f.endswith(".js"):
+            src = minify_js(src)
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
         src_file.close()
@@ -365,6 +381,9 @@ def main():
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
+        # Minify JavaScript files
+        if CONFIG == BuildConfig.RELEASE and f.endswith(".js"):
+            src = minify_js(src)
         if path.basename(f) == "install.rdf":
             src = l10n_compat_install(src)
         elif path.basename(f) == "chrome.manifest":
