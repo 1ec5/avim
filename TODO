@@ -1,8 +1,7 @@
  - Bug: "kilo^mét" (kilômét)
  - Bug: "xoa" (xoá) in rich text editors, including Thunderbird and Composer.
- - Convert XUL overlays into XBL bindings on XUL's root elements, to support
-   absolutely every window. Most importantly, add the AVIM panel to all
-   <statusbar>s and the Vietnamese Input submenu to all Edit menus.
+ - Use XBL bindings to add the AVIM panel to all <statusbar>s and the Vietnamese
+   Input submenu to all Edit menus.
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
  - Add key mapping for the dong sign.
  - Add a preference to specify allowed initial consonant clusters, like mViet

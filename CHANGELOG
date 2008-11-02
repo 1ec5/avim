@@ -202,3 +202,5 @@ Version ${Version} (${Date})
    applications, whether built-in or provided by third-party extensions.
  - Added support for upcoming releases of Sunbird 1.0 and Spicebird 0.7.
  - Added Edit > Vietnamese Input menu to most SeaMonkey windows.
+ - Reduced installer package size further by compressing JavaScript files. The
+   original, uncompressed scripts can be found in AVIM's Subversion repository.
