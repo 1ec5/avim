@@ -197,10 +197,12 @@ Version 20080728.237 (Thursday, October 23, 2008)
  - Added support for gadgets in Google Toolbar 5.
  - Added support for the ErrorZilla Plus, WebChunks, and pyshell extensions.
 
-Version ${Version} (${Date})
+Version 20080728.250 (Sunday, November 2, 2008)
  - AVIM now works on all XUL windows and dialog boxes in the supported
    applications, whether built-in or provided by third-party extensions.
  - Added support for upcoming releases of Sunbird 1.0 and Spicebird 0.7.
  - Added Edit > Vietnamese Input menu to most SeaMonkey windows.
  - Reduced installer package size further by compressing JavaScript files. The
    original, uncompressed scripts can be found in AVIM's Subversion repository.
+
+Version ${Version} (${Date})
