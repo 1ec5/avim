@@ -75,15 +75,21 @@ AVIM.getOverlayUrl = function (windowUrl) {
  * @param window	{object}	the window onto which AVIM should be attached.
  */
 AVIM.prototype.onWindowOpen = function (window) {
+	var dynOverlayUrls = [
+		"chrome://browser/content/preferences/preferences.xul"
+	];
 	var handleEvent = function (event) {
 		var document = event.originalTarget;
-		if (document.location && document.location.protocol == "chrome:") {
+		if (document.location && document.location.protocol == "chrome:" &&
+			dynOverlayUrls.indexOf(document.location.href) < 0) {
 			document.loadOverlay(AVIM.getOverlayUrl(document.location.href),
 								 new AVIMOverlayObserver(window));
 		}
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 	};
-	window.addEventListener("DOMContentLoaded", handleEvent, true);
+	if (!window.frameElement) {
+		window.addEventListener("DOMContentLoaded", handleEvent, true);
+	}
 };
 
 /**
@@ -127,7 +133,10 @@ function AVIMOverlayObserver(aWindow) {
  * @param data		{string}	
  */
 AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
-	if (topic == "xul-overlay-merged") this.window.avim.updateUI();
+	if (topic != "xul-overlay-merged" || !this.window) return;
+	
+	// Force AVIM's status bar panel to display the current input method.
+	if (this.window.avim) this.window.avim.updateUI();
 };
 
 function NSGetModule(compMgr, fileSpec) {

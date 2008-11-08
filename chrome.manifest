@@ -34,3 +34,6 @@ style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/pr
 #### Firefox ####################################################################
 
 style	chrome://browser/content/browser.xul							chrome://avim/skin/avim.css
+
+# Preferences window
+overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
