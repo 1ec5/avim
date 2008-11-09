@@ -1253,6 +1253,12 @@ function AVIM()	{
 			if (!AVIMConfig.disabledScripts.Vinova) return;
 			vinova.reset(true);
 		},
+		XaLo: function(win, marker) {
+			if (!AVIMConfig.disabledScripts.AVIM) return;
+			if (win._e_ && win.document.getElementsByClassName("vk").length) {
+				win._e_(null, 0);
+			}
+		},
 		xvnkb: function(win) {
 			if (!AVIMConfig.disabledScripts.CHIM) return;
 			if (parseInt(win.vnMethod) == 0) return;
@@ -1286,7 +1292,9 @@ function AVIM()	{
 		// Vinova (2008-05-23)
 		vinova: disablers.Vinova,
 		// VietIMEW
-		GetVnVowelIndex: disablers.VietIMEW
+		GetVnVowelIndex: disablers.VietIMEW,
+		// XaLộ (vn.xalo.client.vnk)
+		_xalo_ga: disablers.XaLo
 	};
 	
 	/**
