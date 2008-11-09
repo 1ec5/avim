@@ -76,7 +76,8 @@ AVIM.getOverlayUrl = function (windowUrl) {
  */
 AVIM.prototype.onWindowOpen = function (window) {
 	var dynOverlayUrls = [
-		"chrome://browser/content/preferences/preferences.xul"
+		"chrome://browser/content/preferences/preferences.xul",
+		"chrome://messenger/content/preferences/preferences.xul"
 	];
 	var handleEvent = function (event) {
 		var document = event.originalTarget;
