@@ -43,3 +43,11 @@ toolbar[iconsize="small"] #avim-tb-viqr {
 toolbar[iconsize="small"] #avim-tb-viqr-star {
 	list-style-image: url("chrome://avim/skin/tb-viqr-star16.png");
 }
+
+#avim-tb-auto[disabled="true"],
+#avim-tb-telex[disabled="true"],
+#avim-tb-vni[disabled="true"],
+#avim-tb-viqr[disabled="true"],
+#avim-tb-viqr-star[disabled="true"] {
+	opacity: 0.8;
+}

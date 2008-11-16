@@ -179,12 +179,16 @@ def preprocess(src, debug=False, vals=None):
 
     return src
 
-def minify_js(src):
+def minify_js(file_path, src):
     """Returns a minified version of the given JavaScript source string."""
     in_str = StringIO(src)
     out_str = StringIO()
     JavascriptMinify().minify(in_str, out_str)
-    src = out_str.getvalue()
+    url = REPO_URL % {"path": file_path, "rev": REVISION or ""}
+    if url:
+        src = "// Minified using JSMin: see %s\n%s" % (url, out_str.getvalue())
+    else:
+        src = out_str.getvalue()
     in_str.close()
     out_str.close()
     return src
@@ -343,7 +347,7 @@ def main():
                                         "Date": today, "Year": year})
         # Minify JavaScript files
         if CONFIG == BuildConfig.RELEASE and f.endswith(".js"):
-            src = minify_js(src)
+            src = minify_js(f, src)
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
         src_file.close()
@@ -383,7 +387,7 @@ def main():
                                         "Date": today, "Year": year})
         # Minify JavaScript files
         if CONFIG == BuildConfig.RELEASE and f.endswith(".js"):
-            src = minify_js(src)
+            src = minify_js(f, src)
         if path.basename(f) == "install.rdf":
             src = l10n_compat_install(src)
         elif path.basename(f) == "chrome.manifest":

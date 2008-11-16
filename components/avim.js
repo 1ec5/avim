@@ -75,6 +75,7 @@ AVIM.getOverlayUrl = function (windowUrl) {
  * @param window	{object}	the window onto which AVIM should be attached.
  */
 AVIM.prototype.onWindowOpen = function (window) {
+	// List any chrome: URLs special-cased in chrome.manifest.
 	var dynOverlayUrls = [
 		"chrome://browser/content/preferences/preferences.xul",
 		"chrome://messenger/content/preferences/preferences.xul"

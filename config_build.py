@@ -12,6 +12,11 @@ CONFIG = BuildConfig.RELEASE
 # extension's version string.
 AVIM_VERSION = 20080728
 
+# Format of URL to view a project file in the public-facing Subversion
+# repository, given the relative path of that file.
+REPO_URL = "http://version.1ec5.org/viewvc/avim/trunk/%(path)s" \
+           "?revision=%(rev)i&view=markup"
+
 # Revision number in the Subversion repository.
 REVISION = None
 
