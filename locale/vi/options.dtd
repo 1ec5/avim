@@ -38,7 +38,7 @@
 
 <!-- Ignored Textboxes tab -->
 
-<!ENTITY ignored-panel.label "Ô Bỏ qua">
+<!ENTITY ignored-panel.label "Bỏ qua Hộp">
 
 <!ENTITY ignore-text.label "ID của hộp văn bản:">
 <!ENTITY ignore-button.label "Bỏ qua">
