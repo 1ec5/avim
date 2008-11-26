@@ -395,7 +395,7 @@ function AVIM()	{
 	};
 	
 	this.mozGetText = function(obj) {
-		var pos, w = "";
+		var pos;
 		var v = (obj.data) ? obj.data : text(obj);
 		if (!v || !v.length) return false;
 		if (obj.data) pos = obj.pos;
@@ -404,12 +404,10 @@ function AVIM()	{
 			pos = obj.selectionStart;
 		}
 		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
-		for (var g = pos - 1; g >= 0; g--) {
-			if (v[g] == "\\") w = v[g] + w;
-			if (this.notWord(v[g])) break;
-			w = v[g] + w;
-		}
-		return [w, pos];
+		
+		var w = v.substring(0, pos);
+		w = /[^ \r\n\t\xa0#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”‘’\xab\xbb‹›–—…−×÷°″′]*$/.exec(w);
+		return [w ? w[0] : "", pos];
 	};
 	
 	this.start = function(obj, key) {
@@ -931,13 +929,9 @@ function AVIM()	{
 	};
 	
 	this.checkCode = function(code) {
-		return !AVIMConfig.onOff || (code < 45 && code != 42 && code != 32 && code != 39 && code != 40 && code != 43) || code == 145 || code == 255;
-	};
-	
-	this.notWord=function(w) {
-		var str = " \r\n\xa0#,\\;.:-_()<>+-*/=?!\"$%{}[]'`~|^@&\t“”‘’" +
-			"\xab\xbb‹›–—…−×÷°″′";
-		return str.indexOf(w) >= 0;
+		return !AVIMConfig.onOff || (code < 45 && code != 42 && code != 32 &&
+									 code != 39 && code != 40 && code != 43) ||
+			code == 145 || code == 255;
 	};
 	
 	/**
