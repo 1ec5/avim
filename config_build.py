@@ -15,7 +15,7 @@ AVIM_VERSION = 20080728
 # Format of URL to view a project file in the public-facing Subversion
 # repository, given the relative path of that file.
 REPO_URL = "http://version.1ec5.org/viewvc/avim/trunk/%(path)s" \
-           "?revision=%(rev)i&view=markup"
+           "?revision=%(rev)s&view=markup"
 
 # Revision number in the Subversion repository.
 REVISION = None
@@ -76,3 +76,6 @@ EXT_COMMENTS = {"c": "C", "cpp": "C", "h": "C", "m": "C", "java": "C",
 EXT_PROLOGS = {"py": "#!", "xhtml": "<?xml", "xml": "<?xml", "rdf": "<?xml",
                "xul": "<?xml", "xsl": "<?xml", "xslt": "<?xml", "svg": "<?xml",
                "mml": "<?xml", "pl": "#!", "rb": "#!", "sh": "#!"}
+
+# Paths to the final XPI files.
+XPI_FILES = ["%(package)s.xpi", "%(package)s-%(version)s.xpi"]

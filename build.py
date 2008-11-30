@@ -9,7 +9,7 @@ This module requires Python 2.5 or above and is dependent on the following
 command-line utilities: python, svn, svnversion. It takes its configuration from
 config_build.py in the same directory as itself."""
 
-__version__ = "2.0"
+__version__ = "2.1"
 __authors__ = ["Minh Nguyen <mxn@1ec5.org>"]
 __license__ = """\
 Copyright (c) 2008 Minh Nguyen.
@@ -45,17 +45,26 @@ from config_build import *
 class BuildConfig:
     """An enumeration of build configurations."""
     RELEASE = "Release"
+    AMO = "Mozilla Add-ons"
     DEBUG = "Debug"
     L10N = "BabelZilla"
-    SB = "Songbird"
+    SB = "Songbird Add-ons"
 
 def print_help(version):
     """Prints help information to the command line."""
     print """\
-Usage: python build.py [OPTIONS]
-Package AVIM into an XPInstall file.
+Usage: python build.py [OPTIONS] [PATH ...]
+Package AVIM into an XPInstall file. By default, multiple copies of the file are
+created using the following naming scheme:
+  package.xpi
+  package-version.xpi
+where "package" is the package name and "version" is the version string. If file
+paths are specified, the XPInstall files will be located at the specified paths,
+rather than at these defaults.
 
 Available options:
+  -m, --amo                 Produce an unminified build for the Firefox Add-ons
+                                site. The package will be significantly larger.
       --babelzilla          Produce a BabelZilla-compatible build.
   -d, --debug               Produce a testing build with uncompressed JavaScript
                             code.
@@ -168,7 +177,7 @@ def preprocess(src, debug=False, vals=None):
        when the file is parsed as code. Note that general if-test support has
        not been implemented."""
     # Remove testing code. We don't have real if-test support yet.
-    if CONFIG is BuildConfig.RELEASE:
+    if CONFIG in [BuildConfig.RELEASE, BuildConfig.AMO]:
         debug_re = re.compile(r"^[^\r\n]*\$if\{Debug\}.*?\$endif\{\}[^\r\n]*$",
                              re.M | re.S)
         src = debug_re.sub(r"", src)
@@ -184,7 +193,10 @@ def minify_js(file_path, src):
     in_str = StringIO(src)
     out_str = StringIO()
     JavascriptMinify().minify(in_str, out_str)
-    url = REPO_URL % {"path": file_path, "rev": REVISION or ""}
+    try:
+        url = REPO_URL % {"path": file_path, "rev": str(int(REVISION))}
+    except (ValueError, TypeError):
+        url = REPO_URL % {"path": file_path, "rev": ""}
     if url:
         src = "// Minified using JSMin: see %s\n%s" % (url, out_str.getvalue())
     else:
@@ -254,12 +266,19 @@ def main():
     today = (DATE or date.today()).strftime("%A, %B %e, %Y")
     year = date.today().year
     
+    xpi_paths = []
+    
     # Read arguments from command line.
     override_file = override_name = override_version = False
     for arg in sys.argv[1:]:
         # Produce a testing build.
         if arg in ["-d", "--debug"]:
             CONFIG = BuildConfig.DEBUG
+            continue
+        
+        # Produce an unminified build for the Firefox Add-ons site.
+        if arg in ["-m", "--amo"]:
+            CONFIG = BuildConfig.AMO
             continue
         
         # Produce a BabelZilla-compatible build.
@@ -295,14 +314,19 @@ def main():
             print "AVIM build script %s" % __version__
             return
 
-        # Unsupported flag.
-        if arg not in ["-h", "--help"]:
+        # Unsupported flag; print usage information.
+        if arg[0] == "-" and arg not in ["-h", "--help"]:
             print "Invalid option '%s'." % arg
-
-        # Print usage information.
-        print_help("%i.%s" % (AVIM_VERSION, revision))
-        return
-
+            print_help("%i.%s" % (AVIM_VERSION, revision))
+            return
+        
+        # Override output locations.
+        xpi_paths.append(arg)
+    
+    if not xpi_paths:
+        xpi_vars = {"package": package_name, "version": version}
+        xpi_paths = [p % xpi_vars for p in XPI_FILES]
+    
     # Directories
     tmp_dir = "build"
     chrome_dir = path.join(tmp_dir, "chrome")
@@ -310,8 +334,6 @@ def main():
 
     # Files
     jar_path = path.join(chrome_dir, "%s.jar" % package_name)
-    xpi_paths = ["%s.xpi" % package_name,
-                 "%s-%s.xpi" % (package_name, version)]
     root_files = ROOT_FILES.extend(["install.rdf", "chrome.manifest"])
     omit_files = [".DS_Store", "Thumbs.db"]
 
@@ -346,7 +368,7 @@ def main():
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
         # Minify JavaScript files
-        if CONFIG == BuildConfig.RELEASE and f.endswith(".js"):
+        if CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
             src = minify_js(f, src)
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
@@ -386,7 +408,7 @@ def main():
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
         # Minify JavaScript files
-        if CONFIG == BuildConfig.RELEASE and f.endswith(".js"):
+        if CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
             src = minify_js(f, src)
         if path.basename(f) == "install.rdf":
             src = l10n_compat_install(src)
