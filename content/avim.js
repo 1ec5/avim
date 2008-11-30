@@ -1367,6 +1367,9 @@ function AVIM()	{
 if (!window.avim && !window.frameElement) {
 	window.avim = new AVIM();
 	avim.registerPrefs();
+	addEventListener("load", function () {
+		avim.updateUI();
+	}, false);
 	addEventListener("unload", function () {
 		avim.unregisterPrefs();
 	}, false);

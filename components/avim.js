@@ -76,14 +76,15 @@ AVIM.getOverlayUrl = function (windowUrl) {
  */
 AVIM.prototype.onWindowOpen = function (window) {
 	// List any chrome: URLs special-cased in chrome.manifest.
-	var dynOverlayUrls = [
+	var manifestUrls = [
+		"chrome://browser/content/browser.xul",
 		"chrome://browser/content/preferences/preferences.xul",
 		"chrome://messenger/content/preferences/preferences.xul"
 	];
 	var handleEvent = function (event) {
 		var document = event.originalTarget;
 		if (document.location && document.location.protocol == "chrome:" &&
-			dynOverlayUrls.indexOf(document.location.href) < 0) {
+			manifestUrls.indexOf(document.location.href) < 0) {
 			document.loadOverlay(AVIM.getOverlayUrl(document.location.href),
 								 new AVIMOverlayObserver(window));
 		}

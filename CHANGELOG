@@ -208,4 +208,5 @@ Version 20080728.250 (Sunday, November 2, 2008)
 Version ${Version} (${Date})
  - Fixed an issue in preference windows where AVIM prevents the initial pane
    from loading, due to Bug 330458.
+ - Fixed the toolbar buttons.
  - XaLo's version of AVIM is now recognized and disabled.
