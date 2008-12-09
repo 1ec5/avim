@@ -315,7 +315,7 @@ def main():
             return
 
         # Unsupported flag; print usage information.
-        if arg[0] == "-" and arg not in ["-h", "--help"]:
+        if arg[0] == "-" or arg in ["-h", "--help"]:
             print "Invalid option '%s'." % arg
             print_help("%i.%s" % (AVIM_VERSION, revision))
             return
