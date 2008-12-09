@@ -205,10 +205,12 @@ Version 20080728.250 (Sunday, November 2, 2008)
  - Reduced installer package size further by compressing JavaScript files. The
    original, uncompressed scripts can be found in AVIM's Subversion repository.
 
-Version ${Version} (${Date})
+Version 20080728.265 (Monday, December 8, 2008)
  - Added support for Firefox 3.2 nightlies.
  - Fixed an issue in preference windows where AVIM prevents the initial pane
    from loading, due to Bug 330458.
  - Fixed an issue that prevented the toolbar buttons from displaying.
  - The toolbar buttons now appear disabled when AVIM is turned off.
  - XaLo's version of AVIM is now recognized and disabled.
+
+Version ${Version} (${Date})
