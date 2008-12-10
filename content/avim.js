@@ -949,6 +949,24 @@ function AVIM()	{
 	}
 	
 	/**
+	 * Update specialized XUL textboxes that typically rely on keypress events
+	 * to change state. Examples include autocomplete textboxes and the Find
+	 * Toolbar.
+	 */
+	this.updateContainer = function (e) {
+		var xulTarget = e.target;
+		var xblTarget = e.originalTarget;
+		
+		// Autocomplete textboxes
+		if (xulTarget.type == "autocomplete") {
+			xulTarget.controller.handleText(true);
+		}
+		
+		// Find Toolbar
+		if (xulTarget._find) xulTarget._find();
+	}
+	
+	/**
 	 * Handles key presses in the current window. This function is triggered as
 	 * soon as the key goes up. If the key press's target is a XUL element, this
 	 * function finds the anonymous XBL child that actually handles text input,
@@ -989,6 +1007,7 @@ function AVIM()	{
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}
+			this.updateContainer(e);
 			return false;
 		}
 		return true;
