@@ -214,3 +214,6 @@ Version 20080728.265 (Monday, December 8, 2008)
  - XaLo's version of AVIM is now recognized and disabled.
 
 Version ${Version} (${Date})
+ - Fixed an issue where the Find Bar and autocompleting textboxes, such as the
+   Location Bar, would not update after editing a word that begins with an
+   accented letter.
