@@ -54,15 +54,19 @@ function AVIM()	{
 	var getEditor = function(el) {
 		if (el.editor) return el.editor;
 		try {
-			const iface = Components.interfaces.nsIDOMNSEditableElement;
-			return el.QueryInterface(iface).editor;
+			const nsee = Components.interfaces.nsIDOMNSEditableElement;
+			return el.QueryInterface(nsee).editor;
 //				iface = Components.interfaces.nsIPlaintextEditor;
 //				editor = editableEl.QueryInterface(iface);
 		}
-		catch (e) {
-//			dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");	// debug
-			return undefined;
+		catch (e) {}
+		try {
+			const ed = Components.interfaces.nsIEditor;
+			return el.QueryInterface(ed).editor;
 		}
+		catch (e) {}
+//		dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");		// debug
+		return undefined;
 	};
 	
 	/**
@@ -888,7 +892,8 @@ function AVIM()	{
 		var code = e.which;
 		var doc = e.originalTarget.ownerDocument;
 		var target = doc.documentElement;
-		var cwi = doc.defaultView;
+		var cwiWrapper = new XPCNativeWrapper(doc.defaultView);
+		var cwi = cwiWrapper.wrappedJSObject;
 		if(e.ctrlKey || e.metaKey || e.altKey) return;
 		if (this.findIgnore(target)) return;
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
@@ -911,16 +916,29 @@ function AVIM()	{
 		node.value = node.data;
 		node.pos = node.data.length;
 		node.which = code;
-		this.start(node, e);
-		node.insertData(node.data.length, this.saveStr);
-		newPos = node.data.length - this.saveStr.length + this.kl;
-		this.range.setEnd(node, newPos);
-		this.range.setStart(node, newPos);
-		this.kl = 0;
-		if(this.specialChange) {
-			this.specialChange = false;
-			this.changed = false;
-			node.deleteData(node.pos - 1, 1);
+		var editor = getEditor(cwi.frameElement);
+//		dump("AVIM.ifMoz -- editor: " + editor + "\n");				// debug
+		if (editor && editor.beginTransaction) editor.beginTransaction();
+		try {
+			this.start(node, e);
+			node.insertData(node.data.length, this.saveStr);
+			newPos = node.data.length - this.saveStr.length + this.kl;
+			this.range.setEnd(node, newPos);
+			this.range.setStart(node, newPos);
+			this.kl = 0;
+			if(this.specialChange) {
+				this.specialChange = false;
+				this.changed = false;
+				node.deleteData(node.pos - 1, 1);
+			}
+		}
+		catch (exc) {
+			throw exc;
+		}
+		finally {
+			// If we don't put this line in a finally clause, an error in
+			// start() will render the application inoperable.
+			if (editor && editor.endTransaction) editor.endTransaction();
 		}
 		if(this.changed) {
 			this.changed = false;
@@ -953,17 +971,20 @@ function AVIM()	{
 	 * to change state. Examples include autocomplete textboxes and the Find
 	 * Toolbar.
 	 */
-	this.updateContainer = function (e) {
+	this.updateContainer = function(e) {
 		var xulTarget = e.target;
 		var xblTarget = e.originalTarget;
 		
-		// Autocomplete textboxes
-		if (xulTarget.type == "autocomplete") {
+		// Autocomplete textboxes for Toolkit
+		if (xulTarget.type == "autocomplete" && xulTarget.controller) {
 			xulTarget.controller.handleText(true);
 		}
 		
-		// Find Toolbar
+		// Find Toolbar for Toolkit
 		if (xulTarget._find) xulTarget._find();
+		
+		// Subject bar for Thunderbird
+		if (window.SetComposeWindowTitle) SetComposeWindowTitle();
 	}
 	
 	/**
