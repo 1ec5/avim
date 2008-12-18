@@ -36,6 +36,9 @@
 <!ENTITY script-enabled-check.label "Tắt các script bộ gõ ở trong trang Web">
 <!ENTITY script-enabled-check.accesskey "W">
 
+<!ENTITY passwords-check.label "Cho phép bỏ dấu vào hộp mật khẩu">
+<!ENTITY passwords-check.accesskey "m">
+
 <!-- Ignored Textboxes tab -->
 
 <!ENTITY ignored-panel.label "Bỏ qua Hộp">
@@ -53,7 +56,7 @@
 <!ENTITY remove-button.accesskey "D"><!-- Conflicts with oldaccents-check.accesskey, but they're in different tabs. -->
 
 <!ENTITY reset-button.label "Mặc định lại giá trị">
-<!ENTITY reset-button.accesskey "M">
+<!ENTITY reset-button.accesskey "M"><!-- Conflicts with passwords-check.acceskey, but they're in different tabs. -->
 
 <!-- Display options -->
 

@@ -36,6 +36,9 @@
 <!ENTITY script-enabled-check.label "Disable input editing scripts inside web pages">
 <!ENTITY script-enabled-check.accesskey "w">
 
+<!ENTITY passwords-check.label "Allow diacritics in password boxes">
+<!ENTITY passwords-check.accesskey "p">
+
 <!-- Ignored Textboxes tab -->
 
 <!ENTITY ignored-panel.label "Ignored Textboxes">

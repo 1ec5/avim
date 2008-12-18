@@ -46,6 +46,7 @@
 			<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
 			<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
 			<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" />
+			<preference id="passwords-pref" name="extensions.avim.passwords" type="bool" />
 		</preferences>
 		
 		<vbox flex="1">
@@ -91,6 +92,7 @@
 							<separator class="thin" />
 							
 							<checkbox id="script-enabled-check" preference="script-enabled-pref" label="&script-enabled-check.label;" accesskey="&script-enabled-check.accesskey;" observes="disabled-bc" />
+							<checkbox id="passwords-check" preference="passwords-pref" label="&passwords-check.label;" accesskey="&passwords-check.accesskey;" observes="disabled-bc" />
 							
 							<hbox id="tester-box" />
 						</notificationbox>

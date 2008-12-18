@@ -1010,7 +1010,8 @@ function AVIM()	{
 //		dump("AVIM.keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(e.target)) return false;
-		var isHTML = el.type == "textarea" || el.type == "text";
+		var isHTML = el.type == "textarea" || el.type == "text" ||
+			(AVIMConfig.passwords && el.type == "password");
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
 		var editor = getEditor(el);
@@ -1093,6 +1094,7 @@ function AVIM()	{
 			
 			// Advanced options
 			informal: AVIMConfig.informal,
+			passwords: AVIMConfig.passwords,
 			
 			// Auto input method configuration
 			"auto.telex": AVIMConfig.autoMethods.telex,
@@ -1173,6 +1175,9 @@ function AVIM()	{
 			// Advanced options
 			case "informal":
 				AVIMConfig.informal = prefs.getBoolPref("informal");
+				if (specificPref) break;
+			case "passwords":
+				AVIMConfig.passwords = prefs.getBoolPref("passwords");
 				if (specificPref) break;
 			case "ignoredFieldIds":
 				var ids = prefs.getCharPref("ignoredFieldIds");

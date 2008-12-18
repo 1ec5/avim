@@ -25,7 +25,7 @@
 <!ENTITY informal-check.accesskey "Z">
 
 <!ENTITY oldaccents-check.label "Placer les marques de tonalité sur la première voyelle dans une diphtongue finale (accent de vieux-style)">
-<!ENTITY oldaccents-check.accesskey "P">
+<!ENTITY oldaccents-check.accesskey "f">
 
 <!ENTITY auto-methods.label "Accepter les raccourcis clavier pour les méthodes de saisie suivantes quand &method-auto-item.label; est sélectionné&#x00a0;:">
 <!ENTITY auto-telex-check.accesskey "T">
@@ -35,6 +35,9 @@
 
 <!ENTITY script-enabled-check.label "Désactiver les scripts d’édition de saisie dans les pages Web">
 <!ENTITY script-enabled-check.accesskey "W">
+
+<!ENTITY passwords-check.label "Accepter les diacritiques dans les zones de mot de passe">
+<!ENTITY passwords-check.accesskey "p">
 
 <!-- Ignored Textboxes tab -->
 

@@ -36,6 +36,9 @@
 <!ENTITY script-enabled-check.label "Desactivar los scripts que editar la entrada en las páginas Web">
 <!ENTITY script-enabled-check.accesskey "W">
 
+<!ENTITY passwords-check.label "Admitir los signos diacríticos en las cajas de contraseña">
+<!ENTITY passwords-check.accesskey "c">
+
 <!-- Ignored Textboxes tab -->
 
 <!ENTITY ignored-panel.label "Cajas de texto para ignorar">
