@@ -970,9 +970,11 @@ function AVIM()	{
 	 * Update specialized XUL textboxes that typically rely on keypress events
 	 * to change state. Examples include autocomplete textboxes and the Find
 	 * Toolbar.
+	 * 
+	 * @param e	{object}	the key press event.
 	 */
 	this.updateContainer = function(e) {
-		var xulTarget = e.target;
+		var xulTarget = e.target.textbox || e.target;
 		var xblTarget = e.originalTarget;
 		
 		// Autocomplete textboxes for Toolkit
@@ -983,8 +985,14 @@ function AVIM()	{
 		// Find Toolbar for Toolkit
 		if (xulTarget._find) xulTarget._find();
 		
-		// Subject bar for Thunderbird
+		// Subject bar in Thunderbird
 		if (window.SetComposeWindowTitle) SetComposeWindowTitle();
+		
+		// Autocomplete textboxes in Gecko
+//		var popup = document.getElementById("PopupAutoComplete");
+//		if (popup && popup.popupOpen && popup.openAutocompletePopup) {
+//			popup.openAutocompletePopup(popup.input, xulTarget);
+//		}
 	}
 	
 	/**
