@@ -214,6 +214,7 @@ Version 20080728.265 (Monday, December 8, 2008)
  - XaLo's version of AVIM is now recognized and disabled.
 
 Version ${Version} (${Date})
+ - Added an option to allow diacritics in password boxes.
  - Fixed an issue where specialized textboxes would not update after editing a
    word that begins with an accented letter. Affected textboxes include the Find
    Bar and Location Bar in Firefox and the Subject bar in Thunderbird.

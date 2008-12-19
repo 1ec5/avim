@@ -989,10 +989,18 @@ function AVIM()	{
 		if (window.SetComposeWindowTitle) SetComposeWindowTitle();
 		
 		// Autocomplete textboxes in Gecko
-//		var popup = document.getElementById("PopupAutoComplete");
-//		if (popup && popup.popupOpen && popup.openAutocompletePopup) {
-//			popup.openAutocompletePopup(popup.input, xulTarget);
-//		}
+		
+		// Quick way to detect in-browser textboxes -- once autocomplete is used
+		// for an in-page control (e.g., <input type="search">), do this the
+		// right way.
+		if (xulTarget != xblTarget) return;
+		var popup = document.getElementById("PopupAutoComplete");
+		if (popup && popup.popupOpen && popup.input) {
+//			dump("AVIM.updateContainer()\n");									// debug
+//			popup.input.textValue = xblTarget.value;
+//			popup.closePopup();
+//			popup.openAutocompletePopup(popup.input, xblTarget);
+		}
 	}
 	
 	/**
