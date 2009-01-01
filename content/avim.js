@@ -983,7 +983,10 @@ function AVIM()	{
 		}
 		
 		// Find Toolbar for Toolkit
-		if (xulTarget._find) xulTarget._find();
+		if (xulTarget._find) xulTarget._find(xblTarget.value);
+		
+		// Bookmark properties in Firefox -- truly awful kludge
+		eval(xulTarget.getAttribute("oninput") || "");
 		
 		// Subject bar in Thunderbird
 		if (window.SetComposeWindowTitle) SetComposeWindowTitle();
