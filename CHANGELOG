@@ -218,3 +218,4 @@ Version ${Version} (${Date})
  - Fixed an issue where specialized textboxes would not update after editing a
    word that begins with an accented letter. Affected textboxes include the Find
    Bar and Location Bar in Firefox and the Subject bar in Thunderbird.
+ - Fixed an issue where the option to use Telex while in Auto was mislabeled.

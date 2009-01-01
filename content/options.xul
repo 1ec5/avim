@@ -83,7 +83,7 @@
 							
 							<label observes="disabled-bc">&auto-methods.label;</label>
 							<vbox id="auto-methods-box" class="indent">
-								<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-auto-item.label;" accesskey="&auto-telex-check.accesskey;" observes="disabled-bc" />
+								<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-telex-item.label;" accesskey="&auto-telex-check.accesskey;" observes="disabled-bc" />
 								<checkbox id="auto-vni-check" preference="auto-vni-pref" label="&method-vni-item.label;" accesskey="&auto-vni-check.accesskey;" observes="disabled-bc" />
 								<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="disabled-bc" />
 								<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="disabled-bc" />
