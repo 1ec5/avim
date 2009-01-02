@@ -221,6 +221,7 @@ function AVIM()	{
 		
 		if (tw != uw && uw2 == "YEU") return true;
 		if (uk != this.moc && (tw == "UU" || tw == "UOU")) return true;
+		if (uk == this.AEO && /Ư[AEOƠ]$/.test(tw)) return true;	// ưô
 		
 		if (this.them.indexOf(uk) >= 0 && !/^.UYE/.test(uw2) && uk != "E") {
 			if (/A[IO]|EO|IA|O[EO]/.test(uw2)) return true;

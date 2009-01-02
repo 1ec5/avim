@@ -221,3 +221,4 @@ Version ${Version} (${Date})
    Bar and Location Bar in Firefox and the Subject bar in Thunderbird.
  - Fixed an issue where bookmark properties would not save when edited from
    within the Library.
+ - Tweaked some spelling rules to prevent invalid vowel sequences.

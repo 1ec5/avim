@@ -1,3 +1,6 @@
+ - Update in-page autocompleting textboxes.
+ - Stop canceling the keypress event.
+ - Add key mapping for g~ (Ng~.).
  - Bug: "kilo^mét" (kilômét)
  - Bug: "xoa" (xoá) in rich text editors, including Thunderbird and Composer.
  - Use XBL bindings to add the AVIM panel to all <statusbar>s and the Vietnamese
