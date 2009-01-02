@@ -36,6 +36,9 @@
 <!ENTITY script-enabled-check.label "在網頁內停用輸入法編輯描述語言">
 <!ENTITY script-enabled-check.accesskey "W">
 
+<!ENTITY passwords-check.label "在密码框允许摆放附加符号">
+<!ENTITY passwords-check.accesskey "P">
+
 <!-- Ignored Textboxes tab -->
 
 <!ENTITY ignored-panel.label "忽略的文本框">
