@@ -1,17 +1,13 @@
  - Update in-page autocompleting textboxes.
  - Stop canceling the keypress event.
+ - Use XBL or XPCOM to allow each application to share the same overlay.
  - Add key mapping for g~ (Ng~.).
  - Bug: "kilo^mét" (kilômét)
  - Bug: "xoa" (xoá) in rich text editors, including Thunderbird and Composer.
- - Use XBL bindings to add the AVIM panel to all <statusbar>s and the Vietnamese
-   Input submenu to all Edit menus.
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
  - Add key mapping for the dong sign.
- - Add a preference to specify allowed initial consonant clusters, like mViet
-   does. [1]
  - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
+   Preferences service. [1] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
 
-[1] http://www.dactai.com/mviet/mviet12AC/
-[2] http://developer.mozilla.org/en/docs/Using_content_preferences
+[1] http://developer.mozilla.org/en/docs/Using_content_preferences
