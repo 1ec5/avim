@@ -52,6 +52,7 @@ function AVIM()	{
 	 * @returns	{object}	The associated nsIEditor instance.
 	 */
 	var getEditor = function(el) {
+		if (!el) return undefined;
 		if (el.editor) return el.editor;
 		try {
 			const nsee = Components.interfaces.nsIDOMNSEditableElement;
@@ -917,7 +918,7 @@ function AVIM()	{
 		node.pos = node.data.length;
 		node.which = code;
 		var editor = getEditor(cwi.frameElement);
-//		dump("AVIM.ifMoz -- editor: " + editor + "\n");				// debug
+//		dump("AVIM.ifMoz -- editor: " + editor + "\n");							// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
 			this.start(node, e);

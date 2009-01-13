@@ -58,7 +58,7 @@ AVIM.getOverlayUrl = function (windowUrl) {
 		case "chrome://komodo/content/komodo.xul":
 			return "chrome://avim/content/komodoOverlay.xul";
 		// BlueGriffon
-		case "chrome://bluegriffon/content/bluegriffon.xul":
+		case "chrome://bluegriffon/content/xul/bluegriffon.xul":
 			return "chrome://avim/content/blueGriffonOverlay.xul";
 		// Spicebird
 		case "chrome://collab/content/collab.xul":

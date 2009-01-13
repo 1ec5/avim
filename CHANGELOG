@@ -1,8 +1,9 @@
-Until version 20061001, the version number indicated the extension's release
-date. Starting with the 20080224.x series, the first part indicates the version
-of avim.js that the extension was based on, while the remaining version part
-indicates the version of the extension itself, expressed as a Subversion
-revision number.
+A note about versioning:
+   Until version 20061001, the version number indicated the extension's release
+   date. Starting with the 20080224.x series, the first part indicates the
+   version of avim.js that the extension was based on, while the remaining
+   version part indicates the version of the extension itself, expressed as a
+   Subversion revision number.
 
 Version 20060714 (Friday, July 14, 2006)
  - Initial release by Hieu Dang.
@@ -214,7 +215,9 @@ Version 20080728.265 (Monday, December 8, 2008)
  - XaLo's version of AVIM is now recognized and disabled.
 
 Version ${Version} (${Date})
- - Added an option to allow diacritics in password boxes.
+ - Added an option to allow diacritics in password boxes. Use caution when using
+   accented passwords on a website; the website may not handle Unicode passwords
+   properly.
  - Fixed an issue where the option to use Telex while in Auto was mislabeled.
  - Fixed an issue where specialized textboxes would not update after editing a
    word that begins with an accented letter. Affected textboxes include the Find
@@ -222,3 +225,5 @@ Version ${Version} (${Date})
  - Fixed an issue where bookmark properties would not save when edited from
    within the Library.
  - Tweaked some spelling rules to prevent invalid vowel sequences.
+ - Updated support for the latest BlueGriffon nightlies.
+ - Fixed editing in BlueGriffon's rich text editor with AVIM enabled.
