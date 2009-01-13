@@ -242,6 +242,8 @@ def l10n_compat_sub(match):
 def l10n_compat_manifest(src):
     """Adjust file paths to reflect the effects of l10n_compat_locale()."""
     if CONFIG is BuildConfig.L10N:
+        path_re = re.compile(r"^(locale\s+\S+\s+)(\S+)(\s+locale/.*?/.*)", re.M)
+        src = path_re.sub(l10n_compat_sub, src)
         path_re = re.compile(r"^(locale\s+\S+\s+\S+\s+locale/)(.*?)(/.*)", re.M)
         src = path_re.sub(l10n_compat_sub, src)
     return src

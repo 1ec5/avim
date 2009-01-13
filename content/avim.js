@@ -463,7 +463,7 @@ function AVIM()	{
 		for (var g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
-		var uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = "ƯA,ƯU".split(',');
+		var uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = ["ƯA", "ƯU"];
 		
 		if (this.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
@@ -736,12 +736,11 @@ function AVIM()	{
 			var h = u.indexOf(w.charCodeAt(w.length - j));
 			if (h < 0) continue;
 			
-			var fS;
+			var fS = this.X;
 			if (h <= 23) fS = this.S;
 			else if (h <= 47) fS = this.F;
 			else if (h <= 71) fS = this.J;
 			else if (h <= 95) fS = this.R;
-			else fS = this.X;
 			
 			var c = skey[h % 24];
 			var sp = pos = this.oc.selectionStart;
