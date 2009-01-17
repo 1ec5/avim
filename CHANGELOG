@@ -214,7 +214,7 @@ Version 20080728.265 (Monday, December 8, 2008)
  - The toolbar buttons now appear disabled when AVIM is turned off.
  - XaLo's version of AVIM is now recognized and disabled.
 
-Version ${Version} (${Date})
+Version 20080728.280 (Saturday, January 17, 2008)
  - Added an option to allow diacritics in password boxes. Use caution when using
    accented passwords on a website; the website may not handle Unicode passwords
    properly.
@@ -227,3 +227,5 @@ Version ${Version} (${Date})
  - Tweaked some spelling rules to prevent invalid vowel sequences.
  - Updated support for the latest BlueGriffon nightlies.
  - Fixed editing in BlueGriffon's rich text editor with AVIM enabled.
+
+Version ${Version} (${Date})
