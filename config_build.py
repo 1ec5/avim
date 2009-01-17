@@ -18,10 +18,10 @@ REPO_URL = "http://version.1ec5.org/viewvc/avim/trunk/%(path)s" \
            "?revision=%(rev)s&view=markup"
 
 # Revision number in the Subversion repository.
-REVISION = None
+REVISION = 280
 
 # Build date.
-DATE = None
+DATE = date(2009, 1, 17)
 
 # Name to use in the build's directories.
 PACKAGE_NAME = "avim"
