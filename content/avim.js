@@ -6,6 +6,33 @@
 var AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 
 function AVIM()	{
+	this.methods = {
+		telex: {
+			DAWEO: "DAWEO", SFJRX: "SFJRX", FRX: "FRX",
+			S: "S", F: "F", J: "J", R: "R", X: "X", Z: "Z", D: "D",
+			them: "AOEW", moc: "W", trang: "W",
+			A: "A", E: "E", O: "O"
+		},
+		vni: {
+			DAWEO: "6789", SFJRX: "12534", FRX: "234",
+			S: "1", F: "2", J: "5", R: "3", X: "4", Z: "0", D: "9",
+			them: "678", moc: "7", trang: "8",
+			AEO: "6", A: "6", E: "6", O: "6"
+		},
+		viqr: {
+			DAWEO: "^+(D", SFJRX: "'`.?~", FRX: "`?~",
+			S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
+			them: "^+(", moc: "+", trang: "(",
+			AEO: "^", A: "^", E: "^", O: "^"
+		},
+		viqrStar: {
+			DAWEO: "^*(D", SFJRX: "'`.?~", FRX: "`?~",
+			S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
+			them: "^*(", moc: "*", trang: "(",
+			AEO: "^", A: "^", E: "^", O: "^"
+		}
+	};
+	
 	// IDs of user interface elements
 	const commandIds = {
 		method: "avim-method-cmd",
@@ -169,7 +196,9 @@ function AVIM()	{
 		}
 		
 		// Final consonants with ` ? ~ tones: invalid
-		if (this.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) return true;
+		if (this.method.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) {
+			return true;
+		}
 		
 		// Initial non-Vietnamese consonants: invalid
 		var nonViet = "[JW0-9" + (AVIMConfig.informal ? "]|^Z|[^D]Z" : "FZ]");
@@ -181,7 +210,9 @@ function AVIM()	{
 			.test(uw2)) { // CHY|K[AOU]|P[^H]|TRY|[NRX]Y|[NPT]HY
 			return true;
 		}
-		if (uw2 == "QU" && (this.DAWEO || this.SFJRX)) return true;
+		if (uw2 == "QU" && (this.method.DAWEO || this.method.SFJRX)) {
+			return true;
+		}
 		
 		// Non-Vietnamese diphthongs and triphthongs: invalid
 		var vowRe = /A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|UU.|Y[AIOY]/;
@@ -206,7 +237,9 @@ function AVIM()	{
 				if (/^(?:[ĂÂÔƠ]|I[EÊ]|O[ĂEÊ]?|[UƯ][AOƠ]?|UY[EÊ])$/.test(tw)) {
 					return true;
 				}
-				if (uk == this.trang && (tw == "A" || tw == "OA")) return true;
+				if (uk == this.method.trang && (tw == "A" || tw == "OA")) {
+					return true;
+				}
 			}
 			// Disallow DCD etc.
 			if (!tw) return true;
@@ -222,19 +255,22 @@ function AVIM()	{
 		if (tw != twE && /A[IOUY]|IA|IEU|UU|UO[UI]/.test(uw2)) return true;
 		
 		if (tw != uw && uw2 == "YEU") return true;
-		if (uk != this.moc && (tw == "UU" || tw == "UOU")) return true;
-		if (uk == this.AEO && /Ư[AEOƠ]$/.test(tw)) return true;	// ưô
+		if (uk != this.method.moc && (tw == "UU" || tw == "UOU")) return true;
+		if (uk == this.method.AEO && /Ư[AEOƠ]$/.test(tw)) return true;	// ưô
 		
-		if (this.them.indexOf(uk) >= 0 && !/^.UYE/.test(uw2) && uk != "E") {
+		if (this.method.them.indexOf(uk) >= 0 && !/^.UYE/.test(uw2) &&
+			uk != "E") {
 			if (/A[IO]|EO|IA|O[EO]/.test(uw2)) return true;
 			
-			if (uk == this.trang) {
-				if (this.trang != "W" && uw2 == "UA") return true;
+			if (uk == this.method.trang) {
+				if (this.method.trang != "W" && uw2 == "UA") return true;
 			}
 			else if (uw2 == "OA") return true;
 			
-			if (uk == this.moc && /^(?:[EI]U|UE|UYE?)$/.test(uw2)) return true;
-			if (uk == this.moc || uk == this.trang) {
+			if (uk == this.method.moc && /^(?:[EI]U|UE|UYE?)$/.test(uw2)) {
+				return true;
+			}
+			if (uk == this.method.moc || uk == this.method.trang) {
 				if (uw2 == "AU" || uw2 == "AY") return true;
 			}
 		}
@@ -496,9 +532,9 @@ function AVIM()	{
 		}
 		var uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = ["ƯA", "ƯU"];
 		
-		if (this.DAWEO.indexOf(uk) >= 0) {
+		if (this.method.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
-			if (uk == this.moc) {
+			if (uk == this.method.moc) {
 				if (w2.indexOf("UU") >= 0 && this.tw5 != dont[1]) {
 					if (w2.substr(-2) != "UU") return false;
 					res = 2;
@@ -519,15 +555,15 @@ function AVIM()	{
 						continue;
 					}
 					if (str.indexOf(uc) >= 0) {
-						if ((uk == this.moc && this.unV(uc) == "U" && up(this.unV(w.substr(-g + 1, 1))) == "A") ||
-							(uk == this.trang && this.unV(uc) == "A" && this.unV(pc) == "U")) {
+						if ((uk == this.method.moc && this.unV(uc) == "U" && up(this.unV(w.substr(-g + 1, 1))) == "A") ||
+							(uk == this.method.trang && this.unV(uc) == "A" && this.unV(pc) == "U")) {
 							tv = 1 + (this.unV(uc) != "U");
 							var ccc = up(w.substr(-g - tv, 1));
 							if(ccc != "Q") {
 								res = g + tv - 1;
-							} else if(uk == this.trang) {
+							} else if(uk == this.method.trang) {
 								res = g;
-							} else if(this.moc != this.trang) {
+							} else if(this.method.moc != this.method.trang) {
 								return false;
 							}
 						} else {
@@ -537,7 +573,7 @@ function AVIM()	{
 							break;
 						}
 					} else if(DAWEOFA.indexOf(uc) >= 0) {
-						if(uk == this.D) {
+						if(uk == this.method.D) {
 							if(cc == "đ") {
 								res = [g, 'd'];
 							} else if(cc == "Đ") {
@@ -553,10 +589,10 @@ function AVIM()	{
 		}
 		
 		var tE = "", tEC;
-		if (uk != this.Z && this.DAWEO.indexOf(uk) < 0) {
+		if (uk != this.method.Z && this.method.DAWEO.indexOf(uk) < 0) {
 			tE = this.retKC(uk, true);
 		}
-		if (this.DAWEO.indexOf(uk) < 0) for (var g = 1; g <= w.length; g++) {
+		if (this.method.DAWEO.indexOf(uk) < 0) for (var g = 1; g <= w.length; g++) {
 			cc = up(w.substr(-g, 1));
 			pc = up(w.substr(-g - 1, 1));
 			if(str.indexOf(cc) >= 0) {
@@ -575,7 +611,7 @@ function AVIM()	{
 					vowA.push(g);
 				}
 			}
-			else if (uk != this.Z) {
+			else if (uk != this.method.Z) {
 				var h = this.repSign(k).indexOf(w.charCodeAt(w.length - g));
 				if (h >= 0) {
 					if (this.ckspell(w, k)) return false;
@@ -588,12 +624,15 @@ function AVIM()	{
 				}
 			}
 		}
-		if(uk != this.Z && typeof(res) != 'object' && this.ckspell(w, k)) {
+		if (uk != this.method.Z && typeof(res) != 'object' &&
+			this.ckspell(w, k)) {
 			return false;
 		}
-		if (this.DAWEO.indexOf(uk) < 0) {
+		if (this.method.DAWEO.indexOf(uk) < 0) {
 			for (var g = 1; g <= w.length; g++) {
-				if (uk != this.Z && s.indexOf(w.substr(-g, 1)) >= 0) return g;
+				if (uk != this.method.Z && s.indexOf(w.substr(-g, 1)) >= 0) {
+					return g;
+				}
 				if (tE.indexOf(w.substr(-g, 1)) >= 0) {
 					var pos = tE.indexOf(w.substr(-g, 1));
 					if (pos >= 0) return [g, skey_str[pos]];
@@ -601,7 +640,7 @@ function AVIM()	{
 			}
 		}
 		if (res) return res;
-		if (c == 1 || uk == this.Z) return vowA[0];
+		if (c == 1 || uk == this.method.Z) return vowA[0];
 		else if (c == 2) {
 			var upW = up(w);
 			if (!AVIMConfig.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
@@ -715,41 +754,17 @@ function AVIM()	{
 			else if (a[0] == "D") method = 1;
 		}
 		switch (method) {
-			case 1:
-				this.SFJRX = "SFJRX"; this.DAWEO = "DAWEO";
-				this.S = 'S'; this.F = 'F'; this.J = 'J'; this.R = 'R';
-				this.X = 'X'; this.Z = 'Z'; this.D = 'D'; this.FRX = "FRX";
-				this.them = "AOEW"; this.trang = "W"; this.moc = "W";
-				this.A = "A"; this.E = "E"; this.O = "O";
-				break;
-			case 2:
-				this.DAWEO = "6789"; this.SFJRX = "12534";
-				this.S = "1"; this.F = "2"; this.J = "5"; this.R = "3";
-				this.X = "4"; this.Z = "0"; this.D = "9"; this.FRX = "234";
-				this.AEO = "6"; this.moc = "7"; this.trang = "8";
-				this.them = "678"; this.A = "6"; this.E = "6"; this.O = "6";
-				break;
-			case 3:
-				this.DAWEO = "^+(D"; this.SFJRX = "'`.?~";
-				this.S = "'"; this.F = "`"; this.J = "."; this.R = "?";
-				this.X = "~"; this.Z = "-"; this.D = "D"; this.FRX = "`?~";
-				this.AEO = "^"; this.moc = "+"; this.trang = "(";
-				this.them = "^+("; this.A = "^"; this.E = "^"; this.O = "^";
-				break;
-			case 4:
-				this.DAWEO = "^*(D"; this.SFJRX = "'`.?~";
-				this.S = "'"; this.F = "`"; this.J = "."; this.R = "?";
-				this.X = "~"; this.Z = "-"; this.D = "D"; this.FRX = "`?~";
-				this.AEO = "^"; this.moc = "*"; this.trang = "(";
-				this.them = "^*("; this.A = "^"; this.E = "^"; this.O = "^";
-//				break;
+			case 1: this.method = this.methods.telex; break;
+			case 2: this.method = this.methods.vni; break;
+			case 3: this.method = this.methods.viqr; break;
+			case 4: this.method = this.methods.viqrStar; // break;
 		}
 		
-		if(this.SFJRX.indexOf(uk) >= 0) {
+		if(this.method.SFJRX.indexOf(uk) >= 0) {
 			this.sr(w,k,i);
 			got=true;
 		}
-		else if (uk == this.Z) {
+		else if (uk == this.method.Z) {
 			sf = this.repSign(null);
 			for(h = 0; h < english.length; h++) {
 				sf.push(lowen.charCodeAt(h), english.charCodeAt(h));
@@ -764,14 +779,17 @@ function AVIM()	{
 				sf = sf.concat(sfa[h]);
 			}
 		}
-		if (uk == this.moc) this.whit = true;
+		if (uk == this.method.moc) this.whit = true;
 		if (got) return this.DAWEOZ(k, w, by, sf, i, uk);
 		if (noNormC) return "";
 		return this.normC(w, k, i);
 	};
 	
 	this.DAWEOZ = function(k, w, by, sf, i, uk) {
-		if (this.DAWEO.indexOf(uk) < 0 && this.Z.indexOf(uk) < 0) return false;
+		if (this.method.DAWEO.indexOf(uk) < 0 &&
+			this.method.Z.indexOf(uk) < 0) {
+			return false;
+		}
 		return this.tr(k, w, by, sf, i);
 	};
 	
@@ -784,11 +802,11 @@ function AVIM()	{
 			var h = u.indexOf(w.charCodeAt(w.length - j));
 			if (h < 0) continue;
 			
-			var fS = this.X;
-			if (h <= 23) fS = this.S;
-			else if (h <= 47) fS = this.F;
-			else if (h <= 71) fS = this.J;
-			else if (h <= 95) fS = this.R;
+			var fS = this.method.X;
+			if (h <= 23) fS = this.method.S;
+			else if (h <= 47) fS = this.method.F;
+			else if (h <= 71) fS = this.method.J;
+			else if (h <= 95) fS = this.method.R;
 			
 			var c = skey[h % 24];
 			var sp = pos = this.oc.selectionStart;
@@ -812,10 +830,10 @@ function AVIM()	{
 			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
 				this.replaceChar(this.oc, i - j, c);
-				if(!this.oc.data) this.main(w, fS, pos, [this.D], false);
+				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
 				else {
 					var ww = this.mozGetText(this.oc);
-					this.main(ww[0], fS, ww[1], [this.D], false);
+					this.main(ww[0], fS, ww[1], [this.method.D], false);
 				}
 			}
 		}
@@ -824,7 +842,8 @@ function AVIM()	{
 	
 	const ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
 	this.DAWEOF = function(cc, k, g) {
-		var kA = [this.A, this.moc, this.trang, this.E, this.O];
+		var kA = [this.method.A, this.method.moc, this.method.trang,
+				  this.method.E, this.method.O];
 		for (var i = 0; i < kA.length; i++) {
 			if (k != kA[i]) continue;
 			
@@ -852,11 +871,11 @@ function AVIM()	{
 	this.retKC = function(k, giveChars) {
 		var chars = "";
 		switch (k) {
-			case this.S: chars = "áấắéếíóốớúứýÁẤẮÉẾÍÓỐỚÚỨÝ"; break;
-			case this.F: chars = "àầằèềìòồờùừỳÀẦẰÈỀÌÒỒỜÙỪỲ"; break;
-			case this.J: chars = "ạậặẹệịọộợụựỵẠẬẶẸỆỊỌỘỢỤỰỴ"; break;
-			case this.R: chars = "ảẩẳẻểỉỏổởủửỷẢẨẲẺỂỈỎỔỞỦỬỶ"; break;
-			case this.X: chars = "ãẫẵẽễĩõỗỡũữỹÃẪẴẼỄĨÕỖỠŨỮỸ";
+			case this.method.S: chars = "áấắéếíóốớúứýÁẤẮÉẾÍÓỐỚÚỨÝ"; break;
+			case this.method.F: chars = "àầằèềìòồờùừỳÀẦẰÈỀÌÒỒỜÙỪỲ"; break;
+			case this.method.J: chars = "ạậặẹệịọộợụựỵẠẬẶẸỆỊỌỘỢỤỰỴ"; break;
+			case this.method.R: chars = "ảẩẳẻểỉỏổởủửỷẢẨẲẺỂỈỎỔỞỦỬỶ"; break;
+			case this.method.X: chars = "ãẫẵẽễĩõỗỡũữỹÃẪẴẼỄĨÕỖỠŨỮỸ";
 		}
 		return giveChars ? chars : codesFromChars(chars);
 	};
@@ -897,8 +916,8 @@ function AVIM()	{
 	this.repSign = function(k) {
 		var u = [];
 		for (var a = 0; a < 5; a++) {
-			if (!k || this.SFJRX[a] != up(k)) {
-				u = u.concat(this.retKC(this.SFJRX[a]));
+			if (!k || this.method.SFJRX[a] != up(k)) {
+				u = u.concat(this.retKC(this.method.SFJRX[a]));
 			}
 		}
 		return u;
