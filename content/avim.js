@@ -155,6 +155,7 @@ function AVIM()	{
 	 * @returns {boolean}	True if the word is malformed; false otherwise.
 	 */
 	this.ckspell = function(w, k) {
+//		dump("AVIM.ckspell -- w:" + w + "; k: " + k + "\n");					// debug
 		if (!AVIMConfig.ckSpell) return false;
 		w = this.unV(w);
 		var uw = up(w), tw = uw;
@@ -400,24 +401,48 @@ function AVIM()	{
 			AVIMConfig.statusBarPanel ? "-moz-box" : "none";
 	};
 	
+	/**
+	 * Returns the current position of the cursor in the given textbox.
+	 *
+	 * @param obj	{object}	The DOM element representing the current
+	 * 							textbox.
+	 * @returns {number}	The current cursor position, or -1 if the cursor
+	 * 						cannot be found.
+	 */
+	this.getCursorPosition = function(obj) {
+		var data = (obj.data) ? obj.data : text(obj);
+		if (!data || !data.length) return -1;
+		if (obj.data) return obj.pos;
+		if (!obj.setSelectionRange) return -1;
+		return obj.selectionStart;
+	}
+	
+	/**
+	 * Retrieves the relevant state from the given textbox.
+	 * 
+	 * @param obj		{object}	The DOM element representing the current
+	 * 								textbox.
+	 * @returns {array}	A tuple containing the word ending at the cursor
+	 * 					position and the cursor position.
+	 */
 	this.mozGetText = function(obj) {
-		var pos;
-		var v = (obj.data) ? obj.data : text(obj);
-		if (!v || !v.length) return false;
-		if (obj.data) pos = obj.pos;
-		else {
-			if (!obj.setSelectionRange) return false;
-			pos = obj.selectionStart;
-		}
+		var pos = this.getCursorPosition(obj);
+		if (pos < 0) return false;
 		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
 		
-		var w = v.substring(0, pos);
+		var data = (obj.data) ? obj.data : text(obj);
+		var w = data.substring(0, pos);
 		w = /[^ \r\n\t\xa0#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”‘’\xab\xbb‹›–—…−×÷°″′]*$/.exec(w);
 		return [w ? w[0] : "", pos];
 	};
 	
+	/**
+	 * @param obj	{object}	The DOM element representing the current
+	 * 							textbox.
+	 * @param key	{string}	The character equivalent of the pressed key.
+	 */
 	this.start = function(obj, key) {
-		var w = "", method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
+		var method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
 		this.oc=obj;
 		var uniA = [];
 		this.D2 = "";
@@ -435,9 +460,10 @@ function AVIM()	{
 			uniA.push("D^^^*(".split("")); this.D2 += "D^*(";
 		}
 		
+		var w = this.mozGetText(obj);
 		key = fcc(key.which);
-		w = this.mozGetText(obj);
 		if (!w || obj.sel) return;
+		
 		var noNormC = this.D2.indexOf(up(key)) >= 0;
 		
 		for (var i = 0; i < uniA.length; i++) {
@@ -454,6 +480,10 @@ function AVIM()	{
 	
 	const DAWEOFA = up(aA.join() + eA.join() + mocA.join() + trangA.join() +
 					   oA.join() + english);
+	/**
+	 * @param w	{string}	The word ending at the cursor position.
+	 * @param k	{string}	The character equivalent of the pressed key.
+	 */
 	this.findC = function(w, k, sf) {
 		var method = AVIMConfig.method;
 		if ((method == 3 || method == 4) && w.substr(-1) == "\\") {
@@ -591,6 +621,15 @@ function AVIM()	{
 		return false;
 	};
 	
+	/**
+	 * Replaces the character or characters at the given position with the given
+	 * replacement character code.
+	 * 
+	 * @param o		{object}	The DOM element representing the current
+	 * 							textbox.
+	 * @param pos	{string}	The position to start replacing from.
+	 * @param c		{number}	The codepoint of the character to replace with.
+	 */
 	this.replaceChar = function(o, pos, c) {
 		var bb = false;
 		if(!nan(c)) {
@@ -641,6 +680,10 @@ function AVIM()	{
 		this.whit = false;
 	};
 	
+	/**
+	 * @param w	{string}	The word ending at the cursor position.
+	 * @param k	{string}	The character equivalent of the pressed key.
+	 */
 	this.tr = function(k, w, by, sf, i) {
 		var pos = this.findC(w, k, sf);
 		if (!pos) return false;
@@ -658,6 +701,10 @@ function AVIM()	{
 	
 	const bya = [db1, ab1, eb1, ob1, mocb1, trangb1];
 	const sfa = [ds1, as1, es1, os1, mocs1, trangs1];
+	/**
+	 * @param w	{string}	The word ending at the cursor position.
+	 * @param k	{string}	The character equivalent of the pressed key.
+	 */
 	this.main = function(w, k, i, a, noNormC) {
 		var uk = up(k), got = false, t = "dDaAaAoOuUeEoO".split("");
 		var by = [], sf = [], method = AVIMConfig.method, h, g;
@@ -857,6 +904,10 @@ function AVIM()	{
 		return u;
 	};
 	
+	/**
+	 * @param w	{string}	The word ending at the cursor position.
+	 * @param k	{string}	The character equivalent of the pressed key.
+	 */
 	this.sr = function(w, k, i) {
 		var pos = this.findC(w, k, skey_str);
 		if (!pos) return;
@@ -864,6 +915,10 @@ function AVIM()	{
 		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos));
 	};
 	
+	/**
+	 * @param w	{string}	The word ending at the cursor position.
+	 * @param k	{string}	The character equivalent of the pressed key.
+	 */
 	this.retUni = function(w, k, pos) {
 		var uC, lC;
 		var idx = skey_str.indexOf(w.substr(-pos, 1));
@@ -1284,7 +1339,10 @@ function AVIM()	{
 		MViet: function(win) {
 			if (!AVIMConfig.disabledScripts.MViet) return;
 			if (typeof(win.MVOff) == "boolean" && win.MVOff) return;
-			if ("MVietOnOffButton" in win) win.MVietOnOffButton();
+			if ("MVietOnOffButton" in win &&
+				win.MVietOnOffButton instanceof Function) {
+				win.MVietOnOffButton();
+			}
 			else if ("button" in win) win.button(0);
 		},
 		VietIMEW: function(win) {
