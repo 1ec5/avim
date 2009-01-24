@@ -432,7 +432,7 @@ function AVIM()	{
 		
 		var data = (obj.data) ? obj.data : text(obj);
 		var w = data.substring(0, pos);
-		w = /[^ \r\n\t\xa0#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”‘’\xab\xbb‹›–—…−×÷°″′]*$/.exec(w);
+		w = /[^ \r\n\t\xa0\xad#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”„“‘’«»‹›‐‑–—…−×÷°″′•·†‡]*$/.exec(w);
 		return [w ? w[0] : "", pos];
 	};
 	
