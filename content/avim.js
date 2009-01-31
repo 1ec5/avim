@@ -435,6 +435,19 @@ function AVIM()	{
 		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
 		panel.style.display =
 			AVIMConfig.statusBarPanel ? "-moz-box" : "none";
+		
+		// IME and DiMENSiON extension
+		if (window.getIMEStatus) {
+			var getStatus = getIMEStatus;
+			getIMEStatus = function () {
+				try {
+					return AVIMConfig.onOff || getStatus();
+				}
+				catch (e) {
+					return AVIMConfig.onOff;
+				}
+			}
+		}
 	};
 	
 	/**
