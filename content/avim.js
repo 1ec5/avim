@@ -812,20 +812,21 @@ function AVIM()	{
 			var sp = pos = this.oc.selectionStart;
 			w = this.unV(w);
 			if(!this.changed) {
-				w += k;
-				var sst = this.oc.scrollTop;
-				pos += k.length;
-				if(!this.oc.data) {
-//					this.oc.value = this.oc.value.substr(0, sp) + k +
-//						this.oc.value.substr(this.oc.selectionEnd);
-					splice(this.oc, sp, this.oc.selectionEnd - sp, k);
-					this.changed = true;
-					this.oc.scrollTop = sst;
-				} else {
-					this.oc.insertData(this.oc.pos, k);
-					this.range.setEnd(this.oc, ++this.oc.pos);
-					this.specialChange = true;
-				}
+//				w += k;
+//				var sst = this.oc.scrollTop;
+//				pos += k.length;
+//				if(!this.oc.data) {
+////					this.oc.value = this.oc.value.substr(0, sp) + k +
+////						this.oc.value.substr(this.oc.selectionEnd);
+//					splice(this.oc, sp, this.oc.selectionEnd - sp, k);
+//					this.changed = true;
+//					this.oc.scrollTop = sst;
+//				} else {
+//					this.oc.insertData(this.oc.pos, k);
+//					this.range.setEnd(this.oc, ++this.oc.pos);
+//					this.specialChange = true;
+//				}
+				continue;
 			}
 			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
@@ -1061,7 +1062,7 @@ function AVIM()	{
 		if (xulTarget._find) xulTarget._find(xblTarget.value);
 		
 		// Bookmark properties in Firefox -- truly awful kludge
-		eval(xulTarget.getAttribute("oninput") || "");
+		with (xulTarget) eval(xulTarget.getAttribute("oninput") || "");
 		
 		// Subject bar in Thunderbird
 		if (window.SetComposeWindowTitle) SetComposeWindowTitle();
