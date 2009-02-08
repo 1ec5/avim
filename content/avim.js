@@ -962,6 +962,21 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Fires a fake onInput event from the given element. If preventDefault() is
+	 * called on the onKeyPress event, most textboxes will not respond
+	 * appropriately to AVIM's changes (autocomplete, in-page find, `oninput`
+	 * attribute, etc.) unless this method is called.
+	 *
+	 * @param container	{object}	A DOM node representing the textbox element.
+	 */
+	this.updateContainer = function (container) {
+		if (!container) return;
+		var inputEvent = document.createEvent("Events");
+		inputEvent.initEvent("input", true, true);
+		container.dispatchEvent(inputEvent);
+	};
+	
+	/**
 	 * Handles key presses for WYSIWYG HTML documents (editable through
 	 * Mozilla's Midas component).
 	 */
@@ -1020,9 +1035,7 @@ function AVIM()	{
 		if(this.changed) {
 			this.changed = false;
 			e.preventDefault();
-			var inputEvent = document.createEvent("Events");
-			inputEvent.initEvent("input", true, true);
-			el.dispatchEvent(inputEvent);
+			this.updateContainer(el);
 		}
 	};
 	
@@ -1082,9 +1095,7 @@ function AVIM()	{
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
-			var inputEvent = document.createEvent("Events");
-			inputEvent.initEvent("input", true, true);
-			el.dispatchEvent(inputEvent);
+			this.updateContainer(el);
 			// A bit of a hack to prevent single-line textboxes from scrolling
 			// to the beginning of the line.
 			if (window.goDoCommand && el.type != "textarea") {
