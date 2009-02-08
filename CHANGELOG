@@ -231,6 +231,8 @@ Version 20080728.280 (Saturday, January 17, 2008)
 Version 20080728.290 (Saturday, February 7, 2008)
  - Fixed a security issue that allowed malicious webpages to execute arbitrary
    JavaScript as privileged code.
+ - Improved performance when editing a multiline textbox with a large amount of
+   text.
  - Added experimental support for the IME and DiMENSiON extension.
 
 Version ${Version} (${Date})
