@@ -1,5 +1,4 @@
  - Update in-page autocompleting textboxes.
- - Stop canceling the keypress event.
  - Use XBL or XPCOM to allow each application to share the same overlay.
  - Add key mapping for g~ (Ng~.).
  - Bug: "kilo^mét" (kilômét)

@@ -229,4 +229,6 @@ Version 20080728.280 (Saturday, January 17, 2008)
  - Fixed editing in BlueGriffon's rich text editor with AVIM enabled.
 
 Version ${Version} (${Date})
+ - Fixed a security issue that allowed malicious webpages to execute arbitrary
+   JavaScript as privileged code.
  - Added experimental support for the IME and DiMENSiON extension.
