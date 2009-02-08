@@ -228,7 +228,9 @@ Version 20080728.280 (Saturday, January 17, 2008)
  - Updated support for the latest BlueGriffon nightlies.
  - Fixed editing in BlueGriffon's rich text editor with AVIM enabled.
 
-Version ${Version} (${Date})
+Version 20080728.290 (Saturday, February 7, 2008)
  - Fixed a security issue that allowed malicious webpages to execute arbitrary
    JavaScript as privileged code.
  - Added experimental support for the IME and DiMENSiON extension.
+
+Version ${Version} (${Date})
