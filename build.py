@@ -167,20 +167,29 @@ def preprocess(src, debug=False, vals=None):
            ${VarName}
        where "VarName" is the name of the variable.
 
-       Testing code can be removed when debug is True: this method removes
+       Testing code can be removed when debug is True. This method removes
        everything from any line that contains:
            $if{Debug}
        to any line that contains:
            $endif{}
-       inclusive. Because the each of these lines are removed entirely, these
+       inclusive. Similarly, it removes BabelZilla-incompatible code between:
+           $unless{BabelZilla}
+       and:
+           $endunless{}
+       
+       Because the each of these lines are removed entirely, these
        processing instructions can be place inside of comments, to avoid errors
        when the file is parsed as code. Note that general if-test support has
        not been implemented."""
     # Remove testing code. We don't have real if-test support yet.
     if CONFIG in [BuildConfig.RELEASE, BuildConfig.AMO]:
-        debug_re = re.compile(r"^[^\r\n]*\$if\{Debug\}.*?\$endif\{\}[^\r\n]*$",
-                             re.M | re.S)
+        debug_re = re.compile(r"^[^\r\n]*\$if\{" + BuildConfig.DEBUG +
+                              r"\}.*?\$endif\{\}[^\r\n]*$", re.M | re.S)
         src = debug_re.sub(r"", src)
+    elif CONFIG is BuildConfig.L10N:
+        l10n_re = re.compile(r"^[^\r\n]*\$unless\{" + BuildConfig.L10N +
+                             r"\}.*?\$endunless\{\}[^\r\n]*$", re.M | re.S)
+        src = l10n_re.sub(r"", src)
 
     # Substitute variables.
     for k, v in vals.iteritems():
@@ -224,11 +233,12 @@ def l10n_compat_locale(file_path):
         return file_path
 
 def l10n_compat_install(src):
-    """Remove <em:localized> tags for compatibility with BabelZilla."""
-    if CONFIG is BuildConfig.L10N:
-        tag_re = re.compile(r"<em:localized(?:\s+[^>]*)?>.*?</em:localized>",
-                            re.S)
-        src = tag_re.sub(r"", src)
+    """Remove <em:localized> tags and certain <em:targetApplication> tags for
+       compatibility with BabelZilla."""
+    if not CONFIG is BuildConfig.L10N:
+        return src
+    tag_re = re.compile(r"<em:localized(?:\s+[^>]*)?>.*?</em:localized>", re.S)
+    src = tag_re.sub(r"", src)
     return src
 
 def l10n_compat_sub(match):
