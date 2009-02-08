@@ -812,6 +812,7 @@ function AVIM()	{
 			var sp = pos = this.oc.selectionStart;
 			w = this.unV(w);
 			if(!this.changed) {
+				// Insert the non-deadkey.
 //				w += k;
 //				var sst = this.oc.scrollTop;
 //				pos += k.length;
@@ -1019,6 +1020,9 @@ function AVIM()	{
 		if(this.changed) {
 			this.changed = false;
 			e.preventDefault();
+			var inputEvent = document.createEvent("Events");
+			inputEvent.initEvent("input", true, true);
+			el.dispatchEvent(inputEvent);
 		}
 	};
 	
@@ -1040,46 +1044,6 @@ function AVIM()	{
 		var id = el.id || el.getAttribute("id");
 		if (!id || !id.toLowerCase) return false;
 		return AVIMConfig.exclude.indexOf(id.toLowerCase()) >= 0;
-	}
-	
-	/**
-	 * Update specialized XUL textboxes that typically rely on keypress events
-	 * to change state. Examples include autocomplete textboxes and the Find
-	 * Toolbar.
-	 * 
-	 * @param e	{object}	the key press event.
-	 */
-	this.updateContainer = function(e) {
-		var xulTarget = e.target.textbox || e.target;
-		var xblTarget = e.originalTarget;
-		
-		// Autocomplete textboxes for Toolkit
-		if (xulTarget.type == "autocomplete" && xulTarget.controller) {
-			xulTarget.controller.handleText(true);
-		}
-		
-		// Find Toolbar for Toolkit
-		if (xulTarget._find) xulTarget._find(xblTarget.value);
-		
-		// Bookmark properties in Firefox -- truly awful kludge
-		with (xulTarget) eval(xulTarget.getAttribute("oninput") || "");
-		
-		// Subject bar in Thunderbird
-		if (window.SetComposeWindowTitle) SetComposeWindowTitle();
-		
-		// Autocomplete textboxes in Gecko
-		
-		// Quick way to detect in-browser textboxes -- once autocomplete is used
-		// for an in-page control (e.g., <input type="search">), do this the
-		// right way.
-		if (xulTarget != xblTarget) return;
-		var popup = document.getElementById("PopupAutoComplete");
-		if (popup && popup.popupOpen && popup.input) {
-//			dump("AVIM.updateContainer()\n");									// debug
-//			popup.input.textValue = xblTarget.value;
-//			popup.closePopup();
-//			popup.openAutocompletePopup(popup.input, xblTarget);
-		}
 	}
 	
 	/**
@@ -1118,13 +1082,15 @@ function AVIM()	{
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
+			var inputEvent = document.createEvent("Events");
+			inputEvent.initEvent("input", true, true);
+			el.dispatchEvent(inputEvent);
 			// A bit of a hack to prevent single-line textboxes from scrolling
 			// to the beginning of the line.
 			if (window.goDoCommand && el.type != "textarea") {
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}
-			this.updateContainer(e);
 			return false;
 		}
 		return true;
