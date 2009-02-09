@@ -1018,7 +1018,7 @@ function AVIM()	{
 		if(this.changed) {
 			this.changed = false;
 			e.preventDefault();
-			this.updateContainer(el);
+			this.updateContainer(target);
 		}
 	};
 	

@@ -103,11 +103,11 @@
 						<description id="ignored-instructions" linecount="&ignored-instructions.line-count;">&ignored-instructions.label;</description>
 						<hbox align="center">
 							<label control="ignore-text">&ignore-text.label;</label>
-							<textbox id="ignore-text" flex="1" oninput="optionsPanel.validateIgnoreButton();" />
+							<textbox id="ignore-text" flex="1" newlines="replacewithspaces" oninput="optionsPanel.validateIgnoreButton();" onkeypress="return optionsPanel.onTextBoxKeyPress(event);" />
 							<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
 						</hbox>
 						<separator class="thin" />
-						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="optionsPanel.validateRemoveButton();" />
+						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="optionsPanel.validateRemoveButton();" onkeypress="optionsPanel.onIdListKeyPress(event);" />
 						<hbox class="actionButtons">
 							<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
 							<spacer flex="1" />

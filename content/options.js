@@ -79,6 +79,25 @@ function AVIMOptionsPanel() {
 	};
 	
 	/**
+	 * Adds the IDs in the Ignore textbox to the Ignored IDs list if Enter or
+	 * Return was pressed.
+	 *
+	 * @param keyEvent	{object}	An onKeyPress DOM event.
+	 * @returns {boolean}	False if Enter or Return was pressed (and thus the
+	 * 						keypress event should be canceled); true otherwise.
+	 */
+	this.onTextBoxKeyPress = function(keyEvent) {
+		var keyCode = keyEvent.keyCode;
+//		dump("AVIMOptionsPanel.onTextBoxKeyPress -- keyCode: " + keyCode + "\n");	// debug
+		switch (keyCode) {
+			case 13:
+				this.ignoreIdsInTextBox();
+				return false;
+		}
+		return true;
+	};
+	
+	/**
 	 * Enables or disables the Remove ID button, based on whether any rows are
 	 * selected in the Ignored IDs list.
 	 */
@@ -211,6 +230,22 @@ function AVIMOptionsPanel() {
 		}
 		if (document.documentElement.instantApply) this.setPrefs();
 //		this.validateRemoveButton();
+	};
+	
+	/**
+	 * Removes the selected IDs from the list of ignored IDs if Backspace or
+	 * Delete was pressed.
+	 *
+	 * @param keyEvent	{object}	An onKeyPress DOM event.
+	 */
+	this.onIdListKeyPress = function(keyEvent) {
+		var keyCode = keyEvent.keyCode;
+//		dump("AVIMOptionsPanel.onIdListKeyPress -- keyCode: " + keyCode + "\n");	// debug
+		switch (keyCode) {
+			case 8: case 46:
+				this.removeSelectedIds();
+//				break;
+		}
 	};
 	
 	/**
