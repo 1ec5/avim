@@ -47,7 +47,7 @@ pref("extensions.avim.auto.viqrStar", false);
 pref("extensions.avim.scriptMonitor.enabled", true);
 pref("extensions.avim.scriptMonitor.avim", true);
 pref("extensions.avim.scriptMonitor.chim", false);
-pref("extensions.avim.scriptMonitor.mudim", false);
+pref("extensions.avim.scriptMonitor.mudim", true);
 pref("extensions.avim.scriptMonitor.mViet", true);
 pref("extensions.avim.scriptMonitor.vietImeW", false);
 pref("extensions.avim.scriptMonitor.vietTyping", true);

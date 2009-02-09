@@ -236,3 +236,5 @@ Version 20080728.290 (Saturday, February 7, 2008)
  - Added experimental support for the IME and DiMENSiON extension.
 
 Version ${Version} (${Date})
+ - The Mudim script is disabled by default, since Mudim is widespread and
+   disabling it does not significantly impact performance.

@@ -811,24 +811,7 @@ function AVIM()	{
 			var c = skey[h % 24];
 			var sp = pos = this.oc.selectionStart;
 			w = this.unV(w);
-			if(!this.changed) {
-				// Insert the non-deadkey.
-//				w += k;
-//				var sst = this.oc.scrollTop;
-//				pos += k.length;
-//				if(!this.oc.data) {
-////					this.oc.value = this.oc.value.substr(0, sp) + k +
-////						this.oc.value.substr(this.oc.selectionEnd);
-//					splice(this.oc, sp, this.oc.selectionEnd - sp, k);
-//					this.changed = true;
-//					this.oc.scrollTop = sst;
-//				} else {
-//					this.oc.insertData(this.oc.pos, k);
-//					this.range.setEnd(this.oc, ++this.oc.pos);
-//					this.specialChange = true;
-//				}
-				continue;
-			}
+			if(!this.changed) continue;
 			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
 				this.replaceChar(this.oc, i - j, c);

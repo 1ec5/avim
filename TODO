@@ -1,3 +1,4 @@
+ - Disable VietUni 1.7 [1]: CVietUni.typer.keyMode.off = true
  - Update in-page autocompleting textboxes.
  - Use XBL or XPCOM to allow each application to share the same overlay.
  - Add key mapping for g~ (Ng~.).
@@ -6,7 +7,8 @@
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
  - Add key mapping for the dong sign.
  - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [1] Maybe limit this feature to bookmarks (FUEL), since
+   Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
 
-[1] http://developer.mozilla.org/en/docs/Using_content_preferences
+[1] http://www.codeproject.com/KB/scripting/VietUni2.aspx
+[2] http://developer.mozilla.org/en/docs/Using_content_preferences
