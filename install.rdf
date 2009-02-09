@@ -51,7 +51,6 @@
 				<em:maxVersion>1.0.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
-		<!-- $endunless{} -->
 		
 		<!-- SeaMonkey -->
 		<em:targetApplication>
@@ -61,6 +60,7 @@
 				<em:maxVersion>2.0a3</em:maxVersion>
 			</Description>
 		</em:targetApplication>
+		<!-- $endunless{} -->
 		
 		<!-- Flock -->
 		<em:targetApplication>
@@ -80,6 +80,7 @@
 			</Description>
 		</em:targetApplication>
 		
+		<!-- $unless{BabelZilla} -->
 		<!-- Komodo IDE -->
 		<em:targetApplication>
 			<Description>
@@ -88,6 +89,7 @@
 				<em:maxVersion>5.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
+		<!-- $endunless{} -->
 		
 		<!-- Komodo Edit -->
 		<em:targetApplication>
