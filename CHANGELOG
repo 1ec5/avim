@@ -236,6 +236,12 @@ Version 20080728.290 (Saturday, February 7, 2008)
  - Added experimental support for the IME and DiMENSiON extension.
 
 Version ${Version} (${Date})
+ - Eliminated lag when adding diacritics. Editing a textbox with a large amount
+   of text no longer incurs any noticeable delay.
+ - Fixed an issue where the entire contents of the textbox were selected after
+   undoing; the cursor now stays in place.
+ - Fixed automatic shifting forward of diacritics (for example, "to'an" becomes
+   "toa'n").
  - The Mudim script is disabled by default, since Mudim is widespread and
    disabling it does not significantly impact performance.
  - Pressing Enter while focused on the ID textbox adds the ID to the list.

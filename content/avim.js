@@ -916,7 +916,22 @@ function AVIM()	{
 			var c = skey[h % 24];
 			var sp = pos = this.oc.selectionStart;
 			w = this.unV(w);
-			if(!this.changed) continue;
+			if(!this.changed) {
+				w += k;
+				var sst = this.oc.scrollTop;
+				pos += k.length;
+				if(!this.oc.data) {
+//					this.oc.value = this.oc.value.substr(0, sp) + k +
+//						this.oc.value.substr(this.oc.selectionEnd);
+					this.splice(this.oc, sp, this.oc.selectionEnd - sp, k);
+					this.changed = true;
+					this.oc.scrollTop = sst;
+				} else {
+					this.oc.insertData(this.oc.pos, k);
+					this.range.setEnd(this.oc, ++this.oc.pos);
+					this.specialChange = true;
+				}
+			}
 			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
 				this.replaceChar(this.oc, i - j, c);
@@ -1174,20 +1189,20 @@ function AVIM()	{
 			(AVIMConfig.passwords && el.type == "password");
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
-//		var editor = getEditor(el);
+		var editor = getEditor(el);
 //		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
-//		if (editor && editor.beginTransaction) editor.beginTransaction();
-//		try {
+		if (editor && editor.beginTransaction) editor.beginTransaction();
+		try {
 			this.start(el, e);
-//		}
-//		catch (exc) {
-//			throw exc;
-//		}
-//		finally {
+		}
+		catch (exc) {
+			throw exc;
+		}
+		finally {
 			// If we don't put this line in a finally clause, an error in
 			// start() will render Firefox inoperable.
-//			if (editor && editor.endTransaction) editor.endTransaction();
-//		}
+			if (editor && editor.endTransaction) editor.endTransaction();
+		}
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
