@@ -81,16 +81,17 @@ function AVIM()	{
 	var getEditor = function(el) {
 		if (!el) return undefined;
 		if (el.editor) return el.editor;
+		var iface;
 		try {
-			const nsee = Components.interfaces.nsIDOMNSEditableElement;
-			return el.QueryInterface(nsee).editor;
+			iface = Components.interfaces.nsIDOMNSEditableElement;
+			return el.QueryInterface(iface).editor;
 //				iface = Components.interfaces.nsIPlaintextEditor;
 //				editor = editableEl.QueryInterface(iface);
 		}
 		catch (e) {}
 		try {
-			const ed = Components.interfaces.nsIEditor;
-			return el.QueryInterface(ed).editor;
+			iface = Components.interfaces.nsIEditor;
+			return el.QueryInterface(iface).editor;
 		}
 		catch (e) {}
 //		dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");		// debug
@@ -123,19 +124,45 @@ function AVIM()	{
 	 * @param index		{number}	The index at which to begin replacing.
 	 * @param len		{number}	The number of characters to replace.
 	 * @param newStr	{string}	The string to insert.
+	 * @param word		{string}	The word ending at the cursor position.
 	 */
-	var splice = function(el, index, len, newStr) {
-//		var editor = getEditor(el);
-//		dump("AVIM.splice -- editor: " + editor + "; newStr: " + newStr + "\n");	// debug
-//		if (editor && editor.insertText) {
-//			var selStart = el.selectionStart;
-//			el.setSelectionRange(index, index + len);
-//			editor.insertText(newStr);
-//			el.setSelectionRange(selStart + newStr.length - len);
-//			return;
-//		}
-		var val = el.value;
-		el.value = val.substr(0, index) + newStr + val.substr(index + len);
+	this.splice = function(el, index, len, newStr, word) {
+		try {
+			var editor = getEditor(el);
+//			dump("AVIM.splice -- editor: " + editor + "; newStr: " + newStr + "\n");	// debug
+			var anchorNode = editor.selection.anchorNode;
+			var absPos = el.selectionStart;
+			var relPos = editor.selection.anchorOffset;
+			if (anchorNode == editor.rootElement) {
+				var pos = 0;
+				for (var i = 0; i < anchorNode.childNodes.length; i++) {
+					var child = anchorNode.childNodes[i];
+					if (child.nodeType != el.TEXT_NODE) {
+						pos++;
+						continue;
+					}
+					pos += child.textContent.length;
+					if (pos < absPos) continue;
+					anchorNode = child;
+					break;
+				}
+				relPos = anchorNode.textContent.length;
+			}
+			var anchorPos = absPos - relPos;
+//			dump("\tAbsolute: " + absPos + "; relative: " + relPos + "; index: " + index + "\n");		// debug
+			anchorNode.textContent =
+				anchorNode.textContent.substr(0, index - anchorPos) + newStr +
+				anchorNode.textContent.substr(index - anchorPos + len);
+//			editor.markNodeDirty(anchorNode);
+			return;
+		}
+		catch (e) {
+			throw e;
+		}
+		finally {
+			var val = el.value;
+			el.value = val.substr(0, index) + newStr + val.substr(index + len);
+		}
 	};
 	
 	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ";
@@ -668,8 +695,9 @@ function AVIM()	{
 	 * 							textbox.
 	 * @param pos	{string}	The position to start replacing from.
 	 * @param c		{number}	The codepoint of the character to replace with.
+	 * @param w		{string}	The word ending at the cursor position.
 	 */
-	this.replaceChar = function(o, pos, c) {
+	this.replaceChar = function(o, pos, c, w) {
 		var bb = false;
 		if(!nan(c)) {
 			var replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
@@ -695,7 +723,7 @@ function AVIM()	{
 				replaceBy = r + replaceBy;
 				pos--;
 			}
-			splice(o, pos, 1 + !!r, replaceBy);
+			this.splice(o, pos, 1 + !!r, replaceBy, w);
 			o.setSelectionRange(savePos, savePos);
 			o.scrollTop = sst;
 		} else {
@@ -726,13 +754,13 @@ function AVIM()	{
 	this.tr = function(k, w, by, sf, i) {
 		var pos = this.findC(w, k, sf);
 		if (!pos) return false;
-		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1]);
+		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1], w);
 		var pC = w.substr(-pos, 1);
 		for (var g = 0; g < sf.length; g++) {
 			var cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
 			if (cmp == sf[g]) {
 				var c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
-				return this.replaceChar(this.oc, i - pos, c);
+				return this.replaceChar(this.oc, i - pos, c, w);
 			}
 		}
 		return false;
@@ -814,7 +842,7 @@ function AVIM()	{
 			if(!this.changed) continue;
 			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
-				this.replaceChar(this.oc, i - j, c);
+				this.replaceChar(this.oc, i - j, c, w);
 				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
 				else {
 					var ww = this.mozGetText(this.oc);
@@ -915,8 +943,8 @@ function AVIM()	{
 	this.sr = function(w, k, i) {
 		var pos = this.findC(w, k, skey_str);
 		if (!pos) return;
-		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1]);
-		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos));
+		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1], w);
+		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos), w);
 	};
 	
 	/**
@@ -952,11 +980,19 @@ function AVIM()	{
 	 *
 	 * @param container	{object}	A DOM node representing the textbox element.
 	 */
-	this.updateContainer = function (container) {
+	this.updateContainer = function(container) {
 		if (!container) return;
 		var inputEvent = document.createEvent("Events");
 		inputEvent.initEvent("input", true, true);
 		container.dispatchEvent(inputEvent);
+		
+//		// Autocomplete textboxes for Toolkit
+//		var isBrowser = xulTarget.localName == "tabbrowser" ||
+//			xulTarget.localName == "browser";
+//		if (isBrowser && xulTarget.hasAttribute("autocompletepopup")) {
+//			xulTarget.controller
+//			xulTarget.controller.handleText(true);
+//		}
 	};
 	
 	/**
