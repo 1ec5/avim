@@ -117,19 +117,98 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Transaction that replaces a particular substring in a text node. Based on
+	 * <http://weblogs.mozillazine.org/weirdal/archives/txMgr_transition.txt>.
+	 *
+	 * @param node	{object}	The DOM text node to be modified.
+	 * @param pos	{number}	The zero-based index from which to begin
+	 * 							replacing characters.
+	 * @param len	{number}	The number of characters to replace.
+	 * @param repl	{string}	The replacement string.
+	 * @implements Components.interfaces.nsITransaction
+	 * @implements Components.interfaces.nsISupports
+	 */
+	var SpliceTxn = function(el, node, pos, len, repl) {
+		//* @type Element
+		this.el = el;
+		//* @type Text
+		this.node = node;
+		//* @type Number
+		this.pos = pos;
+		//* @type Number
+		this.len = len;
+		//* @type String
+		this.repl = repl;
+		
+		//* @type Boolean
+		this.isTransient = false;
+		
+		/**
+		 * Shift the selection to the right by the given number of characters.
+		 *
+		 * @param numChars	{number}	The number of characters to shift.
+		 */
+		this.shiftSelection = function(numChars) {
+			if (this.el) this.el.selectionStart += numChars;
+		};
+		
+		/**
+		 * Replaces a substring in the text node with the given substitution.
+		 */
+		this.doTransaction = this.redoTransaction = function() {
+			this.orig = this.node.substringData(this.pos, this.len);
+			this.node.replaceData(this.pos, this.len, this.repl);
+			this.shiftSelection(1);
+		};
+		
+		/**
+		 * Replaces the previously inserted substitution with the original
+		 * string.
+		 */
+		this.undoTransaction = function() {
+			this.node.replaceData(this.pos, this.repl.length, this.orig);
+			this.shiftSelection(2);
+		};
+		
+		/**
+		 * Always fails to merge this transaction into the given transaction.
+		 *
+		 * @returns {boolean}	False always.
+		 */
+		this.merge = function() {
+			return false;
+		};
+		
+		/**
+		 * Returns whether this class implements the interface with the given
+		 * IID.
+		 *
+		 * @param {number}	iid	The unique IID of the interface.
+		 * @returns {boolean}	True if this class implements the interface;
+		 * 						false otherwise.
+		 */
+		this.QueryInterface = function(iid) {
+			if (iid == Components.interfaces.nsITransaction ||
+				iid == Components.interfaces.nsISupports) {
+				return this;
+			}
+			return null;
+		};
+	};
+	
+	/**
 	 * Replaces the substring inside the given textbox, starting at an index and
 	 * spanning the given number of characters, with the given string.
 	 *
-	 * @param el		{object}	The textbox's DOM node.
-	 * @param index		{number}	The index at which to begin replacing.
-	 * @param len		{number}	The number of characters to replace.
-	 * @param newStr	{string}	The string to insert.
-	 * @param word		{string}	The word ending at the cursor position.
+	 * @param el	{object}	The textbox's DOM node.
+	 * @param index	{number}	The index at which to begin replacing.
+	 * @param len	{number}	The number of characters to replace.
+	 * @param repl	{string}	The string to insert.
 	 */
-	this.splice = function(el, index, len, newStr, word) {
+	this.splice = function(el, index, len, repl) {
 		try {
 			var editor = getEditor(el);
-//			dump("AVIM.splice -- editor: " + editor + "; newStr: " + newStr + "\n");	// debug
+//			dump("AVIM.splice -- editor: " + editor + "; repl: " + repl + "\n");	// debug
 			var anchorNode = editor.selection.anchorNode;
 			var absPos = el.selectionStart;
 			var relPos = editor.selection.anchorOffset;
@@ -141,27 +220,21 @@ function AVIM()	{
 						pos++;
 						continue;
 					}
-					pos += child.textContent.length;
+					pos += child.length;
 					if (pos < absPos) continue;
 					anchorNode = child;
 					break;
 				}
 				relPos = anchorNode.textContent.length;
 			}
-			var anchorPos = absPos - relPos;
-//			dump("\tAbsolute: " + absPos + "; relative: " + relPos + "; index: " + index + "\n");		// debug
-			anchorNode.textContent =
-				anchorNode.textContent.substr(0, index - anchorPos) + newStr +
-				anchorNode.textContent.substr(index - anchorPos + len);
-//			editor.markNodeDirty(anchorNode);
-			return;
+			var replPos = index + relPos - absPos;
+			editor.doTransaction(new SpliceTxn(el, anchorNode, replPos, len,
+											   repl));
 		}
 		catch (e) {
-			throw e;
-		}
-		finally {
 			var val = el.value;
-			el.value = val.substr(0, index) + newStr + val.substr(index + len);
+			el.value = val.substr(0, index) + repl + val.substr(index + len);
+			throw e;
 		}
 	};
 	
@@ -695,9 +768,8 @@ function AVIM()	{
 	 * 							textbox.
 	 * @param pos	{string}	The position to start replacing from.
 	 * @param c		{number}	The codepoint of the character to replace with.
-	 * @param w		{string}	The word ending at the cursor position.
 	 */
-	this.replaceChar = function(o, pos, c, w) {
+	this.replaceChar = function(o, pos, c) {
 		var bb = false;
 		if(!nan(c)) {
 			var replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
@@ -723,7 +795,7 @@ function AVIM()	{
 				replaceBy = r + replaceBy;
 				pos--;
 			}
-			this.splice(o, pos, 1 + !!r, replaceBy, w);
+			this.splice(o, pos, 1 + !!r, replaceBy);
 			o.setSelectionRange(savePos, savePos);
 			o.scrollTop = sst;
 		} else {
@@ -737,6 +809,11 @@ function AVIM()	{
 					replaceBy = (c == "o") ? "ơ" : "Ơ";
 				}
 			}
+//			var doc = o.ownerDocument;
+//			var winWrapper = new XPCNativeWrapper(doc.defaultView);
+//			var win = winWrapper.wrappedJSObject;
+//			var editor = win.frameElement.editor;
+//			editor.doTransaction(new SpliceTxn(null, o, pos, 1, replaceBy));
 			o.deleteData(pos, 1);
 			o.insertData(pos, replaceBy);
 			if(r) {
@@ -754,13 +831,13 @@ function AVIM()	{
 	this.tr = function(k, w, by, sf, i) {
 		var pos = this.findC(w, k, sf);
 		if (!pos) return false;
-		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1], w);
+		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1]);
 		var pC = w.substr(-pos, 1);
 		for (var g = 0; g < sf.length; g++) {
 			var cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
 			if (cmp == sf[g]) {
 				var c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
-				return this.replaceChar(this.oc, i - pos, c, w);
+				return this.replaceChar(this.oc, i - pos, c);
 			}
 		}
 		return false;
@@ -842,7 +919,7 @@ function AVIM()	{
 			if(!this.changed) continue;
 			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
-				this.replaceChar(this.oc, i - j, c, w);
+				this.replaceChar(this.oc, i - j, c);
 				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
 				else {
 					var ww = this.mozGetText(this.oc);
@@ -943,8 +1020,8 @@ function AVIM()	{
 	this.sr = function(w, k, i) {
 		var pos = this.findC(w, k, skey_str);
 		if (!pos) return;
-		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1], w);
-		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos), w);
+		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1]);
+		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos));
 	};
 	
 	/**
@@ -1097,20 +1174,20 @@ function AVIM()	{
 			(AVIMConfig.passwords && el.type == "password");
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
-		var editor = getEditor(el);
+//		var editor = getEditor(el);
 //		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
-		if (editor && editor.beginTransaction) editor.beginTransaction();
-		try {
+//		if (editor && editor.beginTransaction) editor.beginTransaction();
+//		try {
 			this.start(el, e);
-		}
-		catch (exc) {
-			throw exc;
-		}
-		finally {
+//		}
+//		catch (exc) {
+//			throw exc;
+//		}
+//		finally {
 			// If we don't put this line in a finally clause, an error in
 			// start() will render Firefox inoperable.
-			if (editor && editor.endTransaction) editor.endTransaction();
-		}
+//			if (editor && editor.endTransaction) editor.endTransaction();
+//		}
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
