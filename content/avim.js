@@ -1141,7 +1141,7 @@ function AVIM()	{
 		var node = this.range.endContainer, newPos;
 		this.sk = fcc(code);
 		this.saveStr = "";
-		if(this.checkCode(code) || !this.range.startOffset || (typeof(node.data) == 'undefined')) return;
+		if(this.checkCode(code) || !this.range.startOffset || "data" in node) return;
 		node.sel = false;
 		if(node.data) {
 			this.saveStr = node.data.substr(this.range.endOffset);
@@ -1204,8 +1204,16 @@ function AVIM()	{
 	this.findIgnore=function(el) {
 		if (!el || !el.getAttribute) return true;
 		var id = el.id || el.getAttribute("id");
-		if (!id || !id.toLowerCase) return false;
-		return AVIMConfig.exclude.indexOf(id.toLowerCase()) >= 0;
+		if (id && id.toLowerCase &&
+			AVIMConfig.exclude.indexOf(id.toLowerCase()) >= 0) {
+			return true;
+		}
+		var name = el.name || el.getAttribute("name");
+		if (name && name.toLowerCase &&
+			AVIMConfig.exclude.indexOf(name.toLowerCase()) >= 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -1339,8 +1347,10 @@ function AVIM()	{
 		
 		// Custom string preferences
 		if (!changedPref || changedPref == "ignoredFieldIds") {
-			var ids = AVIMConfig.exclude.join(" ").toLowerCase();
-			prefs.setCharPref("ignoredFieldIds", ids);
+			var ids = Cc["@mozilla.org/supports-string;1"]
+				.createInstance(Ci.nsISupportsString);
+			ids.data = AVIMConfig.exclude.join(" ").toLowerCase();
+			prefs.setComplexValue("ignoredFieldIds", Ci.nsISupportsString, ids);
 		}
 	};
 	
@@ -1392,7 +1402,8 @@ function AVIM()	{
 				AVIMConfig.passwords = prefs.getBoolPref("passwords");
 				if (specificPref) break;
 			case "ignoredFieldIds":
-				var ids = prefs.getCharPref("ignoredFieldIds");
+				var ids = prefs.getComplexValue("ignoredFieldIds",
+												Ci.nsISupportsString).data;
 				AVIMConfig.exclude = ids.toLowerCase().split(/\s+/);
 				if (specificPref) break;
 			

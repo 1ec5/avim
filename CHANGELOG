@@ -248,6 +248,9 @@ Version ${Version} (${Date})
    then redoing.
  - The Mudim script is disabled by default, since Mudim is widespread and
    disabling it does not significantly impact performance.
+ - Unicode characters are now allowed in ignored textbox IDs.
  - Pressing Enter while focused on the ID textbox adds the ID to the list.
  - Pressing Backspace or Delete while focused on the Ignored Textboxes list
    removes the selected textbox IDs from the list.
+ - AVIM now checks a textbox's name in addition to its ID when determining
+   whether to ignore the textbox.

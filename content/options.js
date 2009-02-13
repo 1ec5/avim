@@ -8,6 +8,9 @@ function AVIMOptionsPanel() {
 	const DEBUG = true;
 // $endif{}
 	
+	const oCc = Components.classes;
+	const oCi = Components.interfaces;
+	
 	// GUID of the Mudim extension
 	const MUDIM_ID = "mudim@svol.ru";
 	
@@ -38,14 +41,12 @@ function AVIMOptionsPanel() {
 	const stringBundleId = "bundle";
 	const noteValue = "mudim-note";
 	
-	const isMac = Components.classes["@mozilla.org/xre/app-info;1"]
-							.getService(Components.interfaces.nsIXULRuntime).OS
-				  == "Darwin";
+	const isMac = oCc["@mozilla.org/xre/app-info;1"]
+		.getService(oCi.nsIXULRuntime).OS == "Darwin";
 	
 	// Root for AVIM preferences
-	const prefs = Components.classes["@mozilla.org/preferences-service;1"]
-							.getService(Components.interfaces.nsIPrefService)
-							.getBranch("extensions.avim.");
+	const prefs = oCc["@mozilla.org/preferences-service;1"]
+		.getService(oCi.nsIPrefService).getBranch("extensions.avim.");
 	
 	/**
 	 * Enables or disables the Ignore button, based on whether the associated
@@ -142,13 +143,12 @@ function AVIMOptionsPanel() {
 		for (var i = 0; i < items.length; i++) idList.removeChild(items[i]);
 		
 		// Repopulate the list.
-		var ignoredIds = prefs.getCharPref("ignoredFieldIds");
-		ignoredIds = ignoredIds.split(ignoredIdsDelimiter);
-		ignoredIds = this.normalizeArray(ignoredIds, true);
-//		dump("Got ignoredIds: " + ignoredIds.join(",") + ".\n");				// debug
-		for (var i = 0; i < ignoredIds.length; i++) {
-			idList.appendItem(ignoredIds[i], ignoredIds[i]);
-		}
+		var ids = prefs.getComplexValue("ignoredFieldIds", Ci.nsISupportsString)
+			.data;
+		ids = ids.split(ignoredIdsDelimiter);
+		ids = this.normalizeArray(ids, true);
+//		dump("Got ignoredIds: " + ids.join(",") + ".\n");				// debug
+		for (var i = 0; i < ids.length; i++) idList.appendItem(ids[i], ids[i]);
 		
 		this.validateRemoveButton();
 		this.validateResetButton();
@@ -253,10 +253,9 @@ function AVIMOptionsPanel() {
 	 * current ignored ID list is equivalent to the default list.
 	 */
 	this.validateResetButton = function() {
-		const iface = Components.interfaces.nsIPrefService;
-		var defaults = Components.classes["@mozilla.org/preferences-service;1"]
-								 .getService(iface)
-								 .getDefaultBranch("extensions.avim.");
+		var defaults = oCc["@mozilla.org/preferences-service;1"]
+			.getService(oCi.nsIPrefService)
+			.getDefaultBranch("extensions.avim.");
 		var defaultIds = defaults.getCharPref("ignoredFieldIds");
 		var prefIds = prefs.getCharPref("ignoredFieldIds");
 		return defaultIds != prefIds;
@@ -266,10 +265,9 @@ function AVIMOptionsPanel() {
 	 * Resets the ignored IDs list to the "factory default".
 	 */
 	this.resetIgnoredIds = function() {
-		const iface = Components.interfaces.nsIPrefService;
-		var defaults = Components.classes["@mozilla.org/preferences-service;1"]
-								 .getService(iface)
-								 .getDefaultBranch("extensions.avim.");
+		var defaults = oCc["@mozilla.org/preferences-service;1"]
+			.getService(oCi.nsIPrefService)
+			.getDefaultBranch("extensions.avim.");
 		var defaultIds = defaults.getCharPref("ignoredFieldIds");
 		var prefIds = prefs.getCharPref("ignoredFieldIds");
 		if (defaultIds != prefIds) defaults.clearUserPref("ignoredFieldIds");
@@ -280,7 +278,7 @@ function AVIMOptionsPanel() {
 	 * latest IDs in the preferences system.
 	 */
 	this.registerPrefs = function() {
-		prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		prefs.QueryInterface(oCi.nsIPrefBranch2);
 		prefs.addObserver("", this, false);
 		this.getPrefs();
 	};
@@ -309,9 +307,11 @@ function AVIMOptionsPanel() {
 			var row = idList.getItemAtIndex(i);
 			ignoredIds.push(row.value);
 		}
-		ignoredIds = this.normalizeArray(ignoredIds, true);
-		prefs.setCharPref("ignoredFieldIds", ignoredIds.join(" "));
-//		dump("Set ignoredIds: " + ignoredIds.join(",") + ".\n");				// debug
+		
+		var ids = oCc["@mozilla.org/supports-string;1"]
+			.createInstance(oCi.nsISupportsString);
+		ids.data = this.normalizeArray(ignoredIds, true).join(" ");
+		prefs.setComplexValue("ignoredFieldIds", oCi.nsISupportsString, ids);
 	};
 	
 	/**
@@ -427,17 +427,15 @@ function AVIMOptionsPanel() {
 		}
 		
 		// Root for Mudim preferences
-		const mPrefs =
-			Components.classes["@mozilla.org/preferences-service;1"]
-					  .getService(Components.interfaces.nsIPrefService)
-					  .getBranch("chimmudim.settings.");
+		const mPrefs = oCc["@mozilla.org/preferences-service;1"]
+			.getService(oCi.nsIPrefService).getBranch("chimmudim.settings.");
 		
 		/**
 		 * Registers an observer so that a warning is displayed if Mudim is
 		 * enabled.
 		 */
 		this.registerPrefs = function() {
-			mPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+			mPrefs.QueryInterface(oCi.nsIPrefBranch2);
 			mPrefs.addObserver("", this, false);
 			this.getPrefs();
 		};
@@ -473,9 +471,8 @@ function AVIMOptionsPanel() {
 		 * @param desc	{string}	the button's description.
 		 */
 		this.disableMudim = function(note, desc) {
-			var mediator =
-				Components.classes["@mozilla.org/appshell/window-mediator;1"]
-					.getService(Components.interfaces.nsIWindowMediator);
+			var mediator = oCc["@mozilla.org/appshell/window-mediator;1"]
+				.getService(oCi.nsIWindowMediator);
 			var enumerator = mediator.getEnumerator("navigator:browser");
 			while (enumerator.hasMoreElements()) {
 				var win = enumerator.getNext();
