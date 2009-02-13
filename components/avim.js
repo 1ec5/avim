@@ -4,8 +4,8 @@
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
+const gCc = Components.classes;
+const gCi = Components.interfaces;
 
 /**
  * @class	Registers a service upon startup that loads the AVIM overlay into
@@ -26,7 +26,7 @@ AVIM.prototype = {
 	// Register AVIM as a service that runs at application startup.
 	_xpcom_categories: [{category: "app-startup", service: true}],
 	
-	QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver])
+	QueryInterface: XPCOMUtils.generateQI([gCi.nsIObserver])
 };
 
 // nsIObserver implementation
@@ -40,7 +40,8 @@ AVIM.prototype = {
  * @returns {string}	URL of the overlay to apply.
  */
 AVIM.getOverlayUrl = function (windowUrl) {
-	var id = Cc["@mozilla.org/xre/app-info;1"].getService(Ci.nsIXULAppInfo).ID;
+	var id =
+		gCc["@mozilla.org/xre/app-info;1"].getService(gCi.nsIXULAppInfo).ID;
 //	var isFf = id == "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
 	var isSm = id == "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
 	
@@ -103,12 +104,12 @@ AVIM.prototype.onWindowOpen = function (window) {
  * @param data		{string}	
  */
 AVIM.prototype.observe = function (subject, topic, data) {
-	const xreSvc = Cc["@mozilla.org/xre/app-info;1"]
-		.getService(Ci.nsIXULRuntime);
+	const xreSvc = gCc["@mozilla.org/xre/app-info;1"]
+		.getService(gCi.nsIXULRuntime);
 	if (xreSvc.inSafeMode) return;
 	
-	const observerSvc = Cc["@mozilla.org/observer-service;1"]
-		.getService(Ci.nsIObserverService);
+	const observerSvc = gCc["@mozilla.org/observer-service;1"]
+		.getService(gCi.nsIObserverService);
 	switch (topic) {
 		case "app-startup":
 			observerSvc.addObserver(this, "domwindowopened", false);

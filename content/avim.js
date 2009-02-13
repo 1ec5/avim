@@ -6,6 +6,9 @@
 var AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 
 function AVIM()	{
+	const Cc = Components.classes;
+	const Ci = Components.interfaces;
+	
 	this.methods = {
 		telex: {
 			DAWEO: "DAWEO", SFJRX: "SFJRX", FRX: "FRX",
@@ -81,20 +84,28 @@ function AVIM()	{
 	var getEditor = function(el) {
 		if (!el) return undefined;
 		if (el.editor) return el.editor;
-		var iface;
 		try {
-			iface = Components.interfaces.nsIDOMNSEditableElement;
-			return el.QueryInterface(iface).editor;
-//				iface = Components.interfaces.nsIPlaintextEditor;
+			return el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
+//				iface = Ci.nsIPlaintextEditor;
 //				editor = editableEl.QueryInterface(iface);
 		}
 		catch (e) {}
 		try {
-			iface = Components.interfaces.nsIEditor;
-			return el.QueryInterface(iface).editor;
+			return el.QueryInterface(Ci.nsIEditor).editor;
 		}
 		catch (e) {}
-//		dump("AVIM.keyPressHandler -- couldn't get editor: " + e + "\n");		// debug
+		try {
+			// http://osdir.com/ml/mozilla.devel.editor/2004-10/msg00017.html
+			var webNavigation = el.QueryInterface(Ci.nsIInterfaceRequestor)
+				.getInterface(Ci.nsIWebNavigation);
+			var editingSession = webNavigation
+				.QueryInterface(Ci.nsIInterfaceRequestor)
+				.getInterface(Ci.nsIEditingSession);
+			return editingSession.getEditorForWindow(el)
+				.QueryInterface(Ci.nsIHTMLObjectResizer);
+		}
+		catch (e) {}
+//		dump("AVIM.getEditor -- couldn't get editor: " + e + "\n");		// debug
 		return undefined;
 	};
 	
@@ -120,6 +131,7 @@ function AVIM()	{
 	 * Transaction that replaces a particular substring in a text node. Based on
 	 * <http://weblogs.mozillazine.org/weirdal/archives/txMgr_transition.txt>.
 	 *
+	 * @param sel	{object}	A DOM node able to modify the selection range.
 	 * @param node	{object}	The DOM text node to be modified.
 	 * @param pos	{number}	The zero-based index from which to begin
 	 * 							replacing characters.
@@ -128,9 +140,9 @@ function AVIM()	{
 	 * @implements Components.interfaces.nsITransaction
 	 * @implements Components.interfaces.nsISupports
 	 */
-	var SpliceTxn = function(el, node, pos, len, repl) {
+	var SpliceTxn = function(sel, node, pos, len, repl) {
 		//* @type Element
-		this.el = el;
+		this.sel = sel;
 		//* @type Text
 		this.node = node;
 		//* @type Number
@@ -149,7 +161,18 @@ function AVIM()	{
 		 * @param numChars	{number}	The number of characters to shift.
 		 */
 		this.shiftSelection = function(numChars) {
-			if (this.el) this.el.selectionStart += numChars;
+			if (!this.sel) return;
+			if ("selectionStart" in this.sel) {
+				this.sel.selectionStart += numChars;
+				return;
+			}
+			//else if (window.goDoCommand) {
+			//	// No idea why this works!
+			//	goDoCommand("cmd_charNext");
+			//	goDoCommand("cmd_charNext");
+			//}
+//			var range = this.sel.getSelection().getRangeAt(0);
+//			range.setStart(this.node, range.startOffset + numChars);
 		};
 		
 		/**
@@ -175,7 +198,7 @@ function AVIM()	{
 		 *
 		 * @returns {boolean}	False always.
 		 */
-		this.merge = function() {
+		this.merge = function(aTransaction) {
 			return false;
 		};
 		
@@ -188,10 +211,7 @@ function AVIM()	{
 		 * 						false otherwise.
 		 */
 		this.QueryInterface = function(iid) {
-			if (iid == Components.interfaces.nsITransaction ||
-				iid == Components.interfaces.nsISupports) {
-				return this;
-			}
+			if (iid == Ci.nsITransaction || iid == Ci.nsISupports) return this;
 			return null;
 		};
 	};
@@ -228,8 +248,25 @@ function AVIM()	{
 				relPos = anchorNode.textContent.length;
 			}
 			var replPos = index + relPos - absPos;
-			editor.doTransaction(new SpliceTxn(el, anchorNode, replPos, len,
-											   repl));
+			
+			// Carry out the transaction.
+			var txn = new SpliceTxn(el, anchorNode, replPos, len, repl);
+			editor.doTransaction(txn);
+			
+			//// Coalesce the transaction with an existing one.
+			//// Assuming transactions are batched at most one level deep.
+			//var stack = editor.transactionManager.getUndoList();
+			//var txnIndex = stack.numItems - 1;
+			//var prev = stack.getItem(txnIndex);
+			//var childStack;
+			//if (!prev) {
+			//	childStack = stack.getChildListForItem(txnIndex);
+			//	dump("AVIM.splice() -- childStack.numItems: " + childStack.getNumChildrenForItem(txnIndex) + "\n");	// debug
+			//	child = childStack.getItem(childStack.numItems - 1);
+			//}
+			//prev.merge(txn);
+			//// Clean up refcounted transactions.
+			//txn = stack = prev = childStack = child = null;
 		}
 		catch (e) {
 			var val = el.value;
@@ -809,17 +846,17 @@ function AVIM()	{
 					replaceBy = (c == "o") ? "ơ" : "Ơ";
 				}
 			}
-//			var doc = o.ownerDocument;
-//			var winWrapper = new XPCNativeWrapper(doc.defaultView);
-//			var win = winWrapper.wrappedJSObject;
-//			var editor = win.frameElement.editor;
-//			editor.doTransaction(new SpliceTxn(null, o, pos, 1, replaceBy));
-			o.deleteData(pos, 1);
-			o.insertData(pos, replaceBy);
-			if(r) {
-				o.deleteData(pos - 1, 1);
-				o.insertData(pos - 1, r);
+			var doc = o.ownerDocument;
+			var winWrapper = new XPCNativeWrapper(doc.defaultView);
+			var editor = getEditor(winWrapper);
+			if (r) {
+				replaceBy = r + replaceBy;
+				pos--;
 			}
+			var txn = new SpliceTxn(winWrapper, o, pos, 1 + !!r, replaceBy);
+			editor.doTransaction(txn);
+//			o.replaceData(pos, 1, replaceBy);
+//			if(r) o.replaceData(pos - 1, 1, r);
 		}
 		this.whit = false;
 	};
@@ -1081,10 +1118,8 @@ function AVIM()	{
 		
 		// Autocomplete textboxes for Toolkit
 		if (outer && outer.form) {
-			var iface = Components.interfaces.nsIAutoCompleteController;
-			var controller =
-				Components.classes["@mozilla.org/autocomplete/controller;1"]
-						  .getService(iface);
+			var controller = Cc["@mozilla.org/autocomplete/controller;1"]
+				.getService(Ci.nsIAutoCompleteController);
 			controller.handleText(true);
 		}
 	};
@@ -1121,7 +1156,8 @@ function AVIM()	{
 		node.value = node.data;
 		node.pos = node.data.length;
 		node.which = code;
-		var editor = getEditor(cwi.frameElement);
+		
+		var editor = getEditor(cwiWrapper);
 //		dump("AVIM.ifMoz -- editor: " + editor + "\n");							// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
@@ -1223,16 +1259,15 @@ function AVIM()	{
 	// Integration with Mozilla preferences service
 	
 	// Root for AVIM preferences
-	const prefs = Components.classes["@mozilla.org/preferences-service;1"]
-		.getService(Components.interfaces.nsIPrefService)
-		.getBranch("extensions.avim.");
+	const prefs = Cc["@mozilla.org/preferences-service;1"]
+		.getService(Ci.nsIPrefService).getBranch("extensions.avim.");
 	
 	/**
 	 * Registers an observer so that AVIM automatically reflects changes to its
 	 * preferences.
 	 */
 	this.registerPrefs = function() {
-		prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		prefs.QueryInterface(Ci.nsIPrefBranch2);
 		prefs.addObserver("", this, false);
 		this.getPrefs();
 	};
@@ -1332,8 +1367,8 @@ function AVIM()	{
 				// In case someone enters an invalid method ID in about:config
 				var method = AVIMConfig.method;
 				if (method < 0 || method >= broadcasterIds.methods.length) {
-					Components.classes["@mozilla.org/preferences-service;1"]
-						.getService(Components.interfaces.nsIPrefService)
+					Cc["@mozilla.org/preferences-service;1"]
+						.getService(Ci.nsIPrefService)
 						.getDefaultBranch("extensions.avim.")
 						.clearUserPref("method");
 					AVIMConfig.method = prefs.getIntPref("method");

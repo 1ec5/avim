@@ -242,6 +242,10 @@ Version ${Version} (${Date})
    undoing; the cursor now stays in place.
  - Fixed automatic shifting forward of diacritics (for example, "to'an" becomes
    "toa'n").
+ - Fixed an issue where textboxes inside webpages would not update after adding
+   diacritics.
+ - Fixed an issue in rich text editors where diacritics were lost after undoing
+   then redoing.
  - The Mudim script is disabled by default, since Mudim is widespread and
    disabling it does not significantly impact performance.
  - Pressing Enter while focused on the ID textbox adds the ID to the list.
