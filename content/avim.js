@@ -1141,7 +1141,7 @@ function AVIM()	{
 		var node = this.range.endContainer, newPos;
 		this.sk = fcc(code);
 		this.saveStr = "";
-		if(this.checkCode(code) || !this.range.startOffset || "data" in node) return;
+		if(this.checkCode(code) || !this.range.startOffset || (typeof(node.data) == 'undefined')) return;
 		node.sel = false;
 		if(node.data) {
 			this.saveStr = node.data.substr(this.range.endOffset);
