@@ -1070,21 +1070,23 @@ function AVIM()	{
 	 * appropriately to AVIM's changes (autocomplete, in-page find, `oninput`
 	 * attribute, etc.) unless this method is called.
 	 *
-	 * @param container	{object}	A DOM node representing the textbox element.
+	 * @param outer	{object}	A DOM node representing the textbox element.
+	 * @param inner	{object}	A DOM node representing the anonymous element.
 	 */
-	this.updateContainer = function(container) {
-		if (!container) return;
+	this.updateContainer = function(outer, inner) {
+		if (!inner) return;
 		var inputEvent = document.createEvent("Events");
 		inputEvent.initEvent("input", true, true);
-		container.dispatchEvent(inputEvent);
+		inner.dispatchEvent(inputEvent);
 		
-//		// Autocomplete textboxes for Toolkit
-//		var isBrowser = xulTarget.localName == "tabbrowser" ||
-//			xulTarget.localName == "browser";
-//		if (isBrowser && xulTarget.hasAttribute("autocompletepopup")) {
-//			xulTarget.controller
-//			xulTarget.controller.handleText(true);
-//		}
+		// Autocomplete textboxes for Toolkit
+		if (outer && outer.form) {
+			var iface = Components.interfaces.nsIAutoCompleteController;
+			var controller =
+				Components.classes["@mozilla.org/autocomplete/controller;1"]
+						  .getService(iface);
+			controller.handleText(true);
+		}
 	};
 	
 	/**
@@ -1146,7 +1148,7 @@ function AVIM()	{
 		if(this.changed) {
 			this.changed = false;
 			e.preventDefault();
-			this.updateContainer(target);
+			this.updateContainer(null, target);
 		}
 	};
 	
@@ -1206,7 +1208,7 @@ function AVIM()	{
 		if (this.changed) {
 			this.changed=false;
 			e.preventDefault();
-			this.updateContainer(el);
+			this.updateContainer(e.originalTarget, el);
 			// A bit of a hack to prevent single-line textboxes from scrolling
 			// to the beginning of the line.
 			if (window.goDoCommand && el.type != "textarea") {
