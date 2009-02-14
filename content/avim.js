@@ -53,6 +53,8 @@ function AVIM()	{
 	};
 	const panelId = "avim-status";
 	
+	const sciMozType = "application/x-scimoz-plugin";
+	
 	// Local functions that don't require access to AVIM's fields.
 	
 	var fcc = String.fromCharCode;
@@ -86,8 +88,6 @@ function AVIM()	{
 		if (el.editor) return el.editor;
 		try {
 			return el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
-//				iface = Ci.nsIPlaintextEditor;
-//				editor = editableEl.QueryInterface(iface);
 		}
 		catch (e) {}
 		try {
@@ -226,6 +226,22 @@ function AVIM()	{
 	 * @param repl	{string}	The string to insert.
 	 */
 	this.splice = function(el, index, len, repl) {
+		if (el.type == sciMozType) {
+//			dump("AVIM.splice -- value: " + el.value + "; from " + index + " out " + len + ", replace '" + text(el, index, len) + "' with '" + repl + "'\n");	// debug
+			var caret = el.charPosAtPosition(el.currentPos);
+			var lineNum = el.lineFromPosition(el.currentPos);
+			var linePos = el.positionFromLine(lineNum);
+//			dump("\tline #" + lineNum + " begins at " + linePos + "\n");		// debug
+			el.selectionStart = el.positionAtChar(linePos, index);
+			el.selectionEnd = el.positionAtChar(linePos, index + len);
+//			dump("\tselected from " + el.selectionStart + " to " + el.selectionEnd + "\n");	// debug
+			el.replaceSel(repl);
+			el.selectionStart = el.selectionEnd = el.positionAtChar(0, caret);
+			el.value = this.sciMozGetLine(el);
+			return;
+		}
+		
+		// Anonymous node-based editing
 		try {
 			var editor = getEditor(el);
 //			dump("AVIM.splice -- editor: " + editor + "; repl: " + repl + "\n");	// debug
@@ -267,12 +283,13 @@ function AVIM()	{
 			//prev.merge(txn);
 			//// Clean up refcounted transactions.
 			//txn = stack = prev = childStack = child = null;
+			return;
 		}
-		catch (e) {
-			var val = el.value;
-			el.value = val.substr(0, index) + repl + val.substr(index + len);
-			throw e;
-		}
+		catch (e) {}
+		
+		// Ordinary DOM editing
+		var val = el.value;
+		el.value = val.substr(0, index) + repl + val.substr(index + len);
 	};
 	
 	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ";
@@ -319,7 +336,6 @@ function AVIM()	{
 	 * @returns {boolean}	True if the word is malformed; false otherwise.
 	 */
 	this.ckspell = function(w, k) {
-//		dump("AVIM.ckspell -- w:" + w + "; k: " + k + "\n");					// debug
 		if (!AVIMConfig.ckSpell) return false;
 		w = this.unV(w);
 		var uw = up(w), tw = uw;
@@ -583,6 +599,11 @@ function AVIM()	{
 	 * 						cannot be found.
 	 */
 	this.getCursorPosition = function(obj) {
+		if (obj.type == sciMozType) {
+			var pos = obj.currentPos;
+			var linePos = obj.positionFromLine(obj.lineFromPosition(pos));
+			return obj.charPosAtPosition(pos) - obj.charPosAtPosition(linePos);
+		}
 		var data = (obj.data) ? obj.data : text(obj);
 		if (!data || !data.length) return -1;
 		if (obj.data) return obj.pos;
@@ -603,7 +624,7 @@ function AVIM()	{
 		if (pos < 0) return false;
 		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
 		
-		var data = (obj.data) ? obj.data : text(obj);
+		var data = obj.data || text(obj);
 		var w = data.substring(0, pos);
 		w = /[^ \r\n\t\xa0\xad#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”„“‘’«»‹›‐‑–—…−×÷°″′•·†‡]*$/.exec(w);
 		return [w ? w[0] : "", pos];
@@ -807,6 +828,7 @@ function AVIM()	{
 	 * @param c		{number}	The codepoint of the character to replace with.
 	 */
 	this.replaceChar = function(o, pos, c) {
+//		dump("AVIM.replaceChar -- pos: " + pos + "; original: " + text(o, pos, 1) + "; repl: " + fcc(c) + "\n");	// debug
 		var bb = false;
 		if(!nan(c)) {
 			var replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
@@ -833,8 +855,10 @@ function AVIM()	{
 				pos--;
 			}
 			this.splice(o, pos, 1 + !!r, replaceBy);
-			o.setSelectionRange(savePos, savePos);
-			o.scrollTop = sst;
+			if (o.type != sciMozType) {
+				o.setSelectionRange(savePos, savePos);
+				o.scrollTop = sst;
+			}
 		} else {
 			var r;
 			if ((up(o.data.substr(pos - 1, 1)) == 'U') && (pos < o.pos - 1)) {
@@ -951,7 +975,13 @@ function AVIM()	{
 			else if (h <= 95) fS = this.method.R;
 			
 			var c = skey[h % 24];
-			var sp = pos = this.oc.selectionStart;
+			var sp = this.oc.selectionStart;
+			var end = this.oc.selectionEnd;
+			if (this.oc.type == sciMozType) {
+				sp = this.oc.charPosAtPosition(this.oc.selectionStart);
+				end = this.oc.charPosAtPosition(this.oc.selectionEnd);
+			}
+			var pos = sp;
 			w = this.unV(w);
 			if(!this.changed) {
 				w += k;
@@ -960,7 +990,7 @@ function AVIM()	{
 				if(!this.oc.data) {
 //					this.oc.value = this.oc.value.substr(0, sp) + k +
 //						this.oc.value.substr(this.oc.selectionEnd);
-					this.splice(this.oc, sp, this.oc.selectionEnd - sp, k);
+					this.splice(this.oc, sp, end - sp, k);
 					this.changed = true;
 					this.oc.scrollTop = sst;
 				} else {
@@ -969,7 +999,12 @@ function AVIM()	{
 					this.specialChange = true;
 				}
 			}
-			if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
+			if (this.oc.type == sciMozType) {
+				var lineNum = this.oc.lineFromPosition(this.oc.currentPos);
+				var linePos = this.oc.positionFromLine(lineNum);
+				this.oc.currentPos = this.oc.positionAtChar(0, pos);
+			}
+			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
 				this.replaceChar(this.oc, i - j, c);
 				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
@@ -1158,7 +1193,6 @@ function AVIM()	{
 		node.which = code;
 		
 		var editor = getEditor(cwiWrapper);
-//		dump("AVIM.ifMoz -- editor: " + editor + "\n");							// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
 			this.start(node, e);
@@ -1236,7 +1270,6 @@ function AVIM()	{
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
 		var editor = getEditor(el);
-//		dump("AVIM.keyPressHandler -- editor: " + editor + "\n");				// debug
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
 			this.start(el, e);
@@ -1263,7 +1296,47 @@ function AVIM()	{
 		}
 		return true;
 	};
-
+	
+	/**
+	 * Retrieves the current line from the SciMoz plugin.
+	 *
+	 * @param el	{object}	The plugin's <embed> tag.
+	 * @returns {string}	The text of the current line.
+	 */
+	this.sciMozGetLine = function(el) {
+		var lineNum = el.lineFromPosition(el.currentPos);
+		var linePos = el.positionFromLine(lineNum);
+		var lineLen = el.lineLength(lineNum);
+		return el.getTextRange(linePos, linePos + lineLen);
+	};
+	
+	/**
+	 * Handles key presses in the SciMoz plugin. This function is triggered as
+	 * soon as the key goes up.
+	 *
+	 * @param e	{object}	the key press event.
+	 * @returns {boolean}	true if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.sciMozHandler = function(e) {
+		var el = e.originalTarget, code = e.which;
+//		dump("AVIM.sciMozHandler -- target: " + el + "; type: " + el.type + "; code: " + code + "\n");	// debug
+		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
+			el.type != sciMozType || this.findIgnore(e.target)) {
+			return false;
+		}
+		el.value = this.sciMozGetLine(el);
+		this.sk = fcc(code);
+		this.start(el, e);
+		if (this.changed) {
+			this.changed=false;
+			e.stopPropagation();
+			this.updateContainer(el, el);
+			return false;
+		}
+		return true;
+	};
+	
 	// Integration with Mozilla preferences service
 	
 	// Root for AVIM preferences
@@ -1627,18 +1700,29 @@ function AVIM()	{
 	 */
 	this.onKeyPress = function(e) {
 //		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
-//		dump("keyPressHandler -- target: " + e.target.nodeName + "; id: " + e.target.id + "; originalTarget: " + e.originalTarget + "\n");	// debug
+//		dump("keyPressHandler -- target: " + e.target.nodeName + "; id: " + e.target.id + "; originalTarget: " + e.originalTarget.nodeName + "\n");	// debug
 		var target = e.target;
+		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
 		this.disableOthers(doc);
 		
-		// Handle key press either in WYSIWYG mode or normal mode.
+		// SciMoz plugin
+		try {
+			if (origTarget.localName == "embed") return this.sciMozHandler(e);
+		}
+		catch (e) {
+			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
+			return false;
+		}
+		
+		// Rich text editors
 		var wysiwyg =
 			(doc.designMode && doc.designMode.toLowerCase() == "on") ||
 			(target.contentEditable &&
 			 target.contentEditable.toLowerCase() == "true");
 		if (wysiwyg) return this.ifMoz(e);
 		
+		// Plain text editors
 		return this.keyPressHandler(e);
 	};
 	

@@ -238,6 +238,8 @@ Version 20080728.290 (Saturday, February 7, 2008)
 Version ${Version} (${Date})
  - Eliminated lag when adding diacritics. Editing a textbox with a large amount
    of text no longer incurs any noticeable delay.
+ - Added support for the SciMoz plugin (Scintilla) in Komodo IDE and Komodo
+   Edit.
  - Fixed an issue where the entire contents of the textbox were selected after
    undoing; the cursor now stays in place.
  - Fixed automatic shifting forward of diacritics (for example, "to'an" becomes
