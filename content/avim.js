@@ -224,12 +224,15 @@ function AVIM()	{
 	 * @param index	{number}	The index at which to begin replacing.
 	 * @param len	{number}	The number of characters to replace.
 	 * @param repl	{string}	The string to insert.
+	 * @returns {number}	The distance to the right that the end of the word
+	 * 						has shifted.
 	 */
 	this.splice = function(el, index, len, repl) {
 		if (el.type == sciMozType) {
 //			dump("AVIM.splice -- value: " + el.value + "; from " + index + " out " + len + ", replace '" + text(el, index, len) + "' with '" + repl + "'\n");	// debug
-			var caret = el.charPosAtPosition(el.currentPos);
-			var lineNum = el.lineFromPosition(el.currentPos);
+			var caretPos = el.currentPos;
+			var caret = el.charPosAtPosition(caretPos);
+			var lineNum = el.lineFromPosition(caretPos);
 			var linePos = el.positionFromLine(lineNum);
 //			dump("\tline #" + lineNum + " begins at " + linePos + "\n");		// debug
 			el.selectionStart = el.positionAtChar(linePos, index);
@@ -238,7 +241,7 @@ function AVIM()	{
 			el.replaceSel(repl);
 			el.selectionStart = el.selectionEnd = el.positionAtChar(0, caret);
 			el.value = this.sciMozGetLine(el);
-			return;
+			return el.selectionStart - caretPos;
 		}
 		
 		// Anonymous node-based editing
@@ -283,13 +286,14 @@ function AVIM()	{
 			//prev.merge(txn);
 			//// Clean up refcounted transactions.
 			//txn = stack = prev = childStack = child = null;
-			return;
+			return repl.length - len;
 		}
 		catch (e) {}
 		
 		// Ordinary DOM editing
 		var val = el.value;
 		el.value = val.substr(0, index) + repl + val.substr(index + len);
+		return repl.length - len;
 	};
 	
 	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ";
@@ -978,8 +982,8 @@ function AVIM()	{
 			var sp = this.oc.selectionStart;
 			var end = this.oc.selectionEnd;
 			if (this.oc.type == sciMozType) {
-				sp = this.oc.charPosAtPosition(this.oc.selectionStart);
-				end = this.oc.charPosAtPosition(this.oc.selectionEnd);
+				sp = end = this.getCursorPosition(this.oc);
+//				dump("AVIM.normC -- sp: " + sp + "; end: " + end + "\n");		// debug
 			}
 			var pos = sp;
 			w = this.unV(w);
@@ -1002,7 +1006,7 @@ function AVIM()	{
 			if (this.oc.type == sciMozType) {
 				var lineNum = this.oc.lineFromPosition(this.oc.currentPos);
 				var linePos = this.oc.positionFromLine(lineNum);
-				this.oc.currentPos = this.oc.positionAtChar(0, pos);
+				this.oc.currentPos = this.oc.positionAtChar(linePos, pos);
 			}
 			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			if(!this.ckspell(w, fS)) {
