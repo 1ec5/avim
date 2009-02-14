@@ -1711,7 +1711,7 @@ function AVIM()	{
 			if (origTarget.localName == "embed") return this.sciMozHandler(e);
 		}
 		catch (e) {
-			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
+//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
 			return false;
 		}
 		
