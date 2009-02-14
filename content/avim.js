@@ -1318,12 +1318,16 @@ function AVIM()	{
 	 * Handles key presses in the SciMoz plugin. This function is triggered as
 	 * soon as the key goes up.
 	 *
-	 * @param e	{object}	the key press event.
-	 * @returns {boolean}	true if AVIM plans to modify the input; false
+	 * @param e		{object}	The keypress event.
+	 * @param el	{object}	The DOM element node that represents the SciMoz
+	 * 							plugin. Defaults to the given event's original
+	 * 							target.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
 	 * 						otherwise.
 	 */
-	this.sciMozHandler = function(e) {
-		var el = e.originalTarget, code = e.which;
+	this.sciMozHandler = function(e, el) {
+		if (!el) el = e.originalTarget;
+		var code = e.which;
 //		dump("AVIM.sciMozHandler -- target: " + el + "; type: " + el.type + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
 			el.type != sciMozType || this.findIgnore(e.target)) {
@@ -1712,10 +1716,17 @@ function AVIM()	{
 		
 		// SciMoz plugin
 		try {
-			if (origTarget.localName == "embed") return this.sciMozHandler(e);
+			if (origTarget.localName == "scintilla") {
+				origTarget =
+					document.getAnonymousElementByAttribute(origTarget, "type",
+															sciMozType);
+			}
+			if (origTarget && origTarget.localName == "embed") {
+				return this.sciMozHandler(e, origTarget);
+			}
 		}
 		catch (e) {
-//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
+			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
 			return false;
 		}
 		
