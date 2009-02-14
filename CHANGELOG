@@ -235,7 +235,7 @@ Version 20080728.290 (Saturday, February 7, 2008)
    text.
  - Added experimental support for the IME and DiMENSiON extension.
 
-Version ${Version} (${Date})
+Version 20080728.306 (Saturday, February 14, 2008)
  - Eliminated lag when adding diacritics. Editing a textbox with a large amount
    of text no longer incurs any noticeable delay.
  - Added support for the SciMoz plugin (Scintilla) in Komodo IDE and Komodo
@@ -256,3 +256,5 @@ Version ${Version} (${Date})
    removes the selected textbox IDs from the list.
  - AVIM now checks a textbox's name in addition to its ID when determining
    whether to ignore the textbox.
+
+Version ${Version} (${Date})
