@@ -131,7 +131,7 @@ function AVIM()	{
 	 * Transaction that replaces a particular substring in a text node. Based on
 	 * <http://weblogs.mozillazine.org/weirdal/archives/txMgr_transition.txt>.
 	 *
-	 * @param sel	{object}	A DOM node able to modify the selection range.
+	 * @param outer	{object}	A DOM node able to modify the selection range.
 	 * @param node	{object}	The DOM text node to be modified.
 	 * @param pos	{number}	The zero-based index from which to begin
 	 * 							replacing characters.
@@ -140,9 +140,9 @@ function AVIM()	{
 	 * @implements Components.interfaces.nsITransaction
 	 * @implements Components.interfaces.nsISupports
 	 */
-	var SpliceTxn = function(sel, node, pos, len, repl) {
+	var SpliceTxn = function(outer, node, pos, len, repl) {
 		//* @type Element
-		this.sel = sel;
+		this.outer = outer;
 		//* @type Text
 		this.node = node;
 		//* @type Number
@@ -155,23 +155,29 @@ function AVIM()	{
 		//* @type Boolean
 		this.isTransient = false;
 		
+		if (outer && "selectionStart" in outer) {
+			this.caret = outer.selectionStart;
+		}
+		
 		/**
 		 * Shift the selection to the right by the given number of characters.
 		 *
 		 * @param numChars	{number}	The number of characters to shift.
 		 */
 		this.shiftSelection = function(numChars) {
-			if (!this.sel) return;
-			if ("selectionStart" in this.sel) {
-				this.sel.selectionStart += numChars;
-				return;
+			if (!this.outer) return;
+			if ("caret" in this) {
+				var pos = this.caret + numChars;
+//				dump("AVIM.SpliceTxn.shiftSelection -- numChars: " + numChars + "; pos: " + pos + "\n");	// debug
+				this.outer.selectionStart = this.outer.selectionEnd = pos;
+//				return;
 			}
 			//else if (window.goDoCommand) {
 			//	// No idea why this works!
 			//	goDoCommand("cmd_charNext");
 			//	goDoCommand("cmd_charNext");
 			//}
-//			var range = this.sel.getSelection().getRangeAt(0);
+//			var range = this.outer.getSelection().getRangeAt(0);
 //			range.setStart(this.node, range.startOffset + numChars);
 		};
 		
@@ -181,7 +187,7 @@ function AVIM()	{
 		this.doTransaction = this.redoTransaction = function() {
 			this.orig = this.node.substringData(this.pos, this.len);
 			this.node.replaceData(this.pos, this.len, this.repl);
-			this.shiftSelection(1);
+			this.shiftSelection(this.repl.length - this.len);
 		};
 		
 		/**
@@ -190,7 +196,7 @@ function AVIM()	{
 		 */
 		this.undoTransaction = function() {
 			this.node.replaceData(this.pos, this.repl.length, this.orig);
-			this.shiftSelection(2);
+			this.shiftSelection(0);
 		};
 		
 		/**
