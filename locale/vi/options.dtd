@@ -41,7 +41,7 @@
 
 <!-- Ignored Textboxes tab -->
 
-<!ENTITY ignored-panel.label "Bỏ qua Hộp">
+<!ENTITY ignored-panel.label "Hộp được Bỏ qua">
 
 <!ENTITY ignore-text.label "ID của hộp văn bản:">
 <!ENTITY ignore-button.label "Bỏ qua">
@@ -52,11 +52,11 @@
 <!ENTITY ignored-instructions.label "Để bỏ qua một hộp văn bản, hãy kiếm ID của nó bằng cách xem mã nguồn của trang Web chứa hộp này. Sau đó, nhập ID ở dưới và nhấn &ignore-button.label;.">
 <!ENTITY ignored-instructions.line-count "2">
 
-<!ENTITY remove-button.label "Dời ID">
+<!ENTITY remove-button.label "Xóa ID">
 <!ENTITY remove-button.accesskey "D"><!-- Conflicts with oldaccents-check.accesskey, but they're in different tabs. -->
 
-<!ENTITY reset-button.label "Mặc định lại giá trị">
-<!ENTITY reset-button.accesskey "M"><!-- Conflicts with passwords-check.acceskey, but they're in different tabs. -->
+<!ENTITY reset-button.label "Khôi phục Mặc định">
+<!ENTITY reset-button.accesskey "M"><!-- Conflicts with passwords-check.accesskey, but they're in different tabs. -->
 
 <!-- Display options -->
 

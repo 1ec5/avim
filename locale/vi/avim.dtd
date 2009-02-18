@@ -23,9 +23,9 @@
 <!ENTITY avim-viqr-star.label "VIQR*">
 <!ENTITY avim-viqr-star.accesskey "R">
 
-<!ENTITY avim-menu-prev-method.label "Kiểu gõ Trước">
+<!ENTITY avim-menu-prev-method.label "Kiểu Gõ Trước">
 <!ENTITY avim-menu-prev-method.accesskey "g">
-<!ENTITY avim-menu-next-method.label "Kiểu gõ Sau">
+<!ENTITY avim-menu-next-method.label "Kiểu Gõ Sau">
 <!ENTITY avim-menu-next-method.accesskey "S">
 
 <!ENTITY avim-disabled.label "Tắt">
@@ -33,7 +33,7 @@
 <!-- Options -->
 <!ENTITY avim-spell.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
 <!ENTITY avim-spell.key "S">
-<!ENTITY avim-spell.label "Đúng Chính tả">
+<!ENTITY avim-spell.label "Đúng Chính Tả">
 <!ENTITY avim-spell.accesskey "c">
 <!ENTITY avim-spell.description "Chỉ bỏ dấu trên các từ tuân theo quy tắc tiếng Việt">
 <!ENTITY avim-oldaccents.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
