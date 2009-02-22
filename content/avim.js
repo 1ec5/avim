@@ -1245,7 +1245,7 @@ function AVIM()	{
 	 * @returns {boolean}	True if the element should be ignored; false
 	 * 						otherwise.
 	 */
-	this.findIgnore=function(el) {
+	this.findIgnore = function(el) {
 		if (!el || !el.getAttribute) return true;
 		var id = el.id || el.getAttribute("id");
 		if (id && id.toLowerCase &&
@@ -1257,7 +1257,12 @@ function AVIM()	{
 			AVIMConfig.exclude.indexOf(name.toLowerCase()) >= 0) {
 			return true;
 		}
-		return false;
+		
+		// Honor "ime-mode: disabled" in CSS.
+		var win = el.ownerDocument && el.ownerDocument.defaultView;
+		if (!win || !win.getComputedStyle) return false;
+		var mode = win.getComputedStyle(el, null).getPropertyValue("ime-mode");
+		return mode == "disabled";
 	}
 	
 	/**

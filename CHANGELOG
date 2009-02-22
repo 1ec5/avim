@@ -260,3 +260,8 @@ Version 20080728.306 (Saturday, February 14, 2008)
 Version ${Version} (${Date})
  - Fixed an issue in Komodo IDE and Komodo Edit where AVIM would not recogize
    SciMoz's wrapper frame, which is often focused instead of SciMoz itself.
+ - Fixed an issue where the caret would sometimes drift when redoing.
+ - Adjusted the Vietnamese localization's messages to be consistent with Firefox
+   and Thunderbird.
+ - Web developers can now disable AVIM on a textbox by setting its "ime-mode"
+   CSS property to "disabled".
