@@ -139,6 +139,20 @@ function AVIMOverlayObserver(aWindow) {
 AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
 	if (topic != "xul-overlay-merged" || !this.window) return;
 	
+	// SeaMonkey doesn't want to load the stylesheet along with the rest of
+	// AVIM's overlay, so we have to load it separately.
+	var document = this.window.document;
+	var smNavUrl = "chrome://navigator/content/navigator.xul";
+	if (document.location && document.location.href == smNavUrl) {
+		dump("AVIMOverlayObserver.observe -- Loading stylesheet\n");			// debug
+		var sss = gCc["@mozilla.org/content/style-sheet-service;1"]
+			.getService(gCi.nsIStyleSheetService);
+		var ios = gCc["@mozilla.org/network/io-service;1"]
+			.getService(gCi.nsIIOService);
+		var uri = ios.newURI("chrome://avim/skin/avim.css", null, null);
+		sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
+	}
+	
 	// Force AVIM's status bar panel to display the current input method.
 	if (this.window.avim) this.window.avim.updateUI();
 };

@@ -265,3 +265,5 @@ Version ${Version} (${Date})
    and Thunderbird.
  - Web developers can now disable AVIM on a textbox by setting its "ime-mode"
    CSS property to "disabled".
+ - Fixed an issue in SeaMonkey where AVIM's toolbar buttons would appear without
+   any icons.
