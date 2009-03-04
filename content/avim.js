@@ -1737,7 +1737,7 @@ function AVIM()	{
 			}
 		}
 		catch (e) {
-			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
+//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
 			return false;
 		}
 		
