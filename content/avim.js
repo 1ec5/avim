@@ -234,6 +234,7 @@ function AVIM()	{
 	 * 						has shifted.
 	 */
 	this.splice = function(el, index, len, repl) {
+		// SciMoz plugin
 		if (el.type == sciMozType) {
 //			dump("AVIM.splice -- value: " + el.value + "; from " + index + " out " + len + ", replace '" + text(el, index, len) + "' with '" + repl + "'\n");	// debug
 			var caretPos = el.currentPos;
@@ -248,6 +249,23 @@ function AVIM()	{
 			el.selectionStart = el.selectionEnd = el.positionAtChar(0, caret);
 			el.value = this.sciMozGetLine(el);
 			return el.selectionStart - caretPos;
+		}
+		
+		// Bespin editor
+		if (this.bespinEditor) {
+			var pos = this.bespinEditor.cursorPosition;
+//			pos = {row: pos.row, col: pos.col}; // copy
+			this.bespinEditor.ui.actions.deleteChunkAndInsertChunkAndSelect({
+				pos: {row: pos.row, col: index},
+				endPos: {row: pos.row, col: index + len},
+				queued: true,
+				chunk: repl
+			});
+			pos.col += repl.length - len;
+			this.bespinEditor.ui.actions.select({
+				startPos: pos, endPos: pos
+			});
+			return repl.length - len;
 		}
 		
 		// Anonymous node-based editing
@@ -336,6 +354,8 @@ function AVIM()	{
 	this.kl = 0;
 	this.range = null;
 	this.whit = false;
+	this.bespin = null;
+	this.bespinEditor = null;
 	
 	/**
 	 * Returns whether the given word, taking into account the given dead key,
@@ -609,11 +629,17 @@ function AVIM()	{
 	 * 						cannot be found.
 	 */
 	this.getCursorPosition = function(obj) {
+		// SciMoz editor
 		if (obj.type == sciMozType) {
 			var pos = obj.currentPos;
 			var linePos = obj.positionFromLine(obj.lineFromPosition(pos));
 			return obj.charPosAtPosition(pos) - obj.charPosAtPosition(linePos);
 		}
+		
+		// Bespin editor
+		if (this.bespinEditor) return this.bespinEditor.cursorPosition.col;
+		
+		// Everything else
 		var data = (obj.data) ? obj.data : text(obj);
 		if (!data || !data.length) return -1;
 		if (obj.data) return obj.pos;
@@ -865,7 +891,8 @@ function AVIM()	{
 				pos--;
 			}
 			this.splice(o, pos, 1 + !!r, replaceBy);
-			if (o.type != sciMozType) {
+			// Native editors only
+			if (o.type != sciMozType && !this.bespinEditor) {
 				o.setSelectionRange(savePos, savePos);
 				o.scrollTop = sst;
 			}
@@ -987,7 +1014,7 @@ function AVIM()	{
 			var c = skey[h % 24];
 			var sp = this.oc.selectionStart;
 			var end = this.oc.selectionEnd;
-			if (this.oc.type == sciMozType) {
+			if (this.oc.type == sciMozType || this.bespinEditor) {
 				sp = end = this.getCursorPosition(this.oc);
 //				dump("AVIM.normC -- sp: " + sp + "; end: " + end + "\n");		// debug
 			}
@@ -1009,12 +1036,20 @@ function AVIM()	{
 					this.specialChange = true;
 				}
 			}
+			
+			// SciMoz plugin
 			if (this.oc.type == sciMozType) {
 				var lineNum = this.oc.lineFromPosition(this.oc.currentPos);
 				var linePos = this.oc.positionFromLine(lineNum);
 				this.oc.currentPos = this.oc.positionAtChar(linePos, pos);
 			}
+			// Bespin editor
+			else if (this.bespinEditor) {
+				this.bespinEditor.cursorPosition.col = pos;
+			}
+			// Everything else
 			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
+			
 			if(!this.ckspell(w, fS)) {
 				this.replaceChar(this.oc, i - j, c);
 				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
@@ -1348,9 +1383,50 @@ function AVIM()	{
 		this.sk = fcc(code);
 		this.start(el, e);
 		if (this.changed) {
-			this.changed=false;
+			this.changed = false;
 			e.stopPropagation();
 			this.updateContainer(el, el);
+			return false;
+		}
+		return true;
+	};
+	
+	/**
+	 * Retrieves the current line from the Bespin editor.
+	 *
+	 * @returns {string}	The text of the current line.
+	 */
+	this.bespinGetLine = function() {
+		var pos = this.bespinEditor.cursorPosition;
+		return this.bespinEditor.model.getRowArray(pos.row).join("");
+	};
+	
+	/**
+	 * Handles key presses in the Bespin editor. This function is triggered as
+	 * soon as the key goes up.
+	 *
+	 * @param e		{object}	The keypress event.
+	 * @param el	{object}	The DOM element node that represents the Bespin
+	 * 							editor. Defaults to the given event's original
+	 * 							target.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.bespinHandler = function(e, el) {
+		if (!el) el = e.originalTarget;
+		var code = e.which;
+		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
+			this.findIgnore(e.target)) {
+			return false;
+		}
+		el.value = this.bespinGetLine();
+//		dump("AVIM.bespinHandler -- value: " + el.value + "\n");				// debug
+		this.sk = fcc(code);
+		this.start(el, e);
+		if (this.changed) {
+			this.changed = false;
+			e.stopPropagation();
+//			this.updateContainer(el, el);
 			return false;
 		}
 		return true;
@@ -1718,8 +1794,8 @@ function AVIM()	{
 	 * 						keypress.
 	 */
 	this.onKeyPress = function(e) {
-//		dump("keyPressHandler -- code: " + e.which + "\n");						// debug
-//		dump("keyPressHandler -- target: " + e.target.nodeName + "; id: " + e.target.id + "; originalTarget: " + e.originalTarget.nodeName + "\n");	// debug
+//		dump("AVIM.onKeyPress -- code: " + e.which + "\n");						// debug
+//		dump("AVIM.onKeyPress -- target: " + e.target.nodeName + "; id: " + e.target.id + "; originalTarget: " + e.originalTarget.nodeName + "\n");	// debug
 		var target = e.target;
 		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
@@ -1727,17 +1803,34 @@ function AVIM()	{
 		
 		// SciMoz plugin
 		try {
-			if (origTarget.localName == "scintilla") {
+			if (origTarget.localName.toLowerCase() == "scintilla") {
 				origTarget =
 					document.getAnonymousElementByAttribute(origTarget, "type",
 															sciMozType);
 			}
-			if (origTarget && origTarget.localName == "embed") {
+			if (origTarget.localName.toLowerCase() == "embed") {
 				return this.sciMozHandler(e, origTarget);
 			}
 		}
 		catch (e) {
 //			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
+			return false;
+		}
+		
+		// Bespin editor
+		try {
+			var winWrapper = new XPCNativeWrapper(doc.defaultView);
+			var win = winWrapper.wrappedJSObject;
+			if (origTarget.localName.toLowerCase() == "canvas" &&
+				"bespin" in win && "_editor" in win) {
+				this.bespin = win.bespin;
+				this.bespinEditor = win._editor;
+				this.bespinHandler(e, origTarget);
+				this.bespin = this.bespinEditor = null;
+			}
+		}
+		catch (e) {
+//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");	// debug
 			return false;
 		}
 		
