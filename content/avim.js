@@ -354,7 +354,6 @@ function AVIM()	{
 	this.kl = 0;
 	this.range = null;
 	this.whit = false;
-	this.bespin = null;
 	this.bespinEditor = null;
 	
 	/**
@@ -1823,10 +1822,9 @@ function AVIM()	{
 			var win = winWrapper.wrappedJSObject;
 			if (origTarget.localName.toLowerCase() == "canvas" &&
 				"bespin" in win && "_editor" in win) {
-				this.bespin = win.bespin;
 				this.bespinEditor = win._editor;
 				this.bespinHandler(e, origTarget);
-				this.bespin = this.bespinEditor = null;
+				this.bespinEditor = null;
 			}
 		}
 		catch (e) {
