@@ -105,7 +105,7 @@
 			<Description>
 				<em:id>{ee53ece0-255c-4cc6-8a7e-81a8b6e5ba2c}</em:id>
 				<em:minVersion>0.7pre</em:minVersion>
-				<em:maxVersion>0.7</em:maxVersion>
+				<em:maxVersion>0.7.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
