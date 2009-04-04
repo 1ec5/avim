@@ -348,6 +348,7 @@ function AVIM()	{
 	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
 	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
 	
+	this.prefsRegistered = false;
 	this.attached = [];
 	this.changed = false;
 	this.specialChange = false;
@@ -1442,6 +1443,8 @@ function AVIM()	{
 	 * preferences.
 	 */
 	this.registerPrefs = function() {
+		if (this.prefsRegistered) return;
+		this.prefsRegistered = true;
 		prefs.QueryInterface(Ci.nsIPrefBranch2);
 		prefs.addObserver("", this, false);
 		this.getPrefs();
@@ -1451,6 +1454,7 @@ function AVIM()	{
 	 * Unregisters the preferences observer as the window is being closed.
 	 */
 	this.unregisterPrefs = function() {
+		this.prefsRegistered = false;
 		prefs.removeObserver("", this);
 	};
 	
@@ -1859,8 +1863,8 @@ function AVIM()	{
 
 if (!window.avim && !window.frameElement) {
 	window.avim = new AVIM();
-	avim.registerPrefs();
 	addEventListener("load", function () {
+		avim.registerPrefs();
 		avim.updateUI();
 	}, false);
 	addEventListener("unload", function () {

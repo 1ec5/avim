@@ -108,6 +108,11 @@ AVIM.prototype.observe = function (subject, topic, data) {
 		.getService(gCi.nsIXULRuntime);
 	if (xreSvc.inSafeMode) return;
 	
+	// Songbird's chrome.manifest functionality works just fine.
+	//var id =
+	//	gCc["@mozilla.org/xre/app-info;1"].getService(gCi.nsIXULAppInfo).ID;
+	//if (id == "songbird@songbirdnest.com") return;
+	
 	const observerSvc = gCc["@mozilla.org/observer-service;1"]
 		.getService(gCi.nsIObserverService);
 	switch (topic) {
@@ -133,18 +138,19 @@ function AVIMOverlayObserver(aWindow) {
  * 
  * @param subject	{object}	the URI of the merged overlay.
  * @param topic		{string}	the type of event that occurred; only
- * 								"xul-overlay-merged" is observed.
+ * 								"xul-overlay-merged" and "sb-overlay-load" are
+ * 								observed.
  * @param data		{string}	
  */
 AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
-	if (topic != "xul-overlay-merged" || !this.window) return;
+	if (topic != "xul-overlay-merged" && topic != "sb-overlay-load") return;
+	if (!this.window) return;
 	
 	// SeaMonkey doesn't want to load the stylesheet along with the rest of
 	// AVIM's overlay, so we have to load it separately.
 	var document = this.window.document;
 	var smNavUrl = "chrome://navigator/content/navigator.xul";
 	if (document.location && document.location.href == smNavUrl) {
-		dump("AVIMOverlayObserver.observe -- Loading stylesheet\n");			// debug
 		var sss = gCc["@mozilla.org/content/style-sheet-service;1"]
 			.getService(gCi.nsIStyleSheetService);
 		var ios = gCc["@mozilla.org/network/io-service;1"]
@@ -154,7 +160,9 @@ AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
 	}
 	
 	// Force AVIM's status bar panel to display the current input method.
-	if (this.window.avim) this.window.avim.updateUI();
+	if (!this.window.avim) return;
+	this.window.avim.registerPrefs();
+	this.window.avim.updateUI();
 };
 
 function NSGetModule(compMgr, fileSpec) {
