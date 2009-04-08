@@ -197,15 +197,29 @@ def preprocess(src, debug=False, vals=None):
 
     return src
 
+def get_repo_url(file_path):
+    """Returns the URL of the file in ViewVC."""
+    try:
+        return REPO_URL % {"path": file_path, "rev": str(int(REVISION))}
+    except (ValueError, TypeError):
+        return REPO_URL % {"path": file_path, "rev": ""}
+
+def minify_xml(file_path, src):
+    """Returns a minified version of the given XML source string."""
+    src = "".join(ln.strip() for ln in src.split("\n"))
+    src = re.sub(r"<!--.*?-->", "", src)
+    url = get_repo_url(file_path)
+    if url:
+        msg = "<!-- Minified: see %s -->" % (url)
+        src = re.sub(r"(<\?xml\s.*?\?>)", r"\1" + msg, src)
+    return src
+
 def minify_js(file_path, src):
     """Returns a minified version of the given JavaScript source string."""
     in_str = StringIO(src)
     out_str = StringIO()
     JavascriptMinify().minify(in_str, out_str)
-    try:
-        url = REPO_URL % {"path": file_path, "rev": str(int(REVISION))}
-    except (ValueError, TypeError):
-        url = REPO_URL % {"path": file_path, "rev": ""}
+    url = get_repo_url(file_path)
     if url:
         src = "// Minified using JSMin: see %s\n%s" % (url, out_str.getvalue())
     else:
@@ -348,6 +362,7 @@ def main():
     jar_path = path.join(chrome_dir, "%s.jar" % package_name)
     root_files = ROOT_FILES.extend(["install.rdf", "chrome.manifest"])
     omit_files = [".DS_Store", "Thumbs.db"]
+    xml_ext_re = r".*\.(?:xml|xul|xbl|dtd|rdf|svg|mml|x?html)$"
 
     # Remove any leftovers from previous build.
     print "Removing leftovers from previous build..."
@@ -379,11 +394,14 @@ def main():
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
-        # Minify JavaScript files
-        if CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
-            src = minify_js(f, src)
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
+        # Minify files
+        if CONFIG is BuildConfig.RELEASE and \
+                re.match(xml_ext_re, f, flags=re.I):
+            src = minify_xml(f, src)
+        elif CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
+            src = minify_js(f, src)
         src_file.close()
         if CONFIG == BuildConfig.SB:
             info = zipfile.ZipInfo(f)
@@ -419,14 +437,17 @@ def main():
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
-        # Minify JavaScript files
-        if CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
-            src = minify_js(f, src)
         if path.basename(f) == "install.rdf":
             src = l10n_compat_install(src)
         elif path.basename(f) == "chrome.manifest":
             src = l10n_compat_manifest(src)
             src = local_to_jar(src, package_name)
+        # Minify files
+        if CONFIG is BuildConfig.RELEASE and \
+                re.match(xml_ext_re, f, flags=re.I):
+            src = minify_xml(f, src)
+        elif CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
+            src = minify_js(f, src)
         src_file.close()
         if CONFIG == BuildConfig.SB:
             info = zipfile.ZipInfo(f)
