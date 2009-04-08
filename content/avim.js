@@ -1807,9 +1807,9 @@ function AVIM()	{
 		// SciMoz plugin
 		try {
 			if (origTarget.localName.toLowerCase() == "scintilla") {
-				origTarget =
-					document.getAnonymousElementByAttribute(origTarget, "type",
-															sciMozType);
+				origTarget = doc.getAnonymousElementByAttribute(origTarget,
+																"type",
+																sciMozType);
 			}
 			if (origTarget.localName.toLowerCase() == "embed") {
 				return this.sciMozHandler(e, origTarget);
