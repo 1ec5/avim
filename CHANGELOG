@@ -260,7 +260,7 @@ Version 20080728.306 (Saturday, February 14, 2008)
 Version ${Version} (${Date})
  - Added experimental support for the Bespin editor by Mozilla Labs.
  - Added support for Songbird 1.1.
- - Fixed an issue in Komodo IDE and Komodo Edit where AVIM would not recogize
+ - Fixed an issue in Komodo IDE and Komodo Edit where AVIM would not recognize
    SciMoz's wrapper frame, which is often focused instead of SciMoz itself.
  - Fixed an issue where the caret would sometimes drift when redoing.
  - Adjusted the Vietnamese localization's messages to be consistent with Firefox
