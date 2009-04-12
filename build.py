@@ -455,6 +455,8 @@ def main():
             xpi.writestr(info, src)
         else:
             xpi.writestr(f, src)
+    r_size = sum(f_info.file_size for f_info in xpi.infolist())
+    r_size_kb = r_size / 1024.0
     xpi.close()
     for f in xpi_paths[1:]:
         shutil.copy2(xpi_paths[0], f)
@@ -462,11 +464,11 @@ def main():
     # Clean up.
     print "Cleaning up..."
     clean(dirs=[tmp_dir], verbose=True)
-
+    
     # Print results.
     print "Build results:"
     size = path.getsize(xpi_paths[0])
-    size_kb = decimal.Decimal(size) / decimal.Decimal(1024)
+    size_kb = size / 1024.0
     sha = hashlib.sha512()
     xpi = file(xpi_paths[0], "rb")
     sha.update(xpi.read())
@@ -474,7 +476,8 @@ def main():
     props = [("Configuration", CONFIG),
              ("Version", "%s (r%s)" % (version, revision)),
              ("Date", today),
-             ("Size", "%i B (%s kB)" % (size, size_kb)),
+             ("Size compressed", "%i B (%.1f kB)" % (size, size_kb)),
+             ("Size uncompressed", "%i B (%.1f kB)" % (r_size, r_size_kb)),
              ("SHA-512 hash", sha.hexdigest())]
     max_k_len = max([len(prop[0]) for prop in props]) + 1
     for prop in props:
