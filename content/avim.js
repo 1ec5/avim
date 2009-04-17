@@ -1805,19 +1805,12 @@ function AVIM()	{
 		this.disableOthers(doc);
 		
 		// SciMoz plugin
-		try {
-			if (origTarget.localName.toLowerCase() == "scintilla") {
-				origTarget = doc.getAnonymousElementByAttribute(origTarget,
-																"type",
-																sciMozType);
-			}
-			if (origTarget.localName.toLowerCase() == "embed") {
-				return this.sciMozHandler(e, origTarget);
-			}
+		if (origTarget.localName.toLowerCase() == "scintilla") {
+			origTarget = doc.getAnonymousElementByAttribute(origTarget, "type",
+															sciMozType);
 		}
-		catch (e) {
-//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n");	// debug
-			return false;
+		if (origTarget.localName.toLowerCase() == "embed") {
+			return this.sciMozHandler(e, origTarget);
 		}
 		
 		// Bespin editor
