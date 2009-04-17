@@ -214,7 +214,7 @@ Version 20080728.265 (Monday, December 8, 2008)
  - The toolbar buttons now appear disabled when AVIM is turned off.
  - XaLo's version of AVIM is now recognized and disabled.
 
-Version 20080728.280 (Saturday, January 17, 2008)
+Version 20080728.280 (Saturday, January 17, 2009)
  - Added an option to allow diacritics in password boxes. Use caution when using
    accented passwords on a website; the website may not handle Unicode passwords
    properly.
@@ -228,14 +228,14 @@ Version 20080728.280 (Saturday, January 17, 2008)
  - Updated support for the latest BlueGriffon nightlies.
  - Fixed editing in BlueGriffon's rich text editor with AVIM enabled.
 
-Version 20080728.290 (Saturday, February 7, 2008)
+Version 20080728.290 (Saturday, February 7, 2009)
  - Fixed a security issue that allowed malicious webpages to execute arbitrary
    JavaScript as privileged code.
  - Improved performance when editing a multiline textbox with a large amount of
    text.
  - Added experimental support for the IME and DiMENSiON extension.
 
-Version 20080728.306 (Saturday, February 14, 2008)
+Version 20080728.306 (Saturday, February 14, 2009)
  - Eliminated lag when adding diacritics. Editing a textbox with a large amount
    of text no longer incurs any noticeable delay.
  - Added support for the SciMoz plugin (Scintilla) in Komodo IDE and Komodo
@@ -257,7 +257,7 @@ Version 20080728.306 (Saturday, February 14, 2008)
  - AVIM now checks a textbox's name in addition to its ID when determining
    whether to ignore the textbox.
 
-Version ${Version} (${Date})
+Version 20080728.325 (Friday, April 17, 2009)
  - Added experimental support for the Bespin editor by Mozilla Labs.
  - Added support for Songbird 1.1.
  - Fixed an issue in Komodo IDE and Komodo Edit where AVIM would not recognize
@@ -269,3 +269,5 @@ Version ${Version} (${Date})
    "ime-mode" CSS property to "disabled".
  - Fixed an issue in SeaMonkey where AVIM's toolbar buttons would appear without
    any icons.
+
+Version ${Version} (${Date})
