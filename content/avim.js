@@ -54,6 +54,7 @@ function AVIM()	{
 	const panelId = "avim-status";
 	
 	const sciMozType = "application/x-scimoz-plugin";
+	const bespinClass = "bespin.editor.API";
 	
 	// Local functions that don't require access to AVIM's fields.
 	
@@ -253,7 +254,7 @@ function AVIM()	{
 		
 		// Bespin editor
 		if (this.bespinEditor) {
-			var pos = this.bespinEditor.cursorPosition;
+			var pos = this.getBespinCursorPosition();
 //			pos = {row: pos.row, col: pos.col}; // copy
 			this.bespinEditor.ui.actions.deleteChunkAndInsertChunkAndSelect({
 				pos: {row: pos.row, col: index},
@@ -621,6 +622,21 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Returns the current row and column of the cursor in Bespin. Note that
+	 * unlike getCursorPosition(), this method returns the full position in the
+	 * editor grid, not just an index from the start of the line.
+	 *
+	 * @returns {number}	The current cursor position, or -1 if the cursor
+	 * 						cannot be found.
+	 */
+	this.getBespinCursorPosition = function() {
+		if ("cursorPosition" in this.bespinEditor) {
+			return this.bespinEditor.cursorPosition;
+		}
+		return this.bespinEditor.cursorManager.position;
+	};
+	
+	/**
 	 * Returns the current position of the cursor in the given textbox.
 	 *
 	 * @param obj	{object}	The DOM element representing the current
@@ -637,7 +653,7 @@ function AVIM()	{
 		}
 		
 		// Bespin editor
-		if (this.bespinEditor) return this.bespinEditor.cursorPosition.col;
+		if (this.bespinEditor) return this.getBespinCursorPosition().col;
 		
 		// Everything else
 		var data = (obj.data) ? obj.data : text(obj);
@@ -1045,7 +1061,7 @@ function AVIM()	{
 			}
 			// Bespin editor
 			else if (this.bespinEditor) {
-				this.bespinEditor.cursorPosition.col = pos;
+				this.getBespinCursorPosition().col = pos;
 			}
 			// Everything else
 			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
@@ -1397,7 +1413,7 @@ function AVIM()	{
 	 * @returns {string}	The text of the current line.
 	 */
 	this.bespinGetLine = function() {
-		var pos = this.bespinEditor.cursorPosition;
+		var pos = this.getBespinCursorPosition();
 		return this.bespinEditor.model.getRowArray(pos.row).join("");
 	};
 	
@@ -1818,14 +1834,19 @@ function AVIM()	{
 			var winWrapper = new XPCNativeWrapper(doc.defaultView);
 			var win = winWrapper.wrappedJSObject;
 			if (origTarget.localName.toLowerCase() == "canvas" &&
-				"bespin" in win && "_editor" in win) {
-				this.bespinEditor = win._editor;
-				this.bespinHandler(e, origTarget);
+				"bespin" in win) {
+				if ("_editor" in win) this.bespinEditor = win._editor;
+				else this.bespinEditor = win.bespin.get("editor");
+				if (this.bespinEditor.declaredClass == bespinClass &&
+					this.bespinEditor.canvas == origTarget) {
+					this.bespinHandler(e, origTarget);
+				}
 				this.bespinEditor = null;
 			}
 		}
 		catch (e) {
 //			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");	// debug
+			this.bespinEditor = null;
 			return false;
 		}
 		
