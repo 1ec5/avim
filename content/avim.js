@@ -1862,7 +1862,7 @@ function AVIM()	{
 	};
 	
 	// IME and DiMENSiON extension
-	if (window.getIMEStatus) {
+	if (window && "getIMEStatus" in window) {
 		var getStatus = getIMEStatus;
 		getIMEStatus = function () {
 			try {
@@ -1875,7 +1875,7 @@ function AVIM()	{
 	}
 };
 
-if (!window.avim && !window.frameElement) {
+if (window && !("avim" in window) && !window.frameElement) {
 	window.avim = new AVIM();
 	addEventListener("load", function () {
 		avim.registerPrefs();
