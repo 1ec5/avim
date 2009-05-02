@@ -76,6 +76,7 @@ AVIM.getOverlayUrl = function (windowUrl) {
  * @param window	{object}	the window onto which AVIM should be attached.
  */
 AVIM.prototype.onWindowOpen = function (window) {
+	var xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
 	// List any chrome: URLs special-cased in chrome.manifest.
 	var manifestUrls = [
 		"chrome://browser/content/browser.xul",
@@ -84,7 +85,10 @@ AVIM.prototype.onWindowOpen = function (window) {
 	];
 	var handleEvent = function (event) {
 		var document = event.originalTarget;
+//		dump("onWindowOpen: " + document.location + "\n");						// debug
 		if (document.location && document.location.protocol == "chrome:" &&
+			document.contentType &&
+			xulTypes.indexOf(document.contentType) >= 0 &&
 			manifestUrls.indexOf(document.location.href) < 0) {
 			document.loadOverlay(AVIM.getOverlayUrl(document.location.href),
 								 new AVIMOverlayObserver(window));
