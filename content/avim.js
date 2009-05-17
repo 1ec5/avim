@@ -372,7 +372,7 @@ function AVIM()	{
 		var uw = up(w), tw = uw;
 		var uk = up(k), twE, uw2 = this.unV2(uw);
 		
-		var vSConsonant = "BCDGHKLMNPQRSTVX";
+		var vSConsonant = "BCDĐGHKLMNPQRSTVX";
 		var vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
 		if (AVIMConfig.informal) {
 			vSConsonant += "F";
@@ -461,7 +461,7 @@ function AVIM()	{
 		this.tw5 = tw;
 		
 		// Catch-all for words with too many interior letters
-		return /$[Đđ]?....+/.test(uw2);
+		return uw2.length > 3;
 	};
 	
 	/**
