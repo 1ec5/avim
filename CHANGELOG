@@ -273,4 +273,5 @@ Version 20080728.325 (Friday, April 17, 2009)
 Version ${Version} (${Date})
  - Added support for Bespin 0.2.1 ("Cheeky Cirrus"), including non-Mozilla
    installations.
- - Treated "ddau+" as a misspelled word.
+ - Added support for Songbird 1.2.
+ - "Ddau+" is now treated as a misspelled word.
