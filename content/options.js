@@ -19,10 +19,14 @@ function AVIMOptionsPanel() {
 		spellOptions: "spell-options-bc"
 	};
 	
+	const enabledCheckId = "enabled-check";
+	
 	const notificationBoxId = "general-note";
 	
 	const tabBoxId = "general-tabbox";
 	const tabsId = "general-tabs";
+	
+	const spellCheckCheckId = "spell-check";
 	
 // $if{Debug}
 	const testerBoxId = "tester-box";
@@ -34,6 +38,7 @@ function AVIMOptionsPanel() {
 	const ignoreTextBoxId = "ignore-text";
 	const idListId = "ignoredids-list";
 	const removeButtonId = "remove-button";
+	const resetButtonId = "reset-button";
 	
 	const ignoredIdsDelimiter = /\s+/;
 	const macTabBoxMargin = 4 + "px";
@@ -160,7 +165,8 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateForEnabled = function() {
 		var bc = document.getElementById(broadcasterIds.disabled);
-		if (bc) bc.setAttribute("disabled", "" + !prefs.getBoolPref("enabled"));
+		var check = document.getElementById(enabledCheckId);
+		if (bc && check) bc.setAttribute("disabled", "" + !check.checked);
 		
 		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
 		else this.mudimMonitor.hideWarning();
@@ -176,8 +182,8 @@ function AVIMOptionsPanel() {
 	this.validateForSpellingEnforced = function() {
 		var bc = document.getElementById(broadcasterIds.spellOptions);
 		if (!bc) return;
-		var enabled = prefs.getBoolPref("enabled");
-		var enforced = prefs.getBoolPref("ignoreMalformed");
+		var enabled = document.getElementById(enabledCheckId).checked;
+		var enforced = document.getElementById(spellCheckCheckId).checked;
 		bc.setAttribute("disabled", "" + (!enabled || !enforced));
 	};
 	
@@ -249,6 +255,22 @@ function AVIMOptionsPanel() {
 	};
 	
 	/**
+	 * Returns a space-delimited list of ignored IDs.
+	 *
+	 * @returns {string}	a list of ignored IDs.
+	 */
+	this.stringFromIgnoredIds = function() {
+		var idList = document.getElementById(idListId);
+		if (!idList) return "";
+		var ignoredIds = [];
+		for (var i = 0; i < idList.getRowCount(); i++) {
+			var row = idList.getItemAtIndex(i);
+			ignoredIds.push(row.value);
+		}
+		return this.normalizeArray(ignoredIds, true).join(" ");
+	};
+	
+	/**
 	 * Enables or disables the Restore to Default button, based on whether the
 	 * current ignored ID list is equivalent to the default list.
 	 */
@@ -257,8 +279,8 @@ function AVIMOptionsPanel() {
 			.getService(oCi.nsIPrefService)
 			.getDefaultBranch("extensions.avim.");
 		var defaultIds = defaults.getCharPref("ignoredFieldIds");
-		var prefIds = prefs.getCharPref("ignoredFieldIds");
-		return defaultIds != prefIds;
+		var button = document.getElementById(resetButtonId);
+		return button.disabled = defaultIds == this.stringFromIgnoredIds();
 	};
 	
 	/**
@@ -300,17 +322,9 @@ function AVIMOptionsPanel() {
 	 * Updates the stored preferences to reflect the panel's current state.
 	 */
 	this.setPrefs = function() {
-		var idList = document.getElementById(idListId);
-		if (!idList) return;
-		var ignoredIds = [];
-		for (var i = 0; i < idList.getRowCount(); i++) {
-			var row = idList.getItemAtIndex(i);
-			ignoredIds.push(row.value);
-		}
-		
 		var ids = oCc["@mozilla.org/supports-string;1"]
 			.createInstance(oCi.nsISupportsString);
-		ids.data = this.normalizeArray(ignoredIds, true).join(" ");
+		ids.data = this.stringFromIgnoredIds();
 		prefs.setComplexValue("ignoredFieldIds", oCi.nsISupportsString, ids);
 	};
 	

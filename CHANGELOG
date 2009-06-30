@@ -275,3 +275,7 @@ Version ${Version} (${Date})
    non-Mozilla installations.
  - Added support for Songbird 1.2.
  - "Ddau+" is now treated as a misspelled word.
+ - Fixed an issue in Windows and Linux where options in the options pane were
+   not enabled and disabled correctly.
+ - Fixed an issue where the Restore to Default button was always enabled, even
+   when the ignored IDs list was already set to the default.
