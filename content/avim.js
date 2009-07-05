@@ -426,7 +426,7 @@ function AVIM()	{
 				}
 			}
 			// Disallow DCD etc.
-			if (!tw) return true;
+			if (!tw && uw != "GIN") return true;
 		}
 		
 		// Extraneous consonants: invalid
