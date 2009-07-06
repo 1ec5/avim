@@ -270,7 +270,7 @@ Version 20080728.325 (Friday, April 17, 2009)
  - Fixed an issue in SeaMonkey where AVIM's toolbar buttons would appear without
    any icons.
 
-Version ${Version} (${Date})
+Version 20080728.334 (Sunday, July  5, 2009)
  - Added support for Bespin 0.2.1 ("Cheeky Cirrus") and above, including
    non-Mozilla installations.
  - Added support for Songbird 1.2.
@@ -280,3 +280,5 @@ Version ${Version} (${Date})
    not enabled and disabled correctly.
  - Fixed an issue where the Restore to Default button was always enabled, even
    when the ignored IDs list was already set to the default.
+
+Version ${Version} (${Date})
