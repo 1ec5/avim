@@ -425,8 +425,8 @@ function AVIM()	{
 					return true;
 				}
 			}
-			// Disallow DCD etc.
-			if (!tw && uw != "GIN") return true;
+			// Disallow DCD etc., but allow words beginning in GI.
+			if (!tw && cons && cons[0] != "GI") return true;
 		}
 		
 		// Extraneous consonants: invalid
