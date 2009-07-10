@@ -282,3 +282,5 @@ Version 20080728.334 (Sunday, July  5, 2009)
    when the ignored IDs list was already set to the default.
 
 Version ${Version} (${Date})
+ - Fixed an issue where opening the options pane would clear the ignored IDs
+   list.

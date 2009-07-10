@@ -148,8 +148,8 @@ function AVIMOptionsPanel() {
 		for (var i = 0; i < items.length; i++) idList.removeChild(items[i]);
 		
 		// Repopulate the list.
-		var ids = prefs.getComplexValue("ignoredFieldIds", Ci.nsISupportsString)
-			.data;
+		var ids = prefs.getComplexValue("ignoredFieldIds",
+										oCi.nsISupportsString).data;
 		ids = ids.split(ignoredIdsDelimiter);
 		ids = this.normalizeArray(ids, true);
 //		dump("Got ignoredIds: " + ids.join(",") + ".\n");				// debug
