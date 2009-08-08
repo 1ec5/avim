@@ -284,3 +284,4 @@ Version 20080728.334 (Sunday, July  5, 2009)
 Version ${Version} (${Date})
  - Fixed an issue where opening the options pane would clear the ignored IDs
    list.
+ - Added support for Firefox 3.6 alpha 1.
