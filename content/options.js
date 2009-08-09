@@ -556,7 +556,7 @@ function AVIMOptionsPanel() {
 		};
 	}
 }
-if (!window.optionsPanel) {
+if (!window && !("optionsPanel" in window)) {
 	window.optionsPanel = new AVIMOptionsPanel();
 	addEventListener("load", function (e) {
 		optionsPanel.initialize();

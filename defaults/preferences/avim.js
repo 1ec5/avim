@@ -1,5 +1,3 @@
-// Remember to set these defaults at the top of chrome/content/avim.js!
-
 /* Enabled */
 pref("extensions.avim.enabled", true);
 
