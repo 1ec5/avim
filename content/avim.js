@@ -54,6 +54,7 @@ function AVIM()	{
 	const panelId = "avim-status";
 	
 	const sciMozType = "application/x-scimoz-plugin";
+	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
 	const bespinClass = "bespin.editor.API";
 	
 	// Local functions that don't require access to AVIM's fields.
@@ -78,6 +79,58 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Proxy for a Silverlight input control, to reduce back-and-forth between
+	 * JavaScript and Silverlight. This object supports TextBox controls only.
+	 *
+	 * @param ctl	{object}	The XAML control represented by the proxy.
+	 */
+	var SlightCtlProxy = function(ctl) {
+		this.ctl = ctl;
+		this.type = ctl.getHost().type;
+		if ("text" in ctl) this.value = ctl.text;
+//		else if ("password" in ctl) this.value = ctl.password;
+		else throw "Not a TextBox control";
+		this.selectionStart = ctl.selectionStart;
+		this.selectionEnd = ctl.selectionStart + ctl.selectionLength;
+		
+		/**
+		 * Updates the Silverlight control represented by this proxy to reflect
+		 * any changes made to the proxy.
+		 */
+		this.commit = function() {
+			var tooLong = "maxLength" in this.ctl &&
+				this.ctl.maxLength && this.value.length > this.ctl.maxLength;
+			if ("text" in this.ctl && !tooLong) this.ctl.text = this.value;
+//			else if ("password" in this.ctl) this.ctl.password = this.value;
+			this.ctl.selectionStart = this.selectionStart;
+			this.ctl.selectionLength = this.selectionEnd - ctl.selectionStart;
+		};
+	};
+	
+	/**
+	 * Proxy for a Silverlight KeyboardEventArgs object posing as a DOM Event
+	 * object.
+	 *
+	 * @param evt	{object}	The Silverlight keydown event.
+	 */
+	var SlightEvtProxy = function(evt) {
+		this.evt = evt;
+		this.target = evt.source;
+		
+		// Convert Silverlight key code to DOM character code
+		this.charCode = evt.key;	// platform agnostic, for alphanumeric only
+		this.shiftKey = evt.shift;
+		this.ctrlKey = evt.ctrl;
+		if (this.charCode > 19 && this.charCode < 30) this.charCode += 28;
+		else if (this.charCode > 29 && this.charCode < 56) {
+			this.charCode += 35;
+			if (!this.shiftKey) this.charCode += 32;
+		}
+		this.which = this.charCode;
+//		dump("SlightEvtProxy -- " + this.which + " = '" + fcc(this.which) + "'\n");			// debug
+	};
+	
+	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
 	 * XUL or HTML element.
 	 *
@@ -85,7 +138,7 @@ function AVIM()	{
 	 * @returns	{object}	The associated nsIEditor instance.
 	 */
 	var getEditor = function(el) {
-		if (!el) return undefined;
+		if (!el || el instanceof SlightCtlProxy) return undefined;
 		if (el.editor) return el.editor;
 		try {
 			return el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
@@ -256,16 +309,26 @@ function AVIM()	{
 		if (this.bespinEditor) {
 			var pos = this.getBespinCursorPosition();
 //			pos = {row: pos.row, col: pos.col}; // copy
-			this.bespinEditor.ui.actions.deleteChunkAndInsertChunkAndSelect({
-				pos: {row: pos.row, col: index},
-				endPos: {row: pos.row, col: index + len},
-				queued: true,
-				chunk: repl
-			});
+			var actions = this.bespinEditor.ui.actions;
+			if ("deleteChunkAndInsertChunkAndSelect" in actions) {
+				// Bespin 0.1-0.3
+				actions.deleteChunkAndInsertChunkAndSelect({
+					pos: {row: pos.row, col: index},
+					endPos: {row: pos.row, col: index + len},
+					queued: true,
+					chunk: repl
+				});
+			}
+			else {
+				// Bespin 0.4
+				actions.select({
+					startPos: {row: pos.row, col: index},
+					endPos: {row: pos.row, col: index + len}
+				});
+				actions.insertChunk({chunk: repl});
+			}
 			pos.col += repl.length - len;
-			this.bespinEditor.ui.actions.select({
-				startPos: pos, endPos: pos
-			});
+			actions.select({startPos: pos, endPos: pos});
 			return repl.length - len;
 		}
 		
@@ -655,6 +718,9 @@ function AVIM()	{
 		// Bespin editor
 		if (this.bespinEditor) return this.getBespinCursorPosition().col;
 		
+		// Silverlight applet
+		if (obj instanceof SlightCtlProxy) return obj.selectionStart;
+		
 		// Everything else
 		var data = (obj.data) ? obj.data : text(obj);
 		if (!data || !data.length) return -1;
@@ -662,6 +728,18 @@ function AVIM()	{
 		if (!obj.setSelectionRange) return -1;
 		return obj.selectionStart;
 	}
+	
+	/**
+	 * Returns whether VIQR or VIQR* is the current input method, taking into
+	 * account whether they are enabled for Auto.
+	 *
+	 * @returns {bool}	True if VIQR or VIQR* is the current input method.
+	 */
+	this.methodIsVIQR = function() {
+		if (AVIMConfig.method > 2) return true;
+		return AVIMConfig.method == 0 && (AVIMConfig.autoMethods.viqr ||
+										  AVIMConfig.autoMethods.viqrStar);
+	};
 	
 	/**
 	 * Retrieves the relevant state from the given textbox.
@@ -678,14 +756,15 @@ function AVIM()	{
 		
 		var data = obj.data || text(obj);
 		var w = data.substring(0, pos);
-		w = /[^ \r\n\t\xa0\xad#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”„“‘’«»‹›‐‑–—…−×÷°″′•·†‡]*$/.exec(w);
+		if (w.substr(-1) == "\\" && this.methodIsVIQR()) return ["\\", pos];
+		w = /[^ \r\n\t\xa0\xad#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”„“‘’«»‹›‐‑–—…−×÷°″′•·†‡\\]*$/.exec(w);
 		return [w ? w[0] : "", pos];
 	};
 	
 	/**
 	 * @param obj	{object}	The DOM element representing the current
 	 * 							textbox.
-	 * @param key	{string}	The character equivalent of the pressed key.
+	 * @param key	{object}	The keydown event.
 	 */
 	this.start = function(obj, key) {
 		var method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
@@ -708,7 +787,7 @@ function AVIM()	{
 		
 		var w = this.mozGetText(obj);
 		key = fcc(key.which);
-		if (!w || obj.sel) return;
+		if (!w || ("sel" in obj && obj.sel)) return;
 		
 		var noNormC = this.D2.indexOf(up(key)) >= 0;
 		
@@ -732,7 +811,7 @@ function AVIM()	{
 	 */
 	this.findC = function(w, k, sf) {
 		var method = AVIMConfig.method;
-		if ((method == 3 || method == 4) && w.substr(-1) == "\\") {
+		if (this.methodIsVIQR() && w.substr(-1) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
 		var str = "", res, cc = "", pc = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
@@ -908,7 +987,8 @@ function AVIM()	{
 			}
 			this.splice(o, pos, 1 + !!r, replaceBy);
 			// Native editors only
-			if (o.type != sciMozType && !this.bespinEditor) {
+			if (o.type != sciMozType && !this.bespinEditor &&
+				!(o instanceof SlightCtlProxy)) {
 				o.setSelectionRange(savePos, savePos);
 				o.scrollTop = sst;
 			}
@@ -1062,6 +1142,10 @@ function AVIM()	{
 			// Bespin editor
 			else if (this.bespinEditor) {
 				this.getBespinCursorPosition().col = pos;
+			}
+			// Silverlight applets
+			else if (this.oc instanceof SlightCtlProxy) {
+				this.oc.selectionStart = this.oc.selectionEnd = pos;
 			}
 			// Everything else
 			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
@@ -1326,9 +1410,9 @@ function AVIM()	{
 	 * @returns {boolean}	true if AVIM plans to modify the input; false
 	 * 						otherwise.
 	 */
-	this.keyPressHandler = function(e) {
+	this.handleKeyPress = function(e) {
 		var el = e.originalTarget || e.target, code = e.which;
-//		dump("AVIM.keyPressHandler -- target: " + el.tagName + "; code: " + code + "\n");	// debug
+//		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(e.target)) return false;
 		var isHTML = el.type == "textarea" || el.type == "text" ||
@@ -1387,10 +1471,10 @@ function AVIM()	{
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
 	 * 						otherwise.
 	 */
-	this.sciMozHandler = function(e, el) {
+	this.handleSciMoz = function(e, el) {
 		if (!el) el = e.originalTarget;
 		var code = e.which;
-//		dump("AVIM.sciMozHandler -- target: " + el + "; type: " + el.type + "; code: " + code + "\n");	// debug
+//		dump("AVIM.handleSciMoz -- target: " + el + "; type: " + el.type + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
 			el.type != sciMozType || this.findIgnore(e.target)) {
 			return false;
@@ -1428,7 +1512,7 @@ function AVIM()	{
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
 	 * 						otherwise.
 	 */
-	this.bespinHandler = function(e, el) {
+	this.handleBespin = function(e, el) {
 		if (!el) el = e.originalTarget;
 		var code = e.which;
 		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
@@ -1436,7 +1520,7 @@ function AVIM()	{
 			return false;
 		}
 		el.value = this.bespinGetLine();
-//		dump("AVIM.bespinHandler -- value: " + el.value + "\n");				// debug
+//		dump("AVIM.handleBespin -- value: " + el.value + "\n");				// debug
 		this.sk = fcc(code);
 		this.start(el, e);
 		if (this.changed) {
@@ -1446,6 +1530,131 @@ function AVIM()	{
 			return false;
 		}
 		return true;
+	};
+	
+	// Silverlight applets
+	
+	/**
+	 * Returns whether AVIM should ignore the given element.
+	 *
+	 * @param ctl	{object}	The XAML TextBox element.
+	 * @returns {boolean}	True if the element should be ignored; false
+	 * 						otherwise.
+	 */
+	this.slightFindIgnore = function(ctl) {
+		if (!("name" in ctl)) return false;
+		return ctl.name && ctl.name.toLowerCase &&
+			AVIMConfig.exclude.indexOf(ctl.name.toLowerCase()) >= 0;
+	};
+	
+	var avim = this;
+	
+	/**
+	 * Handles key presses in Silverlight. This function is triggered as soon as
+	 * the key goes down.
+	 *
+	 * @param root	{object}	The root XAML element in the Silverlight applet.
+	 * @param evt	{object}	The keyDown event.
+	 */
+	this.handleSlight = function(root, evt) {
+		try {
+			var ctl = evt.source;	// TextBox
+			// TODO: Support password boxes.
+//			var isPasswordBox = "password" in ctl;
+			if (AVIMConfig.method > 2) return;	// TODO: Support VIQR.
+			if (!("text" in ctl /* || isPasswordBox */)) return;
+//			if (isPasswordBox && !AVIMConfig.passwords) return;
+			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
+			if (!("isReadOnly" in ctl && !ctl.isReadOnly)
+				/* && !isPasswordBox */) {
+				return;
+			}
+			if (evt.ctrl || avim.slightFindIgnore(ctl)) return;
+//			dump(root + ": Key " + evt.key + " pressed on " + ctl + " -- " + ctl.text + "\n");	// debug
+			
+			// Fake a native textbox and keypress event.
+			var ctlProxy = new SlightCtlProxy(ctl);
+			var evtProxy = new SlightEvtProxy(evt);
+			if (!evtProxy.charCode) return;
+			
+			avim.sk = fcc(evtProxy.charCode);
+			avim.start(ctlProxy, evtProxy);
+			
+			ctlProxy.commit();
+			delete ctlProxy, evtProxy;
+			if (avim.changed) {
+				avim.changed = false;
+				evt.handled = true;
+			}
+		}
+		catch (exc) {
+//			throw exc;															// debug
+		}
+	};
+	
+	/**
+	 * Attaches AVIM to the given Silverlight applet. This method should be
+	 * called on an applet whenever the containing page is shown, not just when
+	 * it is loaded, because the applet is loaded afresh even when the page is
+	 * loaded from cache.
+	 *
+	 * @param slight	{object}	The DOM node representing the Silverlight
+	 * 								applet.
+	 */
+	this.registerSlight = function(slight) {
+		try {
+			if (!slightTypeRe.test(slight.type)) {
+				return;
+			}
+//			dump("registerSlight -- " + slight.Content.Root + "\n");				// debug
+			// Observing keyUp would help us support VIQR, but would introduce
+			// problems with character limits in textboxes.
+			slight.Content.Root.addEventListener("keyDown", avim.handleSlight);
+		}
+		catch (exc) {
+//			throw exc;															// debug
+		}
+	};
+	
+//	this.registerSlightsOnChange = function(evt) {
+//		this.registerSlight(evt.target);
+//	};
+	
+	/**
+	 * Attaches AVIM to Silverlight applets in the page targeted by the given
+	 * DOM load event.
+	 *
+	 * @param evt	{object}	The DOMContentLoaded event.
+	 */
+	this.registerSlightsOnPageLoad = function(evt) {
+		try {
+			var docWrapper = new XPCNativeWrapper(evt.originalTarget);
+			var doc = docWrapper.wrappedJSObject;
+			var slights = doc.getElementsByTagName("object");
+//			dump("registerSlightsOnPageLoad -- originalTarget: " + evt.originalTarget +
+//				 "; target: " + evt.target + "\n");								// debug
+			for (var i = 0; i < slights.length; i++) {
+//				dump("\t" + slights[i].id + "\n");								// debug
+				avim.registerSlight(slights[i]);
+			}
+//			doc.addEventListener("DOMNodeInserted",
+//								 avim.registerSlightsOnChange, true);
+		}
+		catch (exc) {
+//			throw exc;															// debug
+		}
+	};
+	
+	/**
+	 * Attaches AVIM to Silverlight applets whenever their containers load. This
+	 * method currently attaches only when the pages load, not when the applets
+	 * are loaded dynamically via JavaScript.
+	 */
+	this.registerSlights = function() {
+		var appcontent = document.getElementById("appcontent");   // browser
+		if (!appcontent) return;
+		appcontent.addEventListener("pageshow", this.registerSlightsOnPageLoad,
+									true);
 	};
 	
 	// Integration with Mozilla preferences service
@@ -1813,8 +2022,9 @@ function AVIM()	{
 	 * 						keypress.
 	 */
 	this.onKeyPress = function(e) {
-//		dump("AVIM.onKeyPress -- code: " + e.which + "\n");						// debug
-//		dump("AVIM.onKeyPress -- target: " + e.target.nodeName + "; id: " + e.target.id + "; originalTarget: " + e.originalTarget.nodeName + "\n");	// debug
+//		dump("AVIM.onKeyPress -- code: " + fcc(e.which) +
+//			 "; target: " + e.target.nodeName + "; id: " + e.target.id +
+//			 "; originalTarget: " + e.originalTarget.nodeName + "\n");			// debug
 		var target = e.target;
 		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
@@ -1826,7 +2036,7 @@ function AVIM()	{
 															sciMozType);
 		}
 		if (origTarget.localName.toLowerCase() == "embed") {
-			return this.sciMozHandler(e, origTarget);
+			return this.handleSciMoz(e, origTarget);
 		}
 		
 		// Bespin editor
@@ -1839,7 +2049,7 @@ function AVIM()	{
 				else this.bespinEditor = win.bespin.get("editor");
 				if (this.bespinEditor.declaredClass == bespinClass &&
 					this.bespinEditor.canvas == origTarget) {
-					this.bespinHandler(e, origTarget);
+					this.handleBespin(e, origTarget);
 				}
 				this.bespinEditor = null;
 			}
@@ -1858,7 +2068,7 @@ function AVIM()	{
 		if (wysiwyg) return this.ifMoz(e);
 		
 		// Plain text editors
-		return this.keyPressHandler(e);
+		return this.handleKeyPress(e);
 	};
 	
 	// IME and DiMENSiON extension
@@ -1880,9 +2090,11 @@ if (window && !("avim" in window) && !window.frameElement) {
 	addEventListener("load", function () {
 		avim.registerPrefs();
 		avim.updateUI();
+		avim.registerSlights();
 	}, false);
 	addEventListener("unload", function () {
 		avim.unregisterPrefs();
+		delete avim;
 	}, false);
 	addEventListener("keypress", function (e) {
 		avim.onKeyPress(e);
