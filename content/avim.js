@@ -412,6 +412,19 @@ function AVIM()	{
 	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
 	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
 	
+	// Include characters from major scripts that separate words with a space.
+	var wordChars =
+		"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
+		"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
+		"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
+			"\ua720-\ua7ff\ufb00-\ufb4f" +	// Latin
+		"\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufeff" +	// Arabic
+		"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
+		"\u0900-\u097f" +	// Devanagari
+		"\u02b0-\u02ff" +	// spacing modifier letters
+		"’";	// word-inner punctuation not found in Vietnamese
+	var wordRe = new RegExp("[" + wordChars + "]*$");
+	
 	this.prefsRegistered = false;
 	this.attached = [];
 	this.changed = false;
@@ -442,14 +455,21 @@ function AVIM()	{
 			vDConsonant += "|DZ";
 		}
 		
+		// Non-Vietnamese characters: invalid
+		var nonViet = "[^A-EGHIK-VXY" + (AVIMConfig.informal ? "FZ" : "") +
+			"Đ]";
+		if (new RegExp(nonViet).test(uw2)) return true;
+		
 		// Final consonants with ` ? ~ tones: invalid
 		if (this.method.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) {
 			return true;
 		}
 		
 		// Initial non-Vietnamese consonants: invalid
-		var nonViet = "[JW0-9" + (AVIMConfig.informal ? "]|^Z|[^D]Z" : "FZ]");
-		if (new RegExp(nonViet).test(uw)) return true;
+		if (AVIMConfig.informal) {
+			if (/^Z|[^D]Z/.test(uw)) return true;
+		}
+		else if (uw.indexOf("F") >= 0 || uw.indexOf("Z") >= 0) return true;
 		
 		// Incompatible vowels following certain consonants, partly thanks to
 		// Mudim issue #16: invalid
@@ -757,7 +777,7 @@ function AVIM()	{
 		var data = obj.data || text(obj);
 		var w = data.substring(0, pos);
 		if (w.substr(-1) == "\\" && this.methodIsVIQR()) return ["\\", pos];
-		w = /[^ \r\n\t\xa0\xad#,;.:_()<>+\-*\/=?!"$%{}[\]'`~|^@&“”„“‘’«»‹›‐‑–—…−×÷°″′•·†‡\\]*$/.exec(w);
+		w = wordRe.exec(w);
 		return [w ? w[0] : "", pos];
 	};
 	
@@ -1602,18 +1622,15 @@ function AVIM()	{
 	 * 								applet.
 	 */
 	this.registerSlight = function(slight) {
-		try {
-			if (!slightTypeRe.test(slight.type)) {
-				return;
-			}
-//			dump("registerSlight -- " + slight.Content.Root + "\n");				// debug
-			// Observing keyUp would help us support VIQR, but would introduce
-			// problems with character limits in textboxes.
-			slight.Content.Root.addEventListener("keyDown", avim.handleSlight);
-		}
-		catch (exc) {
-//			throw exc;															// debug
-		}
+		if (!slightTypeRe.test(slight.type)) return;
+//		dump("registerSlight -- " + slight.content.root + "\n");				// debug
+		// Observing keyUp would help us support VIQR, but would introduce
+		// problems with character limits in textboxes.
+//		slight.content.root.addEventListener("keyDown", avim.handleSlight);
+		//slight.Content.Root.addEventListener("MouseLeftButtonDown", function (evt) {
+		//	dump("slightClick -- source: " + evt.source + "\n");			// debug
+		//});
+//		dump("\t" + slight.content.root.children + "\n");						// debug
 	};
 	
 //	this.registerSlightsOnChange = function(evt) {
