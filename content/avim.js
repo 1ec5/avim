@@ -456,9 +456,9 @@ function AVIM()	{
 		}
 		
 		// Non-Vietnamese characters: invalid
-		var nonViet = "[^A-EGHIK-VXY" + (AVIMConfig.informal ? "FZ" : "") +
-			"Đ]";
-		if (new RegExp(nonViet).test(uw2)) return true;
+		var nonViet = "A-EGHIK-VXYĐ";
+		if (AVIMConfig.informal) nonViet += "FZ";
+		if (new RegExp("[^" + nonViet + "]").test(uw2)) return true;
 		
 		// Final consonants with ` ? ~ tones: invalid
 		if (this.method.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) {

@@ -50,7 +50,8 @@ DEBUG_DIRS = [path.join("content", "test"), path.join("skin", "test")]
 
 # Dictionary mapping subdirectories of locale/ to BabelZilla-compatible locale
 # codes. Locale names that are already compatible can be omitted.
-LOCALE_DIRS = {"es": "es-ES", "vi": "vi-VN", "zh": "zh-TW"}
+LOCALE_DIRS = {"en": "en-US", "es": "es-ES", "fr": "fr-FR", "vi": "vi-VN",
+			   "zh": "zh-TW"}
 
 # Paths to files to which a license block will be prepended.
 LICENSE_FILES = [path.join("content", "avim.js")]
