@@ -286,7 +286,7 @@ Version ${Version} (${Date})
    work in standard Silverlight textboxes. However, VIQR and VIQR* are not
    supported. Also, applets written with managed code are not supported.
  - Added support for Bespin 0.4 ("Stratospheric Stratus").
- - Added support for Firefox 3.6 alpha 1.
+ - Added support for Firefox 3.7 nightlies.
  - Improved word boundary detection. Even with spelling enforcement enabled,
    Vietnamese words can be typed immediately after any punctuation, as well as
    next to words in Japanese and other languages that do not use spaces.
