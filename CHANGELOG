@@ -295,3 +295,5 @@ Version ${Version} (${Date})
  - Fixed an issue where a backslash would not be treated as a word boundary.
  - VIQR and VIQR* dead keys can now be escaped using a backslash when the Auto
    input method is active.
+ - In trunk builds of Firefox, AVIM's logo is now displayed in the Add-ons
+   window even when the extension is disabled.
