@@ -40,10 +40,8 @@ AVIM.prototype = {
  * @returns {string}	URL of the overlay to apply.
  */
 AVIM.getOverlayUrl = function (windowUrl) {
-	var id =
-		gCc["@mozilla.org/xre/app-info;1"].getService(gCi.nsIXULAppInfo).ID;
-//	var isFf = id == "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
-	var isSm = id == "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}";
+//	var id =
+//		gCc["@mozilla.org/xre/app-info;1"].getService(gCi.nsIXULAppInfo).ID;
 	
 	switch (windowUrl) {
 		// Sunbird
@@ -65,7 +63,6 @@ AVIM.getOverlayUrl = function (windowUrl) {
 		case "chrome://collab/content/collab.xul":
 			return "chrome://avim/content/collabOverlay.xul";
 		default:
-			if (isSm) return "chrome://avim/content/navigatorOverlay.xul";
 			return "chrome://avim/content/generalOverlay.xul";
 	}
 };

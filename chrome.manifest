@@ -13,7 +13,7 @@ skin	avim	classic/1.0	skin/
 
 style	chrome://global/content/customizeToolbar.xul	chrome://avim/skin/avim.css
 
-#### AVIM #######################################################################
+### AVIM #######################################################################
 
 # Mac menu bar in Firefox
 overlay	chrome://avim/content/options.xul		chrome://browser/content/macBrowserOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}	os=Darwin
@@ -31,7 +31,7 @@ style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/pr
 style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
 # $endif{}
 
-#### Firefox ####################################################################
+### Firefox ####################################################################
 
 style	chrome://browser/content/browser.xul					chrome://avim/skin/avim.css
 
@@ -44,3 +44,12 @@ overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/conte
 
 # Preferences and associated dialogs
 overlay	chrome://messenger/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
+
+### Fennec #####################################################################
+
+# Preferences pane
+#override	chrome://avim/content/options.xul	chrome://avim/content/fennecOptions.xul	application={a23983c0-fd0e-11dc-95ff-0800200c9a66}
+
+### SeaMonkey ##################################################################
+
+override	chrome://avim/content/generalOverlay.xul	chrome://avim/content/navigatorOverlay.xul	application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}

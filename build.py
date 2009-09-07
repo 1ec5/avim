@@ -204,6 +204,14 @@ def get_repo_url(file_path):
     except (ValueError, TypeError):
         return REPO_URL % {"path": file_path, "rev": ""}
 
+def minify_manifest(src):
+    """Returns a minified version of the given chrome manifest source."""
+    min_re = re.compile(r"#.*$", re.M)
+    src = min_re.sub(r"", src)
+    src = re.sub(r"\n+", r"\n", src)
+    src = re.sub(r"[\t ]+", r"\t", src)
+    return src
+
 def minify_xml(file_path, src):
     """Returns a minified version of the given XML source string."""
     src = "".join(ln.strip() for ln in src.split("\n"))
@@ -274,8 +282,8 @@ def l10n_compat_manifest(src):
 
 def local_to_jar(src, package_name):
     """Substitute local paths with JAR paths (for chrome.manifest)."""
-    jar_re = re.compile(r"^((?:content|override|(?:skin|locale)\s+\S+)\s+\S+\s+"
-                        r")(\S+/.*)", re.M)
+    jar_re = re.compile(r"^((?:content|(?:skin|locale)\s+\S+)\s+\S+\s+)"
+                        r"(\S+/.*)", re.M)
     src = jar_re.sub("\\1jar:chrome/%s.jar!/\\2" % package_name, src)
     return src
 
@@ -440,6 +448,7 @@ def main():
         if path.basename(f) == "install.rdf":
             src = l10n_compat_install(src)
         elif path.basename(f) == "chrome.manifest":
+            src = minify_manifest(src)
             src = l10n_compat_manifest(src)
             src = local_to_jar(src, package_name)
         # Minify files
