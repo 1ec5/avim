@@ -287,6 +287,7 @@ Version ${Version} (${Date})
    supported. Also, applets written with managed code are not supported.
  - Added support for Bespin 0.4 ("Stratospheric Stratus").
  - Added support for Firefox 3.7 nightlies.
+ - Added a new finger-friendly preferences panel for Fennec 1.0 beta 4.
  - Improved word boundary detection. Even with spelling enforcement enabled,
    Vietnamese words can be typed immediately after any punctuation, as well as
    next to words in Japanese and other languages that do not use spaces.
