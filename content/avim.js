@@ -1626,7 +1626,7 @@ function AVIM()	{
 //		dump("registerSlight -- " + slight.content.root + "\n");				// debug
 		// Observing keyUp would help us support VIQR, but would introduce
 		// problems with character limits in textboxes.
-//		slight.content.root.addEventListener("keyDown", avim.handleSlight);
+		slight.content.root.addEventListener("keyDown", avim.handleSlight);
 		//slight.Content.Root.addEventListener("MouseLeftButtonDown", function (evt) {
 		//	dump("slightClick -- source: " + evt.source + "\n");			// debug
 		//});
@@ -1651,7 +1651,7 @@ function AVIM()	{
 //			dump("registerSlightsOnPageLoad -- originalTarget: " + evt.originalTarget +
 //				 "; target: " + evt.target + "\n");								// debug
 			for (var i = 0; i < slights.length; i++) {
-//				dump("\t" + slights[i].id + "\n");								// debug
+//				dump("\t> " + slights[i].id + "\n");								// debug
 				avim.registerSlight(slights[i]);
 			}
 //			doc.addEventListener("DOMNodeInserted",
