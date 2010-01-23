@@ -4,7 +4,6 @@
  - Bug: "kilo^me't" (kilômét)
  - Bug: "xoa" (xoá) in rich text editors, including Thunderbird and Composer.
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
- - Add key mapping for the dong sign.
  - Optionally remember on/off state per-site, using FUEL or the Content
    Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.

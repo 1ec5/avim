@@ -108,24 +108,42 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Returns the Gecko-compatible virtual key code for the given Silverlight
+	 * virtual key code.
+	 *
+	 * @param	charCode	{number}	Silverlight virtual key code.
+	 * @param	shiftKey	{boolean}	True if the Shift key is held down;
+	 * 									false otherwise.
+	 * @returns	A Gecko-compatible virtual key code, or 0xff (255) if no virtual
+	 * 			key is applicable.
+	 *
+	 * @see		http://msdn.microsoft.com/en-us/library/bb979636%28VS.95%29.aspx
+	 */
+	var virtualKeyFromSlight = function(charCode, shiftKey) {
+		if (charCode > 19 && charCode < 30) {	// number row
+			if (shiftKey) return 0xff;
+			else charCode += 28;
+		}
+		else if (charCode > 29 && charCode < 56) {	// alphabetic
+			charCode += 35;
+			if (!shiftKey) charCode += 32;
+		}
+		return charCode;
+	};
+	
+	/**
 	 * Proxy for a Silverlight KeyboardEventArgs object posing as a DOM Event
 	 * object.
 	 *
-	 * @param evt	{object}	The Silverlight keydown event.
+	 * @param evt		{object}	The Silverlight keydown event.
+	 * @param charCode	{number}	A virtual key code from the plugin host.
 	 */
-	var SlightEvtProxy = function(evt) {
+	var SlightEvtProxy = function(evt, charCode) {
 		this.evt = evt;
 		this.target = evt.source;
-		
-		// Convert Silverlight key code to DOM character code
-		this.charCode = evt.key;	// platform agnostic, for alphanumeric only
 		this.shiftKey = evt.shift;
 		this.ctrlKey = evt.ctrl;
-		if (this.charCode > 19 && this.charCode < 30) this.charCode += 28;
-		else if (this.charCode > 29 && this.charCode < 56) {
-			this.charCode += 35;
-			if (!this.shiftKey) this.charCode += 32;
-		}
+		this.charCode = charCode || virtualKeyFromSlight(evt.key, evt.shift);
 		this.which = this.charCode;
 //		dump("SlightEvtProxy -- " + this.which + " = '" + fcc(this.which) + "'\n");			// debug
 	};
@@ -422,6 +440,8 @@ function AVIM()	{
 		"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
 		"\u0900-\u097f" +	// Devanagari
 		"\u02b0-\u02ff" +	// spacing modifier letters
+		"0-9" +	// numerals
+		"₫" +	// đồng sign
 		"’";	// word-inner punctuation not found in Vietnamese
 	var wordRe = new RegExp("[" + wordChars + "]*$");
 	
@@ -444,9 +464,24 @@ function AVIM()	{
 	 */
 	this.ckspell = function(w, k) {
 		if (!AVIMConfig.ckSpell) return false;
+		
+		var uw = up(w), uk = up(k);
+		
+		// Đồng sign after a number: valid
+		var num = /^([0-9]+)(D?)$/.exec(uw);
+		if (num) {
+			// Entering the first D: valid
+			if (!num[2] && uk == "D") return false;
+			
+			// Entering the second D: valid
+			var isVni = AVIMConfig.method == 2 ||
+				(AVIMConfig.method == 0 && AVIMConfig.autoMethods.vni);
+			if (num[2] && (uk == "D" || (isVni && uk == "9"))) return false;
+		}
+		
 		w = this.unV(w);
-		var uw = up(w), tw = uw;
-		var uk = up(k), twE, uw2 = this.unV2(uw);
+		var tw = uw = up(w), twE, uw2 = this.unV2(uw);
+		uk = up(k);
 		
 		var vSConsonant = "BCDĐGHKLMNPQRSTVX";
 		var vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
@@ -820,6 +855,13 @@ function AVIM()	{
 		if (this.D2.indexOf(up(key)) >= 0) {
 			w = this.mozGetText(obj);
 			if (w) this.normC(w[0], key, w[1]);
+		}
+		
+		// Convert [number]đ into the đồng sign.
+//		dump("Testing '" + w[0] + "...\n");								// debug
+		if (/^[0-9]+đ$/i.test(w[0])) {
+			this.splice(obj, w[0].length - 1, 1, "₫");
+			this.changed = true;
 		}
 	};
 	
@@ -1432,7 +1474,7 @@ function AVIM()	{
 	 */
 	this.handleKeyPress = function(e) {
 		var el = e.originalTarget || e.target, code = e.which;
-//		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + code + "\n");	// debug
+		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(e.target)) return false;
 		var isHTML = el.type == "textarea" || el.type == "text" ||
@@ -1576,12 +1618,12 @@ function AVIM()	{
 	 * @param root	{object}	The root XAML element in the Silverlight applet.
 	 * @param evt	{object}	The keyDown event.
 	 */
-	this.handleSlight = function(root, evt) {
+	this.handleSlightKeyDown = function(root, evt) {
 		try {
 			var ctl = evt.source;	// TextBox
 			// TODO: Support password boxes.
 //			var isPasswordBox = "password" in ctl;
-			if (AVIMConfig.method > 2) return;	// TODO: Support VIQR.
+//			if (AVIMConfig.method > 2) return;	// TODO: Support VIQR.			// debug -- uncomment
 			if (!("text" in ctl /* || isPasswordBox */)) return;
 //			if (isPasswordBox && !AVIMConfig.passwords) return;
 			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
@@ -1590,12 +1632,13 @@ function AVIM()	{
 				return;
 			}
 			if (evt.ctrl || avim.slightFindIgnore(ctl)) return;
-//			dump(root + ": Key " + evt.key + " pressed on " + ctl + " -- " + ctl.text + "\n");	// debug
+			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
+				 ") down on " + ctl + " -- " + ctl.text + "\n");				// debug
 			
 			// Fake a native textbox and keypress event.
 			var ctlProxy = new SlightCtlProxy(ctl);
 			var evtProxy = new SlightEvtProxy(evt);
-			if (!evtProxy.charCode) return;
+			if (!evtProxy.charCode || evtProxy.charCode == 0xff) return;
 			
 			avim.sk = fcc(evtProxy.charCode);
 			avim.start(ctlProxy, evtProxy);
@@ -1608,9 +1651,76 @@ function AVIM()	{
 			}
 		}
 		catch (exc) {
-//			throw exc;															// debug
+// $if{Debug}
+			throw exc;
+// $endif{}
 		}
 	};
+	
+	/**
+	 * Handles miscellaneous key presses in Silverlight. This function is
+	 * triggered as soon as the key goes up, and only responds if the key does
+	 * not correspond to a virtual key. In that case, it uses the character
+	 * immediately preceding the caret.
+	 *
+	 * @param root	{object}	The root XAML element in the Silverlight applet.
+	 * @param evt	{object}	The keyUp event.
+	 */
+	this.handleSlightKeyUp = function(root, evt) {
+		try {
+			// Already handled by handleSlightKeyDown().
+			if (!("key" in evt) ||
+				virtualKeyFromSlight(evt.key, evt.shift) != 0xff) {
+				return;
+			}
+			
+			var ctl = evt.source;	// TextBox
+			if (!("text" in ctl)) return;
+			if (AVIMConfig.method < 3) return;
+			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
+			if (!("isReadOnly" in ctl && !ctl.isReadOnly)) return;
+			if (evt.ctrl || avim.slightFindIgnore(ctl)) return;
+			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
+				 ") UP on " + ctl + " -- " + ctl.text + "\n");				// debug
+			
+			// Override the event proxy's key code using the last character.
+			var text = ctl.text;
+			var lastChar = text.substr(-1);
+			var charCode = lastChar.charCodeAt(0);
+			if (charCode == 0xff) return;
+			dump("\tUsing " + charCode + "(" + lastChar + ") instead.\n");		// debug
+			
+			// Remove the last character from the textbox and move the caret
+			// back.
+			var selStart = ctl.selectionStart;
+			ctl.text = text.substr(0, text.length - 1);
+			ctl.selectionStart = selStart - 1;
+			dump("\t\"" + text + "\" @ " + ctl.selectionStart + "\n");		// debug
+			
+			// Fake a native textbox and keypress event.
+			var ctlProxy = new SlightCtlProxy(ctl);
+			var evtProxy = new SlightEvtProxy(evt, charCode);
+			
+			avim.sk = fcc(evtProxy.charCode);
+			avim.start(ctlProxy, evtProxy);
+			
+			ctlProxy.commit();
+			delete ctlProxy, evtProxy;
+			avim.changed = false;
+			evt.handled = true;
+			dump("After -- text: \"" + text + "\"; ctl.text: \"" + ctl.text + "\"\n");	// debug
+			if (text == ctl.text + lastChar) {
+				// Nothing changed, so revert the textbox contents.
+				ctl.text = text;
+				ctl.selectionStart = selStart;
+			}
+		}
+		catch (exc) {
+// $if{Debug}
+			throw exc;
+// $endif{}
+		}
+	}
 	
 	/**
 	 * Attaches AVIM to the given Silverlight applet. This method should be
@@ -1624,12 +1734,10 @@ function AVIM()	{
 	this.registerSlight = function(slight) {
 		if (!slightTypeRe.test(slight.type)) return;
 //		dump("registerSlight -- " + slight.content.root + "\n");				// debug
-		// Observing keyUp would help us support VIQR, but would introduce
-		// problems with character limits in textboxes.
-		slight.content.root.addEventListener("keyDown", avim.handleSlight);
-		//slight.Content.Root.addEventListener("MouseLeftButtonDown", function (evt) {
-		//	dump("slightClick -- source: " + evt.source + "\n");			// debug
-		//});
+		slight.content.root.addEventListener("keyDown",
+											 avim.handleSlightKeyDown);
+		// Observing keyUp introduces problems with character limits.
+		slight.content.root.addEventListener("keyUp", avim.handleSlightKeyUp);
 //		dump("\t" + slight.content.root.children + "\n");						// debug
 	};
 	
@@ -1658,7 +1766,9 @@ function AVIM()	{
 //								 avim.registerSlightsOnChange, true);
 		}
 		catch (exc) {
-//			throw exc;															// debug
+// $if{Debug}
+			throw exc;
+// $endif{}
 		}
 	};
 	
