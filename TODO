@@ -1,8 +1,10 @@
  - Disable VietUni 1.7 [1]: CVietUni.typer.keyMode.off = true
  - Use XBL or XPCOM to allow each application to share the same overlay.
- - Add key mapping for g~ (Ng~.).
+ - Bug: "Ng~uye^n" (Nguyễn)
+ - Bug: "Ng" (Ng~) in Auto mode
  - Bug: "kilo^me't" (kilômét)
- - Bug: "xoa" (xoá) in rich text editors, including Thunderbird and Composer.
+ - Bug: "xoa" (xoá), "Ng" (Ng~) in rich text editors, including Thunderbird and
+   Composer.
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
  - Optionally remember on/off state per-site, using FUEL or the Content
    Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since

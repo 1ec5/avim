@@ -441,7 +441,7 @@ function AVIM()	{
 		"\u0900-\u097f" +	// Devanagari
 		"\u02b0-\u02ff" +	// spacing modifier letters
 		"0-9" +	// numerals
-		"₫" +	// đồng sign
+		"₫\u0303" +	// miscellaneous Vietnamese characters
 		"’";	// word-inner punctuation not found in Vietnamese
 	var wordRe = new RegExp("[" + wordChars + "]*$");
 	
@@ -465,24 +465,25 @@ function AVIM()	{
 	this.ckspell = function(w, k) {
 		if (!AVIMConfig.ckSpell) return false;
 		
-		var uw = up(w), uk = up(k);
+		var uk = up(k);
 		
 		// Đồng sign after a number: valid
-		var num = /^([0-9]+)(D?)$/.exec(uw);
+		var num = /^([0-9]+)(d?)$/.exec(w);
+		var isVni = AVIMConfig.method == 2 ||
+			(AVIMConfig.method == 0 && AVIMConfig.autoMethods.vni);
 		if (num) {
 			// Entering the first D: valid
 			if (!num[2] && uk == "D") return false;
 			
 			// Entering the second D: valid
-			var isVni = AVIMConfig.method == 2 ||
-				(AVIMConfig.method == 0 && AVIMConfig.autoMethods.vni);
-			if (num[2] && (uk == "D" || (isVni && uk == "9"))) return false;
+			if (num[2] && uk == this.method.D) return false;
 		}
 		
-		w = this.unV(w);
-		var tw = uw = up(w), twE, uw2 = this.unV2(uw);
-		uk = up(k);
+		// Ng~: valid
+		if (w == "Ng" && uk == this.method.X) return false;
 		
+		w = this.unV(w);
+		var uw = up(w), tw = uw, uw2 = this.unV2(uw), twE;
 		var vSConsonant = "BCDĐGHKLMNPQRSTVX";
 		var vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
 		if (AVIMConfig.informal) {
@@ -857,10 +858,39 @@ function AVIM()	{
 			if (w) this.normC(w[0], key, w[1]);
 		}
 		
-		// Convert [number]đ into the đồng sign.
-//		dump("Testing '" + w[0] + "...\n");								// debug
-		if (/^[0-9]+đ$/i.test(w[0])) {
-			this.splice(obj, w[0].length - 1, 1, "₫");
+		// Very special cases.
+		var uw = up(w[0]), uk = up(key);
+		if (/^[0-9]+.$/.test(w[0])) {
+			var lastChar = w[0].substr(-1);
+			if (lastChar == "đ" && uk == this.method.D) {
+				// Convert [number]đ (case-sensitive) into the đồng sign.
+				this.splice(obj, w[0].length - 1, 1, "₫");
+				this.changed = true;
+			}
+			else if (lastChar == "₫" && uk == this.method.D) {
+				// On repeat, pull the underline out from under the Đ.
+				this.splice(obj, w[0].length - 1, 1, "d" + key);
+				this.changed = true;
+			}
+			else if (lastChar == "₫" && uk == this.method.Z) {
+				// On remove, revert to a D.
+				this.splice(obj, w[0].length - 1, 1, "d");
+				this.changed = true;
+			}
+		}
+		else if (w[0] == "Ng" && uk == this.method.X) {
+			// Convert Ng~ (case-sensitive) to use a combining diacritic.
+			this.splice(obj, w[0].length, 0, "\u0303");
+			this.changed = true;
+		}
+		else if (w[0] == "Ng\u0303" && uk == this.method.X) {
+			// On repeat, pull the tilde out.
+			this.splice(obj, w[0].length - 1, 1, key);
+			this.changed = true;
+		}
+		else if (w[0] == "Ng\u0303" && uk == this.method.Z) {
+			// On remove, revert to a G.
+			this.splice(obj, w[0].length - 1, 1, "");
 			this.changed = true;
 		}
 	};
