@@ -294,8 +294,8 @@ Version ${Version} (${Date})
  - Fixed an issue where opening the options pane would clear the ignored IDs
    list.
  - Fixed an issue where a backslash was not treated as a word boundary.
- - Added support for placing a combining tilde over the letter G in "Ng" (case-
-   sensitive), for abbreviating "Nguye^~n".
+ - Added support for placing a combining tilde over the letter G in "Ng", for
+   abbreviating "Nguye^~n".
  - VIQR and VIQR* dead keys can now be escaped using a backslash when the Auto
    input method is active.
  - AVIM's logo is now displayed in the Add-ons window even when the extension is

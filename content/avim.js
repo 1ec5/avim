@@ -445,6 +445,9 @@ function AVIM()	{
 		"’";	// word-inner punctuation not found in Vietnamese
 	var wordRe = new RegExp("[" + wordChars + "]*$");
 	
+	var isMac = window.navigator.platform == "MacPPC" ||
+		window.navigator.platform == "MacIntel";
+	
 	this.prefsRegistered = false;
 	this.attached = [];
 	this.changed = false;
@@ -479,9 +482,6 @@ function AVIM()	{
 			if (num[2] && uk == this.method.D) return false;
 		}
 		
-		// Ng~: valid
-		if (w == "Ng" && uk == this.method.X) return false;
-		
 		w = this.unV(w);
 		var uw = up(w), tw = uw, uw2 = this.unV2(uw), twE;
 		var vSConsonant = "BCDĐGHKLMNPQRSTVX";
@@ -489,6 +489,11 @@ function AVIM()	{
 		if (AVIMConfig.informal) {
 			vSConsonant += "F";
 			vDConsonant += "|DZ";
+		}
+		
+		// NG~: valid
+		if (uw == "NG" && uk == this.method.X && AVIMConfig.informal) {
+			return false;
 		}
 		
 		// Non-Vietnamese characters: invalid
@@ -878,20 +883,22 @@ function AVIM()	{
 				this.changed = true;
 			}
 		}
-		else if (w[0] == "Ng" && uk == this.method.X) {
-			// Convert Ng~ (case-sensitive) to use a combining diacritic.
-			this.splice(obj, w[0].length, 0, "\u0303");
-			this.changed = true;
-		}
-		else if (w[0] == "Ng\u0303" && uk == this.method.X) {
-			// On repeat, pull the tilde out.
-			this.splice(obj, w[0].length - 1, 1, key);
-			this.changed = true;
-		}
-		else if (w[0] == "Ng\u0303" && uk == this.method.Z) {
-			// On remove, revert to a G.
-			this.splice(obj, w[0].length - 1, 1, "");
-			this.changed = true;
+		else if (AVIMConfig.informal || !AVIMConfig.ckSpell) {
+			if (uw == "NG" && uk == this.method.X) {
+				// Convert NG to use a combining diacritic.
+				this.splice(obj, uw.length, 0, "\u0303");
+				this.changed = true;
+			}
+			else if (uw == "NG\u0303" && uk == this.method.X) {
+				// On repeat, pull the tilde out.
+				this.splice(obj, uw.length - 1, 1, key);
+				this.changed = true;
+			}
+			else if (uw == "NG\u0303" && uk == this.method.Z) {
+				// On remove, revert to a G.
+				this.splice(obj, uw.length - 1, 1, "");
+				this.changed = true;
+			}
 		}
 	};
 	
@@ -1662,8 +1669,8 @@ function AVIM()	{
 				return;
 			}
 			if (evt.ctrl || avim.slightFindIgnore(ctl)) return;
-			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
-				 ") down on " + ctl + " -- " + ctl.text + "\n");				// debug
+//			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
+//				 ") down on " + ctl + " -- " + ctl.text + "\n");				// debug
 			
 			// Fake a native textbox and keypress event.
 			var ctlProxy = new SlightCtlProxy(ctl);
@@ -1710,22 +1717,23 @@ function AVIM()	{
 			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
 			if (!("isReadOnly" in ctl && !ctl.isReadOnly)) return;
 			if (evt.ctrl || avim.slightFindIgnore(ctl)) return;
-			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
-				 ") UP on " + ctl + " -- " + ctl.text + "\n");				// debug
+			if (isMac && evt.platformKeyCode == 0x37) return;	// Cmd on Mac
+//			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
+//				 ", ctrl: " + evt.ctrl.toString() + ") UP on " + ctl + " -- " + ctl.text + "\n");	// debug
 			
 			// Override the event proxy's key code using the last character.
 			var text = ctl.text;
 			var lastChar = text.substr(-1);
 			var charCode = lastChar.charCodeAt(0);
 			if (charCode == 0xff) return;
-			dump("\tUsing " + charCode + "(" + lastChar + ") instead.\n");		// debug
+//			dump("\tUsing " + charCode + "(" + lastChar + ") instead.\n");		// debug
 			
 			// Remove the last character from the textbox and move the caret
 			// back.
 			var selStart = ctl.selectionStart;
 			ctl.text = text.substr(0, text.length - 1);
 			ctl.selectionStart = selStart - 1;
-			dump("\t\"" + text + "\" @ " + ctl.selectionStart + "\n");		// debug
+//			dump("\t\"" + text + "\" @ " + ctl.selectionStart + "\n");		// debug
 			
 			// Fake a native textbox and keypress event.
 			var ctlProxy = new SlightCtlProxy(ctl);
@@ -1738,7 +1746,7 @@ function AVIM()	{
 			delete ctlProxy, evtProxy;
 			avim.changed = false;
 			evt.handled = true;
-			dump("After -- text: \"" + text + "\"; ctl.text: \"" + ctl.text + "\"\n");	// debug
+//			dump("After -- text: \"" + text + "\"; ctl.text: \"" + ctl.text + "\"\n");	// debug
 			if (text == ctl.text + lastChar) {
 				// Nothing changed, so revert the textbox contents.
 				ctl.text = text;
