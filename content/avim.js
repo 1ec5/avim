@@ -1511,7 +1511,7 @@ function AVIM()	{
 	 */
 	this.handleKeyPress = function(e) {
 		var el = e.originalTarget || e.target, code = e.which;
-		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + code + "\n");	// debug
+//		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(e.target)) return false;
 		var isHTML = el.type == "textarea" || el.type == "text" ||
@@ -2220,7 +2220,10 @@ function AVIM()	{
 			}
 		}
 		catch (e) {
-//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");	// debug
+			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");	// debug
+// $if{Debug}
+			dump(exc + "\n");
+// $endif{}
 			this.bespinEditor = null;
 			return false;
 		}
