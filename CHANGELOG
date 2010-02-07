@@ -298,5 +298,7 @@ Version ${Version} (${Date})
    abbreviating "Nguye^~n".
  - VIQR and VIQR* dead keys can now be escaped using a backslash when the Auto
    input method is active.
+ - The script monitor can now disable avim.js when typing in Wikipedia's
+   experimental "Babaco" editor.
  - AVIM's logo is now displayed in the Add-ons window even when the extension is
    disabled.

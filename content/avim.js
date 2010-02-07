@@ -2130,6 +2130,7 @@ function AVIM()	{
 		// XaLộ (vn.xalo.client.vnk)
 		_xalo_ga: disablers.XaLo
 	};
+	var frameMarkers = ["MVietOnOffButton", "DAWEOF"];
 	
 	/**
 	 * Given a context and marker, disables the Vietnamese JavaScript input
@@ -2168,15 +2169,15 @@ function AVIM()	{
 		if (!win || win == window) return;
 		
 		for (var marker in markers) {
-			if (!(marker in win)) continue;
-			if (this.disableOther(win, marker)) return;
+			if (marker in win && this.disableOther(win, marker)) return;
 		}
 		
-		// MViet 14 RTE
-		if (!AVIMConfig.disabledScripts.MViet) return;
-		if (win.frameElement) win = win.parent;
-		var marker = "MVietOnOffButton";
-		if (marker in win) disablers.MViet(win);
+		// Some IMEs are applied to rich textareas in iframes.
+		if (!win.frameElement) return;
+		win = win.parent;
+		for each (var marker in frameMarkers) {
+			if (marker in win && this.disableOther(win, marker)) return;
+		}
 	};
 	
 	/**
