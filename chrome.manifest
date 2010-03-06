@@ -9,9 +9,13 @@ locale	avim	zh-CN	locale/zh-CN/
 locale	avim	zh-SG	locale/zh-CN/
 locale	avim	zh-MY	locale/zh-CN/
 
-skin	avim	classic/1.0	skin/
+skin	avim	classic/1.0		skin/classic/
+skin	avim	charamel		skin/charamel/
+skin	avim	silvermel		skin/charamel/
 
-style	chrome://global/content/customizeToolbar.xul	chrome://avim/skin/avim.css
+style	chrome://global/content/customizeToolbar.xul		chrome://avim/skin/avim.css
+style	chrome://mozapps/content/extensions/extensions.xul	chrome://avim/skin/options.css
+style	chrome://avim/content/options.xul					chrome://avim/skin/options.css
 
 ### AVIM #######################################################################
 

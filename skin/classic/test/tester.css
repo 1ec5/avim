@@ -1,0 +1,11 @@
+#results-tree treechildren::-moz-tree-cell(pass) {
+	background-color: #90ee90;
+}
+
+#results-tree treechildren::-moz-tree-cell(fail) {
+	background-color: #ffe4e1;
+}
+#results-tree treechildren::-moz-tree-cell-text(fail) {
+	font-weight: bold;
+	text-transform: uppercase;
+}
