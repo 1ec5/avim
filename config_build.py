@@ -49,6 +49,9 @@ VAR_NAMES = ["options.properties"]
 DEBUG_DIRS = [path.join("content", "test"),
 			  path.join("content", "skin", "test"), path.join("skin", "test")]
 
+# Names of localization files that should be omitted from a release build.
+L10N_FILES = ["install.dtd"]
+
 # Dictionary mapping subdirectories of locale/ to BabelZilla-compatible locale
 # codes. Locale names that are already compatible can be omitted.
 LOCALE_DIRS = {"de": "de-DE", "en": "en-US", "es": "es-ES", "fr": "fr-FR",

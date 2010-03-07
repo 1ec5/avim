@@ -30,7 +30,7 @@
 <!ENTITY oldaccents-check.label "Ein Betonungszeichen über den ersten Vokal im endbetonten Diphthong setzen (klassische Akzentzeichen)">
 <!ENTITY oldaccents-check.accesskey "k">
 
-<!ENTITY auto-methods.label "Tastenanschläge der folgenden Eingabemethoden akzeptieren, wenn &#x201e;&method-auto-item.label;&#x201c; gewählt wurde:">
+<!ENTITY auto-methods.label "Tastenanschläge der folgenden Eingabemethoden akzeptieren, wenn „&method-auto-item.label;“ gewählt wurde:">
 <!ENTITY auto-telex-check.accesskey "T">
 <!ENTITY auto-vni-check.accesskey "N">
 <!ENTITY auto-viqr-check.accesskey "Q">
@@ -53,7 +53,7 @@
 <!ENTITY ignored-desc.label "Welche Textfelder &AVIM.label; ignorieren soll, kann selbst bestimmt werden. Ein Beispiel wäre, wenn &AVIM.label; ein Textfeld mit Internet-Adressen ignorieren soll, da es sonst mit der Eingabemethode Probleme geben könnte.">
 <!ENTITY ignored-desc.line-count "3">
 
-<!ENTITY ignored-instructions.label "Um ein Textfeld zu ignorieren, muss zuerst dessen ID bestimmt werden, indem man einen Blick in den Quelltext wirft. Diese muss man unten eingeben, und durch einen Klick auf &#x201e;&ignore-button.label;&#x201c; bestätigen.">
+<!ENTITY ignored-instructions.label "Um ein Textfeld zu ignorieren, muss zuerst dessen ID bestimmt werden, indem man einen Blick in den Quelltext wirft. Diese muss man unten eingeben, und durch einen Klick auf „&ignore-button.label;“ bestätigen.">
 <!ENTITY ignored-instructions.line-count "2">
 
 <!ENTITY remove-button.label "ID entfernen">

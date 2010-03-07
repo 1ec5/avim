@@ -1,0 +1,11 @@
+<!-- Name of the extension. This string appears in the Add-ons window. "AVIM" stands for "Advanced Vietnamese Input Method". Most localizations can keep this string the same. This string should match AVIM.label in avim.dtd and options.dtd exactly. -->
+<!ENTITY em.name "AVIM">
+<!-- Brief description of the extension. This string appears in the Add-ons window when the AVIM's entry is selected in the list of installed extensions. -->
+<!ENTITY em.description "Type fully-accented Vietnamese directly into any web page or dialog box using a standard keyboard.">
+
+<!-- Name of the person who created the extension. Localizations that use a Latin-based alphabet should keep this string the same. Non-Latin-based localizations can provide a transliteration of this name. The given name is "Minh" and the family name is "Nguyen". -->
+<!ENTITY em.creator "Minh Nguyen">
+<!-- Name of a person who contributed code to the extension. Localizations that use a Latin-based alphabet should keep this string the same. Non-Latin-based localizations can provide a transliteration of this name. The given name is "Hieu" and the family name is "Dang". -->
+<!ENTITY em.contributor "Hieu Dang">
+<!-- Names of people who contributed to this localization of the extension. Place each name on a separate line. Feel free to provide the names in your locale's native writing system. -->
+<!ENTITY em.translators "">

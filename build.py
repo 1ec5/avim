@@ -373,6 +373,7 @@ def main():
     jar_path = path.join(chrome_dir, "%s.jar" % package_name)
     root_files = ROOT_FILES.extend(["install.rdf", "chrome.manifest"])
     omit_files = [".DS_Store", "Thumbs.db"]
+    omit_files.extend(L10N_FILES)
     xml_ext_re = r".*\.(?:xml|xul|xbl|dtd|rdf|svg|mml|x?html|css)$"
 
     # Remove any leftovers from previous build.
