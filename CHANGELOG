@@ -285,6 +285,7 @@ Version ${Version} (${Date})
  - Added experimental support for Microsoft Silverlight 2 and above. AVIM now
    works in standard Silverlight textboxes. However, applets written with
    managed code are not supported.
+ - Added a German localization by Erwin Glockner.
  - When "dd" (or "d9" for VNI) is entered immediately after a number, the "dd"
    now turns into the dong sign.
  - Improved word boundary detection. Even with the Enforce Spelling option

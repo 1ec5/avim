@@ -1,7 +1,5 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-/*** Toolbar buttons **********************************************************/
-
 #avim-tb-enabled {
 	list-style-image: url("chrome://avim/content/skin/tb-enabled.png");
 }

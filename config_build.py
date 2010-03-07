@@ -46,12 +46,13 @@ VAR_FILES = ["install.rdf", "chrome.manifest", "CHANGELOG", "LICENSE",
 VAR_NAMES = ["options.properties"]
 
 # Paths to directories that should be omitted from a release build.
-DEBUG_DIRS = [path.join("content", "test"), path.join("skin", "test")]
+DEBUG_DIRS = [path.join("content", "test"),
+			  path.join("content", "skin", "test"), path.join("skin", "test")]
 
 # Dictionary mapping subdirectories of locale/ to BabelZilla-compatible locale
 # codes. Locale names that are already compatible can be omitted.
-LOCALE_DIRS = {"en": "en-US", "es": "es-ES", "fr": "fr-FR", "vi": "vi-VN",
-			   "zh": "zh-TW"}
+LOCALE_DIRS = {"de": "de-DE", "en": "en-US", "es": "es-ES", "fr": "fr-FR",
+			   "vi": "vi-VN", "zh": "zh-TW"}
 
 # Paths to files to which a license block will be prepended.
 LICENSE_FILES = [path.join("content", "avim.js")]

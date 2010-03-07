@@ -204,13 +204,16 @@ def get_repo_url(file_path):
     except (ValueError, TypeError):
         return REPO_URL % {"path": file_path, "rev": ""}
 
-def minify_manifest(src):
-    """Returns a minified version of the given chrome manifest source."""
+def minify_properties(src):
+    """Returns a minified version of the given properties file source."""
     min_re = re.compile(r"#.*$", re.M)
     src = min_re.sub(r"", src)
     src = re.sub(r"\n+", r"\n", src)
-    src = re.sub(r"[\t ]+", r"\t", src)
     return src
+
+def minify_manifest(src):
+    """Returns a minified version of the given chrome manifest source."""
+    return re.sub(r"[\t ]+", r"\t", minify_properties(src))
 
 def minify_xml(file_path, src):
     """Returns a minified version of the given XML source string."""
@@ -408,6 +411,8 @@ def main():
         if CONFIG is BuildConfig.RELEASE and \
                 re.match(xml_ext_re, f, flags=re.I):
             src = minify_xml(f, src)
+        elif CONFIG is BuildConfig.RELEASE and f.endswith(".properties"):
+            src = minify_properties(src)
         elif CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
             src = minify_js(f, src)
         src_file.close()

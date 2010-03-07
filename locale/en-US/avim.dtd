@@ -9,7 +9,7 @@
 <!-- Input method menu ===================================================== -->
 
 <!-- Modifier keys that, in conjunction with avim-enabled.key, turn AVIM on and off. In this string, "accel alt" means Ctrl+Alt on Windows and Cmd+Opt on the Mac. Make sure to choose a keyboard shortcut that does not conflict with Firefox's or Thunderbird's built-in shortcuts, or with a more popular extension's shortcuts. In particular, Ctrl+V (Cmd+V on the Mac) pastes the contents of the clipboard, while Ctrl+Shift+V (Cmd+Shift+V on the Mac) opens and closes the AdBlock Plus extension's Blockable Items panel. -->
-<!ENTITY avim-enabled.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-enabled.modifiers "accel alt">
 <!-- Case-insensitive key that, in conjunction with avim-enabled.modifiers, turns AVIM on and off. -->
 <!ENTITY avim-enabled.key "V">
 <!-- Label of the menu item that is checked when AVIM is turned on and unchecked when AVIM is turned off. This option is not to be confused with enabling and disabling AVIM via the Add-ons window: when AVIM is turned off, the extension remains enabled but does nothing. If overloading the term "Enabled" is too confusing in your locale, try translating "On" instead. This menu item appears under View > Vietnamese Input or in the menu that appears when clicking on AVIM's status bar panel. -->

@@ -19,7 +19,7 @@
 
 <!-- Input Editing tab ===================================================== -->
 
-<!-- Name of the first tab in AVIM's preferences dialog, which provides options for configuring the way AVIM processes the user's keyboard input. This string is a play on the term "input method editor" and can be read as "Editing of Input". If this phrase cannot be translated sensibly, translate the term "General" instead. -->
+<!-- Name of the first tab in AVIM's preferences dialog, which provides options for configuring the way AVIM processes the user's keyboard input. This string is a play on the term "input method editor" and can be read as "Editing of Input". If this phrase cannot be translated sensibly, translate the term "Input Behavior" or "General" instead. -->
 <!ENTITY input-panel.label "Input Editing">
 
 <!-- Label that appears beside the popup menu for selecting an input method. This string should end in a colon or your locale's equivalent. -->
@@ -44,7 +44,7 @@
 
 <!-- Label of the checkbox for allowing informal spelling patterns in conjunction with the spelling enforcement feature. When informal spelling is allowed, "dz" at the beginning of a word is treated like "d", while "f" at the beginning of a word is treated like "ph". Otherwise, the spelling enforcement feature will prevent the user from adding diacritics to any word that begins with "dz" or "f". -->
 <!ENTITY informal-check.label "Allow DZ or F at the beginning of a word">
-<!-- Mneumonic for the checkbox for allowing informal spelling patterns. This string should contain a single character that also appears in informal-check.label. The user can press Alt+Z (Ctrl+Z on the Mac) to toggle the checkbox. -->
+<!-- Mneumonic for the checkbox for allowing informal spelling patterns. This string should contain a single character that also appears in informal-check.label. The user can press Alt+Z (Ctrl+Z on the Mac) to toggle the checkbox. Most localizations should keep this string the same. -->
 <!ENTITY informal-check.accesskey "Z">
 
 <!-- Label of the checkbox for traditional diacritic placement. Traditionally, diacritics are placed on the first vowel in a word that ends in a diphthong (two successive vowels). With the contemporary style, diacritics are placed on the last vowel in a word that ends in a diphthong. -->

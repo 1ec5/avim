@@ -1,0 +1,63 @@
+<!-- General options ======================================================= -->
+
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-preferences.title "&AVIM.label;">
+<!ENTITY avim-preferences.style "width: 55em;">
+
+<!ENTITY enabled-check.label "&AVIM.label; für Vietnamesische Eingabe aktivieren">
+<!ENTITY enabled-check.accesskey "A">
+
+<!ENTITY statuspanel-check.label "In der Statusleiste anzeigen">
+<!ENTITY statuspanel-check.accesskey "S">
+
+<!-- Input Editing tab ===================================================== -->
+
+<!ENTITY input-panel.label "Eingabeverhalten">
+
+<!ENTITY method-menu.label "Eingabemethode:">
+<!ENTITY method-menu.accesskey "m">
+<!ENTITY method-auto-item.label "Automatisch">
+<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-vni-item.label "VNI">
+<!ENTITY method-viqr-item.label "VIQR">
+<!ENTITY method-viqr-star-item.label "VIQR*">
+
+<!ENTITY spell-check.label "Vietnamesische Rechtschreibregeln erzwingen">
+<!ENTITY spell-check.accesskey "R">
+<!ENTITY informal-check.label "DZ oder F am Wortanfang zulassen">
+<!ENTITY informal-check.accesskey "Z">
+
+<!ENTITY oldaccents-check.label "Ein Betonungszeichen über den ersten Vokal im endbetonten Diphthong setzen (klassische Akzentzeichen)">
+<!ENTITY oldaccents-check.accesskey "k">
+
+<!ENTITY auto-methods.label "Tastenanschläge der folgenden Eingabemethoden akzeptieren, wenn &#x201e;&method-auto-item.label;&#x201c; gewählt wurde:">
+<!ENTITY auto-telex-check.accesskey "T">
+<!ENTITY auto-vni-check.accesskey "N">
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!ENTITY auto-viqr-star-check.accesskey "R">
+
+<!ENTITY script-enabled-check.label "Eingabeverhaltungsskripte auf Webseiten deaktivieren">
+<!ENTITY script-enabled-check.accesskey "W">
+
+<!ENTITY passwords-check.label "Diakritische Zeichen bei Passwörtern erlauben">
+<!ENTITY passwords-check.accesskey "P">
+
+<!-- Ignored Textboxes tab ================================================= -->
+
+<!ENTITY ignored-panel.label "Textfelder ignorieren">
+
+<!ENTITY ignore-text.label "Textfeld-ID:">
+<!ENTITY ignore-button.label "Ignorieren">
+<!ENTITY ignore-button.accesskey "I">
+
+<!ENTITY ignored-desc.label "Welche Textfelder &AVIM.label; ignorieren soll, kann selbst bestimmt werden. Ein Beispiel wäre, wenn &AVIM.label; ein Textfeld mit Internet-Adressen ignorieren soll, da es sonst mit der Eingabemethode Probleme geben könnte.">
+<!ENTITY ignored-desc.line-count "3">
+
+<!ENTITY ignored-instructions.label "Um ein Textfeld zu ignorieren, muss zuerst dessen ID bestimmt werden, indem man einen Blick in den Quelltext wirft. Diese muss man unten eingeben, und durch einen Klick auf &#x201e;&ignore-button.label;&#x201c; bestätigen.">
+<!ENTITY ignored-instructions.line-count "2">
+
+<!ENTITY remove-button.label "ID entfernen">
+<!ENTITY remove-button.accesskey "e">
+
+<!ENTITY reset-button.label "Standard wiederherstellen">
+<!ENTITY reset-button.accesskey "S">

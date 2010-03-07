@@ -135,6 +135,19 @@
 		<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
 		<em:iconURL>chrome://avim/content/avim.png</em:iconURL>
 		
+		<!-- German -->
+		<em:localized>
+			<Description>
+				<em:locale>de</em:locale>
+				<em:name>AVIM</em:name>
+				<em:description>Ermöglicht eine vollständig akzentuierte vietnamesische Eingabe für jede Webseite oder jedes Eingabefeld mit einer Standard-Tastatur.</em:description>
+				<em:creator>Minh Nguyen</em:creator>
+				<em:contributor>Hieu Dang</em:contributor>
+				<em:translator>Erwin Glockner</em:translator>
+				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+			</Description>
+		</em:localized>
+		
 		<!-- Spanish -->
 		<em:localized>
 			<Description>
