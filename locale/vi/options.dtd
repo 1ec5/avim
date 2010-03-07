@@ -60,5 +60,5 @@
 
 <!-- Display options -->
 
-<!ENTITY statuspanel-check.label "Hiển thị trên thanh trạng thái">
+<!ENTITY statuspanel-check.label "Hiện trong thanh trạng thái">
 <!ENTITY statuspanel-check.accesskey "H">

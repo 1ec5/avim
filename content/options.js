@@ -506,6 +506,7 @@ function AVIMOptionsPanel() {
 			
 			var stringBundle = document.getElementById(stringBundleId);
 			if (!stringBundle) return;
+			var avimStr = stringBundle.getString("AVIM.label") || "";
 			var noteLabel = stringBundle.getString("mudim-note.label");
 			var noteBtns = [{
 				accessKey: stringBundle.getString("mudim-button.accesskey"),
@@ -556,7 +557,7 @@ function AVIMOptionsPanel() {
 		};
 	}
 }
-if (!window && !("optionsPanel" in window)) {
+if (window || !("optionsPanel" in window)) {
 	window.optionsPanel = new AVIMOptionsPanel();
 	addEventListener("load", function (e) {
 		optionsPanel.initialize();

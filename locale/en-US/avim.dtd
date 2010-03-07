@@ -1,43 +1,89 @@
+<!-- Name of the extension, used in various places, including the status bar and toolbar. "AVIM" stands for "Advanced Vietnamese Input Method". Most localizations can keep this string the same. This string should match AVIM.label in options.dtd exactly. -->
 <!ENTITY AVIM.label "AVIM">
+
+<!-- Label of the menu under Edit that exposes options for configuring the input method editor. "Vietnamese Input" can be understood as "Input in Vietnamese". -->
 <!ENTITY avim-menu.label "Vietnamese Input">
+<!-- Mneumonic for the Edit > Vietnamese Input menu. This string should contain a single character that also appears in avim-menu.label. On Windows, the user can press Alt+E, then V, to access the menu. This string is not used in Mac OS X. -->
 <!ENTITY avim-menu.accesskey "V">
 
-<!-- Input method menu -->
+<!-- Input method menu ===================================================== -->
+
+<!-- Modifier keys that, in conjunction with avim-enabled.key, turn AVIM on and off. In this string, "accel alt" means Ctrl+Alt on Windows and Cmd+Opt on the Mac. Make sure to choose a keyboard shortcut that does not conflict with Firefox's or Thunderbird's built-in shortcuts, or with a more popular extension's shortcuts. In particular, Ctrl+V (Cmd+V on the Mac) pastes the contents of the clipboard, while Ctrl+Shift+V (Cmd+Shift+V on the Mac) opens and closes the AdBlock Plus extension's Blockable Items panel. -->
 <!ENTITY avim-enabled.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!-- Case-insensitive key that, in conjunction with avim-enabled.modifiers, turns AVIM on and off. -->
 <!ENTITY avim-enabled.key "V">
+<!-- Label of the menu item that is checked when AVIM is turned on and unchecked when AVIM is turned off. This option is not to be confused with enabling and disabling AVIM via the Add-ons window: when AVIM is turned off, the extension remains enabled but does nothing. If overloading the term "Enabled" is too confusing in your locale, try translating "On" instead. This menu item appears under View > Vietnamese Input or in the menu that appears when clicking on AVIM's status bar panel. -->
 <!ENTITY avim-enabled.label "Enabled">
+<!-- Mneumonic for the Edit > Vietnamese Input > Enabled menu item. This string should contain a single character that also appears in avim-enabled.label. On Windows, the user can press Alt+E, then V, then E to select the menu item. This string is not used in Mac OS X. This string should match enabled-check.accesskey in options.dtd. -->
 <!ENTITY avim-enabled.accesskey "E">
+<!-- Description of the Edit > Vietnamese Input > Enabled menu item. It may be displayed in the status bar when the user highlights the menu item. This string should match enabled-check.label in options.dtd. For consistency, it should embed AVIM.label, unless declension requires otherwise. -->
 <!ENTITY avim-enabled.description "Enable &AVIM.label; for Vietnamese input">
-<!ENTITY avim-prev-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
-<!ENTITY avim-prev-method.key ":">
-<!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
-<!ENTITY avim-next-method.key ";">
-<!ENTITY avim-auto.label "Auto">
-<!ENTITY avim-auto.accesskey "A">
-<!ENTITY avim-telex.label "Telex">
-<!ENTITY avim-telex.accesskey "T">
-<!ENTITY avim-vni.label "VNI">
-<!ENTITY avim-vni.accesskey "V">
-<!ENTITY avim-viqr.label "VIQR">
-<!ENTITY avim-viqr.accesskey "Q">
-<!ENTITY avim-viqr-star.label "VIQR*">
-<!ENTITY avim-viqr-star.accesskey "R">
-
-<!ENTITY avim-menu-prev-method.label "Previous Input Method">
-<!ENTITY avim-menu-prev-method.accesskey "P">
-<!ENTITY avim-menu-next-method.label "Next Input Method">
-<!ENTITY avim-menu-next-method.accesskey "N">
-
+<!-- Label of AVIM's status bar panel when AVIM is turned off (as opposed to disabled via the Add-ons window). "Off" is used in the English localization because it is shorter than "Disabled". If "Disabled" is shorter in your locale, translate that instead. -->
 <!ENTITY avim-disabled.label "Off">
 
-<!-- Options -->
-<!ENTITY avim-spell.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!-- Modifier keys that, in conjunction with avim-prev-method.key, switch to the previous input method listed in the Edit > Vietnamese Input menu. In this string, "accel" means Ctrl on Windows and Cmd on the Mac. Try to choose a keyboard shortcuts for avim-prev-method and avim-next-method that are close to each other, so the user can easily switch between input methods using the keyboard. For example, Ctrl+: and Ctrl+; (Cmd+: and Cmd+; on the Mac) were chosen for the English localization because ";" is the same as Shift+: on standard U.S. English keyboards. -->
+<!ENTITY avim-prev-method.modifiers "accel">
+<!-- Case-insensitive key that, in conjunction with avim-prev-method.modifiers, switches to the previous input method listed in the Edit > Vietnamese Input menu. -->
+<!ENTITY avim-prev-method.key ":">
+<!-- Label of the menu item that switches to the previous input method. This menu item appears under the Edit > Vietnamese Input menu. -->
+<!ENTITY avim-menu-prev-method.label "Previous Input Method">
+<!-- Mneumonic for the Edit > Vietnamese Input > Previous Input Method menu item. This string should contain a single character that also appears in avim-prev-method.label. On Windows, the user can press Alt+E, then V, then P to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-menu-prev-method.accesskey "P">
+
+<!-- Modifier keys that, in conjunction with avim-next-method.key, switch to the next input method listed in the Edit > Vietnamese Input menu. In this string, "accel" means Ctrl on Windows and Cmd on the Mac. Try to choose a keyboard shortcuts for avim-prev-method and avim-next-method that are close to each other, so the user can easily switch between input methods using the keyboard. For example, Ctrl+: and Ctrl+; (Cmd+: and Cmd+; on the Mac) were chosen for the English localization because ";" is the same as Shift+: on standard U.S. English keyboards. -->
+<!ENTITY avim-next-method.modifiers "accel">
+<!-- Case-insensitive key that, in conjunction with avim-next-method.modifiers, switches to the next input method listed in the Edit > Vietnamese Input menu. -->
+<!ENTITY avim-next-method.key ";">
+<!-- Label of the menu item that switches to the next input method. This menu item appears under the Edit > Vietnamese Input menu. -->
+<!ENTITY avim-menu-next-method.label "Next Input Method">
+<!-- Mneumonic for the Edit > Vietnamese Input > Next Input Method menu item. This string should contain a single character that also appears in avim-next-method.label. On Windows, the user can press Alt+E, then V, then N to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-menu-next-method.accesskey "N">
+
+<!-- Label of the menu item that switches to the Automatic input method. This menu item appears under the Edit > Vietnamese Input menu, as well as in the status bar panel when the Automatic input method is selected. The Automatic input method is just a combination of other input methods (Telex and VNI by default). This input method can be translated as "Combo" or "Combination" instead. -->
+<!ENTITY avim-auto.label "Auto">
+<!-- Mneumonic for the Edit > Vietnamese Input > Auto menu item. This string should contain a single character that also appears in avim-auto.label. On Windows, the user can press Alt+E, then V, then A to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-auto.accesskey "A">
+
+<!-- Label of the menu item that switches to the Telex input method. This menu item appears under the Edit > Vietnamese Input menu, as well as in the status bar panel when the Telex input method is selected. Your locale may have a translation for "Telex", which is also the term for a telegraphy machine. -->
+<!ENTITY avim-telex.label "Telex">
+<!-- Mneumonic for the Edit > Vietnamese Input > Telex menu item. This string should contain a single character that also appears in avim-telex.label. On Windows, the user can press Alt+E, then V, then T to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-telex.accesskey "T">
+
+<!-- Label of the menu item that switches to the VNI input method. This menu item appears under the Edit > Vietnamese Input menu, as well as in the status bar panel when the VNI input method is selected. Most localizations can keep this string the same. -->
+<!ENTITY avim-vni.label "VNI">
+<!-- Mneumonic for the Edit > Vietnamese Input > VNI menu item. This string should contain a single character that also appears in avim-vni.label. On Windows, the user can press Alt+E, then V, then V again to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-vni.accesskey "V">
+
+<!-- Label of the menu item that switches to the VIQR input method. This menu item appears under the Edit > Vietnamese Input menu, as well as in the status bar panel when the VIQR input method is selected. VIQR stands for "VIetnamese Quoted-Readable". Most localizations can keep this string the same. -->
+<!ENTITY avim-viqr.label "VIQR">
+<!-- Mneumonic for the Edit > Vietnamese Input > VIQR menu item. This string should contain a single character that also appears in avim-viqr.label. On Windows, the user can press Alt+E, then V, then Q to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-viqr.accesskey "Q">
+
+<!-- Label of the menu item that switches to the VIQR* input method. This menu item appears under the Edit > Vietnamese Input menu, as well as in the status bar panel when the VIQR* input method is selected. VIQR* is simply a variation of VIQR that uses "*" instead of "+" for the horn diacritic, so this string should be similar to avim-viqr.label. Most localizations can keep this string the same. -->
+<!ENTITY avim-viqr-star.label "VIQR*">
+<!-- Mneumonic for the Edit > Vietnamese Input > VIQR* menu item. This string should contain a single character that also appears in avim-viqr-star.label. On Windows, the user can press Alt+E, then V, then R to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-viqr-star.accesskey "R">
+
+<!-- Options =============================================================== -->
+
+<!-- Modifier keys that, in conjunction with avim-spell.key, toggle spelling enforcement on and off. In this string, "accel alt" means Ctrl+Alt on Windows and Cmd+Opt on the Mac. -->
+<!ENTITY avim-spell.modifiers "accel alt">
+<!-- Case-insensitive key that, in conjunction with avim-spell.modifiers, toggles spelling enforcement on and off. -->
 <!ENTITY avim-spell.key "S">
+<!-- Label of the menu item for spelling enforcement. This menu item appears under the Edit > Vietnamese Input menu, as well as in the status bar panel's menu. When the spelling enforcement feature is enabled, AVIM only places diacritics onto words that follow Vietnamese spelling rules. For example, when the VIQR input method is selected, the "." in "da." turns into a dot below the "a", while "za." is left alone because Vietnamese words cannot begin with "z". This feature is different than spell checking, which matches entered words against a whitelist of correctly spelled words. -->
 <!ENTITY avim-spell.label "Enforce Spelling">
+<!-- Mneumonic for the Edit > Vietnamese Input > Enforce Spelling menu item. This string should contain a single character that also appears in avim-spell.label. On Windows, the user can press Alt+E, then V, then S to select the menu item. This string is not used in Mac OS X. -->
 <!ENTITY avim-spell.accesskey "S">
+<!-- Description of the Edit > Vietnamese Input > Enforce Spelling menu item. It may be displayed in the status bar when the user highlights the menu item. -->
 <!ENTITY avim-spell.description "Only place accent marks onto words that follow Vietnamese spelling rules">
-<!ENTITY avim-oldaccents.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+
+<!-- Modifier keys that, in conjunction with avim-spell.key, toggle between traditional and contemporary diacritic placement. In this string, "accel alt" means Ctrl+Alt on Windows and Cmd+Opt on the Mac. -->
+<!ENTITY avim-oldaccents.modifiers "accel alt">
+<!-- Case-insensitive key that, in conjunction with avim-oldaccents.modifiers, toggles between traditional and contemporary diacritic placement. -->
 <!ENTITY avim-oldaccents.key ";">
+<!-- Label of the menu item for traditional diacritic placement. This menu item appears under the Edit > Vietnamese Input menu, as well as in the status bar panel's menu. Traditionally, diacritics are placed on the first vowel in a word that ends in a diphthong (two successive vowels). With the contemporary style, diacritics are placed on the last vowel in a word that ends in a diphthong. -->
 <!ENTITY avim-oldaccents.label "Old Accents">
+<!-- Mneumonic for the Edit > Vietnamese Input > Old Accents menu item. This string should contain a single character that also appears in avim-oldaccents.label. On Windows, the user can press Alt+E, then V, then L to select the menu item. This string is not used in Mac OS X. -->
 <!ENTITY avim-oldaccents.accesskey "l">
+<!-- Description of the Edit > Vietnamese Input > Old Accents menu item. It may be displayed in the status bar when the user highlights the menu item. -->
 <!ENTITY avim-oldaccents.description "Place accent marks on the first vowel in a final diphthong">
