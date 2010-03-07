@@ -13,9 +13,8 @@ skin	avim	classic/1.0		skin/classic/
 skin	avim	charamel		skin/charamel/
 skin	avim	silvermel		skin/charamel/
 
-style	chrome://global/content/customizeToolbar.xul		chrome://avim/skin/avim.css
+style	chrome://global/content/customizeToolbar.xul		chrome://avim/content/skin/avim.css
 style	chrome://mozapps/content/extensions/extensions.xul	chrome://avim/skin/options.css
-style	chrome://avim/content/options.xul					chrome://avim/skin/options.css
 
 ### AVIM #######################################################################
 
@@ -37,7 +36,7 @@ style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/pr
 
 ### Firefox ####################################################################
 
-style	chrome://browser/content/browser.xul					chrome://avim/skin/avim.css
+style	chrome://browser/content/browser.xul					chrome://avim/content/skin/avim.css
 
 # Browser window
 overlay	chrome://browser/content/browser.xul					chrome://avim/content/generalOverlay.xul

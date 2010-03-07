@@ -9,12 +9,12 @@ richlistitem[name="AVIM"] .addonIcon {
 
 extension[name="AVIM"] #ExtensionIcon,
 richlistitem[name="AVIM"] #ExtensionIcon {
-	list-style-image: url("chrome://avim/skin/icon32.png");
+	list-style-image: url("chrome://avim/skin/avim32.png");
 	display: -moz-box;
 }
 
 /*** AVIM Preferences *********************************************************/
 
 #avim-preferences prefpane {
-	background-image: url("chrome://avim/skin/icon45.png");
+	background-image: url("chrome://avim/skin/avim45.png");
 }
