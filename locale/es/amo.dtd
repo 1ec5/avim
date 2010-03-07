@@ -1,0 +1,33 @@
+<!-- Brief description of the extension. This string appears at the Firefox Add-ons website, specifically in search results and at the top of AVIM's page. It should be similar to em.description in install.dtd. -->
+<!ENTITY summary "Editor de método de entrada (IME) de vietnamita. Teclar en vietnamita con todos los acentos, directamente en cualquier página Web o caja de diálogo usando un teclado estándar.">
+
+<!-- Introduction to AVIM on AVIM's page at Firefox Add-ons. -->
+<!ENTITY description.intro "AVIM – el Método de Entrada Vietnamita Avanzada – es un editor de método de entrada de vietnamita para que tecles tan naturalmente que se te escapará. Tiene toda la funcionalidad que requieras de un IME moderno como:">
+
+<!-- Text surrounded by [square brackets] is linked. The names of the input methods in this string should match avim-telex.label, avim-vni.label, avim-viqr.label, and avim-viqr-star.label in avim.dtd. -->
+<!ENTITY description.basics.methods "Apoyo de los [cuatro métodos de entrada populares]: Telex, VNI, VIQR, y VIQR*">
+<!-- "Rule-based spell checking" in this string refers to the spelling enforcement feature. -->
+<!ENTITY description.basics.spelling "Las autocorrecciones de diacríticos y la comprobación de ortografía por reglas para más flexibilidad">
+<!-- The shortcut mentioned in this string is for turning AVIM on and off. It should correspond to avim-enabled.modifiers and avim-enabled.key in avim.dtd. -->
+<!ENTITY description.basics.shortcuts "Los atajos de teclado razonables (como Ctrl+Alt+V) para configurar AVIM rápidamente mientras que teclear">
+<!-- In certain locales, like Germany, where the name "Gmail" is problematic, translate "Google Mail" instead. -->
+<!ENTITY description.basics.webapps "Apoyo completa de las aplicaciones Web como Gmail y Google Docs">
+
+<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. "The competition" refers to other Vietnamese IME extensions; that text is linked to a feature comparison table. -->
+<!ENTITY description.advanced "Basada en el paquete JavaScript del mismo nombre por Hieu Dang, se ha perfeccionado AVIM con muchos innovaciones convenientes que la competencia no tiene:">
+
+<!ENTITY description.advanced.ui "Un panel compacto en la barra de estado, los botones para la barra de herramientas, y una ventana de preferencias">
+<!-- Text surrounded by [square brackets] is linked. The "script monitor" refers to the same feature as script-enabled-check.label in options.dtd. "Available separately" links to a Greasemonkey script based on AVIM that also disables in-page IMEs. -->
+<!ENTITY description.advanced.scriptmonitor "Un monitor de scripts que automáticamente apaga los IMEs de las páginas para evitar los colisiones (también [disponible separadamente])">
+<!-- Text surrounded by *asterisks* is in bold font. -->
+<!ENTITY description.advanced.compatible "Compatibilidad con *absolutamente cada* página Web y ventana">
+<!-- "Jumping around" refers to the problem with other IME extensions where textboxes scroll to the top or bottom every time you type, undo, or redo. -->
+<!ENTITY description.advanced.inplace "La capabilidad de editar estacionariamente, así que las cajas de texto no se agiten mientras que tecles o deshacer">
+
+<!-- Text surrounded by *asterisks* is in bold font. "In short" can be read as "To make a long story short". If "AVIM just works" is not suitable for translation into your locale, try your locale's common way of saying that something works as intended without having to worry about it. -->
+<!ENTITY description.conclusion "Simplemente, *AVIM hace lo que necesitas*.">
+
+<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. Feel free to translate "Advanced Vietnamese Input Method". -->
+<!ENTITY developer.script "Esta extensión se basa en el [Método de Entrada Vietnamita Avanzado] ([descargar]), un script por Hieu Dang para incrustar un editor de método de entrada vietnamita en la página Web tuya.">
+<!-- Text surrounded by [square brackets] is linked. -->
+<!ENTITY developer.dictionary "Para entrar el texto óptimamente, usa esta extensión junto con la extensión [Diccionario Vietnamita].">

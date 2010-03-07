@@ -50,7 +50,7 @@ DEBUG_DIRS = [path.join("content", "test"),
 			  path.join("content", "skin", "test"), path.join("skin", "test")]
 
 # Names of localization files that should be omitted from a release build.
-L10N_FILES = ["install.dtd"]
+L10N_FILES = ["amo.dtd", "install.dtd"]
 
 # Dictionary mapping subdirectories of locale/ to BabelZilla-compatible locale
 # codes. Locale names that are already compatible can be omitted.

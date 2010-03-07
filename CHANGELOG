@@ -301,6 +301,7 @@ Version ${Version} (${Date})
    input method is active.
  - The script monitor can now disable avim.js when typing in Wikipedia's
    experimental "Babaco" editor.
+ - Added support for alpha versions of Komodo IDE and Komodo Edit 6.0.
  - The Charamel and Silvermel themes now use a creamier version of AVIM's logo
    in the Add-ons window and AVIM's options pane.
  - AVIM's logo is now displayed in the Add-ons window even when the extension is

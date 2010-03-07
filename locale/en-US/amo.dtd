@@ -1,0 +1,33 @@
+<!-- Brief description of the extension. This string appears at the Firefox Add-ons website, specifically in search results and at the top of AVIM's page. It should be similar to em.description in install.dtd. -->
+<!ENTITY summary "An input method editor (IME) for Vietnamese. Type fully-accented Vietnamese directly into any Web page or dialog box using a standard keyboard.">
+
+<!-- Introduction to AVIM on AVIM's page at Firefox Add-ons. -->
+<!ENTITY description.intro "AVIM – the Advanced Vietnamese Input Method – is a fast input method editor for Vietnamese that lets you type so naturally you won’t even notice it. It comes with all the functionality you expect from a modern IME, such as:">
+
+<!-- Text surrounded by [square brackets] is linked. The names of the input methods in this string should match avim-telex.label, avim-vni.label, avim-viqr.label, and avim-viqr-star.label in avim.dtd. -->
+<!ENTITY description.basics.methods "Support for the [four major input methods]: Telex, VNI, VIQR, and VIQR*">
+<!-- "Rule-based spell checking" in this string refers to the spelling enforcement feature. -->
+<!ENTITY description.basics.spelling "Automatic diacritic corrections and rule-based spell checking">
+<!-- The shortcut mentioned in this string is for turning AVIM on and off. It should correspond to avim-enabled.modifiers and avim-enabled.key in avim.dtd. -->
+<!ENTITY description.basics.shortcuts "Sensible keyboard shortcuts (like Ctrl+Alt+V) for configuring AVIM as you type">
+<!-- In certain locales, like Germany, where the name "Gmail" is problematic, translate "Google Mail" instead. -->
+<!ENTITY description.basics.webapps "Full support for Web applications like Gmail and Google Docs">
+
+<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. "The competition" refers to other Vietnamese IME extensions; that text is linked to a feature comparison table. -->
+<!ENTITY description.advanced "Based on Hieu Dang’s [JavaScript package] of the same name, AVIM has been refined with a number of convenient and innovative features you won’t find in [the competition], including:">
+
+<!ENTITY description.advanced.ui "A compact status bar panel, optional toolbar buttons, and a preference window">
+<!-- Text surrounded by [square brackets] is linked. The "script monitor" refers to the same feature as script-enabled-check.label in options.dtd. "Available separately" links to a Greasemonkey script based on AVIM that also disables in-page IMEs. -->
+<!ENTITY description.advanced.scriptmonitor "A script monitor that automatically turns off in-page IMEs to prevent collisions (also [available separately])">
+<!-- Text surrounded by *asterisks* is in bold font. -->
+<!ENTITY description.advanced.compatible "Compatibility with *every* webpage you visit and *every* window you open">
+<!-- "Jumping around" refers to the problem with other IME extensions where textboxes scroll to the top or bottom every time you type, undo, or redo. -->
+<!ENTITY description.advanced.inplace "In-place editing that keeps textboxes from jumping around as you type – even when you undo or redo">
+
+<!-- Text surrounded by *asterisks* is in bold font. "In short" can be read as "To make a long story short". If "AVIM just works" is not suitable for translation into your locale, try your locale's common way of saying that something works as intended without having to worry about it. -->
+<!ENTITY description.conclusion "In short, *AVIM just works*.">
+
+<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. Feel free to translate "Advanced Vietnamese Input Method". -->
+<!ENTITY developer.script "This extension is powered by the [Advanced Vietnamese Input Method] ([download]), a script by Hieu Dang that lets you embed a Vietnamese IME inside your own webpage.">
+<!-- Text surrounded by [square brackets] is linked. -->
+<!ENTITY developer.dictionary "For optimal typing, use this extension alongside the [Vietnamese Dictionary] extension.">
