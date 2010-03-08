@@ -2096,7 +2096,8 @@ function AVIM()	{
 		},
 		VietUni: function(win) {
 			if (!AVIMConfig.disabledScripts.VietUni) return;
-			win.setTypingMode();
+			if("setTypingMode" in win) win.setTypingMode();
+			else if ("setMethod" in win) win.setMethod(0);
 		},
 		Vinova: function(win, vinova) {
 			if (!AVIMConfig.disabledScripts.Vinova) return;
@@ -2142,6 +2143,8 @@ function AVIM()	{
 		vinova: disablers.Vinova,
 		// VietIMEW
 		GetVnVowelIndex: disablers.VietIMEW,
+		// VietUni 1.7 by nthachus (2008-10-16)
+		CVietUni: disablers.VietUni,
 		// XaLộ (vn.xalo.client.vnk)
 		_xalo_ga: disablers.XaLo
 	};
