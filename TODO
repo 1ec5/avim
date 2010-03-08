@@ -1,7 +1,6 @@
  - Disable VietUni 1.7 [1]: CVietUni.typer.keyMode.off = true
  - Use XBL or XPCOM to allow each application to share the same overlay.
  - Bug: "Ng~uye^n" (Nguyễn)
- - Bug: "Ng" (Ng~) in Auto mode
  - Bug: "kilo^me't" (kilômét)
  - Bug: "xoa" (xoá), "Ng" (Ng~) in rich text editors, including Thunderbird and
    Composer.

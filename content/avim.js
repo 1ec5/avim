@@ -856,47 +856,62 @@ function AVIM()	{
 			if (!dockspell) w = this.mozGetText(obj);
 			if (!w || this.changed) break;
 			this.main(w[0], key, w[1], uniA[i], noNormC);
+			w = this.mozGetText(obj);
+			if (w) this.convertCustomChars(w[0], key, w[1]);
 		}
 		
 		if (this.D2.indexOf(up(key)) >= 0) {
 			w = this.mozGetText(obj);
 			if (w) this.normC(w[0], key, w[1]);
 		}
+	};
+	
+	/**
+	 * Performs simple substitutions that were not originally part of AVIM's
+	 * feature set.
+	 *
+	 * @param word	{string}	The part of the word up to the caret.
+	 * @param key	{string}	A single-character string representing the
+	 * 							pressed key.
+	 * @param pos	{number}	Index of the caret.
+	 */
+	this.convertCustomChars = function(word, key, pos) {
+		var uw = up(word), uk = up(key);
 		
-		// Very special cases.
-		var uw = up(w[0]), uk = up(key);
-		if (/^[0-9]+.$/.test(w[0])) {
-			var lastChar = w[0].substr(-1);
+		if (/^[0-9]+.$/.test(word)) {
+			var lastChar = word.substr(-1);
 			if (lastChar == "đ" && uk == this.method.D) {
 				// Convert [number]đ (case-sensitive) into the đồng sign.
-				this.splice(obj, w[0].length - 1, 1, "₫");
+				this.splice(this.oc, pos - 1, 1, "₫");
 				this.changed = true;
 			}
 			else if (lastChar == "₫" && uk == this.method.D) {
 				// On repeat, pull the underline out from under the Đ.
-				this.splice(obj, w[0].length - 1, 1, "d" + key);
+				this.splice(this.oc, pos - 1, 1, "d" + key);
 				this.changed = true;
 			}
 			else if (lastChar == "₫" && uk == this.method.Z) {
 				// On remove, revert to a D.
-				this.splice(obj, w[0].length - 1, 1, "d");
+				this.splice(this.oc, pos - 1, 1, "d");
 				this.changed = true;
 			}
+			return;
 		}
-		else if (AVIMConfig.informal || !AVIMConfig.ckSpell) {
+		
+		if (AVIMConfig.informal || !AVIMConfig.ckSpell) {
 			if (uw == "NG" && uk == this.method.X) {
 				// Convert NG to use a combining diacritic.
-				this.splice(obj, uw.length, 0, "\u0303");
+				this.splice(this.oc, pos, 0, "\u0303");
 				this.changed = true;
 			}
 			else if (uw == "NG\u0303" && uk == this.method.X) {
 				// On repeat, pull the tilde out.
-				this.splice(obj, uw.length - 1, 1, key);
+				this.splice(this.oc, pos - 1, 1, key);
 				this.changed = true;
 			}
 			else if (uw == "NG\u0303" && uk == this.method.Z) {
 				// On remove, revert to a G.
-				this.splice(obj, uw.length - 1, 1, "");
+				this.splice(this.oc, pos - 1, 1, "");
 				this.changed = true;
 			}
 		}
