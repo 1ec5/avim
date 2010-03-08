@@ -281,7 +281,7 @@ Version 20080728.334 (Sunday, July 5, 2009)
  - Fixed an issue where the Restore to Default button was always enabled, even
    when the ignored IDs list was already set to the default.
 
-Version ${Version} (${Date})
+Version 20080728.366 (Sunday, March 7, 2010)
  - Added experimental support for Microsoft Silverlight 2 and above. AVIM now
    works in standard Silverlight textboxes. However, applets written with
    managed code are not supported.
@@ -306,3 +306,4 @@ Version ${Version} (${Date})
    in the Add-ons window and AVIM's options pane.
  - AVIM's logo is now displayed in the Add-ons window even when the extension is
    disabled.
+ - The Script Monitor can now disable VietUni 1.7 in webpage.
