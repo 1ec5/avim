@@ -4,23 +4,16 @@
 
 <vbox id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<setting pref="extensions.avim.enabled" type="bool" title="&enabled-check.label;" />
-	<setting pref="extensions.avim.method" type="control" title="&method-menu.label;">
-		<menulist anonid="input" onchange="avim.setMethod(this.value || this.getAttribute('value'));">
+	<setting id="foo" type="control" title="&method-menu.label;">
+		<menulist oncommand="avim.setMethod(parseInt(this.value || this.getAttribute('value')));">
 			<menupopup>
-				<menuitem id="avim-preferences-method-auto" value="0" label="Auto" />
-				<menuitem id="avim-preferences-method-telex" value="1" label="Telex" />
-				<menuitem id="avim-preferences-method-vni" value="2" label="VNI" />
-				<menuitem id="avim-preferences-method-viqr" value="3" label="VIQR" />
-				<menuitem id="avim-preferences-method-viqr-star" value="4" label="VIQR*" />
+				<menuitem value="0" label="&method-auto-item.label;" />
+				<menuitem value="1" label="&method-telex-item.label;" />
+				<menuitem value="2" label="&method-vni-item.label;" />
+				<menuitem value="3" label="&method-viqr-item.label;" />
+				<menuitem value="4" label="&method-viqr-star-item.label;" />
 			</menupopup>
 		</menulist>
-		<!--<radiogroup id="avim-preferences-method-group" orient="horizontal">-->
-		<!--	<radio id="avim-status-auto" value="0" observes="avim-auto-bc" />-->
-		<!--	<radio id="avim-status-telex" value="1" observes="avim-telex-bc" />-->
-		<!--	<radio id="avim-status-vni" value="2" observes="avim-vni-bc" />-->
-		<!--	<radio id="avim-status-viqr" value="3" observes="avim-viqr-bc" />-->
-		<!--	<radio id="avim-status-viqr-star" value="4" observes="avim-viqr-star-bc" />-->
-		<!--</radiogroup>-->
 	</setting>
 	<setting pref="extensions.avim.ignoreMalformed" type="bool" title="&spell-check.label;" />
 	<setting pref="extensions.avim.informal" type="bool" title="&informal-check.label;" />
