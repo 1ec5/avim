@@ -1,0 +1,43 @@
+<!-- Label of the toggle button that is "Yes" when AVIM is turned on and "No" when AVIM is turned off. This string should be similar to (but preferably shorter than) avim-enabled.description in avim.dtd. -->
+<!ENTITY enabled-check.title "Enable Vietnamese input">
+
+<!-- Label that appears beside the popup menu for selecting an input method. This string should be similar to (but potentially shorter than) informal-check.label in options.dtd. It should use sentence case and should not end in a colon or period. -->
+<!ENTITY method-menu.title "Input method">
+<!-- Label of the menu item that switches to the Automatic input method. This menu item appears in the input method popup menu. This string should match avim-auto.label in avim.dtd. -->
+<!ENTITY method-auto-item.title "Auto">
+<!-- Label of the menu item that switches to the Telex input method. This menu item appears in the input method popup menu. This string should match avim-telex.label in avim.dtd. -->
+<!ENTITY method-telex-item.title "Telex">
+<!-- Label of the menu item that switches to the VNI input method. This menu item appears in the input method popup menu. It should match avim-vni.label in avim.dtd. -->
+<!ENTITY method-vni-item.title "VNI">
+<!-- Label of the menu item that switches to the VIQR input method. This menu item appears in the input method popup menu. It should match avim-viqr.label in avim.dtd. -->
+<!ENTITY method-viqr-item.title "VIQR">
+<!-- Label of the menu item that switches to the VIQR* input method. This menu item appears in the input method popup menu. It should match avim-viqr-star.label in avim.dtd. -->
+<!ENTITY method-viqr-star-item.title "VIQR*">
+
+<!-- Label of the toggle button for spelling enforcement. This string should be similar to (but potentially shorter than) spell-check.label in options.dtd. -->
+<!ENTITY spell-check.title "Enforce spelling rules">
+<!-- Description of the toggle button for spelling enforcement. -->
+<!ENTITY spell-check.desc "Only recognize words that follow Vietnamese spelling rules">
+
+<!-- Label of the toggle button for allowing informal spelling patterns in conjunction with the spelling enforcement feature. This string should be similar to (but potentially shorter than) informal-check.label in options.dtd. -->
+<!ENTITY informal-check.title "Recognize informal spellings">
+<!-- Description of the toggle button for allowing informal spelling patterns. -->
+<!ENTITY informal-check.desc "Place diacritics on words starting with “dz” or “f”">
+
+<!-- Label of the toggle button for traditional diacritic placement. This string should be similar to (but potentially shorter than) oldaccents-check.label in options.dtd. -->
+<!ENTITY oldaccents-check.title "Use traditional diacritic placement">
+<!-- Description of the toggle button for traditional diacritic placement. -->
+<!ENTITY oldaccents-check.desc "Place diacritics on the first vowel in a final diphthong">
+
+<!-- Label of the toggle button for the script monitor. This string should be similar to (but potentially shorter than) script-enabled-check.label in options.dtd. -->
+<!ENTITY script-enabled-check.title "Disable in-page IMEs">
+<!-- Description of the toggle button for the script monitor. -->
+<!ENTITY script-enabled-check.desc "Automatically disable JavaScript IMEs in web pages">
+
+<!-- Label of the toggle button for allowing AVIM to convert keystrokes into diacritics in password fields. This string should be similar to (but potentially shorter than) passwords-check.label in options.dtd. -->
+<!ENTITY passwords-check.title "Recognize password boxes">
+
+<!-- Label of the textbox for entering the IDs of textboxes to ignore. This string should use sentence case and should not end in a colon or period. -->
+<!ENTITY ignore-text.title "Blacklist">
+<!-- Description of the textbox for entering the IDs of textboxes to ignore. -->
+<!ENTITY ignore-text.desc "Ignore textboxes with these IDs">
