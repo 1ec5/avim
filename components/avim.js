@@ -156,7 +156,7 @@ AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
 			.getService(gCi.nsIStyleSheetService);
 		var ios = gCc["@mozilla.org/network/io-service;1"]
 			.getService(gCi.nsIIOService);
-		var uri = ios.newURI("chrome://avim/skin/avim.css", null, null);
+		var uri = ios.newURI("chrome://avim/content/skin/avim.css", null, null);
 		sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
 	}
 	

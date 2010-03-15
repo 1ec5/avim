@@ -310,3 +310,7 @@ Version 20080728.366 (Sunday, March 7, 2010)
 
 Version ${Version} (${Date})
  - Fixed the input method menu in the options panel in Fennec.
+ - Added an option to recognize password boxes to the options panel in Fennec.
+ - Fixed a regression in SeaMonkey where icons would not appear for the toolbar
+   buttons except in the Customize Toolbar dialog.
+ - Updated Hieu's URL in the LICENSE file.
