@@ -52,6 +52,9 @@ overlay	chrome://messenger/content/preferences/preferences.xul	chrome://avim/con
 
 ### Fennec #####################################################################
 
+# Main window
+overlay	chrome://browser/content/browser.xul	chrome://avim/content/fennecOverlay.xul	application={a23983c0-fd0e-11dc-95ff-0800200c9a66}	appversion>=1.0b4
+
 # Preferences pane
 override	chrome://avim/content/options.xul	chrome://avim/content/fennecOptions.xul	application={a23983c0-fd0e-11dc-95ff-0800200c9a66}	appversion>=1.0b4
 
