@@ -436,8 +436,16 @@ function AVIMOptionsPanel() {
 	 */
 	function MudimMonitor() {
 		// Mudim itself
-		if (window.Application) {
-			this.mudim = Application.extensions.get(MUDIM_ID);
+		var thisMonitor = this;
+		if (window.Application && Application.extensions.get) {
+			if (Application.extensions.get) {
+				this.mudim = Application.extensions.get(MUDIM_ID);
+			}
+			else if (Application.getExtensions) {
+				Application.getExtensions(function (extensions) {
+					thisMonitor.mudim = extensions.get(MUDIM_ID);
+				});
+			}
 		}
 		
 		// Root for Mudim preferences
@@ -506,7 +514,6 @@ function AVIMOptionsPanel() {
 			
 			var stringBundle = document.getElementById(stringBundleId);
 			if (!stringBundle) return;
-			var avimStr = stringBundle.getString("AVIM.label") || "";
 			var noteLabel = stringBundle.getString("mudim-note.label");
 			var noteBtns = [{
 				accessKey: stringBundle.getString("mudim-button.accesskey"),

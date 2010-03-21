@@ -2212,6 +2212,7 @@ function AVIM()	{
 		var target = e.target;
 		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
+		if (doc.defaultView == window) doc = origTarget.ownerDocument;
 		this.disableOthers(doc);
 		
 		// SciMoz plugin
@@ -2239,9 +2240,8 @@ function AVIM()	{
 			}
 		}
 		catch (e) {
-			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");	// debug
 // $if{Debug}
-			dump(exc + "\n");
+			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");
 // $endif{}
 			this.bespinEditor = null;
 			return false;

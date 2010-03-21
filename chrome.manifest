@@ -42,8 +42,10 @@ style	chrome://browser/content/browser.xul					chrome://avim/content/skin/avim.c
 
 # Browser window
 overlay	chrome://browser/content/browser.xul					chrome://avim/content/generalOverlay.xul
+overlay	chrome://browser/content/browser.xul					chrome://avim/content/moz18Overlay.xul		appversion<3.0a1pre
 # Preferences window
 overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/moz18Overlay.xul		appversion<3.0a1pre
 
 ### Thunderbird ################################################################
 

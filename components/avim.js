@@ -2,34 +2,76 @@
 // Inspired by the userChrome.js extension by Simon Bünzli
 // <http://mozilla.zeniko.ch/userchrome.js.html>
 
-Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-
 const gCc = Components.classes;
 const gCi = Components.interfaces;
 
+const CLASS_NAME = "AVIM JavaScript XPCOM component";
+// { 0xee7dd176, 0xa684, 0x4dc0,
+// 		{ 0x86, 0x13, 0x62, 0xdd, 0xae, 0xf5, 0x37, 0x8f } }
+const CLASS_ID = Components.ID("{ee7dd176-a684-4dc0-8613-62ddaef5378f}");
+const CONTRACT_ID = "@1ec5.org/avim;1";
+
 /**
- * @class	Registers a service upon startup that loads the AVIM overlay into
- * 			every XUL window and dialog box.
+ * @class AVIMOverlayObserver
+ *
+ * Listens for a notification that the AVIM XUL overlay has been merged with the
+ * window.
+ *
+ * @base nsIObserver
+ */
+function AVIMOverlayObserver(aWindow) {
+	this.window = aWindow;
+}
+
+/**
+ * Forces an update of the window's UI.
+ * 
+ * @param subject	{object}	the URI of the merged overlay.
+ * @param topic		{string}	the type of event that occurred; only
+ * 								"xul-overlay-merged" and "sb-overlay-load" are
+ * 								observed.
+ * @param data		{string}	
+ */
+AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
+	if (topic != "xul-overlay-merged" && topic != "sb-overlay-load") return;
+	if (!this.window) return;
+	
+	// SeaMonkey doesn't want to load the stylesheet along with the rest of
+	// AVIM's overlay, so we have to load it separately.
+	var document = this.window.document;
+	var smNavUrl = "chrome://navigator/content/navigator.xul";
+	if (document.location && document.location.href == smNavUrl) {
+		var sss = gCc["@mozilla.org/content/style-sheet-service;1"]
+			.getService(gCi.nsIStyleSheetService);
+		var ios = gCc["@mozilla.org/network/io-service;1"]
+			.getService(gCi.nsIIOService);
+		var uri = ios.newURI("chrome://avim/content/skin/avim.css", null, null);
+		sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
+	}
+	
+	// Force AVIM's status bar panel to display the current input method.
+	if (!this.window.avim) return;
+	this.window.avim.registerPrefs();
+	this.window.avim.updateUI();
+};
+
+/**
+ * @class AVIM
+ *
+ * Registers a service upon startup that loads the AVIM overlay into every XUL
+ * window and dialog box.
+ *
+ * @base nsIObserver
+ * @base nsISupports
  */
 function AVIM() {
 	this.wrappedJSObject = this;
 }
 
-// XPCOM registration
-AVIM.prototype = {
-	classDescription: "AVIM JavaScript XPCOM component",
-	// { 0xee7dd176, 0xa684, 0x4dc0,
-	// 		{ 0x86, 0x13, 0x62, 0xdd, 0xae, 0xf5, 0x37, 0x8f } }
-	classID: Components.ID("{ee7dd176-a684-4dc0-8613-62ddaef5378f}"),
-	contractID: "@1ec5.org/avim;1",
-	
-	// Register AVIM as a service that runs at application startup.
-	_xpcom_categories: [{category: "app-startup", service: true}],
-	
-	QueryInterface: XPCOMUtils.generateQI([gCi.nsIObserver])
+AVIM.prototype.QueryInterface = function(iid) {
+	if (iid.equals(gCi.nsIObserver) || iid.equals(gCi.nsISupports)) return this;
+	throw Components.results.NS_ERROR_NO_INTERFACE;
 };
-
-// nsIObserver implementation
 
 /**
  * Returns the chrome: URL of the overlay that corresponds to the window at the
@@ -87,8 +129,15 @@ AVIM.prototype.onWindowOpen = function (window) {
 			document.contentType &&
 			xulTypes.indexOf(document.contentType) >= 0 &&
 			manifestUrls.indexOf(document.location.href) < 0) {
+			// Attaching an observer to loadOverlay() crashes Mozilla 1.8.x.
+			var xulVersion = gCc["@mozilla.org/xre/app-info;1"]
+				.getService(gCi.nsIXULAppInfo).platformVersion;
+			var overlayObserver = null;
+			if (parseFloat(xulVersion) >= 1.9) {
+				overlayObserver = new AVIMOverlayObserver(window);
+			}
 			document.loadOverlay(AVIM.getOverlayUrl(document.location.href),
-								 new AVIMOverlayObserver(window));
+								 overlayObserver);
 		}
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 	};
@@ -119,6 +168,11 @@ AVIM.prototype.observe = function (subject, topic, data) {
 	switch (topic) {
 		case "app-startup":
 			observerSvc.addObserver(this, "domwindowopened", false);
+			observerSvc.addObserver(this, "quit-application", false);
+			break;
+		case "quit-application":
+			observerSvc.removeObserver(this, "domwindowopened");
+			observerSvc.addObserver(this, "quit-application");
 			break;
 		case "domwindowopened":
 			this.onWindowOpen(subject);
@@ -127,45 +181,60 @@ AVIM.prototype.observe = function (subject, topic, data) {
 };
 
 /**
- * @class	Listens for a notification that the AVIM XUL overlay has been merged
- * 			with the window.
+ * @class AVIMFactory
+ *
+ * Factory class for creating an instance of the AVIM XPCOM component.
  */
-function AVIMOverlayObserver(aWindow) {
-	this.window = aWindow;
-}
+var AVIMFactory = {
+	createInstance: function(outer, iid) {
+		if (outer) throw Components.results.NS_ERROR_NO_AGGREGATION;
+		return new AVIM().QueryInterface(iid);
+	}
+};
 
 /**
- * Forces an update of the window's UI.
+ * @class AVIMModule
+ *
+ * Module that registers the AVIM XPCOM component.
  * 
- * @param subject	{object}	the URI of the merged overlay.
- * @param topic		{string}	the type of event that occurred; only
- * 								"xul-overlay-merged" and "sb-overlay-load" are
- * 								observed.
- * @param data		{string}	
+ * @base nsIModule
  */
-AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
-	if (topic != "xul-overlay-merged" && topic != "sb-overlay-load") return;
-	if (!this.window) return;
+var AVIMModule = {
+	registerSelf: function(compMgr, fileSpec, loc, type) {
+		compMgr = compMgr.QueryInterface(gCi.nsIComponentRegistrar);
+		compMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID,
+										fileSpec, loc, type);
+		
+		// Register the module for app-startup notifications.
+		var catMgr = gCc["@mozilla.org/categorymanager;1"]
+			.getService(gCi.nsICategoryManager);
+		catMgr.addCategoryEntry("app-startup", CLASS_NAME,
+								"service," + CONTRACT_ID, true, true);
+	},
 	
-	// SeaMonkey doesn't want to load the stylesheet along with the rest of
-	// AVIM's overlay, so we have to load it separately.
-	var document = this.window.document;
-	var smNavUrl = "chrome://navigator/content/navigator.xul";
-	if (document.location && document.location.href == smNavUrl) {
-		var sss = gCc["@mozilla.org/content/style-sheet-service;1"]
-			.getService(gCi.nsIStyleSheetService);
-		var ios = gCc["@mozilla.org/network/io-service;1"]
-			.getService(gCi.nsIIOService);
-		var uri = ios.newURI("chrome://avim/content/skin/avim.css", null, null);
-		sss.loadAndRegisterSheet(uri, sss.USER_SHEET);
+	unregisterSelf: function(compMgr, loc, type) {
+		compMgr = compMgr.QueryInterface(gCi.nsIComponentRegistrar);
+		compMgr.unregisterFactoryLocation(CLASS_ID, loc);
+		
+		// Unregister the module from app-startup notifications.
+		var catMgr = gCc["@mozilla.org/categorymanager;1"]
+			.getService(gCi.nsICategoryManager);
+		catMgr.addCategoryEntry("app-startup", CLASS_NAME, true);
+	},
+	
+	getClassObject: function(compMgr, cid, iid) {
+		if (!iid.equals(gCi.nsIFactory)) {
+			throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+		}
+		if (cid.equals(CLASS_ID)) return AVIMFactory;
+		throw Components.results.NS_ERROR_NO_INTERFACE;
+	},
+	
+	canUnload: function(compMgr) {
+		return true;
 	}
-	
-	// Force AVIM's status bar panel to display the current input method.
-	if (!this.window.avim) return;
-	this.window.avim.registerPrefs();
-	this.window.avim.updateUI();
 };
 
 function NSGetModule(compMgr, fileSpec) {
-	return XPCOMUtils.generateModule([AVIM]);
+	return AVIMModule;
 }
