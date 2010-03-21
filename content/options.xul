@@ -8,7 +8,7 @@
 
 <!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
 
-<prefwindow id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" windowtype="avim:options" title="&avim-preferences.title;" showstoolbarbutton="false" style="&avim-preferences.style;">
+<prefwindow id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" windowtype="avim:options" title="&avim-preferences.title;" showstoolbarbutton="false" ondialoghelp="optionsPanel.openPrefsHelp();" style="&avim-preferences.style;">
 	<script type="application/x-javascript" src="chrome://mozapps/content/extensions/extensions.js" />
 	<script type="application/x-javascript" src="chrome://avim/content/options.js" />
 	
@@ -33,7 +33,7 @@
 		<broadcaster id="spell-options-bc" />
 	</broadcasterset>
 	
-	<prefpane id="general-pane" label="&avim-preferences.title;">
+	<prefpane id="general-pane" label="&avim-preferences.title;" helpTopic="general">
 		<preferences>
 			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" />
 			<preference id="method-pref" name="extensions.avim.method" type="int" />

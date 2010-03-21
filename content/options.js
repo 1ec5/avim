@@ -19,6 +19,7 @@ function AVIMOptionsPanel() {
 		spellOptions: "spell-options-bc"
 	};
 	
+	const paneId = "general-pane";
 	const enabledCheckId = "enabled-check";
 	
 	const notificationBoxId = "general-note";
@@ -53,13 +54,17 @@ function AVIMOptionsPanel() {
 	const prefs = oCc["@mozilla.org/preferences-service;1"]
 		.getService(oCi.nsIPrefService).getBranch("extensions.avim.");
 	
+	var $ = function (id) {
+		return document.getElementById(id);
+	};
+	
 	/**
 	 * Enables or disables the Ignore button, based on whether the associated
 	 * textbox contains text.
 	 */
 	this.validateIgnoreButton = function() {
-		var ignoreButton = document.getElementById(ignoreButtonId);
-		var ignoreTextBox = document.getElementById(ignoreTextBoxId);
+		var ignoreButton = $(ignoreButtonId);
+		var ignoreTextBox = $(ignoreTextBoxId);
 		if (ignoreButton && ignoreTextBox) {
 			ignoreButton.disabled = !ignoreTextBox.value;
 		}
@@ -71,8 +76,8 @@ function AVIMOptionsPanel() {
 	 * listed in the preference too.
 	 */
 	this.ignoreIdsInTextBox = function() {
-		var ignoreTextBox = document.getElementById(ignoreTextBoxId);
-		var idList = document.getElementById(idListId);
+		var ignoreTextBox = $(ignoreTextBoxId);
+		var idList = $(idListId);
 		if (!ignoreTextBox || !idList) return;
 		
 		var ids = ignoreTextBox.value.split(ignoredIdsDelimiter);
@@ -108,8 +113,8 @@ function AVIMOptionsPanel() {
 	 * selected in the Ignored IDs list.
 	 */
 	this.validateRemoveButton = function() {
-		var removeButton = document.getElementById(removeButtonId);
-		var idList = document.getElementById(idListId);
+		var removeButton = $(removeButtonId);
+		var idList = $(idListId);
 //		dump("First row: " + idList.getItemAtIndex(0).value + ".\n");								// debug
 		if (removeButton && idList) {
 			removeButton.disabled = !idList.selectedCount;
@@ -139,7 +144,7 @@ function AVIMOptionsPanel() {
 	 */
 	this.updateIgnoredIds = function() {
 		// Clear the list.
-		var idList = document.getElementById(idListId);
+		var idList = $(idListId);
 		if (!idList) return;
 		var items = [];
 		for (var i = 0; i < idList.getRowCount(); i++) {
@@ -164,8 +169,8 @@ function AVIMOptionsPanel() {
 	 * hides the Mudim conflict warning based on whether there is a conflict.
 	 */
 	this.validateForEnabled = function() {
-		var bc = document.getElementById(broadcasterIds.disabled);
-		var check = document.getElementById(enabledCheckId);
+		var bc = $(broadcasterIds.disabled);
+		var check = $(enabledCheckId);
 		if (bc && check) bc.setAttribute("disabled", "" + !check.checked);
 		
 		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
@@ -180,10 +185,10 @@ function AVIMOptionsPanel() {
 	 * disabled.
 	 */
 	this.validateForSpellingEnforced = function() {
-		var bc = document.getElementById(broadcasterIds.spellOptions);
+		var bc = $(broadcasterIds.spellOptions);
 		if (!bc) return;
-		var enabled = document.getElementById(enabledCheckId).checked;
-		var enforced = document.getElementById(spellCheckCheckId).checked;
+		var enabled = $(enabledCheckId).checked;
+		var enforced = $(spellCheckCheckId).checked;
 		bc.setAttribute("disabled", "" + (!enabled || !enforced));
 	};
 	
@@ -200,7 +205,7 @@ function AVIMOptionsPanel() {
 				// startup, when we want to get all the preferences.
 				specificPref = false;
 			case "enabled":
-				var bc = document.getElementById(broadcasterIds.disabled);
+				var bc = $(broadcasterIds.disabled);
 				if (bc) {
 					bc.setAttribute("disabled",
 									"" + !prefs.getBoolPref("enabled"));
@@ -222,7 +227,7 @@ function AVIMOptionsPanel() {
 	 * the preference, either.
 	 */
 	this.removeSelectedIds = function() {
-		var idList = document.getElementById(idListId);
+		var idList = $(idListId);
 		if (!idList) return;
 		var sel_items = [];
 		for (var i = 0; i < idList.selectedCount; i++) {
@@ -260,7 +265,7 @@ function AVIMOptionsPanel() {
 	 * @returns {string}	a list of ignored IDs.
 	 */
 	this.stringFromIgnoredIds = function() {
-		var idList = document.getElementById(idListId);
+		var idList = $(idListId);
 		if (!idList) return "";
 		var ignoredIds = [];
 		for (var i = 0; i < idList.getRowCount(); i++) {
@@ -279,7 +284,7 @@ function AVIMOptionsPanel() {
 			.getService(oCi.nsIPrefService)
 			.getDefaultBranch("extensions.avim.");
 		var defaultIds = defaults.getCharPref("ignoredFieldIds");
-		var button = document.getElementById(resetButtonId);
+		var button = $(resetButtonId);
 		return button.disabled = defaultIds == this.stringFromIgnoredIds();
 	};
 	
@@ -293,6 +298,16 @@ function AVIMOptionsPanel() {
 		var defaultIds = defaults.getCharPref("ignoredFieldIds");
 		var prefIds = prefs.getCharPref("ignoredFieldIds");
 		if (defaultIds != prefIds) defaults.clearUserPref("ignoredFieldIds");
+	};
+	
+	/**
+	 * Opens the help topic for the current preferences pane in a new window.
+	 */
+	this.openPrefsHelp = function() {
+		var stringBundle = $(stringBundleId);
+		if (!stringBundle) return;
+		var url = stringBundle.getString("avim-preferences.helpurl");
+		if (url) window.open(url);
 	};
 	
 	/**
@@ -352,10 +367,10 @@ function AVIMOptionsPanel() {
 	this.exposeTester = function() {
 		if (!DEBUG) return;
 		
-		var box = document.getElementById(testerBoxId);
+		var box = $(testerBoxId);
 		if (!box) return;
 		
-		var stringBundle = document.getElementById(stringBundleId);
+		var stringBundle = $(stringBundleId);
 		if (!stringBundle) return;
 		var buttonLabel = stringBundle.getString("tester-button.label");
 		if (!buttonLabel) return;
@@ -378,10 +393,10 @@ function AVIMOptionsPanel() {
 	 * the default stylesheet.
 	 */
 	this.fixTabBoxStyle = function() {
-		var box = document.getElementById(tabBoxId);
+		var box = $(tabBoxId);
 		if (box) box.style.marginLeft = box.style.marginRight = macTabBoxMargin;
 		
-		var tabs = document.getElementById(tabsId);
+		var tabs = $(tabsId);
 		if (tabs) tabs.style.position = "relative";
 	};
 	
@@ -390,7 +405,7 @@ function AVIMOptionsPanel() {
 	 * tab, so that the panel doesn't get cut off at the bottom.
 	 */
 	this.fixDescriptionStyle = function() {
-		var tabBox = document.getElementById(tabBoxId);
+		var tabBox = $(tabBoxId);
 		if (!tabBox) return;
 		var descs = tabBox.getElementsByTagName("description");
 		for (var i = 0; i < descs.length; i++) {
@@ -509,10 +524,10 @@ function AVIMOptionsPanel() {
 		 * Displays a notification that Mudim is enabled.
 		 */
 		this.displayWarning = function() {
-			var noteBox = document.getElementById(notificationBoxId);
+			var noteBox = $(notificationBoxId);
 			if (!noteBox || noteBox.getNotificationWithValue(noteValue)) return;
 			
-			var stringBundle = document.getElementById(stringBundleId);
+			var stringBundle = $(stringBundleId);
 			if (!stringBundle) return;
 			var noteLabel = stringBundle.getString("mudim-note.label");
 			var noteBtns = [{
@@ -531,7 +546,7 @@ function AVIMOptionsPanel() {
 		 * Hides the notification that Mudim is enabled.
 		 */
 		this.hideWarning = function() {
-			var noteBox = document.getElementById(notificationBoxId);
+			var noteBox = $(notificationBoxId);
 			if (!noteBox) return;
 			var note = noteBox.getNotificationWithValue(noteValue);
 			if (note) noteBox.removeNotification(note);

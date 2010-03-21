@@ -311,6 +311,8 @@ Version 20080728.366 (Sunday, March 7, 2010)
 Version ${Version} (${Date})
  - Restored support for Firefox 2 after nearly two years. Thunderbird 2 is now
    supported as well. (Welcome back, Windows 98 users!)
+ - Added a help button to the preferences dialog that opens AVIM help
+   documentation in a new window.
  - Added a button to Fennec's right toolbar for enabling and disabling AVIM.
  - Fixed the input method menu in the options panel in Fennec.
  - Added an option to recognize password boxes to the options panel in Fennec.
