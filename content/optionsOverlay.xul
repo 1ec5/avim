@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://avim/skin/options.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
+
+<overlay id="avim-options-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://mozapps/content/extensions/extensions.js" />
+	<script type="application/x-javascript" src="chrome://avim/content/options.js" />
+	
+	<broadcasterset id="mainBroadcasterSet">
+		<broadcaster id="disabled-bc" />
+	</broadcasterset>
+</overlay>

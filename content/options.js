@@ -11,27 +11,29 @@ function AVIMOptionsPanel() {
 	const oCc = Components.classes;
 	const oCi = Components.interfaces;
 	
-	// GUID of the Mudim extension
-	const MUDIM_ID = "mudim@svol.ru";
-	
 	const broadcasterIds = {
 		disabled: "disabled-bc",
-		spellOptions: "spell-options-bc"
+		customMethod: "custom-method-bc",
+		spellOptions: "spell-options-bc",
+		scriptOptions: "script-enabled-bc"
 	};
 	
-	const paneId = "general-pane";
-	const enabledCheckId = "enabled-check";
+	const paneIds = {
+		general: "general-pane",
+		blacklist: "blacklist-pane",
+		method: "method-config-pane",
+		script: "script-config-pane"
+	};
 	
-	const notificationBoxId = "general-note";
-	
-	const tabBoxId = "general-tabbox";
-	const tabsId = "general-tabs";
-	
-	const spellCheckCheckId = "spell-check";
+	const prefIds = {
+		enabled: "enabled-pref",
+		method: "method-pref",
+		spell: "spell-pref",
+		ignoredIds: "ignoredids-pref",
+		script: "script-enabled-pref"
+	};
 	
 // $if{Debug}
-	const testerBoxId = "tester-box";
-	const testerButtonId = "tester-button";
 	const testerUrl = "chrome://avim/content/test/tester.xul";
 // $endif{}
 	
@@ -42,17 +44,8 @@ function AVIMOptionsPanel() {
 	const resetButtonId = "reset-button";
 	
 	const ignoredIdsDelimiter = /\s+/;
-	const macTabBoxMargin = 4 + "px";
 	
 	const stringBundleId = "bundle";
-	const noteValue = "mudim-note";
-	
-	const isMac = oCc["@mozilla.org/xre/app-info;1"]
-		.getService(oCi.nsIXULRuntime).OS == "Darwin";
-	
-	// Root for AVIM preferences
-	const prefs = oCc["@mozilla.org/preferences-service;1"]
-		.getService(oCi.nsIPrefService).getBranch("extensions.avim.");
 	
 	var $ = function (id) {
 		return document.getElementById(id);
@@ -85,8 +78,51 @@ function AVIMOptionsPanel() {
 			var dupes = idList.getElementsByAttribute("value", ids[i]);
 			if (ids[i] && !dupes.length) idList.appendItem(ids[i], ids[i]);
 		}
-		if (document.documentElement.instantApply) this.setPrefs();
 		ignoreTextBox.value = "";
+		if ($(paneIds.blacklist)) $(paneIds.blacklist).userChangedValue(idList);
+	};
+	
+	/**
+	 * Command controller for the list of ignored IDs that allows the list to
+	 * behave more like a textbox to the user.
+	 */
+	var idListController = {
+		supportsCommand: function(cmd) {
+			return /* cmd == "cmd_delete" || */ cmd == "cmd_selectAll";
+		},
+		isCommandEnabled: function(cmd) {
+			if (!$(idListId)) return false;
+			
+			switch (cmd) {
+				//case "cmd_delete":
+				//	return $(idListId).selectedCount;
+				case "cmd_selectAll":
+					return document.activeElement == $(idListId);
+			}
+			return false;
+		},
+		doCommand: function(cmd) {
+			switch (cmd) {
+				//case "cmd_delete":
+				//	if (!window.optionsPanel) {
+				//		window.optionsPanel.removeSelectedIds();
+				//	}
+				//	break;
+				case "cmd_selectAll":
+					if ($(idListId)) $(idListId).selectAll();
+					break;
+			}
+		},
+		onEvent: function(evt) {}
+	};
+	
+	/**
+	 * Attach a command controller to the ignored IDs list.
+	 */
+	this.attachIdListController = function() {
+		var idList = $(idListId);
+		if (!idList) return;
+		idList.controllers.appendController(idListController);
 	};
 	
 	/**
@@ -111,14 +147,16 @@ function AVIMOptionsPanel() {
 	/**
 	 * Enables or disables the Remove ID button, based on whether any rows are
 	 * selected in the Ignored IDs list.
+	 *
+	 * @returns	{boolean}	True if the button has just been enabled; false if
+	 * 						it has just been disabled.
 	 */
 	this.validateRemoveButton = function() {
+		if (!$(paneIds.blacklist)) return false;
 		var removeButton = $(removeButtonId);
 		var idList = $(idListId);
-//		dump("First row: " + idList.getItemAtIndex(0).value + ".\n");								// debug
-		if (removeButton && idList) {
-			removeButton.disabled = !idList.selectedCount;
-		}
+		if (!removeButton || !idList) return false;
+		return !(removeButton.disabled = !idList.selectedCount);
 	};
 	
 	/**
@@ -131,6 +169,7 @@ function AVIMOptionsPanel() {
 		var newArray = [];
 		for (var i = 0; i < oldArray.length; i++) {
 			var elem = oldArray[i];
+			if (!elem) continue;
 			if (lower) elem = elem.toLowerCase();
 			if (newArray.indexOf(elem) < 0) newArray.push(elem);
 		}
@@ -142,41 +181,52 @@ function AVIMOptionsPanel() {
 	 * Updates the Ignored Textboxes panel's current state to reflect the stored
 	 * preferences.
 	 */
-	this.updateIgnoredIds = function() {
-		// Clear the list.
+	this.updateIgnoredIds = function(ids) {
 		var idList = $(idListId);
-		if (!idList) return;
-		var items = [];
-		for (var i = 0; i < idList.getRowCount(); i++) {
-			items.push(idList.getItemAtIndex(i));
-		}
-		for (var i = 0; i < items.length; i++) idList.removeChild(items[i]);
+		var pref = $(prefIds.ignoredIds);
+		if (!idList || !pref) return undefined;
+		if (ids == undefined)
+			ids = pref.value;
 		
-		// Repopulate the list.
-		var ids = prefs.getComplexValue("ignoredFieldIds",
-										oCi.nsISupportsString).data;
+		// Clear the list.
+		var numRows = idList.getRowCount();
+		for (var i = numRows - 1; i >= 0; i--) idList.removeItemAt(i);
+		
 		ids = ids.split(ignoredIdsDelimiter);
 		ids = this.normalizeArray(ids, true);
-//		dump("Got ignoredIds: " + ids.join(",") + ".\n");				// debug
 		for (var i = 0; i < ids.length; i++) idList.appendItem(ids[i], ids[i]);
 		
 		this.validateRemoveButton();
 		this.validateResetButton();
+		return ids;
 	};
 	
 	/**
-	 * Enables or disables Input Editing panel preferences, and displays or
-	 * hides the Mudim conflict warning based on whether there is a conflict.
+	 * Enables or disables Input Editing panel preferences.
 	 */
 	this.validateForEnabled = function() {
 		var bc = $(broadcasterIds.disabled);
-		var check = $(enabledCheckId);
-		if (bc && check) bc.setAttribute("disabled", "" + !check.checked);
+		if (!bc) return;
+		bc.setAttribute("disabled", "" + !$(prefIds.enabled).value);
 		
-		if (this.mudimMonitor.conflicts()) this.mudimMonitor.displayWarning();
-		else this.mudimMonitor.hideWarning();
-		
+		this.validateCustomMethod();
 		this.validateForSpellingEnforced();
+		this.validateForScriptMonitor();
+	};
+	
+	/**
+	 * Enables or disables the button for customizing the current input method.
+	 * If AVIM is enabled and the current input method has options, the button
+	 * is enabled; otherwise, it is disabled.
+	 */
+	this.validateCustomMethod = function() {
+		var bc = $(broadcasterIds.customMethod);
+		var pref = $(prefIds.method);
+		if (!bc || !pref) return;
+		
+		var enabled = $(prefIds.enabled).value;
+		var auto = pref.value == 0;
+		bc.setAttribute("disabled", "" + (!enabled || !auto));
 	};
 	
 	/**
@@ -186,39 +236,27 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateForSpellingEnforced = function() {
 		var bc = $(broadcasterIds.spellOptions);
-		if (!bc) return;
-		var enabled = $(enabledCheckId).checked;
-		var enforced = $(spellCheckCheckId).checked;
+		var pref = $(prefIds.spell);
+		if (!bc || !pref) return;
+		
+		var enabled = $(prefIds.enabled).value;
+		var enforced = pref.value;
 		bc.setAttribute("disabled", "" + (!enabled || !enforced));
 	};
 	
 	/**
-	 * Updates the panel's current state to reflect the stored preferences.
-	 *
-	 * @param changedPref	{string}	the name of the preference that changed.
+	 * Enables or disables script monitor options. If AVIM is enabled and the
+	 * script monitor is enabled, the options are enabled; otherwise, they are
+	 * disabled.
 	 */
-	this.getPrefs = function(changedPref) {
-		var specificPref = true;
-		switch (changedPref) {
-			default:
-				// Fall through when changedPref isn't defined, which happens at
-				// startup, when we want to get all the preferences.
-				specificPref = false;
-			case "enabled":
-				var bc = $(broadcasterIds.disabled);
-				if (bc) {
-					bc.setAttribute("disabled",
-									"" + !prefs.getBoolPref("enabled"));
-				}
-				this.validateForEnabled();
-				if (specificPref) break;
-			case "ignoreMalformed":
-				this.validateForSpellingEnforced();
-				if (specificPref) break;
-			case "ignoredFieldIds":
-				this.updateIgnoredIds();
-//				if (specificPref) break;
-		}
+	this.validateForScriptMonitor = function() {
+		var bc = $(broadcasterIds.scriptOptions);
+		var pref = $(prefIds.script);
+		if (!bc || !pref) return;
+		
+		var enabled = $(prefIds.enabled).value;
+		var scriptEnabled = pref.value;
+		bc.setAttribute("disabled", "" + (!enabled || !scriptEnabled));
 	};
 	
 	/**
@@ -228,19 +266,17 @@ function AVIMOptionsPanel() {
 	 */
 	this.removeSelectedIds = function() {
 		var idList = $(idListId);
-		if (!idList) return;
-		var sel_items = [];
-		for (var i = 0; i < idList.selectedCount; i++) {
-			var row = idList.getSelectedItem(i);
-//			dump("Removing row at " + i + ": " + row + "\n");					// debug
-			sel_items.push(row);
+		if (!idList || !idList.selectedCount) return;
+		var firstSelIdx = idList.selectedIndex;
+		var selItems = idList.selectedItems;
+		for (var i = selItems.length - 1; i >= 0; i--) {
+			idList.removeChild(selItems[i]);
+			delete selItems[i];
 		}
-		for (var i = 0; i < sel_items.length; i++) {
-			idList.removeChild(sel_items[i]);
-//			idList.removeItemAt(idList.getIndexOfItem(sel_items[i]));
-		}
-		if (document.documentElement.instantApply) this.setPrefs();
-//		this.validateRemoveButton();
+		if ($(paneIds.blacklist)) $(paneIds.blacklist).userChangedValue(idList);
+		
+		// Select something else in the list.
+		idList.selectedIndex = firstSelIdx;
 	};
 	
 	/**
@@ -280,24 +316,46 @@ function AVIMOptionsPanel() {
 	 * current ignored ID list is equivalent to the default list.
 	 */
 	this.validateResetButton = function() {
-		var defaults = oCc["@mozilla.org/preferences-service;1"]
-			.getService(oCi.nsIPrefService)
-			.getDefaultBranch("extensions.avim.");
-		var defaultIds = defaults.getCharPref("ignoredFieldIds");
+		var pref = $(prefIds.ignoredIds);
 		var button = $(resetButtonId);
-		return button.disabled = defaultIds == this.stringFromIgnoredIds();
+		if (!pref || !button) return;
+		
+		button.disabled = pref.defaultValue == pref.value;
 	};
 	
 	/**
 	 * Resets the ignored IDs list to the "factory default".
 	 */
 	this.resetIgnoredIds = function() {
-		var defaults = oCc["@mozilla.org/preferences-service;1"]
-			.getService(oCi.nsIPrefService)
-			.getDefaultBranch("extensions.avim.");
-		var defaultIds = defaults.getCharPref("ignoredFieldIds");
-		var prefIds = prefs.getCharPref("ignoredFieldIds");
-		if (defaultIds != prefIds) defaults.clearUserPref("ignoredFieldIds");
+		if (!$(paneIds.blacklist) || !$(idListId)) return;
+		
+		var pref = $(prefIds.ignoredIds);
+		if (!pref || pref.defaultValue == pref.value) return;
+		
+		this.updateIgnoredIds(pref.defaultValue);
+		$(paneIds.blacklist).userChangedValue($(idListId));
+	};
+	
+	/**
+	 * Opens the Blacklist dialog box (or sheet).
+	 */
+	this.openBlacklist = function() {
+		document.documentElement.openSubDialog("./blacklist.xul",
+											   "resizable=yes", null);
+	};
+	
+	/**
+	 * Opens the Customize Input Method dialog box (or sheet).
+	 */
+	this.openMethodConfig = function() {
+		document.documentElement.openSubDialog("./methodOptions.xul", "", null);
+	};
+	
+	/**
+	 * Opens the Script Monitor dialog box (or sheet).
+	 */
+	this.openScriptConfig = function() {
+		document.documentElement.openSubDialog("./scriptOptions.xul", "", null);
 	};
 	
 	/**
@@ -310,281 +368,28 @@ function AVIMOptionsPanel() {
 		if (url) window.open(url);
 	};
 	
-	/**
-	 * Registers an observer so that the Ignored Textboxes panel reflects the
-	 * latest IDs in the preferences system.
-	 */
-	this.registerPrefs = function() {
-		prefs.QueryInterface(oCi.nsIPrefBranch2);
-		prefs.addObserver("", this, false);
-		this.getPrefs();
-	};
-	
-	/**
-	 * Responds to changes to complex AVIM preferences, namely the
-	 * ignoredFieldIds preference.
-	 *
-	 * @param subject
-	 * @param topic		{string}	the type of event that occurred.
-	 * @param data		{string}	the name of the preference that changed.
-	 */
-	this.observe = function(subject, topic, data) {
-		if (topic != "nsPref:changed") return;
-		this.getPrefs(data);
-	};
-	
-	/**
-	 * Updates the stored preferences to reflect the panel's current state.
-	 */
-	this.setPrefs = function() {
-		var ids = oCc["@mozilla.org/supports-string;1"]
-			.createInstance(oCi.nsISupportsString);
-		ids.data = this.stringFromIgnoredIds();
-		prefs.setComplexValue("ignoredFieldIds", oCi.nsISupportsString, ids);
-	};
-	
-	/**
-	 * Unregisters the preferences observer as the window is being closed.
-	 */
-	this.unregisterPrefs = function() {
-		this.setPrefs();
-		prefs.removeObserver("", this);
-	};
-	
 // $if{Debug}
-	
 	/**
 	 * Opens the test suite window.
 	 */
 	this.openTester = function() {
 		document.documentElement.openWindow("avim:tester", testerUrl, "", null);
 	};
-	
-	/**
-	 * Creates and adds a button to the Input Editing tab that launches the test
-	 * suite.
-	 */
-	this.exposeTester = function() {
-		if (!DEBUG) return;
-		
-		var box = $(testerBoxId);
-		if (!box) return;
-		
-		var stringBundle = $(stringBundleId);
-		if (!stringBundle) return;
-		var buttonLabel = stringBundle.getString("tester-button.label");
-		if (!buttonLabel) return;
-		var buttonAccessKey =
-			stringBundle.getString("tester-button.accesskey");
-		if (!buttonAccessKey) return;
-		
-		var button = document.createElement("button");
-		button.id = testerButtonId;
-		button.addEventListener("command", this.openTester, false);
-		button.setAttribute("label", buttonLabel);
-		button.setAttribute("accesskey", buttonAccessKey);
-		box.appendChild(button);
-	};
-	
 // $endif{}
-	
-	/**
-	 * Tweaks the styling on the tab box on the Mac, to work around some bugs in
-	 * the default stylesheet.
-	 */
-	this.fixTabBoxStyle = function() {
-		var box = $(tabBoxId);
-		if (box) box.style.marginLeft = box.style.marginRight = macTabBoxMargin;
-		
-		var tabs = $(tabsId);
-		if (tabs) tabs.style.position = "relative";
-	};
-	
-	/**
-	 * Tweaks the styling on <description> elements in the Ignored Textboxes
-	 * tab, so that the panel doesn't get cut off at the bottom.
-	 */
-	this.fixDescriptionStyle = function() {
-		var tabBox = $(tabBoxId);
-		if (!tabBox) return;
-		var descs = tabBox.getElementsByTagName("description");
-		for (var i = 0; i < descs.length; i++) {
-			var style = getComputedStyle(descs[i], null);
-			var lineHeightValue = style.getPropertyCSSValue("line-height");
-			var lineHeight = lineHeightValue.getFloatValue(5 /* px */);
-//			dump("Expanding " + descs[i] + " from " + descs[i].style.height +
-//				 " to " + lineHeight + "\n");									// debug
-			var lineCount = descs[i].getAttribute("linecount");
-			descs[i].style.height = lineCount * lineHeight + "px";
-		}
-	};
 	
 	/**
 	 * Initializes the AVIM Options panel's controller. This method should only
 	 * be called once the panel itself has finished loading.
 	 */
 	this.initialize = function() {
-		this.mudimMonitor = new MudimMonitor();
-		this.mudimMonitor.registerPrefs();
-		
-		this.registerPrefs();
-		this.validateRemoveButton();
-		
-// $if{Debug}
-		this.exposeTester();
-// $endif{}
-		
-		if (isMac) this.fixTabBoxStyle();
-		this.fixDescriptionStyle();
-	};
-	
-	/**
-	 * Unitializes the AVIM Options panel's controller. This method should be
-	 * called when the panel is being unloaded.
-	 */
-	this.finalize = function() {
-		this.unregisterPrefs();
-	};
-	
-	/**
-	 * An inner class that detects when Mudim is installed and enabled.
-	 */
-	function MudimMonitor() {
-		// Mudim itself
-		var thisMonitor = this;
-		if (window.Application && Application.extensions.get) {
-			if (Application.extensions.get) {
-				this.mudim = Application.extensions.get(MUDIM_ID);
-			}
-			else if (Application.getExtensions) {
-				Application.getExtensions(function (extensions) {
-					thisMonitor.mudim = extensions.get(MUDIM_ID);
-				});
-			}
+		this.validateForEnabled();
+		if ($(paneIds.blacklist)) {
+			this.attachIdListController();
+			this.validateRemoveButton();
+			this.validateResetButton();
 		}
-		
-		// Root for Mudim preferences
-		const mPrefs = oCc["@mozilla.org/preferences-service;1"]
-			.getService(oCi.nsIPrefService).getBranch("chimmudim.settings.");
-		
-		/**
-		 * Registers an observer so that a warning is displayed if Mudim is
-		 * enabled.
-		 */
-		this.registerPrefs = function() {
-			mPrefs.QueryInterface(oCi.nsIPrefBranch2);
-			mPrefs.addObserver("", this, false);
-			this.getPrefs();
-		};
-		
-		/**
-		 * Unregisters the preferences observer as the window is being closed.
-		 */
-		this.unregisterPrefs = function() {
-			this.setPrefs();
-			mPrefs.removeObserver("", this);
-		};
-		
-		/**
-		 * Returns whether Mudim conflicts with AVIM.
-		 *
-		 * @returns {boolean}	true if Mudim conflicts with AVIM; false
-		 * 						otherwise.
-		 */
-		this.conflicts = function() {
-			var avimEnabled = prefs.getBoolPref("enabled");
-			return avimEnabled && this.mudim && this.mudim.enabled &&
-				mPrefs.getIntPref("method") != 0;
-		};
-		
-		/**
-		 * Disables the Mudim extension, because it may interfere with AVIM's
-		 * operation. Unfortunately, we can't just set Mudim's method preference
-		 * to 0 (off), because Mudim doesn't observe preference changes. This
-		 * method supports versions 0.3 (r14) and above.
-		 *
-		 * @param note	{object}	the <notification> element whose button
-		 * 							triggered the call to this method.
-		 * @param desc	{string}	the button's description.
-		 */
-		this.disableMudim = function(note, desc) {
-			var mediator = oCc["@mozilla.org/appshell/window-mediator;1"]
-				.getService(oCi.nsIWindowMediator);
-			var enumerator = mediator.getEnumerator("navigator:browser");
-			while (enumerator.hasMoreElements()) {
-				var win = enumerator.getNext();
-				try {
-					if (parseInt(win.Mudim.method) != 0) win.CHIM.Toggle();
-				}
-				catch (e) {}
-			}
-		};
-		
-		/**
-		 * Displays a notification that Mudim is enabled.
-		 */
-		this.displayWarning = function() {
-			var noteBox = $(notificationBoxId);
-			if (!noteBox || noteBox.getNotificationWithValue(noteValue)) return;
-			
-			var stringBundle = $(stringBundleId);
-			if (!stringBundle) return;
-			var noteLabel = stringBundle.getString("mudim-note.label");
-			var noteBtns = [{
-				accessKey: stringBundle.getString("mudim-button.accesskey"),
-				callback: this.disableMudim,
-				label: stringBundle.getString("mudim-button.label"),
-				popup: null
-			}];
-			noteBox.appendNotification(noteLabel, noteValue,
-									   URI_NOTIFICATION_ICON_WARNING,
-									   noteBox.PRIORITY_WARNING_MEDIUM,
-									   noteBtns);
-		};
-		
-		/**
-		 * Hides the notification that Mudim is enabled.
-		 */
-		this.hideWarning = function() {
-			var noteBox = $(notificationBoxId);
-			if (!noteBox) return;
-			var note = noteBox.getNotificationWithValue(noteValue);
-			if (note) noteBox.removeNotification(note);
-		};
-		
-		/**
-		 * Updates the panel's current state to reflect the stored preferences.
-		 *
-		 * @param changedPref	{string}	the name of the preference that
-		 * 									changed.
-		 */
-		this.getPrefs = function(changedPref) {
-			if (!changedPref || changedPref == "method") {
-				if (this.conflicts()) this.displayWarning();
-				else this.hideWarning();
-			}
-		};
-		
-		/**
-		 * Responds to changes to Mudim preferences, namely the method
-		 * preference.
-		 *
-		 * @param subject
-		 * @param topic		{string}	the type of event that occurred.
-		 * @param data		{string}	the name of the preference that changed.
-		 */
-		this.observe = function(subject, topic, data) {
-			if (topic != "nsPref:changed") return;
-			this.getPrefs(data);
-		};
-	}
+	};
 }
-if (window || !("optionsPanel" in window)) {
+if (window && !("optionsPanel" in window)) {
 	window.optionsPanel = new AVIMOptionsPanel();
-	addEventListener("load", function (e) {
-		optionsPanel.initialize();
-	}, false);
-	addEventListener("unload", function (e) {
-		optionsPanel.finalize();
-	}, false);
 }

@@ -1,64 +1,180 @@
-<!-- General options -->
+<!-- Main dialog =========================================================== -->
 
+<!-- Name of the extension, used in various places, including the status bar and toolbar. "AVIM" stands for "Advanced Vietnamese Input Method". Most localizations can keep this string the same. This string should match AVIM.label in avim.dtd exactly. -->
 <!ENTITY AVIM.label "AVIM">
+<!-- Title of AVIM's preferences dialog. This string should be kept the same, unless declension requires otherwise. -->
 <!ENTITY avim-preferences.title "&AVIM.label;">
-<!ENTITY avim-preferences.style "width: 45em;"><!-- Based on <chrome://browser/locale/preferences/preferences.dtd>. -->
 
+<!-- Label of the checkbox that is checked when AVIM is turned on and unchecked when AVIM is turned off. This string should match avim-enabled.description in avim.dtd. For consistency, it should embed AVIM.label, unless declension requires otherwise. -->
 <!ENTITY enabled-check.label "Bật lên &AVIM.label; để gõ tiếng Việt">
+<!-- Mneumonic for the checkbox that is checked when AVIM is turned on and unchecked when AVIM is turned off. This string should contain a single character that also appears in enabled-check.label. The user can press Alt+E (Ctrl+E on the Mac) to toggle the checkbox. This string should match avim-enabled.accesskey in avim.dtd. -->
 <!ENTITY enabled-check.accesskey "B">
 
-<!-- Input Editing tab -->
+<!-- Label of the button that opens the Blacklist dialog box. To indicate that the button opens a new dialog box, this string should end in the Unicode ellipsis character (…) or your locale's equivalent, rather than three periods. -->
+<!ENTITY blacklist-button.label "Ngoại trừ…">
+<!-- Mneumonic for the button that opens the Blacklist dialog box. This string should contain a single character that also appears in blacklist-button.label. The user can press Alt+X (Ctrl+X on the Mac) to invoke the button. -->
+<!ENTITY blacklist-button.accesskey "N">
 
-<!ENTITY input-panel.label "Bộ gõ">
-
+<!-- Label that appears beside the popup menu for selecting an input method. This string should end in a colon or your locale's equivalent. -->
 <!ENTITY method-menu.label "Kiểu gõ:">
+<!-- Mneumonic for the popup menu for selecting an input method. This string should contain a single character that also appears in method-menu.label. The user can press Alt+M (Ctrl+M on the Mac) to pop open the menu. -->
 <!ENTITY method-menu.accesskey "K">
-<!ENTITY method-auto-item.label "Tự động">
+<!-- Label of the menu item that switches to the Mixed input method. This menu item appears in the input method popup menu, as well as in the input method options dialog. The Mixed input method is just a combination of other input methods (Telex and VNI by default). This string should match avim-auto.label in avim.dtd. -->
+<!ENTITY method-auto-item.label "Tổng hợp">
+<!-- Label of the menu item that switches to the Telex input method. This menu item appears in the input method popup menu, as well as in the "accept when Auto is selected" option. Your locale may have a translation for "Telex", which is also the term for a telegraphy machine. This string should match avim-telex.label in avim.dtd. -->
 <!ENTITY method-telex-item.label "Telex">
+<!-- Label of the menu item that switches to the VNI input method. This menu item appears in the input method popup menu, as well as in the input method options dialog. Most localizations can keep this string the same. It should match avim-vni.label in avim.dtd. -->
 <!ENTITY method-vni-item.label "VNI">
+<!-- Label of the menu item that switches to the VIQR input method. This menu item appears in the input method popup menu, as well as in the input method options dialog. VIQR stands for "VIetnamese Quoted-Readable". Most localizations can keep this string the same. It should match avim-viqr.label in avim.dtd. -->
 <!ENTITY method-viqr-item.label "VIQR">
+<!-- Label of the menu item that switches to the VIQR* input method. This menu item appears in the input method popup menu, as well as in the input method options dialog. VIQR* is simply a variation of VIQR that uses "*" instead of "+" for the horn diacritic, so this string should be similar to method-viqr-item.label. Most localizations can keep this string the same. It should match avim-viqr-star.label in avim.dtd. -->
 <!ENTITY method-viqr-star-item.label "VIQR*">
 
-<!ENTITY spell-check.label "Bắt buộc các quy tắc chính tả tiếng Việt">
-<!ENTITY spell-check.accesskey "c">
-<!ENTITY informal-check.label "Cho phép DZ hoặc F ở đầu từ">
-<!ENTITY informal-check.accesskey "Z">
+<!-- Label of the button that opens the Customize Input Method dialog box. To indicate that the button opens a new dialog box, this string should end in the Unicode ellipsis character (…) or your locale's equivalent, rather than three periods. -->
+<!ENTITY method-config-button.label "Tùy biến…">
+<!-- Mneumonic for the button that opens the Customize Input Method dialog box. This string should contain a single character that also appears in method-config-button.label. The user can press Alt+C (Ctrl+C on the Mac) to invoke the button. -->
+<!ENTITY method-config-button.accesskey "b">
 
-<!ENTITY oldaccents-check.label "Bỏ dấu trên nguyên âm đầu tiên trong nguyên âm đôi ở cuối từ (bỏ dấu kiểu cũ)">
-<!ENTITY oldaccents-check.accesskey "d">
+<!-- $if{Debug} -->
+<!-- Label for the button that opens the Test Suite dialog box, which does not appear in official releases of AVIM. The Test Suite dialog allows developers to automatically test AVIM for flaws in the input processing logic. The word "Test" in this string is a verb. To indicate that the button opens a new dialog box, this string should end in the Unicode ellipsis character (…) or your locale's equivalent, rather than three periods. -->
+<!ENTITY tester-button.label "Đo thử…">
+<!-- Mneumonic for the button that opens the Test Suite dialog box. This string should contain a single character that also appears in tester-button.label. The user can press Alt+O (Ctrl+O on the Mac) to invoke the button. -->
+<!ENTITY tester-button.accesskey "o">
+<!-- $endif{} -->
 
-<!ENTITY auto-methods.label "Nhận tổ hợp gõ từ các kiểu gõ sau khi &method-auto-item.label; được chọn:">
-<!ENTITY auto-telex-check.accesskey "T">
-<!ENTITY auto-vni-check.accesskey "V">
-<!ENTITY auto-viqr-check.accesskey "Q">
-<!ENTITY auto-viqr-star-check.accesskey "R">
+<!-- Label that introduces the options for spelling enforcement. This string should end in a colon or your locale's equivalent. The sentence is continued in spell-check.false.label and spell-check.true.label. -->
+<!ENTITY spell-check.label "Khi nào gặp từ không theo quy tắc chính tả tiếng Việt:">
+<!-- Label of the radio button for disabling spelling enforcement. In this mode, AVIM places diacritics onto words even if they do not follow Vietnamese spelling rules. For example, when the VIQR input method is selected, "za." turns into "zạ", even though Vietnamese words cannot begin with "z". This string can alternatively be read as "Place diacritics onto the word anyways". "Anyways" is optional. -->
+<!ENTITY spell-check.false.label "Cứ bỏ dấu vào từ">
+<!-- Mneumonic of the radio button for disabling spelling enforcement. This string should contain a single character that also appears in spell-check.false.label. The user can press Alt+A (Ctrl+A on the Mac) to select the radio button. -->
+<!ENTITY spell-check.false.accesskey "d">
+<!-- Label of the radio button for enabling spelling enforcement. In this mode, AVIM only places diacritics onto words that follow Vietnamese spelling rules. For example, when the VIQR input method is selected, "da." turns into "dạ", while "za." is left alone because Vietnamese words cannot begin with "z". This feature is different than spell checking, which matches entered words against a whitelist of correctly spelled words. The sentence is continued in informal-check.label. -->
+<!ENTITY spell-check.true.label "Chèn ký tự gốc của phím (bắt phải đúng chính tả)">
+<!-- Mneumonic of the radio button for enabling spelling enforcement. This string should contain a single character that also appears in spell-check.true.label. The user can press Alt+L (Ctrl+L on the Mac) to select the radio button. -->
+<!ENTITY spell-check.true.accesskey "g">
 
-<!ENTITY script-enabled-check.label "Tắt các script bộ gõ ở trong trang Web">
-<!ENTITY script-enabled-check.accesskey "W">
+<!-- Label of the checkbox for allowing informal spelling patterns in conjunction with the spelling enforcement feature. When informal spelling is allowed, "dz" at the beginning of a word is treated like "d", while "f" at the beginning of a word is treated like "ph". Otherwise, the spelling enforcement feature will prevent the user from adding diacritics to any word that begins with "dz" or "f". This sentence is continued from spell-check.true.label. -->
+<!ENTITY informal-check.label "Trừ đằng sau những kiểu chính tả không chuẩn như “dz” và “f”">
+<!-- Mneumonic for the checkbox for allowing informal spelling patterns. This string should contain a single character that also appears in informal-check.label. The user can press Alt+Z (Ctrl+Z on the Mac) to toggle the checkbox. Most localizations should keep this string the same. -->
+<!ENTITY informal-check.accesskey "z">
 
-<!ENTITY passwords-check.label "Cho phép bỏ dấu vào hộp mật khẩu">
+<!-- Label that introduces the options for diacritic placement. This string should end in a colon or your locale's equivalent. The sentence is continued in oldaccents-check.true.label and oldaccents-check.false.label. -->
+<!ENTITY oldaccents-check.label "Khi nào gặp hai nguyên âm ở cuối từ, bỏ dấu vào:">
+<!-- Label of the radio button for traditional diacritic placement. In this mode, diacritics are placed on the first vowel in a diphthong (two successive vowels) at the end of a word. -->
+<!ENTITY oldaccents-check.true.label "Nguyên âm đằng trước (kiểu truyền thống)">
+<!-- Mneumonic of the radio button for traditional diacritic placement. This string should contain a single character that also appears in oldaccents-check.true.label. The user can press Alt+F (Ctrl+F on the Mac) to select the radio button. -->
+<!ENTITY oldaccents-check.true.accesskey "t">
+<!-- Label of the radio button for traditional diacritic placement. In this mode, diacritics are placed on the second vowel in a diphthong (two successive vowels) at the end of a word. -->
+<!ENTITY oldaccents-check.false.label "Nguyên âm đằng sau (kiểu hiện đại)">
+<!-- Mneumonic of the radio button for contemporary diacritic placement. This string should contain a single character that also appears in oldaccents-check.false.label. The user can press Alt+S (Ctrl+S on the Mac) to select the radio button. -->
+<!ENTITY oldaccents-check.false.accesskey "s">
+
+<!-- Label of the checkbox for enabling the Script Monitor feature. Script Monitor automatically turns off any Vietnamese input method editor scripts that are embedded in the webpage. "Turn off" is preferable to "disable" in this string, because "turn off" is consistent with mudim-button.label in options.properties. "Embedded in" can also be translated as "belonging to" or "provided by". -->
+<!ENTITY script-enabled-check.label "Tắt các bộ gõ do trang web cung cấp">
+<!-- Mneumonic for the checkbox for enabling the Script Monitor feature. This string should contain a single character that also appears in script-enabled-check.label. The user can press Alt+W (Ctrl+W on the Mac) to toggle the checkbox. -->
+<!ENTITY script-enabled-check.accesskey "w">
+
+<!-- Label of the button that opens the Script Monitor dialog box. To indicate that the button opens a new dialog box, this string should end in the Unicode ellipsis character (…) or your locale's equivalent, rather than three periods. -->
+<!ENTITY script-config-button.label "Thiết lập…">
+<!-- Mneumonic for the button that opens the Script Monitor dialog box. This string should contain a single character that also appears in script-config-button.label. The user can press Alt+C (Ctrl+C on the Mac) to invoke the button. -->
+<!ENTITY script-config-button.accesskey "p">
+
+<!-- Label of the checkbox for preventing AVIM from convert keystrokes into diacritics in password fields. -->
+<!ENTITY passwords-check.label "Bỏ qua các hộp mật khẩu">
+<!-- Mneumonic for the checkbox for preventing AVIM from to convert keystrokes into diacritics in password fields. This string should contain a single character that also appears in passwords-check.label. The user can press Alt+P (Ctrl+P on the Mac) to toggle the checkbox. -->
 <!ENTITY passwords-check.accesskey "m">
 
-<!-- Ignored Textboxes tab -->
+<!-- Label of the checkbox that is checked when the AVIM panel is shown in the status bar and unchecked when the panel is hidden. This string can be read as "Show AVIM in the status bar". -->
+<!ENTITY statuspanel-check.label "Hiện trong thanh trạng thái">
+<!-- Mneumonic for the checkbox that is checked when the AVIM panel is shown in the status bar and unchecked when the panel is hidden. This string should contain a single character that also appears in statuspanel-check.label. The user can press Alt+B (Ctrl+B on the Mac) to toggle the checkbox. -->
+<!ENTITY statuspanel-check.accesskey "H">
 
-<!ENTITY ignored-panel.label "Hộp được Bỏ qua">
+<!-- Blacklist dialog ====================================================== -->
 
+<!-- CSS style rule that applies to the Blacklist dialog box. It should only specify the width of the dialog in em units. Localizations can keep this string the same unless they have words so long that they cause unseemly line wrapping. -->
+<!ENTITY avim-blacklist.style "width: 35em;">
+
+<!-- Title of the Blacklist dialog box, which allows the user to blacklist certain textboxes from being handled by AVIM. This string can also be translated as "Exceptions", "Ignored Textboxes", "Textboxes to Ignore", or "Ignore Textboxes". -->
+<!ENTITY blacklist-pane.label "Danh sách đen">
+
+<!-- Label that appears beside the textbox for entering the ID of a webpage textbox. This string should end in a colon or your locale's equivalent, and it should use sentence case. It can also be translated as "ID of textbox:". -->
 <!ENTITY ignore-text.label "ID của hộp văn bản:">
+<!-- Label of the button that adds the contents of the Textbox ID textbox to the list of IDs below. This string can also be translated as "Add to List" or "Add". -->
 <!ENTITY ignore-button.label "Bỏ qua">
+<!-- Mneumonic for the button that adds the contents of the Textbox ID textbox to the list of IDs below. This string should contain a single character that also appears in ignore-button.label. The user can press Alt+I (Ctrl+I on the Mac) to invoke the button. -->
 <!ENTITY ignore-button.accesskey "q">
 
-<!ENTITY ignored-desc.label "Bạn có thể định rõ các hộp văn bản để &AVIM.label; bỏ qua. Chẳng hạn có thể bắt &AVIM.label; phải bỏ qua một hộp văn bản chứa địa chỉ Web, vì kiểu gõ có thể gây trở ngại khi nhập địa chỉ.">
-<!ENTITY ignored-desc.line-count "3">
+<!-- Description of the blacklisting feature. For consistency, this string should embed AVIM.label, unless declension requires otherwise. -->
+<!ENTITY ignored-desc.label "Bạn có thể định rõ các hộp văn bản để &AVIM.label; bỏ qua. Chẳng hạn có thể bắt &AVIM.label; phải bỏ qua một hộp văn bản chứa địa chỉ web, vì kiểu gõ có thể gây trở ngại khi nhập địa chỉ.">
+<!-- Instructions for blacklisting all textboxes with a given ID. For consistency, this string should embed ignore-button.label. -->
 <!ENTITY ignored-instructions.label "Để bỏ qua một hộp văn bản, hãy kiếm ID của nó bằng cách xem mã nguồn của trang Web chứa hộp này. Sau đó, nhập ID ở dưới và nhấn &ignore-button.label;.">
-<!ENTITY ignored-instructions.line-count "2">
 
+<!-- Label of the button that removes the selected ID from the list of IDs. After an ID is removed from the list, textboxes with that ID are once again recognized by AVIM. This string can also be translated as "Remove". -->
 <!ENTITY remove-button.label "Xóa ID">
-<!ENTITY remove-button.accesskey "D"><!-- Conflicts with oldaccents-check.accesskey, but they're in different tabs. -->
+<!-- Mneumonic for the button that removes the selected ID from the list of IDs. This string should contain a single character that also appears in remove-button.label. The user can press Alt+R (Ctrl+R on the Mac) to invoke the button. -->
+<!ENTITY remove-button.accesskey "D">
 
-<!ENTITY reset-button.label "Khôi phục Mặc định">
-<!ENTITY reset-button.accesskey "M"><!-- Conflicts with passwords-check.accesskey, but they're in different tabs. -->
+<!-- Label of the button that replaces the entire list of IDs with the factory default. This string may also be translated as "Use Defaults". -->
+<!ENTITY reset-button.label "Khôi phục về Mặc định">
+<!-- Mneumonic for the button that replaces the entire list of IDs with the factory default. This string should contain a single character that also appears in reset-button.label. The user can press Alt+D (Ctrl+D on the Mac) to invoke the button. -->
+<!ENTITY reset-button.accesskey "M">
 
-<!-- Display options -->
+<!-- Customize Input Method dialog ========================================= -->
 
-<!ENTITY statuspanel-check.label "Hiện trong thanh trạng thái">
-<!ENTITY statuspanel-check.accesskey "H">
+<!-- CSS style rule that applies to the Customize Input Method dialog box. It should only specify the width of the dialog in em units. Localizations can keep this string the same unless they have words so long that they cause unseemly line wrapping. -->
+<!ENTITY avim-method-config.style "width: 25em;">
+
+<!-- Label that appears above the checkboxes for selecting which input methods make up the Mixed input method. This string should end in a colon or your locale's equivalent. -->
+<!ENTITY auto-methods.label "Nhận tổ hợp gõ từ các kiểu gõ sau khi nào &method-auto-item.label; được chọn:">
+<!-- Mneumonic for the checkbox for accepting Telex keystrokes when the Mixed input method is selected. This string should contain a single character that also appears in method-telex-item.label. The user can press Alt+T (Ctrl+T on the Mac) to toggle the checkbox. -->
+<!ENTITY auto-telex-check.accesskey "T">
+<!-- Mneumonic for the checkbox for accepting VNI keystrokes when the Mixed input method is selected. This string should contain a single character that also appears in method-telex-item.label. The user can press Alt+N (Ctrl+N on the Mac) to toggle the checkbox. -->
+<!ENTITY auto-vni-check.accesskey "V">
+<!-- Mneumonic for the checkbox for accepting VIQR keystrokes when the Mixed input method is selected. This string should contain a single character that also appears in method-telex-item.label. The user can press Alt+Q (Ctrl+Q on the Mac) to toggle the checkbox. -->
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!-- Mneumonic for the checkbox for accepting VIQR* keystrokes when the Mixed input method is selected. This string should contain a single character that also appears in method-telex-item.label. The user can press Alt+R (Ctrl+R on the Mac) to toggle the checkbox. This string may conflict with remove-button.accesskey without causing any problems, because it is in a different dialog box. -->
+<!ENTITY auto-viqr-star-check.accesskey "R">
+
+<!-- Script Monitor dialog ========================================= -->
+
+<!-- CSS style rule that applies to the Script Monitor dialog box. It should only specify the width of the dialog in em units. Localizations can keep this string the same unless they have words so long that they cause unseemly line wrapping. -->
+<!ENTITY avim-script-config.style "width: 25em;">
+
+<!-- Title of the Script Monitor dialog box. Script Monitor "monitors" webpages for input method editor scripts embedded in webpages and automatically them turns off when typing. -->
+<!ENTITY script-config-pane.label "Bộ Giám sát Script">
+
+<!-- Label that introduces the Script Monitor options. This string should end in a colon or your locale's equivalent. The sentence is continued in script-*-check.label. -->
+<!ENTITY script-grid.label "Để tránh xung đột, tự động tắt các bộ gõ ở dưới khi nào gõ trong trang web cung cấp nó:">
+
+<!-- Label for the checkbox for automatically disabling avim.js inside webpages. "AVIM" stands for "Advanced Vietnamese Input Method". Most localizations can keep this string the same. This string should match AVIM.label in avim.dtd exactly. -->
+<!ENTITY script-avim-check.label "AVIM">
+<!-- Mneumonic for the checkbox for automatically disabling avim.js inside webpages. This string should contain a single character that also appears in script-avim-check.label. The user can press Alt+A (Ctrl+A on the Mac) to toggle the checkbox. -->
+<!ENTITY script-avim-check.accesskey "A">
+<!-- Label for the checkbox for automatically disabling CHIM inside webpages. "CHIM" stands for "CHuoi's Input Method". Most localizations can keep this string the same. -->
+<!ENTITY script-chim-check.label "CHIM">
+<!-- Mneumonic for the checkbox for automatically disabling CHIM inside webpages. This string should contain a single character that also appears in script-chim-check.label. The user can press Alt+C (Ctrl+C on the Mac) to toggle the checkbox. -->
+<!ENTITY script-chim-check.accesskey "C">
+<!-- Label for the checkbox for automatically disabling Mudim inside webpages. "Mudim" stands for "Mudzot's Input Method". Most localizations can keep this string the same. -->
+<!ENTITY script-mudim-check.label "Mudim">
+<!-- Mneumonic for the checkbox for automatically disabling Mudim inside webpages. This string should contain a single character that also appears in script-mudim-check.label. The user can press Alt+D (Ctrl+D on the Mac) to toggle the checkbox. -->
+<!ENTITY script-mudim-check.accesskey "d">
+<!-- Label for the checkbox for automatically disabling MViet inside webpages. Most localizations can keep this string the same. -->
+<!ENTITY script-mviet-check.label "MViet">
+<!-- Mneumonic for the checkbox for automatically disabling MViet inside webpages. This string should contain a single character that also appears in script-mviet-check.label. The user can press Alt+M (Ctrl+M on the Mac) to toggle the checkbox. -->
+<!ENTITY script-mviet-check.accesskey "M">
+<!-- Label for the checkbox for automatically disabling VietIMEW inside webpages. "VietIMEW" stands for "Vietnamese IME for Web". Most localizations can keep this string the same. -->
+<!ENTITY script-vietimew-check.label "VietIMEW">
+<!-- Mneumonic for the checkbox for automatically disabling VietIMEW inside webpages. This string should contain a single character that also appears in script-vietimew-check.label. The user can press Alt+W (Ctrl+W on the Mac) to toggle the checkbox. -->
+<!ENTITY script-vietimew-check.accesskey "W">
+<!-- Label for the checkbox for automatically disabling VietTyping inside webpages. Most localizations can keep this string the same. -->
+<!ENTITY script-viettyping-check.label "VietTyping">
+<!-- Mneumonic for the checkbox for automatically disabling VietTyping inside webpages. This string should contain a single character that also appears in script-viettyping-check.label. The user can press Alt+Y (Ctrl+Y on the Mac) to toggle the checkbox. -->
+<!ENTITY script-viettyping-check.accesskey "Y">
+<!-- Label for the checkbox for automatically disabling VietUni inside webpages. Most localizations can keep this string the same. -->
+<!ENTITY script-vietuni-check.label "VietUni">
+<!-- Mneumonic for the checkbox for automatically disabling VietUni inside webpages. This string should contain a single character that also appears in script-vietuni-check.label. The user can press Alt+U (Ctrl+U on the Mac) to toggle the checkbox. -->
+<!ENTITY script-vietuni-check.accesskey "U">
+<!-- Label for the checkbox for automatically disabling Vinova inside webpages. Most localizations can keep this string the same. -->
+<!ENTITY script-vinova-check.label "Vinova">
+<!-- Mneumonic for the checkbox for automatically disabling Vinova inside webpages. This string should contain a single character that also appears in script-vinova-check.label. The user can press Alt+V (Ctrl+V on the Mac) to toggle the checkbox. -->
+<!ENTITY script-vinova-check.accesskey "V">

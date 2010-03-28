@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xul-overlay href="chrome://avim/content/optionsOverlay.xul"?>
+
+<!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
+
+<prefwindow id="avim-method-config" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" windowtype="avim:options" showstoolbarbutton="false" ondialoghelp="optionsPanel.openPrefsHelp();" type="child" style="&avim-method-config.style;">
+	<stringbundleset id="stringbundleset" />
+	
+	<commandset id="mainCommandSet" />
+	<commandset id="baseMenuCommandSet" />
+	<commandset id="placesCommands" />
+	
+	<keyset id="mainKeyset" />
+	<keyset id="baseMenuKeyset" />
+	<keyset id="editMenuKeys" />
+	
+	<broadcasterset id="mainBroadcasterSet">
+		<broadcaster id="custom-method-bc" />
+	</broadcasterset>
+	
+	<prefpane id="method-config-pane" label="&method-auto-item.label;" helpTopic="method" onpaneload="optionsPanel.initialize();">
+		<preferences>
+			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" onchange="optionsPanel.validateForEnabled();" />
+			<preference id="method-pref" name="extensions.avim.method" type="int" onchange="optionsPanel.validateCustomMethod();" />
+			<preference id="auto-telex-pref" name="extensions.avim.auto.telex" type="bool" />
+			<preference id="auto-vni-pref" name="extensions.avim.auto.vni" type="bool" />
+			<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
+			<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
+		</preferences>
+		
+		<label observes="custom-method-bc">&auto-methods.label;</label>
+		<vbox id="auto-methods-box" class="indent">
+			<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-telex-item.label;" accesskey="&auto-telex-check.accesskey;" observes="custom-method-bc" />
+			<checkbox id="auto-vni-check" preference="auto-vni-pref" label="&method-vni-item.label;" accesskey="&auto-vni-check.accesskey;" observes="custom-method-bc" />
+			<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="custom-method-bc" />
+			<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="custom-method-bc" />
+		</vbox>
+	</prefpane>
+	
+	<!-- Just to get the confounded menu bar to show up in Mac OS X. -->
+	<menubar id="main-menubar" style="display: none; -moz-appearance: none;" />
+</prefwindow>

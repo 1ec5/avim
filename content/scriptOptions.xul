@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xul-overlay href="chrome://avim/content/optionsOverlay.xul"?>
+
+<!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
+
+<prefwindow id="avim-script-config" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" windowtype="avim:options" showstoolbarbutton="false" ondialoghelp="optionsPanel.openPrefsHelp();" type="child" style="&avim-script-config.style;">
+	<stringbundleset id="stringbundleset" />
+	
+	<commandset id="mainCommandSet" />
+	<commandset id="baseMenuCommandSet" />
+	<commandset id="placesCommands" />
+	
+	<keyset id="mainKeyset" />
+	<keyset id="baseMenuKeyset" />
+	<keyset id="editMenuKeys" />
+	
+	<broadcasterset id="mainBroadcasterSet">
+		<broadcaster id="script-enabled-bc" />
+	</broadcasterset>
+	
+	<prefpane id="script-config-pane" label="Script Monitor" helpTopic="script-monitor" onpaneload="optionsPanel.initialize();">
+		<preferences>
+			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" onchange="optionsPanel.validateForEnabled();" />
+			<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" onchange="optionsPanel.validateForScriptMonitor();" />
+			<preference id="script-avim-pref" name="extensions.avim.scriptMonitor.avim" type="bool" />
+			<preference id="script-chim-pref" name="extensions.avim.scriptMonitor.chim" type="bool" />
+			<preference id="script-mudim-pref" name="extensions.avim.scriptMonitor.mudim" type="bool" />
+			<preference id="script-mviet-pref" name="extensions.avim.scriptMonitor.mViet" type="bool" />
+			<preference id="script-vietimew-pref" name="extensions.avim.scriptMonitor.vietImeW" type="bool" />
+			<preference id="script-viettyping-pref" name="extensions.avim.scriptMonitor.vietTyping" type="bool" />
+			<preference id="script-vietuni-pref" name="extensions.avim.scriptMonitor.vietUni" type="bool" />
+			<preference id="script-vinova-pref" name="extensions.avim.scriptMonitor.vinova" type="bool" />
+		</preferences>
+		
+		<label observes="script-enabled-bc">&script-grid.label;</label>
+		
+		<separator class="thin" />
+		
+		<grid id="script-grid" class="indent">
+			<columns>
+				<column flex="1" />
+				<column flex="1" />
+			</columns>
+			<rows>
+				<row>
+					<vbox>
+						<checkbox id="script-avim-check" preference="script-avim-pref" label="&script-avim-check.label;" accesskey="&script-avim-check.accesskey;" observes="script-enabled-bc" />
+						<checkbox id="script-chim-check" preference="script-chim-pref" label="&script-chim-check.label;" accesskey="&script-chim-check.accesskey;" observes="script-enabled-bc" />
+						<checkbox id="script-mudim-check" preference="script-mudim-pref" label="&script-mudim-check.label;" accesskey="&script-mudim-check.accesskey;" observes="script-enabled-bc" />
+						<checkbox id="script-mviet-check" preference="script-mviet-pref" label="&script-mviet-check.label;" accesskey="&script-mviet-check.accesskey;" observes="script-enabled-bc" />
+					</vbox>
+					<vbox>
+						<checkbox id="script-vietimew-check" preference="script-vietimew-pref" label="&script-vietimew-check.label;" accesskey="&script-vietimew-check.accesskey;" observes="script-enabled-bc" />
+						<checkbox id="script-viettyping-check" preference="script-viettyping-pref" label="&script-viettyping-check.label;" accesskey="&script-viettyping-check.accesskey;" observes="script-enabled-bc" />
+						<checkbox id="script-vietuni-check" preference="script-vietuni-pref" label="&script-vietuni-check.label;" accesskey="&script-vietuni-check.accesskey;" observes="script-enabled-bc" />
+						<checkbox id="script-vinova-check" preference="script-vinova-pref" label="&script-vinova-check.label;" accesskey="&script-vinova-check.accesskey;" observes="script-enabled-bc" />
+					</vbox>
+				</row>
+			</rows>
+		</grid>
+	</prefpane>
+	
+	<!-- Just to get the confounded menu bar to show up in Mac OS X. -->
+	<menubar id="main-menubar" style="display: none; -moz-appearance: none;" />
+</prefwindow>

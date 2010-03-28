@@ -70,7 +70,7 @@ function AVIM()	{
 		return codes;
 	};
 	
-	var $ = function (id) {
+	var $ = function(id) {
 		return document.getElementById(id);
 	};
 	
@@ -2044,7 +2044,7 @@ function AVIM()	{
 	var disablers = {
 		// For each of these disablers, we don't need a sanity check for an
 		// object or member that served as a marker for the IME. Also,
-		// everything is wrapped in a try...cach block, so we don't need sanity
+		// everything is wrapped in a try...catch block, so we don't need sanity
 		// checks if the disabler can halt on error without failing to reach
 		// independent statements.
 		
@@ -2261,7 +2261,7 @@ function AVIM()	{
 	// IME and DiMENSiON extension
 	if (window && "getIMEStatus" in window) {
 		var getStatus = getIMEStatus;
-		getIMEStatus = function () {
+		getIMEStatus = function() {
 			try {
 				return AVIMConfig.onOff || getStatus();
 			}
@@ -2274,16 +2274,16 @@ function AVIM()	{
 
 if (window && !("avim" in window) && !window.frameElement) {
 	window.avim = new AVIM();
-	addEventListener("load", function () {
+	addEventListener("load", function() {
 		avim.registerPrefs();
 		avim.updateUI();
 		avim.registerSlights();
 	}, false);
-	addEventListener("unload", function () {
+	addEventListener("unload", function() {
 		avim.unregisterPrefs();
 		delete avim;
 	}, false);
-	addEventListener("keypress", function (e) {
+	addEventListener("keypress", function(e) {
 		avim.onKeyPress(e);
 	}, true);
 }

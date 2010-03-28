@@ -293,7 +293,7 @@ function AVIMTester() {
 	};
 }
 
-if (!window.tester) {
+if (window && !("tester" in window)) {
 	window.tester = new AVIMTester();
 	addEventListener("load", function (e) {
 		tester.init();

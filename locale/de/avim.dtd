@@ -21,8 +21,8 @@
 <!ENTITY avim-menu-next-method.label "Nächste Eingabemethode">
 <!ENTITY avim-menu-next-method.accesskey "N">
 
-<!ENTITY avim-auto.label "Automatisch">
-<!ENTITY avim-auto.accesskey "A">
+<!ENTITY avim-auto.label "">
+<!ENTITY avim-auto.accesskey "">
 <!ENTITY avim-telex.label "Telex">
 <!ENTITY avim-telex.accesskey "T">
 <!ENTITY avim-vni.label "VNI">

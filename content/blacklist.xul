@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xul-overlay href="chrome://avim/content/optionsOverlay.xul"?>
+
+<!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
+
+<prefwindow id="avim-blacklist" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" type="child" windowtype="avim:options" showstoolbarbutton="false" ondialoghelp="optionsPanel.openPrefsHelp();" style="&avim-blacklist.style;">
+	<stringbundleset id="stringbundleset" />
+	
+	<commandset id="mainCommandSet">
+		<command id="ignore-cmd" oncommand="optionsPanel.ignoreIdsInTextBox();" />
+		<command id="remove-cmd" oncommand="optionsPanel.removeSelectedIds();" />
+		<command id="reset-cmd" oncommand="optionsPanel.resetIgnoredIds();" />
+	</commandset>
+	<commandset id="baseMenuCommandSet" />
+	<commandset id="placesCommands" />
+	
+	<keyset id="mainKeyset" />
+	<keyset id="baseMenuKeyset" />
+	<keyset id="editMenuKeys" />
+	
+	<prefpane id="blacklist-pane" label="&blacklist-pane.label;" helpTopic="blacklist" onpaneload="optionsPanel.initialize();">
+		<preferences>
+			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" onchange="optionsPanel.validateForEnabled();" />
+			<preference id="ignoredids-pref" name="extensions.avim.ignoredFieldIds" type="unichar" />
+		</preferences>
+		
+		<description id="ignored-desc">&ignored-desc.label;</description>
+		<description id="ignored-instructions">&ignored-instructions.label;</description>
+		
+		<hbox align="center">
+			<label control="ignore-text">&ignore-text.label;</label>
+			<textbox id="ignore-text" flex="1" newlines="replacewithspaces" oninput="optionsPanel.validateIgnoreButton();" onkeypress="return optionsPanel.onTextBoxKeyPress(event);" />
+			<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
+		</hbox>
+		
+		<separator class="thin" />
+		
+		<listbox id="ignoredids-list" preference="ignoredids-pref" preference-editable="true" flex="1" seltype="multiple" onselect="optionsPanel.validateRemoveButton();" onkeypress="optionsPanel.onIdListKeyPress(event);" onsyncfrompreference="return optionsPanel.updateIgnoredIds();" onsynctopreference="return optionsPanel.stringFromIgnoredIds();" />
+		<hbox class="actionButtons">
+			<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
+			<spacer flex="1" />
+			<button id="reset-button" label="&reset-button.label;" accesskey="&reset-button.accesskey;" command="reset-cmd" />
+		</hbox>
+	</prefpane>
+	
+	<!-- Just to get the confounded menu bar to show up in Mac OS X. -->
+	<menubar id="main-menubar" style="display: none; -moz-appearance: none;" />
+</prefwindow>

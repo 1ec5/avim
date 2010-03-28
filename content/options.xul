@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://avim/skin/options.css" type="text/css"?>
-
-<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
+<?xul-overlay href="chrome://avim/content/optionsOverlay.xul"?>
 
 <!DOCTYPE prefwindow SYSTEM "chrome://avim/locale/options.dtd">
 
-<prefwindow id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" windowtype="avim:options" title="&avim-preferences.title;" showstoolbarbutton="false" ondialoghelp="optionsPanel.openPrefsHelp();" style="&avim-preferences.style;">
-	<script type="application/x-javascript" src="chrome://mozapps/content/extensions/extensions.js" />
-	<script type="application/x-javascript" src="chrome://avim/content/options.js" />
-	
+<prefwindow id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" windowtype="avim:options" showstoolbarbutton="false" ondialoghelp="optionsPanel.openPrefsHelp();"><!-- xmlns:html="http://www.w3.org/1999/xhtml" style="width: 40em;" -->
 	<stringbundleset id="stringbundleset">
 		<stringbundle id="bundle" src="chrome://avim/locale/options.properties" />
 	</stringbundleset>
 	
-	<commandset id="mainCommandSet">
-		<command id="ignore-cmd" oncommand="optionsPanel.ignoreIdsInTextBox();" />
-		<command id="remove-cmd" oncommand="optionsPanel.removeSelectedIds();" />
-		<command id="reset-cmd" oncommand="optionsPanel.resetIgnoredIds();" />
-	</commandset>
+	<commandset id="mainCommandSet" />
 	<commandset id="baseMenuCommandSet" />
 	<commandset id="placesCommands" />
 	
@@ -29,100 +18,99 @@
 	<keyset id="editMenuKeys" />
 	
 	<broadcasterset id="mainBroadcasterSet">
-		<broadcaster id="disabled-bc" />
+		<broadcaster id="custom-method-bc" />
 		<broadcaster id="spell-options-bc" />
+		<broadcaster id="script-enabled-bc" />
 	</broadcasterset>
 	
-	<prefpane id="general-pane" label="&avim-preferences.title;" helpTopic="general">
+	<prefpane id="general-pane" label="&AVIM.label;" helpTopic="general" onpaneload="optionsPanel.initialize();">
 		<preferences>
-			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" />
-			<preference id="method-pref" name="extensions.avim.method" type="int" />
-			<preference id="spell-pref" name="extensions.avim.ignoreMalformed" type="bool" />
+			<preference id="enabled-pref" name="extensions.avim.enabled" type="bool" onchange="optionsPanel.validateForEnabled();" />
+			<preference id="method-pref" name="extensions.avim.method" type="int" onchange="optionsPanel.validateCustomMethod();" />
+			<preference id="spell-pref" name="extensions.avim.ignoreMalformed" type="bool" onchange="optionsPanel.validateForSpellingEnforced();" />
 			<preference id="informal-pref" name="extensions.avim.informal" type="bool" />
 			<preference id="oldaccents-pref" name="extensions.avim.oldAccents" type="bool" />
 			<preference id="statuspanel-pref" name="extensions.avim.statusBarPanel" type="bool" />
-			<!-- <preference id="ignoredids-pref" name="extensions.avim.ignoredFieldIds" type="unichar" /> -->
-			<preference id="auto-telex-pref" name="extensions.avim.auto.telex" type="bool" />
-			<preference id="auto-vni-pref" name="extensions.avim.auto.vni" type="bool" />
-			<preference id="auto-viqr-pref" name="extensions.avim.auto.viqr" type="bool" />
-			<preference id="auto-viqr-star-pref" name="extensions.avim.auto.viqrStar" type="bool" />
-			<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" />
-			<preference id="passwords-pref" name="extensions.avim.passwords" type="bool" />
+			<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" onchange="optionsPanel.validateForScriptMonitor();" />
+			<preference id="passwords-pref" name="extensions.avim.passwords" type="bool" inverted="true" />
 		</preferences>
 		
-		<vbox flex="1">
-			<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" oncommand="optionsPanel.validateForEnabled(); return true;" />
+		<hbox id="enabled-box" align="center">
+			<checkbox id="enabled-check" preference="enabled-pref" label="&enabled-check.label;" accesskey="&enabled-check.accesskey;" />
 			
-			<tabbox id="general-tabbox">
-				<tabs id="general-tabs">
-					<tab label="&input-panel.label;" linkedpanel="input-panel" />
-					<tab label="&ignored-panel.label;" linkedpanel="ignored-panel" />
-				</tabs>
-				<tabpanels>
-					<tabpanel id="input-panel" orient="vertical">
-						<notificationbox id="general-note" flex="1">
-							<hbox align="center">
-								<label id="method-label" accesskey="&method-menu.accesskey;" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
-								<menulist id="method-menu" preference="method-pref" aria-labelledby="method-label" observes="disabled-bc">
-									<menupopup>
-										<menuitem id="method-auto-item" value="0" label="&method-auto-item.label;" />
-										<menuitem id="method-telex-item" value="1" label="&method-telex-item.label;" />
-										<menuitem id="method-vni-item" value="2" label="&method-vni-item.label;" />
-										<menuitem id="method-viqr-item" value="3" label="&method-viqr-item.label;" />
-										<menuitem id="method-viqr-star-item" value="4" label="&method-viqr-star-item.label;" />
-									</menupopup>
-								</menulist>
-							</hbox>
-							
-							<checkbox id="spell-check" preference="spell-pref" label="&spell-check.label;" accesskey="&spell-check.accesskey;" observes="disabled-bc" oncommand="optionsPanel.validateForSpellingEnforced(); return true;" />
-							<vbox id="spell-options-box" class="indent">
-								<checkbox id="informal-check" preference="informal-pref" label="&informal-check.label;" accesskey="&informal-check.accesskey;" observes="spell-options-bc" />
-							</vbox>
-							<checkbox id="oldaccents-check" preference="oldaccents-pref" label="&oldaccents-check.label;" accesskey="&oldaccents-check.accesskey;" observes="disabled-bc" />
-							
-							<separator class="thin" />
-							
-							<label observes="disabled-bc">&auto-methods.label;</label>
-							<vbox id="auto-methods-box" class="indent">
-								<checkbox id="auto-telex-check" preference="auto-telex-pref" label="&method-telex-item.label;" accesskey="&auto-telex-check.accesskey;" observes="disabled-bc" />
-								<checkbox id="auto-vni-check" preference="auto-vni-pref" label="&method-vni-item.label;" accesskey="&auto-vni-check.accesskey;" observes="disabled-bc" />
-								<checkbox id="auto-viqr-check" preference="auto-viqr-pref" label="&method-viqr-item.label;" accesskey="&auto-viqr-check.accesskey;" observes="disabled-bc" />
-								<checkbox id="auto-viqr-star-check" preference="auto-viqr-star-pref" label="&method-viqr-star-item.label;" accesskey="&auto-viqr-star-check.accesskey;" observes="disabled-bc" />
-							</vbox>
-							
-							<separator class="thin" />
-							
-							<checkbox id="script-enabled-check" preference="script-enabled-pref" label="&script-enabled-check.label;" accesskey="&script-enabled-check.accesskey;" observes="disabled-bc" />
-							<checkbox id="passwords-check" preference="passwords-pref" label="&passwords-check.label;" accesskey="&passwords-check.accesskey;" observes="disabled-bc" />
-							
-							<hbox id="tester-box" />
-						</notificationbox>
-					</tabpanel>
-					
-					<tabpanel id="ignored-panel" orient="vertical">
-						<description id="ignored-desc" linecount="&ignored-desc.line-count;">&ignored-desc.label;</description>
-						<description id="ignored-instructions" linecount="&ignored-instructions.line-count;">&ignored-instructions.label;</description>
-						<hbox align="center">
-							<label control="ignore-text">&ignore-text.label;</label>
-							<textbox id="ignore-text" flex="1" newlines="replacewithspaces" oninput="optionsPanel.validateIgnoreButton();" onkeypress="return optionsPanel.onTextBoxKeyPress(event);" />
-							<button id="ignore-button" label="&ignore-button.label;" accesskey="&ignore-button.accesskey;" command="ignore-cmd" disabled="true" />
-						</hbox>
-						<separator class="thin" />
-						<listbox id="ignoredids-list" rows="10" seltype="multiple" onselect="optionsPanel.validateRemoveButton();" onkeypress="optionsPanel.onIdListKeyPress(event);" />
-						<hbox class="actionButtons">
-							<button id="remove-button" label="&remove-button.label;" accesskey="&remove-button.accesskey;" command="remove-cmd" />
-							<spacer flex="1" />
-							<button id="reset-button" label="&reset-button.label;" accesskey="&reset-button.accesskey;" command="reset-cmd" />
-						</hbox>
-					</tabpanel>
-				</tabpanels>
-			</tabbox>
+			<spacer flex="1" />
 			
-			<!-- Display -->
-			<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
-		</vbox>
+			<button id="blacklist-button" label="&blacklist-button.label;" accesskey="&blacklist-button.accesskey;" observes="disabled-bc" oncommand="optionsPanel.openBlacklist();" />
+		</hbox>
+		
+		<separator class="groove" />
+		
+		<hbox id="method-box" align="center">
+			<label id="method-label" accesskey="&method-menu.accesskey;" control="method-menu" observes="disabled-bc">&method-menu.label;</label>
+			<menulist id="method-menu" preference="method-pref" aria-labelledby="method-label" observes="disabled-bc">
+				<menupopup>
+					<menuitem id="method-auto-item" value="0" label="&method-auto-item.label;" />
+					<menuitem id="method-telex-item" value="1" label="&method-telex-item.label;" />
+					<menuitem id="method-vni-item" value="2" label="&method-vni-item.label;" />
+					<menuitem id="method-viqr-item" value="3" label="&method-viqr-item.label;" />
+					<menuitem id="method-viqr-star-item" value="4" label="&method-viqr-star-item.label;" />
+				</menupopup>
+			</menulist>
+			<button id="method-config-button" label="&method-config-button.label;" accesskey="&method-config-button.accesskey;" observes="custom-method-bc" oncommand="optionsPanel.openMethodConfig();" />
+			
+<!-- $if{Debug} -->
+			<spacer flex="1" />
+			<button id="tester-button" label="&tester-button.label;" accesskey="&tester-button.accesskey;" oncommand="optionsPanel.openTester();" />
+<!-- $endif{} -->
+		</hbox>
+		
+		<separator class="thin" />
+		
+		<label observes="disabled-bc">&spell-check.label;</label>
+		<radiogroup id="spell-check" preference="spell-pref" class="indent">
+			<radio value="false" label="&spell-check.false.label;" accesskey="&spell-check.false.accesskey;" observes="disabled-bc" />
+			<radio value="true" label="&spell-check.true.label;" accesskey="&spell-check.true.accesskey;" observes="disabled-bc" />
+			<checkbox id="informal-check" preference="informal-pref" label="&informal-check.label;" accesskey="&informal-check.accesskey;" observes="spell-options-bc" class="indent" />
+		</radiogroup>
+		
+		<separator class="thin" />
+		
+		<label observes="disabled-bc">&oldaccents-check.label;</label>
+		<radiogroup id="oldaccents-check" preference="oldaccents-pref" class="indent">
+			<radio value="true" label="&oldaccents-check.true.label;" accesskey="&oldaccents-check.true.accesskey;" observes="disabled-bc" />
+			<radio value="false" label="&oldaccents-check.false.label;" accesskey="&oldaccents-check.false.accesskey;" observes="disabled-bc" />
+		</radiogroup>
+		
+		<!-- <groupbox>
+			<caption label="Preview" />
+			<scrollbox>
+				<grid style="background-color: -moz-Field; color: -moz-FieldText; text-align: center; overflow-x: scroll; width: 35em;">
+					<rows>
+						<row style="font-family: monospace; margin: 0.5em;">
+							<label style="background-color: yellow;">Dza.,</label><label>to^i</label><label>dda~</label><label>ho.c</label><label>ho'a</label><label>ho.c</label><label>muoi+`</label><label>na(m</label><label>nay</label><label>o+?</label><label>Washington.</label>
+						</row>
+						<row style="font-size: larger; margin: 0.5em;">
+							<label style="background-color: yellow;">Dza.,</label><label>tôi</label><label>đã</label><label>học</label><label>hóa</label><label>học</label><label>mười</label><label>năm</label><label>nay</label><label>ở</label><label>Washington.</label>
+						</row>
+					</rows>
+				</grid>
+			</scrollbox>
+		</groupbox> -->
+		<!-- <iframe style="background-color: white;" src="data:text/html,&lt;body style='text-align: center;'&gt;&lt;p style='margin-top: 1em; margin-bottom: 1em;'&gt;&lt;kbd&gt;Dza., to^i dda~ ho.c ho'a ho.c muoi+` na(m o+? Washington.&lt;/kbd&gt;&lt;/p&gt;&lt;p style='margin-top: 1em; margin-bottom: 1em;'&gt;Dza., tôi đã học hóa học mười năm ở Washington.&lt;/p&gt;&lt;/body&gt;" /> -->
+		
+		<separator class="groove" />
+		
+		<hbox id="script-box" align="center">
+			<checkbox id="script-enabled-check" preference="script-enabled-pref" label="&script-enabled-check.label;" accesskey="&script-enabled-check.accesskey;" observes="disabled-bc" />
+			
+			<spacer flex="1" />
+			
+			<button id="script-config-button" label="&script-config-button.label;" accesskey="&script-config-button.accesskey;" observes="script-enabled-bc" oncommand="optionsPanel.openScriptConfig();" />
+		</hbox>
+		<checkbox id="passwords-check" preference="passwords-pref" label="&passwords-check.label;" accesskey="&passwords-check.accesskey;" observes="disabled-bc" />
+		<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
 	</prefpane>
 	
 	<!-- Just to get the confounded menu bar to show up in Mac OS X. -->
-	<menubar id="main-menubar" style="border: 0px; padding: 0px; margin: 0px; -moz-appearance: none;" />
+	<menubar id="main-menubar" style="display: none; -moz-appearance: none;" />
 </prefwindow>

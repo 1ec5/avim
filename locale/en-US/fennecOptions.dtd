@@ -3,8 +3,8 @@
 
 <!-- Label that appears beside the popup menu for selecting an input method. This string should be similar to (but potentially shorter than) informal-check.label in options.dtd. It should use sentence case and should not end in a colon or period. -->
 <!ENTITY method-menu.title "Input method">
-<!-- Label of the menu item that switches to the Automatic input method. This menu item appears in the input method popup menu. This string should match avim-auto.label in avim.dtd. -->
-<!ENTITY method-auto-item.title "Auto">
+<!-- Label of the menu item that switches to the Mixed input method. This menu item appears in the input method popup menu. This string should match avim-auto.label in avim.dtd. -->
+<!ENTITY method-auto-item.title "Mixed">
 <!-- Label of the menu item that switches to the Telex input method. This menu item appears in the input method popup menu. This string should match avim-telex.label in avim.dtd. -->
 <!ENTITY method-telex-item.title "Telex">
 <!-- Label of the menu item that switches to the VNI input method. This menu item appears in the input method popup menu. It should match avim-vni.label in avim.dtd. -->

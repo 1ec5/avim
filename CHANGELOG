@@ -311,6 +311,12 @@ Version 20080728.366 (Sunday, March 7, 2010)
 Version ${Version} (${Date})
  - Restored support for Firefox 2 after nearly two years. Thunderbird 2 is now
    supported as well. (Welcome back, Windows 98 users!)
+ - Renamed the "Auto" input method to "Mixed".
+ - Overhauled the preferences dialog. The reorganized and rewritten dialog is
+   easier to understand and much more reliable. It also includes script monitor
+   options that before were only accessible through about:config.
+ - Moved the Mudim compatibility warning from AVIM's preferences dialog to the
+   main Add-ons window.
  - Added a help button to the preferences dialog that opens AVIM help
    documentation in a new window.
  - Added a button to Fennec's right toolbar for enabling and disabling AVIM.

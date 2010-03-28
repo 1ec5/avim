@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<overlay id="avim-addons-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://avim/content/addonsOverlay.js" />
+	
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="avim-bundle" src="chrome://avim/locale/options.properties" />
+	</stringbundleset>
+</overlay>

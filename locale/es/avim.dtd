@@ -12,8 +12,8 @@
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
 <!ENTITY avim-next-method.key ";">
-<!ENTITY avim-auto.label "Automática">
-<!ENTITY avim-auto.accesskey "m">
+<!ENTITY avim-auto.label "Mixto">
+<!ENTITY avim-auto.accesskey "M">
 <!ENTITY avim-telex.label "Telex">
 <!ENTITY avim-telex.accesskey "T">
 <!ENTITY avim-vni.label "VNI">
