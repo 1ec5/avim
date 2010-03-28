@@ -329,19 +329,24 @@ def l10n_insert_docs(file_path, src):
         comment_format = "<!-- %s -->"
         # Assuming the string is delimited by quotation marks, not apostrophes.
         string_re = re.compile(r"<!ENTITY\s+(?P<id>\S+)\s+"
-                               r"\"(?P<string>.+?)\"\s*>")
+                               r"\"(?P<string>.*?)\"\s*>")
     elif file_ext == ".properties":
         comment_format = "# %s"
-        string_re = re.compile(r"(?P<id>.+?)=(?P<string>.+)")
+        string_re = re.compile(r"(?P<id>.+?)=(?P<string>.*)")
     else:
         return None
     
     doc_src = ""
     for line in src.split("\n"):
         m = string_re.match(line)
+        # Remove untranslated strings so BabelZilla marks them as untranslated.
+        if m and not m.group("string"):
+            continue
+        # Add the documentation comment.
         id = m and m.group("id")
         if m and id and docs.get(id):
             doc_src += comment_format % docs[id] + "\n"
+        # Add the string itself.
         doc_src += line + "\n"
     
     return doc_src
