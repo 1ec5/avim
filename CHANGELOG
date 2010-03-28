@@ -309,8 +309,8 @@ Version 20080728.366 (Sunday, March 7, 2010)
  - The Script Monitor can now disable VietUni 1.7 in webpage.
 
 Version ${Version} (${Date})
- - Restored support for Firefox 2 after nearly two years. Thunderbird 2 is now
-   supported as well. (Welcome back, Windows 98 users!)
+ - Restored support for Firefox 2 after nearly two years. (Welcome back, Windows
+   98 users!) Thunderbird 2 is now supported as well.
  - Renamed the "Auto" input method to "Mixed".
  - Overhauled the preferences dialog. The reorganized and rewritten dialog is
    easier to understand and much more reliable. It also includes script monitor

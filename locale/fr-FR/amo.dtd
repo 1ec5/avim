@@ -1,33 +1,20 @@
-<!-- Brief description of the extension. This string appears at the Firefox Add-ons website, specifically in search results and at the top of AVIM's page. It should be similar to em.description in install.dtd. -->
 <!ENTITY summary "Éditeur de méthode d’entrée de vietnamien. Taper le vietnamien accentué directement dans n’importe quelle page Web ou boîte de dialogue en utilisant un clavier standard.">
 
-<!-- Introduction to AVIM on AVIM's page at Firefox Add-ons. -->
 <!ENTITY description.intro "">
 
-<!-- Text surrounded by [square brackets] is linked. The names of the input methods in this string should match avim-telex.label, avim-vni.label, avim-viqr.label, and avim-viqr-star.label in avim.dtd. -->
 <!ENTITY description.basics.methods "">
-<!-- "Rule-based spell checking" in this string refers to the spelling enforcement feature. -->
 <!ENTITY description.basics.spelling "">
-<!-- The shortcut mentioned in this string is for turning AVIM on and off. It should correspond to avim-enabled.modifiers and avim-enabled.key in avim.dtd. -->
 <!ENTITY description.basics.shortcuts "">
-<!-- In certain locales, like Germany, where the name "Gmail" is problematic, translate "Google Mail" instead. -->
 <!ENTITY description.basics.webapps "">
 
-<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. "The competition" refers to other Vietnamese IME extensions; that text is linked to a feature comparison table. -->
 <!ENTITY description.advanced "">
 
 <!ENTITY description.advanced.ui "">
-<!-- Text surrounded by [square brackets] is linked. The "script monitor" refers to the same feature as script-enabled-check.label in options.dtd. "Available separately" links to a Greasemonkey script based on AVIM that also disables in-page IMEs. -->
 <!ENTITY description.advanced.scriptmonitor "">
-<!-- Text surrounded by *asterisks* is in bold font. -->
 <!ENTITY description.advanced.compatible "">
-<!-- "Jumping around" refers to the problem with other IME extensions where textboxes scroll to the top or bottom every time you type, undo, or redo. -->
 <!ENTITY description.advanced.inplace "">
 
-<!-- Text surrounded by *asterisks* is in bold font. "In short" can be read as "To make a long story short". If "AVIM just works" is not suitable for translation into your locale, try your locale's common way of saying that something works as intended without having to worry about it. -->
 <!ENTITY description.conclusion "">
 
-<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. Feel free to translate "Advanced Vietnamese Input Method". -->
 <!ENTITY developer.script "">
-<!-- Text surrounded by [square brackets] is linked. -->
 <!ENTITY developer.dictionary "">

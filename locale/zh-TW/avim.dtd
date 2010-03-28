@@ -2,15 +2,14 @@
 <!ENTITY avim-menu.label "越南輸入法">
 <!ENTITY avim-menu.accesskey "V">
 
-<!-- Input method menu -->
-<!ENTITY avim-enabled.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-enabled.modifiers "accel alt">
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "已啟用">
 <!ENTITY avim-enabled.accesskey "E">
 <!ENTITY avim-enabled.description "啟用&AVIM.label;以輸入越南文">
-<!ENTITY avim-prev-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
-<!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-next-method.modifiers "accel">
 <!ENTITY avim-next-method.key ";">
 <!ENTITY avim-auto.label "">
 <!ENTITY avim-auto.accesskey "">
@@ -30,13 +29,12 @@
 
 <!ENTITY avim-disabled.label "已停用">
 
-<!-- Options -->
-<!ENTITY avim-spell.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-spell.modifiers "accel alt">
 <!ENTITY avim-spell.key "S">
 <!ENTITY avim-spell.label "堅持正確拼寫法">
 <!ENTITY avim-spell.accesskey "S">
 <!ENTITY avim-spell.description "僅在遵循越南文拼寫法標準的字詞上擺放調號">
-<!ENTITY avim-oldaccents.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-oldaccents.modifiers "accel alt">
 <!ENTITY avim-oldaccents.key ";">
 <!ENTITY avim-oldaccents.label "舊式調號">
 <!ENTITY avim-oldaccents.accesskey "L">

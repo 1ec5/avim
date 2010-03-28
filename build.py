@@ -9,10 +9,10 @@ This module requires Python 2.5 or above and is dependent on the following
 command-line utilities: python, svn, svnversion. It takes its configuration from
 config_build.py in the same directory as itself."""
 
-__version__ = "2.1"
+__version__ = "2.2"
 __authors__ = ["Minh Nguyen <mxn@1ec5.org>"]
 __license__ = """\
-Copyright (c) 2008 Minh Nguyen.
+Copyright (c) 2008-2010 Minh Nguyen.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -65,7 +65,9 @@ rather than at these defaults.
 Available options:
   -m, --amo                 Produce an unminified build for the Firefox Add-ons
                                 site. The package will be significantly larger.
-      --babelzilla          Produce a BabelZilla-compatible build.
+      --babelzilla          Produce a BabelZilla-compatible build with
+                                documentation for localizers. The package will
+                                be significantly larger.
   -d, --debug               Produce a testing build with uncompressed JavaScript
                             code.
   -h, --help                Display this help message.
@@ -239,6 +241,99 @@ def minify_js(file_path, src):
     out_str.close()
     return src
 
+def l10n_main_locale_equiv(file_path):
+    """Changes the given file path to point to the equivalent file for the main
+       locale (i.e., en-US)."""
+    locale_dir = "locale" + os.sep
+    if CONFIG != BuildConfig.L10N or not file_path.startswith(locale_dir):
+        return ""
+    
+    # Winnow the file path down to the language.
+    locale = file_path[len(locale_dir):]
+    rhs_idx = locale.find(os.sep)
+    locale, rhs = locale[:rhs_idx], locale[rhs_idx:]
+    if locale == MAIN_LOCALE:
+        return ""
+    
+    # Attempt to replace the locale.
+    try:
+        return locale_dir + MAIN_LOCALE + rhs
+    except KeyError:
+        return file_path
+
+def l10n_main_locale_docs(file_path):
+    """Returns a dictionary mapping strings to their documentation comments for
+       the .dtd or .properties file at the given path."""
+    doc_file_path = l10n_main_locale_equiv(file_path)
+    if not doc_file_path:
+        return {}
+    
+    # Figure out how comment lines and string lines begin for this file.
+    comment_re = string_re = None
+    file_ext = path.splitext(file_path)[1]
+    if file_ext == ".dtd":
+        comment_re = re.compile(r"<!--\s*(?P<comment>.+?)\s*-->")
+        # Assuming the string is delimited by quotation marks, not apostrophes.
+        string_re = re.compile(r"<!ENTITY\s+(?P<id>\S+)\s+"
+                               r"\"(?P<string>.+?)\"\s*>")
+    elif file_ext == ".properties":
+        comment_re = re.compile(r"^#\s*(?P<comment>.+?)")
+        string_re = re.compile(r"(?P<id>.+?)=(?P<string>.+)")
+    else:
+        return {}
+    
+    # Read the main locale's equivalent file.
+    doc_file = file(doc_file_path, "r")
+    lines = doc_file.readlines()
+    doc_file.close()
+    
+    # Parse the file for string documentation.
+    docs = {}
+    doc = ""
+    for i, line in enumerate(lines):
+        comment_m = comment_re.match(line)
+        string_m = string_re.match(line)
+        if comment_m and comment_m.group("comment"):
+            doc = comment_m.group("comment")
+        elif string_m and string_m.group("id") and doc:
+            docs[string_m.group("id")] = doc
+            doc = ""
+    
+    return docs
+
+def l10n_insert_docs(file_path, src):
+    """Inserts string documentation into the localization file at the given
+       path with the given DTD or .properties source."""
+    if CONFIG != BuildConfig.L10N:
+        return None
+    docs = l10n_main_locale_docs(file_path)
+    if not docs:
+        return None
+    
+    # Figure out how comment lines and string lines begin for this file.
+    comment_format = string_re = None
+    file_ext = path.splitext(file_path)[1]
+    if file_ext == ".dtd":
+        comment_format = "<!-- %s -->"
+        # Assuming the string is delimited by quotation marks, not apostrophes.
+        string_re = re.compile(r"<!ENTITY\s+(?P<id>\S+)\s+"
+                               r"\"(?P<string>.+?)\"\s*>")
+    elif file_ext == ".properties":
+        comment_format = "# %s"
+        string_re = re.compile(r"(?P<id>.+?)=(?P<string>.+)")
+    else:
+        return None
+    
+    doc_src = ""
+    for line in src.split("\n"):
+        m = string_re.match(line)
+        id = m and m.group("id")
+        if m and id and docs.get(id):
+            doc_src += comment_format % docs[id] + "\n"
+        doc_src += line + "\n"
+    
+    return doc_src
+
 def l10n_compat_locale(file_path):
     """Changes the given file path so that BabelZilla recognizes it as pointing
        to a valid locale."""
@@ -352,8 +447,9 @@ def main():
             return
 
         # Unsupported flag; print usage information.
-        if arg[0] == "-" or arg in ["-h", "--help"]:
-            print "Invalid option '%s'." % arg
+        if arg.startswith("-"):
+            if arg not in ["-h", "--help"]:
+                print "Invalid option '%s'." % arg
             print_help("%i.%s" % (AVIM_VERSION, revision))
             return
         
@@ -373,7 +469,8 @@ def main():
     jar_path = path.join(chrome_dir, "%s.jar" % package_name)
     root_files = ROOT_FILES.extend(["install.rdf", "chrome.manifest"])
     omit_files = [".DS_Store", "Thumbs.db"]
-    omit_files.extend(L10N_FILES)
+    if CONFIG is not BuildConfig.L10N:
+        omit_files.extend(L10N_FILES)
     xml_ext_re = r".*\.(?:xml|xul|xbl|dtd|rdf|svg|mml|x?html|css)$"
 
     # Remove any leftovers from previous build.
@@ -398,6 +495,7 @@ def main():
     for f in jar_files:
         src_file = file(f, "r")
         src = src_file.read()
+        src_file.close()
         # Prepend license block.
         if f in LICENSE_FILES:
             src = insert_license(f, src)
@@ -406,6 +504,12 @@ def main():
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
+        # Add documentation for BabelZilla localizers.
+        if f.endswith(".dtd") or f.endswith(".properties"):
+            doc_src = l10n_insert_docs(f, src)
+            if doc_src:
+                src = doc_src
+                print "\t%s (documentation)" % f
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
         # Minify files
@@ -416,7 +520,6 @@ def main():
             src = minify_properties(src)
         elif CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
             src = minify_js(f, src)
-        src_file.close()
         if CONFIG == BuildConfig.SB:
             info = zipfile.ZipInfo(f)
             info.external_attr = (0660 << 16L) | (010 << 28L)

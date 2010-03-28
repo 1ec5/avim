@@ -2,15 +2,14 @@
 <!ENTITY avim-menu.label "Entrada en vietnamita">
 <!ENTITY avim-menu.accesskey "V">
 
-<!-- Input method menu -->
-<!ENTITY avim-enabled.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-enabled.modifiers "accel,alt">
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Activada">
 <!ENTITY avim-enabled.accesskey "A">
 <!ENTITY avim-enabled.description "Activar &AVIM.label; para la entrada en vietnamita">
-<!ENTITY avim-prev-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
-<!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-next-method.modifiers "accel">
 <!ENTITY avim-next-method.key ";">
 <!ENTITY avim-auto.label "Mixto">
 <!ENTITY avim-auto.accesskey "M">
@@ -30,13 +29,12 @@
 
 <!ENTITY avim-disabled.label "Apagada">
 
-<!-- Options -->
-<!ENTITY avim-spell.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-spell.modifiers "accel,alt">
 <!ENTITY avim-spell.key "S">
 <!ENTITY avim-spell.label "Ortografía correcta">
 <!ENTITY avim-spell.accesskey "O">
 <!ENTITY avim-spell.description "Solamente poner los accentos en las palabras que cumplen con las reglas ortografías vietnamitas">
-<!ENTITY avim-oldaccents.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-oldaccents.modifiers "accel,alt">
 <!ENTITY avim-oldaccents.key ";">
 <!ENTITY avim-oldaccents.label "Acentos viejos">
 <!ENTITY avim-oldaccents.accesskey "j">

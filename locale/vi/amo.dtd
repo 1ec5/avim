@@ -1,33 +1,20 @@
-<!-- Brief description of the extension. This string appears at the Firefox Add-ons website, specifically in search results and at the top of AVIM's page. It should be similar to em.description in install.dtd. -->
 <!ENTITY summary "Bộ gõ tiếng Việt. Nhập văn bản tiếng Việt có dấu đầy đủ thẳng vào bất cứ trang Web hay hộp thoại nào, chỉ cần bàn phím bình thường.">
 
-<!-- Introduction to AVIM on AVIM's page at Firefox Add-ons. -->
 <!ENTITY description.intro "AVIM là bộ gõ nhanh nhẹn cho phép nhập văn bản tiếng Việt một cách tự nhiên đến nỗi sẽ quên rằng mình đang sử dụng nó. Nó có sẵn tất cả các chức năng mà người ta đòi hỏi trong bộ gõ hiện đại chẳng hạn:">
 
-<!-- Text surrounded by [square brackets] is linked. The names of the input methods in this string should match avim-telex.label, avim-vni.label, avim-viqr.label, and avim-viqr-star.label in avim.dtd. -->
 <!ENTITY description.basics.methods "Hỗ trợ cả [bốn kiểu gõ phổ biến]: Telex, VNI, VIQR, và VIQR*">
-<!-- "Rule-based spell checking" in this string refers to the spelling enforcement feature. -->
 <!ENTITY description.basics.spelling "Tự động kiểm tra chính tả theo quy tắc và chỉnh lại dấu phụ">
-<!-- The shortcut mentioned in this string is for turning AVIM on and off. It should correspond to avim-enabled.modifiers and avim-enabled.key in avim.dtd. -->
 <!ENTITY description.basics.shortcuts "Phím tắt có lý (như Ctrl+Alt+V) để tùy biến AVIM trong lúc gõ">
-<!-- In certain locales, like Germany, where the name "Gmail" is problematic, translate "Google Mail" instead. -->
 <!ENTITY description.basics.webapps "Hỗ trợ đầy đủ các ứng dụng Web như Gmail và Google Docs">
 
-<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. "The competition" refers to other Vietnamese IME extensions; that text is linked to a feature comparison table. -->
 <!ENTITY description.advanced "AVIM dựa trên [gói JavaScript] cùng tên của Đặng Trần Hiếu. Nó đã được cải tiến với nhiều sáng kiến rất tiện không kiếm được trong [những phần mở rộng cạnh tranh]:">
 
 <!ENTITY description.advanced.ui "Giao diện đầy đủ có panel gọn gàng trên thanh trạng thái, các nút cho thanh công cụ, và cửa sổ tùy chọn">
-<!-- Text surrounded by [square brackets] is linked. The "script monitor" refers to the same feature as script-enabled-check.label in options.dtd. "Available separately" links to a Greasemonkey script based on AVIM that also disables in-page IMEs. -->
 <!ENTITY description.advanced.scriptmonitor "Bộ giám sát script tự động tắt các bộ gõ của trang Web để tránh xung đột (cũng [có sẵn riêng])">
-<!-- Text surrounded by *asterisks* is in bold font. -->
 <!ENTITY description.advanced.compatible "Tương tích với [bất cứ mọi] trang Web và cửa sổ mà bạn sẽ mở">
-<!-- "Jumping around" refers to the problem with other IME extensions where textboxes scroll to the top or bottom every time you type, undo, or redo. -->
 <!ENTITY description.advanced.inplace "Chỉnh sửa ngay tại chỗ, không cho phép hộp văn bản nhảy tới lui trong lúc gõ – ngay cả khi hoàn tác">
 
-<!-- Text surrounded by *asterisks* is in bold font. "In short" can be read as "To make a long story short". If "AVIM just works" is not suitable for translation into your locale, try your locale's common way of saying that something works as intended without having to worry about it. -->
 <!ENTITY description.conclusion "Nói đơn giản, *AVIM chạy ngon lành*.">
 
-<!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. Feel free to translate "Advanced Vietnamese Input Method". -->
 <!ENTITY developer.script "Phần mở rộng này hoạt động do [AVIM] ([tải xuống]), bản script của Đặng Trần Hiếu để bạn nhúng bộ gõ tiếng Việt vào trang Web của chính bạn.">
-<!-- Text surrounded by [square brackets] is linked. -->
 <!ENTITY developer.dictionary "Để nhập tiếng Việt càng thuận tiện, hãy cài đặt phần mở rộng [Từ điển tiếng Việt].">

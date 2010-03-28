@@ -2,15 +2,14 @@
 <!ENTITY avim-menu.label "Gõ Tiếng Việt">
 <!ENTITY avim-menu.accesskey "V">
 
-<!-- Input method menu -->
-<!ENTITY avim-enabled.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-enabled.modifiers "accel,alt">
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Bật">
 <!ENTITY avim-enabled.accesskey "B">
 <!ENTITY avim-enabled.description "Bật lên &AVIM.label; để gõ tiếng Việt">
-<!ENTITY avim-prev-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
-<!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-next-method.modifiers "accel">
 <!ENTITY avim-next-method.key ";">
 <!ENTITY avim-auto.label "Tổng hộp">
 <!ENTITY avim-auto.accesskey "T">
@@ -30,13 +29,12 @@
 
 <!ENTITY avim-disabled.label "Tắt">
 
-<!-- Options -->
-<!ENTITY avim-spell.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-spell.modifiers "accel,alt">
 <!ENTITY avim-spell.key "S">
 <!ENTITY avim-spell.label "Đúng Chính Tả">
 <!ENTITY avim-spell.accesskey "c">
 <!ENTITY avim-spell.description "Chỉ bỏ dấu trên các từ tuân theo quy tắc tiếng Việt">
-<!ENTITY avim-oldaccents.modifiers "accel,alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-oldaccents.modifiers "accel,alt">
 <!ENTITY avim-oldaccents.key ";">
 <!ENTITY avim-oldaccents.label "Bỏ dấu Kiểu cũ">
 <!ENTITY avim-oldaccents.accesskey "d">

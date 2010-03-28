@@ -40,10 +40,11 @@ ROOT_DIRS = ["components", "defaults"]
 # Paths to files to be preprocessed. These files contain placeholders that
 # should be interpreted as variables.
 VAR_FILES = ["install.rdf", "chrome.manifest", "CHANGELOG", "LICENSE",
-             path.join("content", "options.js")]
+             path.join("content", "options.js"),
+			 path.join("content", "options.xul")]
 
 # Names of files to be preprocessed.
-VAR_NAMES = ["options.properties"]
+VAR_NAMES = ["options.dtd"]
 
 # Paths to directories that should be omitted from a release build.
 DEBUG_DIRS = [path.join("content", "test"),
@@ -56,6 +57,10 @@ L10N_FILES = ["amo.dtd", "install.dtd"]
 # codes. Locale names that are already compatible can be omitted.
 LOCALE_DIRS = {"de": "de-DE", "en": "en-US", "es": "es-ES", "fr": "fr-FR",
 			   "vi": "vi-VN", "zh": "zh-TW"}
+
+# Name of the fallback locale that is guaranteed to contain translations for all
+# the extension's strings and that contains documentation for each string.
+MAIN_LOCALE = "en-US"
 
 # Paths to files to which a license block will be prepended.
 LICENSE_FILES = [path.join("content", "avim.js")]

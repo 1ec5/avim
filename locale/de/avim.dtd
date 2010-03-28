@@ -2,8 +2,6 @@
 <!ENTITY avim-menu.label "Vietnamesische Eingabe">
 <!ENTITY avim-menu.accesskey "V">
 
-<!-- Input method menu ===================================================== -->
-
 <!ENTITY avim-enabled.modifiers "accel alt">
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Aktiviert">
@@ -12,12 +10,12 @@
 <!ENTITY avim-disabled.label "Deaktiviert">
 
 <!ENTITY avim-prev-method.modifiers "accel">
-<!ENTITY avim-prev-method.key ";"><!-- to the left of : on German, Austrian, and Swiss keyboards -->
+<!ENTITY avim-prev-method.key ";">
 <!ENTITY avim-menu-prev-method.label "Vorherige Eingabemethode">
 <!ENTITY avim-menu-prev-method.accesskey "V">
 
 <!ENTITY avim-next-method.modifiers "accel">
-<!ENTITY avim-next-method.key ":"><!-- to the right of ; on German, Austrian, and Swiss keyboards -->
+<!ENTITY avim-next-method.key ":">
 <!ENTITY avim-menu-next-method.label "Nächste Eingabemethode">
 <!ENTITY avim-menu-next-method.accesskey "N">
 
@@ -31,8 +29,6 @@
 <!ENTITY avim-viqr.accesskey "Q">
 <!ENTITY avim-viqr-star.label "VIQR*">
 <!ENTITY avim-viqr-star.accesskey "R">
-
-<!-- Options =============================================================== -->
 
 <!ENTITY avim-spell.modifiers "accel alt">
 <!ENTITY avim-spell.key "S">

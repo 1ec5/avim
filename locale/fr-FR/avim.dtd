@@ -2,15 +2,14 @@
 <!ENTITY avim-menu.label "Saisie en vietnamien">
 <!ENTITY avim-menu.accesskey "v">
 
-<!-- Input method menu -->
-<!ENTITY avim-enabled.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-enabled.modifiers "accel alt">
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Activé">
 <!ENTITY avim-enabled.accesskey "A">
 <!ENTITY avim-enabled.description "Activer &AVIM.label; pour la saisie en vietnamien">
-<!ENTITY avim-prev-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
-<!ENTITY avim-next-method.modifiers "accel"><!-- Ctrl on Windows; Cmd on Mac -->
+<!ENTITY avim-next-method.modifiers "accel">
 <!ENTITY avim-next-method.key ";">
 <!ENTITY avim-auto.label "">
 <!ENTITY avim-auto.accesskey "">
@@ -30,13 +29,12 @@
 
 <!ENTITY avim-disabled.label "Désactiver">
 
-<!-- Options -->
-<!ENTITY avim-spell.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-spell.modifiers "accel alt">
 <!ENTITY avim-spell.key "o">
 <!ENTITY avim-spell.label "Correction d’orthographe">
 <!ENTITY avim-spell.accesskey "o">
 <!ENTITY avim-spell.description "Ne mettre les marques d’accents sur les mots transgressant les règles de l’orthographe vietnamien.">
-<!ENTITY avim-oldaccents.modifiers "accel alt"><!-- Ctrl+Alt on Windows; Cmd+Opt on Mac -->
+<!ENTITY avim-oldaccents.modifiers "accel alt">
 <!ENTITY avim-oldaccents.key ";">
 <!ENTITY avim-oldaccents.label "Vieux accents">
 <!ENTITY avim-oldaccents.accesskey "x">
