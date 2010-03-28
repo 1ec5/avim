@@ -163,7 +163,7 @@
 		<!-- French -->
 		<em:localized>
 			<Description>
-				<em:locale>fr-FR</em:locale>
+				<em:locale>fr</em:locale>
 				<em:name>AVIM</em:name>
 				<em:description>Taper le vietnamien accentué directement dans n’importe quelle page Web ou boîte de dialogue en utilisant un clavier standard.</em:description>
 				<em:creator>Minh Nguyen</em:creator>

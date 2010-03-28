@@ -55,8 +55,7 @@ L10N_FILES = ["amo.dtd", "install.dtd"]
 
 # Dictionary mapping subdirectories of locale/ to BabelZilla-compatible locale
 # codes. Locale names that are already compatible can be omitted.
-LOCALE_DIRS = {"de": "de-DE", "en": "en-US", "es": "es-ES", "fr": "fr-FR",
-			   "vi": "vi-VN", "zh": "zh-TW"}
+LOCALE_DIRS = {"de": "de-DE", "en": "en-US", "es": "es-ES", "zh": "zh-TW"}
 
 # Name of the fallback locale that is guaranteed to contain translations for all
 # the extension's strings and that contains documentation for each string.
