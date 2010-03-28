@@ -6,10 +6,8 @@ locale	avim	de		locale/de/
 locale	avim	es		locale/es/
 locale	avim	fr		locale/fr/
 locale	avim	vi		locale/vi/
-locale	avim	zh		locale/zh-TW/
 locale	avim	zh-CN	locale/zh-CN/
-locale	avim	zh-SG	locale/zh-CN/
-locale	avim	zh-MY	locale/zh-CN/
+locale	avim	zh-TW	locale/zh-TW/
 
 skin	avim	classic/1.0		skin/classic/
 skin	avim	charamel		skin/charamel/
