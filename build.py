@@ -49,6 +49,18 @@ class BuildConfig:
     DEBUG = "Debug"
     L10N = "BabelZilla"
     SB = "Songbird Add-ons"
+    
+    @staticmethod
+    def includes_test_suite(config):
+        return config in [BuildConfig.DEBUG, BuildConfig.L10N]
+    
+    @staticmethod
+    def is_releasable(config):
+        return config in [BuildConfig.RELEASE, BuildConfig.AMO, BuildConfig.SB]
+    
+    @staticmethod
+    def is_minified(config):
+        return config in [BuildConfig.RELEASE, BuildConfig.SB]
 
 def print_help(version):
     """Prints help information to the command line."""
@@ -98,7 +110,7 @@ def list_files(root, excluded_dirs, excluded_files):
     files = []
     for parent, dirs, leaves in os.walk(root):
         # Omit testing components from release build.
-        if CONFIG != BuildConfig.DEBUG and parent in DEBUG_DIRS:
+        if not BuildConfig.includes_test_suite(CONFIG) and parent in DEBUG_DIRS:
             for d in dirs:
                 dirs.remove(d)
             continue
@@ -184,11 +196,11 @@ def preprocess(src, debug=False, vals=None):
        when the file is parsed as code. Note that general if-test support has
        not been implemented."""
     # Remove testing code. We don't have real if-test support yet.
-    if CONFIG in [BuildConfig.RELEASE, BuildConfig.AMO]:
+    if not BuildConfig.includes_test_suite(CONFIG):
         debug_re = re.compile(r"^[^\r\n]*\$if\{" + BuildConfig.DEBUG +
                               r"\}.*?\$endif\{\}[^\r\n]*$", re.M | re.S)
         src = debug_re.sub(r"", src)
-    elif CONFIG is BuildConfig.L10N:
+    if CONFIG is BuildConfig.L10N:
         l10n_re = re.compile(r"^[^\r\n]*\$unless\{" + BuildConfig.L10N +
                              r"\}.*?\$endunless\{\}[^\r\n]*$", re.M | re.S)
         src = l10n_re.sub(r"", src)
@@ -513,13 +525,13 @@ def main():
         # Move locale files to BabelZilla-compatible locations.
         f = l10n_compat_locale(f)
         # Minify files
-        if CONFIG is BuildConfig.RELEASE and \
-                re.match(xml_ext_re, f, flags=re.I):
-            src = minify_xml(f, src)
-        elif CONFIG is BuildConfig.RELEASE and f.endswith(".properties"):
-            src = minify_properties(src)
-        elif CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
-            src = minify_js(f, src)
+        if BuildConfig.is_minified(CONFIG):
+            if re.match(xml_ext_re, f, flags=re.I):
+                src = minify_xml(f, src)
+            elif f.endswith(".properties"):
+                src = minify_properties(src)
+            elif f.endswith(".js"):
+                src = minify_js(f, src)
         if CONFIG == BuildConfig.SB:
             info = zipfile.ZipInfo(f)
             info.external_attr = (0660 << 16L) | (010 << 28L)
@@ -546,6 +558,7 @@ def main():
     for f in xpi_files:
         src_file = file(f, "r")
         src = src_file.read()
+        src_file.close()
         # Prepend license block.
         if f in LICENSE_FILES:
             src = insert_license(f, src)
@@ -561,12 +574,11 @@ def main():
             src = l10n_compat_manifest(src)
             src = local_to_jar(src, package_name)
         # Minify files
-        if CONFIG is BuildConfig.RELEASE and \
-                re.match(xml_ext_re, f, flags=re.I):
-            src = minify_xml(f, src)
-        elif CONFIG is BuildConfig.RELEASE and f.endswith(".js"):
-            src = minify_js(f, src)
-        src_file.close()
+        if BuildConfig.is_minified(CONFIG):
+            if re.match(xml_ext_re, f, flags=re.I):
+                src = minify_xml(f, src)
+            elif f.endswith(".js"):
+                src = minify_js(f, src)
         if CONFIG == BuildConfig.SB:
             info = zipfile.ZipInfo(f)
             info.external_attr = (0660 << 16L) | (010 << 28L)
