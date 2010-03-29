@@ -8,7 +8,7 @@
 <!ENTITY method-viqr-star-item.title "VIQR*">
 
 <!ENTITY spell-check.title "Requerir la ortografía correcta">
-<!ENTITY spell-check.desc "Sólo admitir palabras que cumplen con reglas ortografías vietnamitas">
+<!ENTITY spell-check.desc "Sólo admitir palabras que cumplen con reglas ortográficas vietnamitas">
 
 <!ENTITY informal-check.title "Admitir la ortografía informal">
 <!ENTITY informal-check.desc "Poner diacríticos sobre palabras que empiecen con “dz” o “f”">
