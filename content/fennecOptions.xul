@@ -5,7 +5,7 @@
 <vbox id="avim-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<setting pref="extensions.avim.enabled" type="bool" title="&enabled-check.title;" />
 	<setting type="control" title="&method-menu.title;">
-		<menulist oncommand="avim.setMethod(parseInt(this.value || this.getAttribute('value')));">
+		<menulist oncommand="avim.setMethod(parseInt(this.value || this.getAttribute('value')));" onload="this.value = AVIMConfig.method;">
 			<menupopup>
 				<menuitem value="0" label="&method-auto-item.title;" />
 				<menuitem value="1" label="&method-telex-item.title;" />
