@@ -22,7 +22,7 @@ function MudimMonitor() {
 	
 	// Mudim itself
 	var thisMonitor = this;
-	if (window.Application && Application.extensions.get) {
+	if (window.Application) {
 		if (Application.extensions.get) {
 			this.mudim = Application.extensions.get(MUDIM_ID);
 		}
