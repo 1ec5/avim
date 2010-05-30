@@ -16,8 +16,6 @@ skin	avim	silvermel		skin/charamel/
 style	chrome://global/content/customizeToolbar.xul		chrome://avim/content/skin/avim.css
 style	chrome://mozapps/content/extensions/extensions.xul	chrome://avim/skin/options.css
 
-overlay	chrome://mozapps/content/extensions/extensions.xul	chrome://avim/content/addonsOverlay.xul
-
 ### AVIM #######################################################################
 
 # Mac menu bar in Firefox
@@ -46,6 +44,8 @@ overlay	chrome://browser/content/browser.xul					chrome://avim/content/moz18Over
 # Preferences window
 overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
 overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/moz18Overlay.xul		appversion<3.0a1pre
+# Add-ons window
+overlay	chrome://mozapps/content/extensions/extensions.xul		chrome://avim/content/addonsOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
 
 ### Thunderbird ################################################################
 
