@@ -1,0 +1,73 @@
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-preferences.title "&AVIM.label;">
+<!ENTITY enabled-check.label "&AVIM.label; voor Vietnamese ingave inschakelen">
+<!ENTITY enabled-check.accesskey "h">
+<!ENTITY blacklist-button.label "Uitzonderingen…">
+<!ENTITY blacklist-button.accesskey "U">
+<!ENTITY method-menu.label "Ingavemethode:">
+<!ENTITY method-menu.accesskey "m">
+<!ENTITY method-auto-item.label "Gemengd">
+<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-vni-item.label "VNI">
+<!ENTITY method-viqr-item.label "VIQR">
+<!ENTITY method-viqr-star-item.label "VIQR*">
+<!ENTITY method-config-button.label "Aanpassen…">
+<!ENTITY method-config-button.accesskey "A">
+<!ENTITY tester-button.label "Testen…">
+<!ENTITY tester-button.accesskey "T">
+<!ENTITY spell-check.label "Als een woord de Vietnamese spellingsregels breekt:">
+<!ENTITY spell-check.false.label "Accenten toch toepassen">
+<!ENTITY spell-check.false.accesskey "c">
+<!ENTITY spell-check.true.label "Karakters letterlijk toevoegen (spelling afdwingen)">
+<!ENTITY spell-check.true.accesskey "K">
+<!ENTITY informal-check.label "Behalve na informele spelling zoals “dz” en “f”">
+<!ENTITY informal-check.accesskey "i">
+<!ENTITY oldaccents-check.label "Als een woord eindigt op twee klinkers, pas accent toe op:">
+<!ENTITY oldaccents-check.true.label "De eerste klinker (traditionele stijl)">
+<!ENTITY oldaccents-check.true.accesskey "e">
+<!ENTITY oldaccents-check.false.label "De tweede klinker (moderne stijl)">
+<!ENTITY oldaccents-check.false.accesskey "d">
+<!ENTITY script-enabled-check.label "Ingavemethoden inbegrepen op de webpagina uitzetten">
+<!ENTITY script-enabled-check.accesskey "p">
+<!ENTITY script-config-button.label "Configureren…">
+<!ENTITY script-config-button.accesskey "f">
+<!ENTITY passwords-check.label "Wachtwoordvelden negeren">
+<!ENTITY passwords-check.accesskey "W">
+<!ENTITY statuspanel-check.label "Toon in statusbalk">
+<!ENTITY statuspanel-check.accesskey "s">
+<!ENTITY avim-blacklist.style "width: 35em;">
+<!ENTITY blacklist-pane.label "Uitzonderingen">
+<!ENTITY ignore-text.label "ID van tekstveld:">
+<!ENTITY ignore-button.label "Toevoegen">
+<!ENTITY ignore-button.accesskey "T">
+<!ENTITY ignored-desc.label "Je kunt aangeven welke tekstvelden &AVIM.label; moet negeren. Een tekstveld met een webadres kun je bijvoorbeeld negeren, omdat de ingavemethode kan conflicteren met de ingave van het adres.">
+<!ENTITY ignored-instructions.label "Om een tekstveld te negeren moet je het ID vinden in de bron van de webpagina. Type het ID hieronder en klik &ignore-button.label;.">
+<!ENTITY remove-button.label "Verwijderen">
+<!ENTITY remove-button.accesskey "V">
+<!ENTITY reset-button.label "Standaardwaarden">
+<!ENTITY reset-button.accesskey "S">
+<!ENTITY avim-method-config.style "width: 25em;">
+<!ENTITY auto-methods.label "Accepteer ingave van de volgende ingavemethoden als &method-auto-item.label; geselecteerd is:">
+<!ENTITY auto-telex-check.accesskey "T">
+<!ENTITY auto-vni-check.accesskey "N">
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!ENTITY auto-viqr-star-check.accesskey "R">
+<!ENTITY avim-script-config.style "width: 25em;">
+<!ENTITY script-config-pane.label "Script Monitor">
+<!ENTITY script-grid.label "Om conflicten te voorkomen, schakel de volgende methoden uit als deze op een webpagina inbegrepen zijn:">
+<!ENTITY script-avim-check.label "AVIM">
+<!ENTITY script-avim-check.accesskey "A">
+<!ENTITY script-chim-check.label "CHIM">
+<!ENTITY script-chim-check.accesskey "C">
+<!ENTITY script-mudim-check.label "Mudim">
+<!ENTITY script-mudim-check.accesskey "d">
+<!ENTITY script-mviet-check.label "MViet">
+<!ENTITY script-mviet-check.accesskey "M">
+<!ENTITY script-vietimew-check.label "VietIMEW">
+<!ENTITY script-vietimew-check.accesskey "W">
+<!ENTITY script-viettyping-check.label "VietTyping">
+<!ENTITY script-viettyping-check.accesskey "Y">
+<!ENTITY script-vietuni-check.label "VietUni">
+<!ENTITY script-vietuni-check.accesskey "U">
+<!ENTITY script-vinova-check.label "Vinova">
+<!ENTITY script-vinova-check.accesskey "V">

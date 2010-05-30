@@ -1,0 +1,14 @@
+<!ENTITY summary "Een ingavemethode (IME) voor Vietnamees. Type Vietnamees met volledige accenten direct op een webpagina of andere toepassing met een standaard toetsenbord.">
+<!ENTITY description.intro "AVIM – Advanced Vietnamese Input Method – biedt een snelle methode (Input Method Editor, IME) om Vietnamese tekens op een natuurlijke wijze in te geven. AVIM heeft alle functionaliteit die je mag verwachten van een moderne IME, zoals:">
+<!ENTITY description.basics.methods "Ondersteuning voor de [vier meest gebruikte ingavemethoden]: Telex, VNI, VIQR en VIQR*">
+<!ENTITY description.basics.spelling "Automatische correctie van accenten en spellingscontrole gebaseerd op verplichte regels">
+<!ENTITY description.basics.shortcuts "Logische sneltoetsen (zoals CTRL+ALT+V) om AVIM te configureren terwijl je typt">
+<!ENTITY description.basics.webapps "Volledige ondersteuning voor webapplicaties als Gmail en Google Docs">
+<!ENTITY description.advanced "Gebaseerd op Hieu Dang's [gelijknamige JavaScript toepassing], AVIM is verfijnd met een aantal handige en innovatieve features, die je niet bij [vergelijkbare software] zult vinden, zoals:">
+<!ENTITY description.advanced.ui "Een compact statusbalkpaneel, optionele werkbalkknoppen en een venster met voorkeuren">
+<!ENTITY description.advanced.scriptmonitor "Een script dat automatisch andere IME’s op een pagina uitschakelt, om conflicten te voorkomen (ook [los verkrijgbaar])">
+<!ENTITY description.advanced.compatible "Werkt met *elke* webpagina die je bezoekt, en *elk* venster dat je opent">
+<!ENTITY description.advanced.inplace "Werk met een editor die niet heen en weer springt op het scherm – ook niet als je wijzigingen ongedaan maakt of terugzet.">
+<!ENTITY description.conclusion "Kortom, *AVIM werkt gewoon*">
+<!ENTITY developer.script "Deze extensie is gebaseerd op het script Advanced Vietnamese Input Method ([downloaden]) door Hieu Dang. Dit script maakt het mogelijk een Vietnamese IME op je webpagina te zetten.">
+<!ENTITY developer.dictionary "Voor optimaal gebruik kun je naast AVIM ook de extensie [Vietnamees Woordenboek] installeren.">

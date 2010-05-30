@@ -1,0 +1,18 @@
+<!ENTITY enabled-check.title "Vietnamese ingave inschakelen">
+<!ENTITY method-menu.title "Ingavemethode">
+<!ENTITY method-auto-item.title "Gemengd">
+<!ENTITY method-telex-item.title "Telex">
+<!ENTITY method-vni-item.title "VNI">
+<!ENTITY method-viqr-item.title "VIQR">
+<!ENTITY method-viqr-star-item.title "VIQR*">
+<!ENTITY spell-check.title "Spellingsregels gebruiken">
+<!ENTITY spell-check.desc "Herken alleen woorden die de Vietnamese spellingsregels volgen">
+<!ENTITY informal-check.title "Herken informele spelling">
+<!ENTITY informal-check.desc "Zet accenten op woorden startend met “dz” of “f”">
+<!ENTITY oldaccents-check.title "Gebruik traditionele accenten">
+<!ENTITY oldaccents-check.desc "Plaats accent op eerste klinker bij een dubbelklank">
+<!ENTITY script-enabled-check.title "IME’s op pagina uitschakelen">
+<!ENTITY script-enabled-check.desc "JavaScript IME’s automatisch uitschakelen">
+<!ENTITY passwords-check.title "Herken wachtwoordvelden">
+<!ENTITY ignore-text.title "Te negeren">
+<!ENTITY ignore-text.desc "Negeer tekstvelden met deze ID’s">
