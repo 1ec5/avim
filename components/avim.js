@@ -66,6 +66,7 @@ AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
  */
 function AVIM() {
 	this.wrappedJSObject = this;
+	this.didObserveStartup = false;
 }
 
 AVIM.prototype.QueryInterface = function(iid) {
@@ -166,9 +167,13 @@ AVIM.prototype.observe = function (subject, topic, data) {
 	const observerSvc = gCc["@mozilla.org/observer-service;1"]
 		.getService(gCi.nsIObserverService);
 	switch (topic) {
+		case "profile-after-change":
+			if (this.didObserveStartup) break;
+			// Otherwise, fall through.
 		case "app-startup":
 			observerSvc.addObserver(this, "domwindowopened", false);
 			observerSvc.addObserver(this, "quit-application", false);
+			this.didObserveStartup = true;
 			break;
 		case "quit-application":
 			observerSvc.removeObserver(this, "domwindowopened");
@@ -208,8 +213,14 @@ var AVIMModule = {
 		// Register the module for app-startup notifications.
 		var catMgr = gCc["@mozilla.org/categorymanager;1"]
 			.getService(gCi.nsICategoryManager);
-		catMgr.addCategoryEntry("app-startup", CLASS_NAME,
-								"service," + CONTRACT_ID, true, true);
+		try {
+			catMgr.addCategoryEntry("app-startup", CLASS_NAME,
+									"service," + CONTRACT_ID, true, true);
+		}
+		catch (exc) {
+			catMgr.addCategoryEntry("profile-after-change", CLASS_NAME,
+									"service," + CONTRACT_ID, true, true);
+		}
 	},
 	
 	unregisterSelf: function(compMgr, loc, type) {
@@ -219,7 +230,12 @@ var AVIMModule = {
 		// Unregister the module from app-startup notifications.
 		var catMgr = gCc["@mozilla.org/categorymanager;1"]
 			.getService(gCi.nsICategoryManager);
-		catMgr.addCategoryEntry("app-startup", CLASS_NAME, true);
+		try {
+			catMgr.addCategoryEntry("app-startup", CLASS_NAME, true);
+		}
+		catch (exc) {
+			catMgr.addCategoryEntry("profile-after-change", CLASS_NAME, true);
+		}
 	},
 	
 	getClassObject: function(compMgr, cid, iid) {
