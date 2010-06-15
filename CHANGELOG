@@ -325,4 +325,3 @@ Version ${Version} (${Date})
  - Added an option to recognize password boxes to the options panel in Fennec.
  - Fixed a regression in SeaMonkey where icons would not appear for the toolbar
    buttons except in the Customize Toolbar dialog.
- - Updated Hieu's URL in the LICENSE file.
