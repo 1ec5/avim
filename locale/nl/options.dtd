@@ -59,6 +59,8 @@
 <!ENTITY script-avim-check.accesskey "A">
 <!ENTITY script-chim-check.label "CHIM">
 <!ENTITY script-chim-check.accesskey "C">
+<!ENTITY script-google-check.label "Google">
+<!ENTITY script-google-check.accesskey "G">
 <!ENTITY script-mudim-check.label "Mudim">
 <!ENTITY script-mudim-check.accesskey "d">
 <!ENTITY script-mviet-check.label "MViet">

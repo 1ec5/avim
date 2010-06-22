@@ -25,6 +25,7 @@
 			<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" onchange="optionsPanel.validateForScriptMonitor();" />
 			<preference id="script-avim-pref" name="extensions.avim.scriptMonitor.avim" type="bool" />
 			<preference id="script-chim-pref" name="extensions.avim.scriptMonitor.chim" type="bool" />
+			<preference id="script-google-pref" name="extensions.avim.scriptMonitor.google" type="bool" />
 			<preference id="script-mudim-pref" name="extensions.avim.scriptMonitor.mudim" type="bool" />
 			<preference id="script-mviet-pref" name="extensions.avim.scriptMonitor.mViet" type="bool" />
 			<preference id="script-vietimew-pref" name="extensions.avim.scriptMonitor.vietImeW" type="bool" />
@@ -47,6 +48,7 @@
 					<vbox>
 						<checkbox id="script-avim-check" preference="script-avim-pref" label="&script-avim-check.label;" accesskey="&script-avim-check.accesskey;" observes="script-enabled-bc" />
 						<checkbox id="script-chim-check" preference="script-chim-pref" label="&script-chim-check.label;" accesskey="&script-chim-check.accesskey;" observes="script-enabled-bc" />
+						<checkbox id="script-google-check" preference="script-google-pref" label="&script-google-check.label;" accesskey="&script-google-check.accesskey;" observes="script-enabled-bc" />
 						<checkbox id="script-mudim-check" preference="script-mudim-pref" label="&script-mudim-check.label;" accesskey="&script-mudim-check.accesskey;" observes="script-enabled-bc" />
 						<checkbox id="script-mviet-check" preference="script-mviet-pref" label="&script-mviet-check.label;" accesskey="&script-mviet-check.accesskey;" observes="script-enabled-bc" />
 					</vbox>

@@ -1902,6 +1902,7 @@ function AVIM()	{
 			"scriptMonitor.enabled": AVIMConfig.disabledScripts.enabled,
 			"scriptMonitor.avim": AVIMConfig.disabledScripts.AVIM,
 			"scriptMonitor.chim": AVIMConfig.disabledScripts.CHIM,
+			"scriptMonitor.google": AVIMConfig.disabledScripts.Google,
 			"scriptMonitor.mudim": AVIMConfig.disabledScripts.Mudim,
 			"scriptMonitor.mViet": AVIMConfig.disabledScripts.MViet,
 			"scriptMonitor.vietImeW": AVIMConfig.disabledScripts.VietIMEW,
@@ -2011,6 +2012,10 @@ function AVIM()	{
 				AVIMConfig.disabledScripts.CHIM =
 					prefs.getBoolPref("scriptMonitor.chim");
 				if (specificPref) break;
+			case "scriptMonitor.google":
+				AVIMConfig.disabledScripts.Google =
+					prefs.getBoolPref("scriptMonitor.google");
+				if (specificPref) break;
 			case "scriptMonitor.mudim":
 				AVIMConfig.disabledScripts.Mudim =
 					prefs.getBoolPref("scriptMonitor.mudim");
@@ -2051,6 +2056,11 @@ function AVIM()	{
 		AVIM: function(win, AVIMObj) {
 			if (!AVIMConfig.disabledScripts.AVIM) return;
 			AVIMObj.setMethod(-1);
+		},
+		Google: function(win, google) {
+			if (!AVIMConfig.disabledScripts.Google) return;
+			if (!("keyboard" in google.elements)) return;
+			google.elements.keyboard.Keyboard.prototype.setVisible(false);
 		},
 		CHIM: function(win, CHIM) {
 			if (!AVIMConfig.disabledScripts.CHIM) return;
@@ -2146,7 +2156,9 @@ function AVIM()	{
 		// VietUni 1.7 by nthachus (2008-10-16)
 		CVietUni: disablers.VietUni,
 		// XaLộ (vn.xalo.client.vnk)
-		_xalo_ga: disablers.XaLo
+		_xalo_ga: disablers.XaLo,
+		// Google (google.com.vn) and Google Virtual Keyboard API 1.0
+		google: disablers.Google
 	};
 	var frameMarkers = ["MVietOnOffButton", "DAWEOF"];
 	

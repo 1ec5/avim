@@ -320,6 +320,7 @@ Version ${Version} (${Date})
    main Add-ons window.
  - Added a help button to the preferences dialog that opens AVIM help
    documentation in a new window.
+ - Added support for disabling Google Virtual Keyboard.
  - Added a button to Fennec's right toolbar for enabling and disabling AVIM.
  - Fixed the input method menu in the options panel in Fennec.
  - Added an option to recognize password boxes to the options panel in Fennec.

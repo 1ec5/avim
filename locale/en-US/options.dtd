@@ -154,6 +154,10 @@
 <!ENTITY script-chim-check.label "CHIM">
 <!-- Mneumonic for the checkbox for automatically disabling CHIM inside webpages. This string should contain a single character that also appears in script-chim-check.label. The user can press Alt+C (Ctrl+C on the Mac) to toggle the checkbox. -->
 <!ENTITY script-chim-check.accesskey "C">
+<!-- Label for the checkbox for automatically disabling Google Virtual Keyboard inside webpages. Most localizations can keep this string the same. -->
+<!ENTITY script-google-check.label "Google">
+<!-- Mneumonic for the checkbox for automatically disabling Google Virtual Keyboard inside webpages. This string should contain a single character that also appears in script-google-check.label. The user can press Alt+G (Ctrl+G on the Mac) to toggle the checkbox. -->
+<!ENTITY script-google-check.accesskey "G">
 <!-- Label for the checkbox for automatically disabling Mudim inside webpages. "Mudim" stands for "Mudzot's Input Method". Most localizations can keep this string the same. -->
 <!ENTITY script-mudim-check.label "Mudim">
 <!-- Mneumonic for the checkbox for automatically disabling Mudim inside webpages. This string should contain a single character that also appears in script-mudim-check.label. The user can press Alt+D (Ctrl+D on the Mac) to toggle the checkbox. -->
