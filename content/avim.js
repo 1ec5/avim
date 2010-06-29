@@ -847,7 +847,8 @@ function AVIM()	{
 		}
 		
 		var w = this.mozGetText(obj);
-		key = fcc(key.which);
+		if (key.keyCode == 8 /* Backspace */ && key.shiftKey) key = "";
+		else key = fcc(key.which);
 		if (!w || ("sel" in obj && obj.sel)) return;
 		
 		var noNormC = this.D2.indexOf(up(key)) >= 0;
@@ -1155,7 +1156,8 @@ function AVIM()	{
 	const sfa = [ds1, as1, es1, os1, mocs1, trangs1];
 	/**
 	 * @param w	{string}	The word ending at the cursor position.
-	 * @param k	{string}	The character equivalent of the pressed key.
+	 * @param k	{string}	The character equivalent of the pressed key, or the
+	 * 						empty string for diacritic removal.
 	 */
 	this.main = function(w, k, i, a, noNormC) {
 		var uk = up(k), got = false, t = "dDaAaAoOuUeEoO".split("");
@@ -1173,7 +1175,13 @@ function AVIM()	{
 			case 4: this.method = this.methods.viqrStar; // break;
 		}
 		
-		if(this.method.SFJRX.indexOf(uk) >= 0) {
+		// Diacritic removal
+		if (k == "") {
+			k = this.method.Z;
+			uk = up(k);
+		}
+		
+		if (this.method.SFJRX.indexOf(uk) >= 0) {
 			this.sr(w,k,i);
 			got=true;
 		}
@@ -1206,7 +1214,13 @@ function AVIM()	{
 		return this.tr(k, w, by, sf, i);
 	};
 	
+	/**
+	 * @param w	{string}	The word ending at the cursor position.
+	 * @param k	{string}	The character equivalent of the pressed key, or the
+	 * 						empty string for diacritic removal.
+	 */
 	this.normC = function(w, k, i) {
+		if (k == "") k = this.method.Z;
 		if (k[0] == " ") return "";
 		var uk = up(k);
 		if (alphabet.indexOf(uk) < 0 && this.D2.indexOf(uk) < 0) return w;
@@ -1482,8 +1496,9 @@ function AVIM()	{
 	};
 	
 	this.checkCode = function(code) {
-		return !AVIMConfig.onOff || (code < 45 && code != 42 && code != 32 &&
-									 code != 39 && code != 40 && code != 43) ||
+		return !AVIMConfig.onOff || (code < 45 && code != 8 /* Backspace */ &&
+									 code != 42 && code != 32 && code != 39 &&
+									 code != 40 && code != 43) ||
 			code == 145 || code == 255;
 	};
 	
@@ -2218,7 +2233,7 @@ function AVIM()	{
 	 * 						keypress.
 	 */
 	this.onKeyPress = function(e) {
-//		dump("AVIM.onKeyPress -- code: " + fcc(e.which) +
+//		dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
 //			 "; target: " + e.target.nodeName + "; id: " + e.target.id +
 //			 "; originalTarget: " + e.originalTarget.nodeName + "\n");			// debug
 		var target = e.target;

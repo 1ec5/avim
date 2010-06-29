@@ -306,7 +306,7 @@ Version 20080728.366 (Sunday, March 7, 2010)
    in the Add-ons window and AVIM's options pane.
  - AVIM's logo is now displayed in the Add-ons window even when the extension is
    disabled.
- - The Script Monitor can now disable VietUni 1.7 in webpage.
+ - The Script Monitor can now disable VietUni 1.7 in webpages.
 
 Version ${Version} (${Date})
  - Restored support for Firefox 2 after nearly two years. (Welcome back, Windows
@@ -316,11 +316,13 @@ Version ${Version} (${Date})
    easier to understand and much more reliable. It also includes script monitor
    options that before were only accessible through about:config.
  - Added a Dutch localization by John Willemse.
+ - Shift+Backspace (Shift+Del on the Mac) now removes a diacritical mark from
+   the preceding word like GoTiengVietFx does.
  - Moved the Mudim compatibility warning from AVIM's preferences dialog to the
    main Add-ons window.
  - Added a help button to the preferences dialog that opens AVIM help
    documentation in a new window.
- - Added support for disabling Google Virtual Keyboard.
+ - The Script Monitor can now disable Google Virtual Keyboard in webpages.
  - Added a button to Fennec's right toolbar for enabling and disabling AVIM.
  - Fixed the input method menu in the options panel in Fennec.
  - Added an option to recognize password boxes to the options panel in Fennec.
