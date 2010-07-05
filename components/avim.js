@@ -254,3 +254,9 @@ var AVIMModule = {
 function NSGetModule(compMgr, fileSpec) {
 	return AVIMModule;
 }
+
+function NSGetFactory(cid) {
+	let cidStr = cid.toString();
+	if (cidStr == CLASS_ID) return AVIMFactory;
+	throw Components.results.NS_ERROR_FACTORY_NOT_REGISTERED;
+};

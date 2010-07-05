@@ -78,6 +78,13 @@ function AVIM()	{
 		return isNaN(w) || w == 'e';
 	};
 	
+	//var BespinProxy = function(elt, bespin) {
+	//	this.elt = elt;
+	//	this.type = "textarea";
+	//	// document.body.bespin.editor.selection
+	//	this.selectionStart = bespin.editor.selection.start;
+	//};
+	
 	/**
 	 * Proxy for a Silverlight input control, to reduce back-and-forth between
 	 * JavaScript and Silverlight. This object supports TextBox controls only.
@@ -1540,11 +1547,14 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleKeyPress = function(e) {
+		// https://developer.mozilla.org/en/HTML/Element/input
+		const htmlTypes = ["search", "text", "textarea"];
+		
 		var el = e.originalTarget || e.target, code = e.which;
 //		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + code + "\n");	// debug
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(e.target)) return false;
-		var isHTML = el.type == "textarea" || el.type == "text" ||
+		var isHTML = htmlTypes.indexOf(el.type) >= 0 ||
 			(AVIMConfig.passwords && el.type == "password");
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
