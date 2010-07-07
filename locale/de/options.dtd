@@ -1,7 +1,7 @@
 <!ENTITY AVIM.label "AVIM">
 <!ENTITY avim-preferences.title "&AVIM.label;">
 
-<!ENTITY enabled-check.label "&AVIM.label; für Vietnamesische Eingabe aktivieren">
+<!ENTITY enabled-check.label "&AVIM.label; für vietnamesische Eingabe aktivieren">
 <!ENTITY enabled-check.accesskey "A">
 
 <!ENTITY blacklist-button.label "Ausnahmen…">
@@ -9,40 +9,40 @@
 
 <!ENTITY method-menu.label "Eingabemethode:">
 <!ENTITY method-menu.accesskey "m">
-<!ENTITY method-auto-item.label "">
+<!ENTITY method-auto-item.label "Gemischte">
 <!ENTITY method-telex-item.label "Telex">
 <!ENTITY method-vni-item.label "VNI">
 <!ENTITY method-viqr-item.label "VIQR">
 <!ENTITY method-viqr-star-item.label "VIQR*">
 
-<!ENTITY method-config-button.label "Anpassen…">
-<!ENTITY method-config-button.accesskey "A">
+<!ENTITY method-config-button.label "Benutzerdefiniert…">
+<!ENTITY method-config-button.accesskey "B">
 
-<!ENTITY tester-button.label "">
-<!ENTITY tester-button.accesskey "">
-<!ENTITY spell-check.label "">
-<!ENTITY spell-check.false.label "">
-<!ENTITY spell-check.false.accesskey "">
-<!ENTITY spell-check.true.label "">
-<!ENTITY spell-check.true.accesskey "">
+<!ENTITY tester-button.label "Test…">
+<!ENTITY tester-button.accesskey "T">
+<!ENTITY spell-check.label "Wenn ein Wort nicht den vietnamesischen Rechtschreibregeln entspricht…">
+<!ENTITY spell-check.false.label "Akzente trotzdem auf ein Wort setzen">
+<!ENTITY spell-check.false.accesskey "A">
+<!ENTITY spell-check.true.label "Zeichen direkt einfügen (Rechtschreibung prüfen)">
+<!ENTITY spell-check.true.accesskey "R">
 
-<!ENTITY informal-check.label "">
-<!ENTITY informal-check.accesskey "">
+<!ENTITY informal-check.label "Außer nach informellen Schreib-Schemata, wie z.B. „dz“ und „f“">
+<!ENTITY informal-check.accesskey "i">
 
-<!ENTITY oldaccents-check.label "">
-<!ENTITY oldaccents-check.true.label "">
-<!ENTITY oldaccents-check.true.accesskey "">
-<!ENTITY oldaccents-check.false.label "">
-<!ENTITY oldaccents-check.false.accesskey "">
+<!ENTITY oldaccents-check.label "Wenn ein Wort auf zwei Vokale endet, Akzente setzen auf…">
+<!ENTITY oldaccents-check.true.label "Den ersten Vokal (traditioneller Stil)">
+<!ENTITY oldaccents-check.true.accesskey "e">
+<!ENTITY oldaccents-check.false.label "Den zweiten Vokal (moderner Stil)">
+<!ENTITY oldaccents-check.false.accesskey "z">
 
-<!ENTITY script-enabled-check.label "">
-<!ENTITY script-enabled-check.accesskey "">
+<!ENTITY script-enabled-check.label "Auf Webseiten eingebettete IMEs deaktivieren">
+<!ENTITY script-enabled-check.accesskey "W">
 
-<!ENTITY script-config-button.label "">
-<!ENTITY script-config-button.accesskey "">
+<!ENTITY script-config-button.label "Einrichten…">
+<!ENTITY script-config-button.accesskey "i">
 
-<!ENTITY passwords-check.label "">
-<!ENTITY passwords-check.accesskey "">
+<!ENTITY passwords-check.label "Passwortfelder ignorieren">
+<!ENTITY passwords-check.accesskey "P">
 
 <!ENTITY statuspanel-check.label "In der Statusleiste anzeigen">
 <!ENTITY statuspanel-check.accesskey "S">
@@ -55,8 +55,8 @@
 <!ENTITY ignore-button.label "Ignorieren">
 <!ENTITY ignore-button.accesskey "I">
 
-<!ENTITY ignored-desc.label "Welche Textfelder &AVIM.label; ignorieren soll, kann selbst bestimmt werden. Ein Beispiel wäre, wenn &AVIM.label; ein Textfeld mit Internet-Adressen ignorieren soll, da es sonst mit der Eingabemethode Probleme geben könnte.">
-<!ENTITY ignored-instructions.label "Um ein Textfeld zu ignorieren, muss zuerst dessen ID bestimmt werden, indem man einen Blick in den Quelltext wirft. Diese muss man unten eingeben, und durch einen Klick auf „&ignore-button.label;“ bestätigen.">
+<!ENTITY ignored-desc.label "Welche Textfelder &AVIM.label; ignorieren soll, kann selbst bestimmt werden. Ein Beispiel wäre, wenn &AVIM.label; ein Textfeld mit Webadressen ignorieren soll, da es sonst während der Eingabe der Adresse Probleme geben könnte.">
+<!ENTITY ignored-instructions.label "Um ein Textfeld zu ignorieren, muss zuerst dessen ID bestimmt werden indem man einen Blick in den Seitenquelltext wirft. Diese gibt man unten ein, und bestätigt sie durch einen Klick auf „&ignore-button.label;“.">
 
 <!ENTITY remove-button.label "ID entfernen">
 <!ENTITY remove-button.accesskey "e">
@@ -74,9 +74,9 @@
 
 <!ENTITY avim-script-config.style "width: 25em;">
 
-<!ENTITY script-config-pane.label "Script Monitor">
+<!ENTITY script-config-pane.label "Skript-Monitor">
 
-<!ENTITY script-grid.label "">
+<!ENTITY script-grid.label "Um auf Webseiten mit eingebetteten IMEs während der Eingabe Konflikte zu vermeiden, automatisch folgende IMEs deaktivieren:">
 
 <!ENTITY script-avim-check.label "AVIM">
 <!ENTITY script-avim-check.accesskey "A">

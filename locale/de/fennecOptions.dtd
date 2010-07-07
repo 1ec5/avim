@@ -1,25 +1,25 @@
 <!ENTITY enabled-check.title "Vietnamesische Eingabe aktivieren">
 
 <!ENTITY method-menu.title "Eingabemethode">
-<!ENTITY method-auto-item.title "">
+<!ENTITY method-auto-item.title "Gemischte">
 <!ENTITY method-telex-item.title "Telex">
 <!ENTITY method-vni-item.title "VNI">
 <!ENTITY method-viqr-item.title "VIQR">
 <!ENTITY method-viqr-star-item.title "VIQR*">
 
-<!ENTITY spell-check.title "Rechtschreibregeln erzwingen">
-<!ENTITY spell-check.desc "">
+<!ENTITY spell-check.title "Rechtschreibung prüfen">
+<!ENTITY spell-check.desc "Nur Wörter erkennen, die den vietnamesischen Rechtschreibregeln entsprechen">
 
-<!ENTITY informal-check.title "">
-<!ENTITY informal-check.desc "">
+<!ENTITY informal-check.title "Informelle Schreibweise erkennen">
+<!ENTITY informal-check.desc "Akzente auf Wörter setzen, die mit „dz“ oder „f“ anfangen">
 
-<!ENTITY oldaccents-check.title "">
-<!ENTITY oldaccents-check.desc "Ein Betonungszeichen über den ersten Vokal im endbetonten Diphthong setzen">
+<!ENTITY oldaccents-check.title "Traditionelle Akzentplatzierung verwenden">
+<!ENTITY oldaccents-check.desc "Akzente über den ersten Vokal im endbetonten Diphthong setzen">
 
-<!ENTITY script-enabled-check.title "">
-<!ENTITY script-enabled-check.desc "">
+<!ENTITY script-enabled-check.title "Auf Webseiten integrierte IMEs deaktivieren">
+<!ENTITY script-enabled-check.desc "JavaScript-IMEs auf Webseiten automatisch deaktivieren">
 
-<!ENTITY passwords-check.title "">
+<!ENTITY passwords-check.title "Passwortfelder erkennen">
 
-<!ENTITY ignore-text.title "">
-<!ENTITY ignore-text.desc "">
+<!ENTITY ignore-text.title "Blacklist">
+<!ENTITY ignore-text.desc "Textfelder mit folgenden IDs ignorieren">

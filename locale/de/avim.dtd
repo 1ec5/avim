@@ -6,7 +6,7 @@
 <!ENTITY avim-enabled.key "V">
 <!ENTITY avim-enabled.label "Aktiviert">
 <!ENTITY avim-enabled.accesskey "A">
-<!ENTITY avim-enabled.description "&AVIM.label; für Vietnamesische Eingabe aktivieren">
+<!ENTITY avim-enabled.description "&AVIM.label; für vietnamesische Eingabe aktivieren">
 <!ENTITY avim-disabled.label "Deaktiviert">
 
 <!ENTITY avim-prev-method.modifiers "accel">
@@ -19,8 +19,8 @@
 <!ENTITY avim-menu-next-method.label "Nächste Eingabemethode">
 <!ENTITY avim-menu-next-method.accesskey "N">
 
-<!ENTITY avim-auto.label "">
-<!ENTITY avim-auto.accesskey "">
+<!ENTITY avim-auto.label "Gemischte">
+<!ENTITY avim-auto.accesskey "m">
 <!ENTITY avim-telex.label "Telex">
 <!ENTITY avim-telex.accesskey "T">
 <!ENTITY avim-vni.label "VNI">
@@ -28,16 +28,16 @@
 <!ENTITY avim-viqr.label "VIQR">
 <!ENTITY avim-viqr.accesskey "Q">
 <!ENTITY avim-viqr-star.label "VIQR*">
-<!ENTITY avim-viqr-star.accesskey "R">
+<!ENTITY avim-viqr-star.accesskey "I">
 
 <!ENTITY avim-spell.modifiers "accel alt">
 <!ENTITY avim-spell.key "S">
-<!ENTITY avim-spell.label "Rechtschreibprüfung erzwingen">
+<!ENTITY avim-spell.label "Rechtschreibung prüfen">
 <!ENTITY avim-spell.accesskey "R">
-<!ENTITY avim-spell.description "Betonungszeichen nur auf Wörter setzten, die den vietnamesischen Rechtschreibregeln entsprechen">
+<!ENTITY avim-spell.description "Akzente nur auf Wörter setzen, die den vietnamesischen Rechtschreibregeln entsprechen">
 
 <!ENTITY avim-oldaccents.modifiers "accel alt">
 <!ENTITY avim-oldaccents.key ";">
-<!ENTITY avim-oldaccents.label "Klassische Betonungszeichen">
-<!ENTITY avim-oldaccents.accesskey "l">
-<!ENTITY avim-oldaccents.description "Ein Betonungszeichen über den ersten Vokal im endbetonten Diphthong setzen">
+<!ENTITY avim-oldaccents.label "Klassische Akzente setzen">
+<!ENTITY avim-oldaccents.accesskey "K">
+<!ENTITY avim-oldaccents.description "Akzente über den ersten Vokal im endbetonten Diphthong setzen">
