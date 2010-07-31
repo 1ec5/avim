@@ -321,7 +321,8 @@ Version ${Version} (${Date})
  - Shift+Backspace (Shift+Del on the Mac) now removes a diacritical mark from
    the preceding word like GoTiengVietFx does.
  - Moved the Mudim compatibility warning from AVIM's preferences dialog to the
-   main Add-ons window.
+   main Add-ons window.  (The compatibility warning is not available in Firefox
+   4.)
  - Added a help button to the preferences dialog that opens AVIM help
    documentation in a new window.
  - The Script Monitor can now disable Google Virtual Keyboard in webpages.
