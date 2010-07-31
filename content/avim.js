@@ -55,7 +55,7 @@ function AVIM()	{
 	
 	const sciMozType = "application/x-scimoz-plugin";
 	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
-	const bespinClass = "bespin.editor.API";
+	//const bespinClass = "bespin.editor.API";
 	
 	// Local functions that don't require access to AVIM's fields.
 	
@@ -78,11 +78,35 @@ function AVIM()	{
 		return isNaN(w) || w == 'e';
 	};
 	
-	//var BespinProxy = function(elt, bespin) {
+	///**
+	// * Proxy for a Bespin editor, to encapsulate the oft-changing Bespin API
+	// * while posing as an ordinary HTML <textarea>.
+	// *
+	// * @param elt		{object}	The main <canvas> element's DOM node.
+	// * @param bespin	{object}	The Bespin editor object represented by this
+	// * 								proxy.
+	// */
+	//function BespinProxy(elt, bespin) {
 	//	this.elt = elt;
 	//	this.type = "textarea";
-	//	// document.body.bespin.editor.selection
-	//	this.selectionStart = bespin.editor.selection.start;
+	//	
+	//	var sel = bespin.view.getSelectedRange();
+	//	if (sel.start.row != sel.end.row) throw "Multiline selection";
+	//	this.selectionStart = sel.start.col;
+	//	this.selectionEnd = sel.end.col;
+	//	this.value =
+	//		bespin.model.lines[sel.start.row].substring(0, sel.end.col);
+	//	
+	//	/**
+	//	 * Updates the Bespin editor represented by this proxy to reflect any
+	//	 * changes made to the proxy.
+	//	 */
+	//	this.commit = function() {
+	//		bespin.model.replaceCharacters(sel, this.value);
+	//		sel.start.col = this.selectionStart;
+	//		sel.end.col = this.selectionEnd;
+	//		bespin.view.setSelection(sel);
+	//	};
 	//};
 	
 	/**
@@ -91,7 +115,7 @@ function AVIM()	{
 	 *
 	 * @param ctl	{object}	The XAML control represented by the proxy.
 	 */
-	var SlightCtlProxy = function(ctl) {
+	function SlightCtlProxy(ctl) {
 		this.ctl = ctl;
 		this.type = ctl.getHost().type;
 		if ("text" in ctl) this.value = ctl.text;
@@ -145,7 +169,7 @@ function AVIM()	{
 	 * @param evt		{object}	The Silverlight keydown event.
 	 * @param charCode	{number}	A virtual key code from the plugin host.
 	 */
-	var SlightEvtProxy = function(evt, charCode) {
+	function SlightEvtProxy(evt, charCode) {
 		this.evt = evt;
 		this.target = evt.source;
 		this.shiftKey = evt.shift;
@@ -330,32 +354,32 @@ function AVIM()	{
 			return el.selectionStart - caretPos;
 		}
 		
-		// Bespin editor
-		if (this.bespinEditor) {
-			var pos = this.getBespinCursorPosition();
-//			pos = {row: pos.row, col: pos.col}; // copy
-			var actions = this.bespinEditor.ui.actions;
-			if ("deleteChunkAndInsertChunkAndSelect" in actions) {
-				// Bespin 0.1-0.3
-				actions.deleteChunkAndInsertChunkAndSelect({
-					pos: {row: pos.row, col: index},
-					endPos: {row: pos.row, col: index + len},
-					queued: true,
-					chunk: repl
-				});
-			}
-			else {
-				// Bespin 0.4
-				actions.select({
-					startPos: {row: pos.row, col: index},
-					endPos: {row: pos.row, col: index + len}
-				});
-				actions.insertChunk({chunk: repl});
-			}
-			pos.col += repl.length - len;
-			actions.select({startPos: pos, endPos: pos});
-			return repl.length - len;
-		}
+//		// Bespin editor
+//		if (this.bespinEditor) {
+//			var pos = this.getBespinCursorPosition();
+////			pos = {row: pos.row, col: pos.col}; // copy
+//			var actions = this.bespinEditor.ui.actions;
+//			if ("deleteChunkAndInsertChunkAndSelect" in actions) {
+//				// Bespin 0.1-0.3
+//				actions.deleteChunkAndInsertChunkAndSelect({
+//					pos: {row: pos.row, col: index},
+//					endPos: {row: pos.row, col: index + len},
+//					queued: true,
+//					chunk: repl
+//				});
+//			}
+//			else {
+//				// Bespin 0.4
+//				actions.select({
+//					startPos: {row: pos.row, col: index},
+//					endPos: {row: pos.row, col: index + len}
+//				});
+//				actions.insertChunk({chunk: repl});
+//			}
+//			pos.col += repl.length - len;
+//			actions.select({startPos: pos, endPos: pos});
+//			return repl.length - len;
+//		}
 		
 		// Anonymous node-based editing
 		try {
@@ -462,7 +486,7 @@ function AVIM()	{
 	this.kl = 0;
 	this.range = null;
 	this.whit = false;
-	this.bespinEditor = null;
+	//this.bespinEditor = null;
 	
 	/**
 	 * Returns whether the given word, taking into account the given dead key,
@@ -752,20 +776,20 @@ function AVIM()	{
 			AVIMConfig.statusBarPanel ? "-moz-box" : "none";
 	};
 	
-	/**
-	 * Returns the current row and column of the cursor in Bespin. Note that
-	 * unlike getCursorPosition(), this method returns the full position in the
-	 * editor grid, not just an index from the start of the line.
-	 *
-	 * @returns {number}	The current cursor position, or -1 if the cursor
-	 * 						cannot be found.
-	 */
-	this.getBespinCursorPosition = function() {
-		if ("cursorPosition" in this.bespinEditor) {
-			return this.bespinEditor.cursorPosition;
-		}
-		return this.bespinEditor.cursorManager.position;
-	};
+	///**
+	// * Returns the current row and column of the cursor in Bespin. Note that
+	// * unlike getCursorPosition(), this method returns the full position in the
+	// * editor grid, not just an index from the start of the line.
+	// *
+	// * @returns {number}	The current cursor position, or -1 if the cursor
+	// * 						cannot be found.
+	// */
+	//this.getBespinCursorPosition = function() {
+	//	if ("cursorPosition" in this.bespinEditor) {
+	//		return this.bespinEditor.cursorPosition;
+	//	}
+	//	return this.bespinEditor.cursorManager.position;
+	//};
 	
 	/**
 	 * Returns the current position of the cursor in the given textbox.
@@ -783,11 +807,13 @@ function AVIM()	{
 			return obj.charPosAtPosition(pos) - obj.charPosAtPosition(linePos);
 		}
 		
-		// Bespin editor
-		if (this.bespinEditor) return this.getBespinCursorPosition().col;
+		//// Bespin editor
+		//if (this.bespinEditor) return this.getBespinCursorPosition().col;
 		
-		// Silverlight applet
-		if (obj instanceof SlightCtlProxy) return obj.selectionStart;
+		// Silverlight applet or Bespin editor
+		if (obj instanceof SlightCtlProxy /* || obj instanceof BespinProxy */) {
+			return obj.selectionStart;
+		}
 		
 		// Everything else
 		var data = (obj.data) ? obj.data : text(obj);
@@ -1109,8 +1135,8 @@ function AVIM()	{
 			}
 			this.splice(o, pos, 1 + !!r, replaceBy);
 			// Native editors only
-			if (o.type != sciMozType && !this.bespinEditor &&
-				!(o instanceof SlightCtlProxy)) {
+			if (o.type != sciMozType &&
+				!(o instanceof SlightCtlProxy /* || o instanceof BespinProxy */)) {
 				o.setSelectionRange(savePos, savePos);
 				o.scrollTop = sst;
 			}
@@ -1245,7 +1271,7 @@ function AVIM()	{
 			var c = skey[h % 24];
 			var sp = this.oc.selectionStart;
 			var end = this.oc.selectionEnd;
-			if (this.oc.type == sciMozType || this.bespinEditor) {
+			if (this.oc.type == sciMozType /* || this.bespinEditor */) {
 				sp = end = this.getCursorPosition(this.oc);
 //				dump("AVIM.normC -- sp: " + sp + "; end: " + end + "\n");		// debug
 			}
@@ -1274,12 +1300,13 @@ function AVIM()	{
 				var linePos = this.oc.positionFromLine(lineNum);
 				this.oc.currentPos = this.oc.positionAtChar(linePos, pos);
 			}
-			// Bespin editor
-			else if (this.bespinEditor) {
-				this.getBespinCursorPosition().col = pos;
-			}
-			// Silverlight applets
-			else if (this.oc instanceof SlightCtlProxy) {
+			//// Bespin editor
+			//else if (this.bespinEditor) {
+			//	this.getBespinCursorPosition().col = pos;
+			//}
+			// Silverlight applet or Bespin editor
+			else if (this.oc instanceof SlightCtlProxy /* ||
+					 this.oc instanceof BespinProxy */) {
 				this.oc.selectionStart = this.oc.selectionEnd = pos;
 			}
 			// Everything else
@@ -1630,46 +1657,68 @@ function AVIM()	{
 		return true;
 	};
 	
-	/**
-	 * Retrieves the current line from the Bespin editor.
-	 *
-	 * @returns {string}	The text of the current line.
-	 */
-	this.bespinGetLine = function() {
-		var pos = this.getBespinCursorPosition();
-		return this.bespinEditor.model.getRowArray(pos.row).join("");
-	};
+	///**
+	// * Retrieves the current line from the Bespin editor.
+	// *
+	// * @returns {string}	The text of the current line.
+	// */
+	//this.bespinGetLine = function() {
+	//	var pos = this.getBespinCursorPosition();
+	//	return this.bespinEditor.model.getRowArray(pos.row).join("");
+	//};
 	
-	/**
-	 * Handles key presses in the Bespin editor. This function is triggered as
-	 * soon as the key goes up.
-	 *
-	 * @param e		{object}	The keypress event.
-	 * @param el	{object}	The DOM element node that represents the Bespin
-	 * 							editor. Defaults to the given event's original
-	 * 							target.
-	 * @returns {boolean}	True if AVIM plans to modify the input; false
-	 * 						otherwise.
-	 */
-	this.handleBespin = function(e, el) {
-		if (!el) el = e.originalTarget;
-		var code = e.which;
-		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
-			this.findIgnore(e.target)) {
-			return false;
-		}
-		el.value = this.bespinGetLine();
-//		dump("AVIM.handleBespin -- value: " + el.value + "\n");				// debug
-		this.sk = fcc(code);
-		this.start(el, e);
-		if (this.changed) {
-			this.changed = false;
-			e.stopPropagation();
-//			this.updateContainer(el, el);
-			return false;
-		}
-		return true;
-	};
+//	/**
+//	 * Handles key presses in the Bespin editor. This function is triggered as
+//	 * soon as the key goes up.
+//	 *
+//	 * @param e		{object}	The keypress event.
+//	 * @param el	{object}	The DOM element node that represents the Bespin
+//	 * 							editor. Defaults to the given event's original
+//	 * 							target.
+//	 * @returns {boolean}	True if AVIM plans to modify the input; false
+//	 * 						otherwise.
+//	 */
+//	this.handleBespin = function(e, el) {
+//		dump("AVIM.handleBespin\n");											// debug
+//		if (!el) el = e.originalTarget;
+//		var code = e.which;
+//		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
+//			this.findIgnore(e.target)) {
+//			return false;
+//		}
+////		el.value = this.bespinGetLine();
+//////		dump("AVIM.handleBespin -- value: " + el.value + "\n");				// debug
+////		this.sk = fcc(code);
+////		this.start(el, e);
+////		if (this.changed) {
+////			this.changed = false;
+////			e.stopPropagation();
+//////			this.updateContainer(el, el);
+////			return false;
+////		}
+////		return true;
+//		
+//		try {
+//			// Fake a native textbox and keypress event.
+//			var proxy = new BespinProxy(el, el.ownerDocument.defaultView.bespin);
+//			
+//			avim.sk = fcc(code);
+//			avim.start(proxy, e);
+//			
+//			proxy.commit();
+//			delete proxy;
+//			if (avim.changed) {
+//				avim.changed = false;
+//				evt.handled = true;
+//			}
+//		}
+//		catch (exc) {
+//// $if{Debug}
+//			throw exc;
+//// $endif{}
+//		}
+//		return true;
+//	};
 	
 	// Silverlight applets
 	
@@ -2243,9 +2292,9 @@ function AVIM()	{
 	 * 						keypress.
 	 */
 	this.onKeyPress = function(e) {
-//		dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
-//			 "; target: " + e.target.nodeName + "; id: " + e.target.id +
-//			 "; originalTarget: " + e.originalTarget.nodeName + "\n");			// debug
+		dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
+			 "; target: " + e.target.nodeName + "#" + e.target.id +
+			 "; originalTarget: " + e.originalTarget.nodeName + "#" + e.originalTarget.id + "\n");			// debug
 		var target = e.target;
 		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
@@ -2261,28 +2310,29 @@ function AVIM()	{
 			return this.handleSciMoz(e, origTarget);
 		}
 		
-		// Bespin editor
-		try {
-			var winWrapper = new XPCNativeWrapper(doc.defaultView);
-			var win = winWrapper.wrappedJSObject;
-			if (origTarget.localName.toLowerCase() == "canvas" &&
-				"bespin" in win) {
-				if ("_editor" in win) this.bespinEditor = win._editor;
-				else this.bespinEditor = win.bespin.get("editor");
-				if (this.bespinEditor.declaredClass == bespinClass &&
-					this.bespinEditor.canvas == origTarget) {
-					this.handleBespin(e, origTarget);
-				}
-				this.bespinEditor = null;
-			}
-		}
-		catch (e) {
-// $if{Debug}
-			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");
-// $endif{}
-			this.bespinEditor = null;
-			return false;
-		}
+//		// Bespin editor
+//		try {
+//			var winWrapper = new XPCNativeWrapper(doc.defaultView);
+//			var win = winWrapper.wrappedJSObject;
+//			// $("test-bespin").bespin.editor
+//			if (origTarget.localName.toLowerCase() == "canvas" &&
+//				"bespin" in win) {
+//				if ("_editor" in win) this.bespinEditor = win._editor;
+//				else this.bespinEditor = win.bespin.get("editor");
+//				if (this.bespinEditor.declaredClass == bespinClass &&
+//					this.bespinEditor.canvas == origTarget) {
+//					this.handleBespin(e, origTarget);
+//				}
+//				this.bespinEditor = null;
+//			}
+//		}
+//		catch (e) {
+//// $if{Debug}
+//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");
+//// $endif{}
+//			this.bespinEditor = null;
+//			return false;
+//		}
 		
 		// Rich text editors
 		var wysiwyg =
