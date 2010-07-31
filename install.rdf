@@ -11,7 +11,7 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>2.0a1</em:minVersion>
-				<em:maxVersion>4.0b2pre</em:maxVersion>
+				<em:maxVersion>4.0b3pre</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
@@ -39,7 +39,7 @@
 			<Description>
 				<em:id>{a23983c0-fd0e-11dc-95ff-0800200c9a66}</em:id>
 				<em:minVersion>0.7</em:minVersion>
-				<em:maxVersion>2.0a1pre</em:maxVersion>
+				<em:maxVersion>2.0a1</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
@@ -140,10 +140,10 @@
 			<Description>
 				<em:locale>de</em:locale>
 				<em:name>AVIM</em:name>
-				<em:description>Ermöglicht eine vollständig akzentuierte vietnamesische Eingabe für jede Webseite oder jedes Eingabefeld mit einer Standard-Tastatur.</em:description>
+				<em:description>Ermöglicht eine vollständig akzentuierte vietnamesische Eingabe auf jeder Webseite oder in jedem Eingabefeld mit einer Standard-Tastatur.</em:description>
 				<em:creator>Minh Nguyen</em:creator>
 				<em:contributor>Hieu Dang</em:contributor>
-				<em:translator>Erwin D. Glockner</em:translator>
+				<em:translator>Erwin D. Glockner (erglo)</em:translator>
 				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
 			</Description>
 		</em:localized>
