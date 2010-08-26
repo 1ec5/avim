@@ -310,7 +310,8 @@ Version 20080728.366 (Sunday, March 7, 2010)
 
 Version ${Version} (${Date})
  - Restored support for Firefox 2 after nearly two years. (Welcome back, Windows
-   98 users!) Thunderbird 2 is now supported as well.
+   98 users!) Older versions of other Mozilla-based applications are now
+   supported too.
  - Added support for beta versions of Firefox 4.
  - Renamed the "Auto" input method to "Mixed".
  - Overhauled the preferences dialog. The reorganized and rewritten dialog is
