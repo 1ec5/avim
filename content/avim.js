@@ -2292,9 +2292,9 @@ function AVIM()	{
 	 * 						keypress.
 	 */
 	this.onKeyPress = function(e) {
-		dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
-			 "; target: " + e.target.nodeName + "#" + e.target.id +
-			 "; originalTarget: " + e.originalTarget.nodeName + "#" + e.originalTarget.id + "\n");			// debug
+//		dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
+//			 "; target: " + e.target.nodeName + "#" + e.target.id +
+//			 "; originalTarget: " + e.originalTarget.nodeName + "#" + e.originalTarget.id + "\n");			// debug
 		var target = e.target;
 		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
