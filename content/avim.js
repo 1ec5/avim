@@ -1575,6 +1575,9 @@ function AVIM()	{
 	 */
 	this.handleKeyPress = function(e) {
 		// https://developer.mozilla.org/en/HTML/Element/input
+		// Supported <input> types are: text, search, password (if .passwords),
+		// url (if "url" or "urlbar" in .ignoredFieldIds), and email (if
+		// "e-mail" or "email" in .ignoredFieldIds).
 		const htmlTypes = ["search", "text", "textarea"];
 		
 		var el = e.originalTarget || e.target, code = e.which;
@@ -1582,7 +1585,11 @@ function AVIM()	{
 		if (e.ctrlKey || e.metaKey || e.altKey) return false;
 		if (this.findIgnore(e.target)) return false;
 		var isHTML = htmlTypes.indexOf(el.type) >= 0 ||
-			(AVIMConfig.passwords && el.type == "password");
+			(el.type == "password" && AVIMConfig.passwords) ||
+			(el.type == "url" && (AVIMConfig.exclude.indexOf("url") >= 0 ||
+								  AVIMConfig.exclude.indexOf("urlbar") >= 0)) ||
+			(el.type == "email" && (AVIMConfig.exclude.indexOf("email") >= 0 ||
+									AVIMConfig.exclude.indexOf("e-mail") >= 0));
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
 		var editor = getEditor(el);

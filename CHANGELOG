@@ -321,7 +321,7 @@ Version ${Version} (${Date})
  - Removed the French and Chinese localizations, which are not being maintained.
    If you are interested in bringing these localizations back, please contact
    Minh.
- - Added support for the HTML5 search box control (requires Firefox 4).
+ - Added support for the HTML5 search box, URL, and e-mail address controls.
  - Shift+Backspace (Shift+Del on the Mac) now removes a diacritical mark from
    the preceding word like GoTiengVietFx does.
  - Removed Bespin support, which is incompatible with recent "Bespin Reloaded"
