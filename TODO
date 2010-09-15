@@ -1,3 +1,4 @@
+ - Write bootstrap.js to load and unload AVIM without restarting. [1]
  - Use XBL or XPCOM to allow each application to share the same overlay.
  - Bug: "Ng~uye^n" (Nguyễn)
  - Bug: "kilo^me't" (kilômét)
@@ -5,9 +6,10 @@
    Composer.
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
  - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [1] Maybe limit this feature to bookmarks (FUEL), since
+   Preferences service. [2] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
- - Get the AVIM core running in Camino [2] and Chrome.
+ - Get the AVIM core running in Camino [3], Chrome, and Safari.
 
-[1] http://developer.mozilla.org/en/docs/Using_content_preferences
-[2] https://bugzilla.mozilla.org/show_bug.cgi?id=244890
+[1] https://wiki.mozilla.org/Extension_Manager:Bootstrapped_Extensions
+[2] http://developer.mozilla.org/en/docs/Using_content_preferences
+[3] https://bugzilla.mozilla.org/show_bug.cgi?id=244890
