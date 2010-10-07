@@ -1947,7 +1947,7 @@ function AVIM()	{
 	/**
 	 * Responds to changes to AVIM preferences.
 	 *
-	 * @param subject
+	 * @param subject	{object}	the nsIPrefBranch containing the preference.
 	 * @param topic		{string}	the type of event that occurred.
 	 * @param data		{string}	the name of the preference that changed.
 	 */
@@ -2369,15 +2369,16 @@ function AVIM()	{
 if (window && !("avim" in window) && !window.frameElement) {
 	window.avim = new AVIM();
 	addEventListener("load", function() {
+		if (!avim) return;
 		avim.registerPrefs();
 		avim.updateUI();
 		avim.registerSlights();
 	}, false);
 	addEventListener("unload", function() {
-		avim.unregisterPrefs();
+		if (avim) avim.unregisterPrefs();
 		delete avim;
 	}, false);
 	addEventListener("keypress", function(e) {
-		avim.onKeyPress(e);
+		if (avim) avim.onKeyPress(e);
 	}, true);
 }
