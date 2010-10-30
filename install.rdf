@@ -5,6 +5,7 @@
 		<em:type>2</em:type><!-- extension -->
 		<em:version>${Version}</em:version>
 		<em:optionsURL>chrome://avim/content/options.xul</em:optionsURL>
+		<em:unpack>true</em:unpack>
 		
 		<!-- Mozilla Firefox -->
 		<em:targetApplication>
@@ -39,7 +40,7 @@
 			<Description>
 				<em:id>{a23983c0-fd0e-11dc-95ff-0800200c9a66}</em:id>
 				<em:minVersion>0.7</em:minVersion>
-				<em:maxVersion>4.0b2pre</em:maxVersion>
+				<em:maxVersion>4.0b3pre</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
