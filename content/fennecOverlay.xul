@@ -5,6 +5,6 @@
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<vbox id="browser-controls">
-		<toolbarbutton insertbefore="tool-panel-open" id="avim-tb-enabled" class="avim-tb button-dark" type="checkbox" label="&AVIM.label;" observes="avim-enabled-bc" />
+		<toolbarbutton insertbefore="tool-panel-open" id="avim-tb-enabled" class="avim-tb button-dark button-control panel-row-button button-control" type="checkbox" label="&AVIM.label;" observes="avim-enabled-bc" style="pointer-events: inherit;" />
 	</vbox>
 </overlay>
