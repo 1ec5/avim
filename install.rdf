@@ -105,7 +105,7 @@
 			<Description>
 				<em:id>{36e66fa0-f259-11d9-850e-000d935d3368}</em:id>
 				<em:minVersion>4.0</em:minVersion>
-				<em:maxVersion>6.0.*</em:maxVersion>
+				<em:maxVersion>6.1.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		<!-- $endunless{} -->
@@ -115,7 +115,7 @@
 			<Description>
 				<em:id>{b1042fb5-9e9c-11db-b107-000d935d3368}</em:id>
 				<em:minVersion>4.0</em:minVersion>
-				<em:maxVersion>6.0.*</em:maxVersion>
+				<em:maxVersion>6.1.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
