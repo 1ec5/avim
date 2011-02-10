@@ -4,8 +4,8 @@
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
-	<!-- Status bar menu -->
-	<statusbar id="status-bar">
+	<!-- Add-on bar menu -->
+	<statusbar id="addon-bar">
 		<statusbarpanel id="avim-status" label="&AVIM.label;" disabledLabel="&avim-disabled.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" ondblclick="avim.toggle();" />
 	</statusbar>
 </overlay>

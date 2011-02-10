@@ -38,9 +38,9 @@ AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
 	
 	// SeaMonkey doesn't want to load the stylesheet along with the rest of
 	// AVIM's overlay, so we have to load it separately.
-	var document = this.window.document;
+	var doc = this.window.document;
 	var smNavUrl = "chrome://navigator/content/navigator.xul";
-	if (document.location && document.location.href == smNavUrl) {
+	if (doc.location && doc.location.href == smNavUrl) {
 		var sss = gCc["@mozilla.org/content/style-sheet-service;1"]
 			.getService(gCi.nsIStyleSheetService);
 		var ios = gCc["@mozilla.org/network/io-service;1"]
@@ -124,12 +124,11 @@ AVIM.prototype.onWindowOpen = function (window) {
 		"chrome://messenger/content/preferences/preferences.xul"
 	];
 	var handleEvent = function (event) {
-		var document = event.originalTarget;
-//		dump("onWindowOpen: " + document.location + "\n");						// debug
-		if (document.location && document.location.protocol == "chrome:" &&
-			document.contentType &&
-			xulTypes.indexOf(document.contentType) >= 0 &&
-			manifestUrls.indexOf(document.location.href) < 0) {
+		var doc = event.originalTarget;
+//		dump("onWindowOpen: " + doc.location + "\n");						// debug
+		if (doc.location && doc.location.protocol == "chrome:" &&
+			doc.contentType && xulTypes.indexOf(doc.contentType) >= 0 &&
+			manifestUrls.indexOf(doc.location.href) < 0) {
 			// Attaching an observer to loadOverlay() crashes Mozilla 1.8.x.
 			var xulVersion = gCc["@mozilla.org/xre/app-info;1"]
 				.getService(gCi.nsIXULAppInfo).platformVersion;
@@ -137,8 +136,8 @@ AVIM.prototype.onWindowOpen = function (window) {
 			if (parseFloat(xulVersion) >= 1.9) {
 				overlayObserver = new AVIMOverlayObserver(window);
 			}
-			document.loadOverlay(AVIM.getOverlayUrl(document.location.href),
-								 overlayObserver);
+			doc.loadOverlay(AVIM.getOverlayUrl(doc.location.href),
+							overlayObserver);
 		}
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 	};

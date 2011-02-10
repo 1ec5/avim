@@ -1,3 +1,4 @@
+
 /**
  * Default preferences. Be sure to update defaults/preferences/avim.js to
  * reflect any changes to the default preferences. Initially, this variable
@@ -180,6 +181,124 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Returns the current position of the cursor in the given SciMoz plugin
+	 * object.
+	 *
+	 * @param scintilla	{object}	The plugin's <xul:scintilla> tag.
+	 * @param selId	{number}	The selection range number. By default, this
+	 * 							parameter is 0 (for the main selection).
+	 * @returns {number}	The current cursor position, or -1 if the cursor
+	 * 						cannot be found.
+	 */
+	function sciMozGetCursorPosition(scintilla, selId) {
+		if ((selId || 0) >= scintilla.selections) return -1;
+		
+		var pos = scintilla.getSelectionNCaret(selId || 0);
+		var lineNum = scintilla.lineFromPosition(pos);
+		var linePos = scintilla.positionFromLine(lineNum);
+		linePos = scintilla.charPosAtPosition(linePos);
+		return scintilla.charPosAtPosition(pos) - linePos;
+		// getLineSelStartPosition()
+//		return linePos;
+	};
+	
+	/**
+	 * Retrieves the current line from the SciMoz plugin.
+	 *
+	 * @param el	{object}	The plugin's <xul:scintilla> tag.
+	 * @param selId	{number}	The selection range number. By default, this
+	 * 							parameter is 0 (for the main selection).
+	 * @returns {string}	The text of the current line.
+	 */
+	function sciMozGetLine(scintilla, selId) {
+		if ((selId || 0) >= scintilla.selections) return -1;
+		
+		var pos = scintilla.getSelectionNCaret(selId || 0);
+		var lineNum = scintilla.lineFromPosition(pos);
+		var linePos = scintilla.positionFromLine(lineNum);
+		var lineLen = scintilla.lineLength(lineNum);
+		// getLine()
+		return scintilla.getTextRange(linePos, linePos + lineLen);
+	};
+	
+	/**
+	 * Proxy for a SciMoz plugin object posing as an ordinary HTML <input>
+	 * element.
+	 *
+	 * @param elt	{object}	The <xul:scintilla> tag.
+	 * @param selId	{number}	The selection range number. By default, this
+	 * 							parameter is 0 (for the main selection).
+	 */
+	function SciMozProxy(elt, selId) {
+		if ((selId || 0) >= elt.selections) throw "No such selection.";
+		
+		this.elt = elt;
+		this.type = "text";
+		dump(">>> Before: " + elt.getSelectionNStart(selId) + "-" + elt.getSelectionNEnd(selId) + "\n");	// debug
+		this.selectionStart = scintilla.charPosAtPosition(scintilla.getSelectionNCaret(selId || 0));
+		this.selectionStart = this.selectionEnd;
+//		this.selectionEnd = elt.charPosAtPosition(elt.getSelectionNEnd(selId));
+		this.value = this.initialValue = sciMozGetLine(elt, selId);
+		dump(">>> before: " + this.value + "\n");								// debug
+		
+		/**
+		 * @returns {boolean}	True if the text changed.
+		 */
+		this.commit = function() {
+			if (this.value == this.initialValue) return false;
+			
+			// Select the entire line, up to the cursor.
+			var lineNum = elt.lineFromPosition(this.selectionStart);
+			var linePos = elt.positionFromLine(lineNum);
+			elt.setSelectionNStart(selId, elt.positionAtChar(linePos, 0));
+			var lineLen = elt.lineLength(lineNum);
+			elt.setSelectionNEnd(selId, elt.positionAtChar(linePos, lineLen));
+			dump(">>> Selected " + elt.getSelectionNStart(selId) + "-" + elt.getSelectionNEnd(selId) + "\n");	// debug
+			
+			// Replace the line's contents.
+			// delLineLeft()
+			dump(">>> Replacing '" + elt.selText + "' with '" + this.value + "'.\n");	// debug
+//			elt.replaceSel(this.value);
+			
+			// Reset the selection.
+			var startPos = elt.positionAtChar(linePos, this.selectionStart);
+			elt.setSelectionNStart(selId, startPos);
+			var endPos = elt.positionAtChar(linePos, this.selectionEnd);
+			elt.setSelectionNEnd(selId, endPos);
+			dump(">>> After: " + elt.getSelectionNStart(selId) + "-" + elt.getSelectionNEnd(selId) + "\n");	// debug
+			
+			return true;
+		};
+	};
+	
+	/**
+	 * Proxy for a SlideKit TextLayer object posing as an ordinary HTML <input>
+	 * element.
+	 */
+	function SkitProxy(skit, win) {
+		this.skit = skit;
+		this.type = "text";
+		var selectionRange = skit._selectionRange;
+		this.selectionStart = selectionRange.location;
+		this.selectionEnd = selectionRange.location + selectionRange.length;
+		var value = skit._currentParagraph.textContent;
+		this.value = value.substring(0, value.length - 1);
+//		dump(">>> before: " + this.value + "\n");								// debug
+		
+		this.commit = function() {
+//			dump(">>> after: " + this.value + "\n");								// debug
+			win.objj_msgSend(this.skit, "setTextBody:", this.value);
+			this.skit._selectionRange.location = this.selectionStart;
+			this.skit._selectionRange.length = 0;
+			win.objj_msgSend(this.skit, "selectionDidChange");
+			win.objj_msgSend(this.skit, "resize");
+			win.objj_msgSend(this.skit, "positionCaret");
+			win.objj_msgSend(this.skit, "textDidChange");
+//			dump(">>> after2: " + win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "string") + "\n");	// debug
+		};
+	};
+	
+	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
 	 * XUL or HTML element.
 	 *
@@ -187,7 +306,10 @@ function AVIM()	{
 	 * @returns	{object}	The associated nsIEditor instance.
 	 */
 	var getEditor = function(el) {
-		if (!el || el instanceof SlightCtlProxy) return undefined;
+		if (!el || el instanceof SciMozProxy || el instanceof SlightCtlProxy ||
+			el instanceof SkitProxy) {
+			return undefined;
+		}
 		if (el.editor) return el.editor;
 		try {
 			return el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
@@ -350,7 +472,7 @@ function AVIM()	{
 //			dump("\tselected from " + el.selectionStart + " to " + el.selectionEnd + "\n");	// debug
 			el.replaceSel(repl);
 			el.selectionStart = el.selectionEnd = el.positionAtChar(0, caret);
-			el.value = this.sciMozGetLine(el);
+			el.value = sciMozGetLine(el);
 			return el.selectionStart - caretPos;
 		}
 		
@@ -594,7 +716,6 @@ function AVIM()	{
 		if (tw != twE && /A[IOUY]|IA|IEU|UU|UO[UI]/.test(uw2)) return true;
 		
 		if (tw != uw && uw2 == "YEU") return true;
-		if (uk != this.method.moc && (tw == "UU" || tw == "UOU")) return true;
 		if (uk == this.method.AEO && /Ư[AEOƠ]$/.test(tw)) return true;	// ưô
 		
 		if (this.method.them.indexOf(uk) >= 0 && !/^.UYE/.test(uw2) &&
@@ -801,17 +922,14 @@ function AVIM()	{
 	 */
 	this.getCursorPosition = function(obj) {
 		// SciMoz editor
-		if (obj.type == sciMozType) {
-			var pos = obj.currentPos;
-			var linePos = obj.positionFromLine(obj.lineFromPosition(pos));
-			return obj.charPosAtPosition(pos) - obj.charPosAtPosition(linePos);
-		}
+		if (obj.type == sciMozType) return sciMozGetCursorPosition(obj);
 		
 		//// Bespin editor
 		//if (this.bespinEditor) return this.getBespinCursorPosition().col;
 		
 		// Silverlight applet or Bespin editor
-		if (obj instanceof SlightCtlProxy /* || obj instanceof BespinProxy */) {
+		if (obj instanceof SciMozProxy || obj instanceof SlightCtlProxy
+			/* || obj instanceof BespinProxy */ || obj instanceof SkitProxy) {
 			return obj.selectionStart;
 		}
 		
@@ -1136,7 +1254,8 @@ function AVIM()	{
 			this.splice(o, pos, 1 + !!r, replaceBy);
 			// Native editors only
 			if (o.type != sciMozType &&
-				!(o instanceof SlightCtlProxy /* || o instanceof BespinProxy */)) {
+				!(o instanceof SciMozProxy || o instanceof SlightCtlProxy
+				  /* || o instanceof BespinProxy */ || o instanceof SkitProxy)) {
 				o.setSelectionRange(savePos, savePos);
 				o.scrollTop = sst;
 			}
@@ -1305,8 +1424,10 @@ function AVIM()	{
 			//	this.getBespinCursorPosition().col = pos;
 			//}
 			// Silverlight applet or Bespin editor
-			else if (this.oc instanceof SlightCtlProxy /* ||
-					 this.oc instanceof BespinProxy */) {
+			else if (this.oc instanceof SciMozProxy ||
+					 this.oc instanceof SlightCtlProxy /* ||
+					 this.oc instanceof BespinProxy */ ||
+					 this.oc instanceof SkitProxy) {
 				this.oc.selectionStart = this.oc.selectionEnd = pos;
 			}
 			// Everything else
@@ -1586,10 +1707,11 @@ function AVIM()	{
 		if (this.findIgnore(e.target)) return false;
 		var isHTML = htmlTypes.indexOf(el.type) >= 0 ||
 			(el.type == "password" && AVIMConfig.passwords) ||
-			(el.type == "url" && (AVIMConfig.exclude.indexOf("url") >= 0 ||
-								  AVIMConfig.exclude.indexOf("urlbar") >= 0)) ||
-			(el.type == "email" && (AVIMConfig.exclude.indexOf("email") >= 0 ||
-									AVIMConfig.exclude.indexOf("e-mail") >= 0));
+			(el.type == "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
+								  AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
+			(el.type == "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
+									AVIMConfig.exclude.indexOf("e-mail") < 0));
+		
 		if(!isHTML || this.checkCode(code)) return false;
 		this.sk = fcc(code);
 		var editor = getEditor(el);
@@ -1621,19 +1743,6 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Retrieves the current line from the SciMoz plugin.
-	 *
-	 * @param el	{object}	The plugin's <embed> tag.
-	 * @returns {string}	The text of the current line.
-	 */
-	this.sciMozGetLine = function(el) {
-		var lineNum = el.lineFromPosition(el.currentPos);
-		var linePos = el.positionFromLine(lineNum);
-		var lineLen = el.lineLength(lineNum);
-		return el.getTextRange(linePos, linePos + lineLen);
-	};
-	
-	/**
 	 * Handles key presses in the SciMoz plugin. This function is triggered as
 	 * soon as the key goes up.
 	 *
@@ -1652,12 +1761,44 @@ function AVIM()	{
 			el.type != sciMozType || this.findIgnore(e.target)) {
 			return false;
 		}
-		el.value = this.sciMozGetLine(el);
-		this.sk = fcc(code);
-		this.start(el, e);
+//		dump("xul:scintilla:\n" + [prop for (prop in el)] + "\n");				// debug
+//		el.setSelectionNStart(0, 8);											// debug
+//		dump(">>> scimoz.getSelectionNStart: " + el.selections ? el.getSelectionNStart(0) : "" + "\n");					// debug
+		
+		el.beginUndoAction();
+		try {
+			// Fake a native textbox and keypress event.
+			var proxy = new SciMozProxy(el, 0);
+			
+			this.sk = fcc(code);
+			this.start(proxy, e);
+			
+			proxy.commit();
+			delete proxy;
+		}
+		catch (exc) {
+// $if{Debug}
+			throw exc;
+// $endif{}
+		}
+		finally {
+			el.endUndoAction();
+		}
+		
+		//el.value = sciMozGetLine(el);
+		//this.sk = fcc(code);
+		//el.beginUndoAction();
+		//this.start(el, e);
+		//el.endUndoAction();
+		//if (this.changed) {
+		//	this.changed = false;
+		//	e.stopPropagation();
+		//	this.updateContainer(el, el);
+		//	return false;
+		//}
 		if (this.changed) {
 			this.changed = false;
-			e.stopPropagation();
+			e.handled = true;
 			this.updateContainer(el, el);
 			return false;
 		}
@@ -1716,7 +1857,7 @@ function AVIM()	{
 //			delete proxy;
 //			if (avim.changed) {
 //				avim.changed = false;
-//				evt.handled = true;
+//				e.handled = true;
 //			}
 //		}
 //		catch (exc) {
@@ -1726,6 +1867,81 @@ function AVIM()	{
 //		}
 //		return true;
 //	};
+	
+	// Java applets
+	
+	this.appletKeyAdapter;
+	/**
+	 * Attaches AVIM to Java applets in the page targeted by the given DOM load
+	 * event.
+	 *
+	 * @param evt	{object}	The DOMContentLoaded event.
+	 */
+	this.registerAppletsOnPageLoad = function(evt) {
+		try {
+//			// Initialize the Java key adapter.
+//			var liveConnect = {};
+//			Components.utils.import("resource://avim/LiveConnectUtils.js",
+//									liveConnect);
+//			var uuid = "{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}";
+//			var loader = liveConnect.initWithPrivs(java, uuid,
+//												   ["AVIMKeyAdapter.jar"])[0];
+//			var adapterClass = java.lang.Class.forName("AVIMKeyAdapter", true,
+//													   loader);
+//			var adapter = adapterClass.newInstance();
+////			var aStaticMethod = aClass.getMethod('getGreetings', []); // Fails here
+////	        var greeting = aStaticMethod.invoke(null, []);
+			
+			//var adapter = $("avimJavaKeyAdapter");
+			//if (!adapter) {
+			//	adapter =
+			//		document.createElementNS("http://www.w3.org/1999/xhtml",
+			//								 "applet");
+			//	adapter.id = "avimJavaKeyAdapter";
+			//	adapter.code = "AVIMKeyAdapter.class";
+			//	adapter.width = adapter.height = 100;
+			//	document.documentElement.appendChild(adapter);
+			//}
+			
+			var docWrapper = new XPCNativeWrapper(evt.originalTarget);
+			var doc = docWrapper.wrappedJSObject;
+			var applets = doc.getElementsByTagName("applet");
+			
+			if (!this.appletKeyAdapter && applets.length) {
+				// TODO: Get the URL from the extension path.
+				var jarUrl = new Packages.java.net.URL("file://localhost/Users/mxn/Documents/Code/version/avim/trunk/content/AVIMKeyAdapter.jar");
+				var loader = new Packages.java.net.URLClassLoader([jarUrl]);
+				var clsAdapter = loader.loadClass("AVIMKeyAdapter");
+				this.appletKeyAdapter = clsAdapter.newInstance();
+			}
+			
+			dump("registerAppletsOnPageLoad -- originalTarget: " + evt.originalTarget +
+				 "; target: " + evt.target + "\n");								// debug
+			for (var i = 0; i < applets.length; i++) {
+				dump("\t> " + applets[i] + "\n");								// debug
+				applets[i].addKeyListener(this.appletKeyAdapter);
+			}
+		}
+		catch (exc) {
+// $if{Debug}
+			dump(">>> Error registering applet (" + exc.lineNumber + "): " +
+				 exc + "\n");				// debug
+			throw exc;
+// $endif{}
+		}
+	};
+	
+	/**
+	 * Attaches AVIM to Java applets whenever their containers load. This method
+	 * currently attaches only when the pages load, not when the applets are
+	 * loaded dynamically via JavaScript.
+	 */
+	this.registerApplets = function() {
+		var appcontent = document.getElementById("appcontent");   // browser
+		if (!appcontent) return;
+		appcontent.addEventListener("pageshow", this.registerAppletsOnPageLoad,
+									true);
+	};
 	
 	// Silverlight applets
 	
@@ -1916,6 +2132,51 @@ function AVIM()	{
 		if (!appcontent) return;
 		appcontent.addEventListener("pageshow", this.registerSlightsOnPageLoad,
 									true);
+	};
+	
+	// SlideKit text fields
+	
+	/**
+	 * Handles key presses in a SlideKit text field.
+	 *
+	 * @param evt	{object}		The keypress event.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleSkit = function(evt) {
+		dump("AVIM.handleSkit\n");											// debug
+		var origTarget = evt.originalTarget;
+		var doc = origTarget.ownerDocument;
+		var winWrapper = new XPCNativeWrapper(doc.defaultView);
+		var win = winWrapper.wrappedJSObject;
+		var code = evt.which;
+		if (evt.ctrlKey || evt.metaKey || evt.altKey || this.checkCode(code)) {
+			return false;
+		}
+		
+		try {
+			// Fake a native textbox and keypress event.
+			var controller = win.CPApp._mainWindow._windowController;
+			var shapeLayer = controller._slideEditor._firstResponder;
+			var proxy = new SkitProxy(shapeLayer._textLayer, win);
+			
+			this.sk = fcc(code);
+			this.start(proxy, evt);
+			
+			proxy.commit();
+			delete proxy;
+			if (this.changed) {
+				this.changed = false;
+				evt.preventDefault();
+				
+			}
+		}
+		catch (exc) {
+// $if{Debug}
+			throw exc;
+// $endif{}
+		}
+		return true;
 	};
 	
 	// Integration with Mozilla preferences service
@@ -2291,6 +2552,36 @@ function AVIM()	{
 		}
 	};
 	
+//	this.onKeyDown = function(e) {
+//		dump("AVIM.onKeyDown -- code: " + fcc(e.which) + " #" + e.which +
+//			 "; target: " + e.target.nodeName + "#" + e.target.id +
+//			 "; originalTarget: " + e.originalTarget.nodeName + "#" + e.originalTarget.id + "\n");			// debug
+//		var target = e.target;
+//		var origTarget = e.originalTarget;
+//		var doc = target.ownerDocument;
+//		if (doc.defaultView == window) doc = origTarget.ownerDocument;
+//		this.disableOthers(doc);
+//		
+//		try {
+//			var winWrapper = new XPCNativeWrapper(doc.defaultView);
+//			var win = winWrapper.wrappedJSObject;
+//			if (origTarget.localName.toLowerCase() == "html" &&
+//				"objj_msgSend" in win && "SlideEditor" in win &&
+//				"TextLayer" in win) {
+//				return this.handleSkit(e, origTarget);
+//			}
+//		}
+//		catch (exc) {
+//// $if{Debug}
+//			dump(">>> AVIM.onKeyPress -- error on line " + exc.lineNumber + ": " +
+//				 exc + "\n" + exc.stack + "\n");
+//// $endif{}
+//			return false;
+//		}
+//		
+//		return true;
+//	};
+	
 	/**
 	 * First responder for keypress events.
 	 *
@@ -2315,6 +2606,24 @@ function AVIM()	{
 		}
 		if (origTarget.localName.toLowerCase() == "embed") {
 			return this.handleSciMoz(e, origTarget);
+		}
+		
+		// SlideKit
+		try {
+			var winWrapper = new XPCNativeWrapper(doc.defaultView);
+			var win = winWrapper.wrappedJSObject;
+			if (origTarget.localName.toLowerCase() == "html" &&
+				"objj_msgSend" in win && "SlideEditor" in win &&
+				"TextLayer" in win) {
+				return this.handleSkit(e, origTarget);
+			}
+		}
+		catch (exc) {
+// $if{Debug}
+			dump(">>> AVIM.onKeyPress -- error on line " + exc.lineNumber + ": " +
+				 exc + "\n" + exc.stack + "\n");
+// $endif{}
+			return false;
 		}
 		
 //		// Bespin editor
@@ -2372,12 +2681,16 @@ if (window && !("avim" in window) && !window.frameElement) {
 		if (!avim) return;
 		avim.registerPrefs();
 		avim.updateUI();
+		avim.registerApplets();
 		avim.registerSlights();
 	}, false);
 	addEventListener("unload", function() {
 		if (avim) avim.unregisterPrefs();
 		delete avim;
 	}, false);
+	//addEventListener("keydown", function(e) {
+	//	if (avim) avim.onKeyDown(e);
+	//}, true);
 	addEventListener("keypress", function(e) {
 		if (avim) avim.onKeyPress(e);
 	}, true);
