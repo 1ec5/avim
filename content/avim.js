@@ -110,6 +110,8 @@ function AVIM()	{
 	//	};
 	//};
 	
+	var TextControlProxy = {};
+	
 	/**
 	 * Proxy for a Silverlight input control, to reduce back-and-forth between
 	 * JavaScript and Silverlight. This object supports TextBox controls only.
@@ -138,6 +140,7 @@ function AVIM()	{
 			this.ctl.selectionLength = this.selectionEnd - ctl.selectionStart;
 		};
 	};
+	SlightCtlProxy.prototype = TextControlProxy;
 	
 	/**
 	 * Returns the Gecko-compatible virtual key code for the given Silverlight
@@ -163,6 +166,8 @@ function AVIM()	{
 		return charCode;
 	};
 	
+	var TextEventProxy = {};
+	
 	/**
 	 * Proxy for a Silverlight KeyboardEventArgs object posing as a DOM Event
 	 * object.
@@ -179,27 +184,43 @@ function AVIM()	{
 		this.which = this.charCode;
 //		dump("SlightEvtProxy -- " + this.which + " = '" + fcc(this.which) + "'\n");			// debug
 	};
+	SlightEvtProxy.prototype = TextEventProxy;
 	
 	/**
 	 * Returns the current position of the cursor in the given SciMoz plugin
 	 * object.
 	 *
 	 * @param scintilla	{object}	The plugin's <xul:scintilla> tag.
-	 * @param selId	{number}	The selection range number. By default, this
-	 * 							parameter is 0 (for the main selection).
+	 * @param selId	{number}		The selection range number. By default, this
+	 *								parameter is 0 (for the main selection).
+	 * @param lineNum {number}		The line number of a line within a
+	 *								rectangular selection. Omit if the selection
+	 *								is non-rectangular.
 	 * @returns {number}	The current cursor position, or -1 if the cursor
 	 * 						cannot be found.
 	 */
-	function sciMozGetCursorPosition(scintilla, selId) {
+	function sciMozGetCursorPosition(scintilla, selId, lineNum) {
 		if ((selId || 0) >= scintilla.selections) return -1;
 		
-		var pos = scintilla.getSelectionNCaret(selId || 0);
-		var lineNum = scintilla.lineFromPosition(pos);
+		// Rectangular selection
+		if (lineNum != undefined) {
+			var caretPos = scintilla.getSelectionNCaret(0);
+			var colNum = scintilla.getColumn(caretPos);
+			var anchorPos = scintilla.getSelectionNAnchor(0);
+			if (colNum != scintilla.getColumn(anchorPos)) return -1;
+			
+			var linePos = scintilla.positionFromLine(lineNum);
+			caretPos = scintilla.findColumn(lineNum, colNum);
+			return scintilla.charPosAtPosition(caretPos) -
+				scintilla.charPosAtPosition(linePos);
+		}
+		
+		var caretPos = scintilla.getSelectionNCaret(selId || 0);
+		if (caretPos != scintilla.getSelectionNAnchor(selId || 0)) return -1;
+		lineNum = scintilla.lineFromPosition(caretPos);
 		var linePos = scintilla.positionFromLine(lineNum);
-		linePos = scintilla.charPosAtPosition(linePos);
-		return scintilla.charPosAtPosition(pos) - linePos;
-		// getLineSelStartPosition()
-//		return linePos;
+		return scintilla.charPosAtPosition(caretPos) -
+			scintilla.charPosAtPosition(linePos);
 	};
 	
 	/**
@@ -208,68 +229,145 @@ function AVIM()	{
 	 * @param el	{object}	The plugin's <xul:scintilla> tag.
 	 * @param selId	{number}	The selection range number. By default, this
 	 * 							parameter is 0 (for the main selection).
+	 * @param lineNum {number}	The line number of a line within a rectangular
+	 *							selection. Omit if the selection is
+	 *							non-rectangular.
 	 * @returns {string}	The text of the current line.
 	 */
-	function sciMozGetLine(scintilla, selId) {
+	function sciMozGetLine(scintilla, selId, lineNum) {
 		if ((selId || 0) >= scintilla.selections) return -1;
 		
-		var pos = scintilla.getSelectionNCaret(selId || 0);
-		var lineNum = scintilla.lineFromPosition(pos);
-		var linePos = scintilla.positionFromLine(lineNum);
-		var lineLen = scintilla.lineLength(lineNum);
-		// getLine()
-		return scintilla.getTextRange(linePos, linePos + lineLen);
+		// Non-rectangular selection
+		if (lineNum == undefined) {
+			var caretPos = scintilla.getSelectionNCaret(selId || 0);
+			lineNum = scintilla.lineFromPosition(caretPos);
+		}
+		
+		var startPos = scintilla.positionFromLine(lineNum);
+		var endPos = scintilla.getLineEndPosition(lineNum);
+		return scintilla.getTextRange(startPos, endPos);
 	};
 	
 	/**
 	 * Proxy for a SciMoz plugin object posing as an ordinary HTML <input>
 	 * element.
 	 *
-	 * @param elt	{object}	The <xul:scintilla> tag.
-	 * @param selId	{number}	The selection range number. By default, this
-	 * 							parameter is 0 (for the main selection).
+	 * @param elt		{object}	The <xul:scintilla> tag.
+	 * @param selId		{number}	The selection range number. By default, this
+	 * 								parameter is 0 (for the main selection).
+	 * @param lineNum	{number}	The line number of a line within a
+	 *								rectangular selection. Omit if the selection
+	 *								is non-rectangular.
 	 */
-	function SciMozProxy(elt, selId) {
-		if ((selId || 0) >= elt.selections) throw "No such selection.";
+	function SciMozProxy(elt, selId, lineNum) {
+		if ((selId || 0) >= elt.selections) return;
 		
 		this.elt = elt;
 		this.type = "text";
-		dump(">>> Before: " + elt.getSelectionNStart(selId) + "-" + elt.getSelectionNEnd(selId) + "\n");	// debug
-		this.selectionStart = scintilla.charPosAtPosition(scintilla.getSelectionNCaret(selId || 0));
-		this.selectionStart = this.selectionEnd;
-//		this.selectionEnd = elt.charPosAtPosition(elt.getSelectionNEnd(selId));
-		this.value = this.initialValue = sciMozGetLine(elt, selId);
-		dump(">>> before: " + this.value + "\n");								// debug
+//		dump("---SciMozProxy---\n");											// debug
+		
+		// Save the current selection.
+		var selectionIsRectangle = elt.selectionMode == elt.SC_SEL_RECTANGLE ||
+			elt.selectionMode == elt.SC_SEL_THIN;
+		if (selectionIsRectangle) {
+			this.oldSelectionStart = {
+				line: elt.lineFromPosition(elt.rectangularSelectionAnchor),
+				col: elt.getColumn(elt.getSelectionNAnchor(0))
+			};
+			this.oldSelectionEnd = {
+				line: elt.lineFromPosition(elt.rectangularSelectionCaret),
+				col: elt.getColumn(elt.getSelectionNCaret(0))
+			};
+		}
+		else {
+			this.oldSelectionStart = elt.getSelectionNAnchor(selId);
+			this.oldSelectionEnd = elt.getSelectionNCaret(selId);
+		}
+		
+		this.selectionStart = sciMozGetCursorPosition(elt, selId, lineNum);
+		this.selectionEnd = this.selectionStart;
+//		dump("\tselectionStart: " + this.selectionStart + "\n");				// debug
+		if (this.selectionStart < 0) return;
+		this.value = this.oldValue = sciMozGetLine(elt, selId, lineNum);
+//		dump("\t<" + this.value + ">\n");										// debug
 		
 		/**
+		 * Reselects the rectangular region that was selected prior to being
+		 * edited through this proxy.
+		 * 
+		 * @param colChange	{number}	Number of columns to the right to shift
+		 *								the caret by.
+		 */
+		this.reselectRectangle = function(colChange) {
+			elt.clearSelections();
+			
+			colChange = colChange || 0;
+			var anchor = elt.findColumn(this.oldSelectionStart.line,
+										this.oldSelectionStart.col + colChange);
+			var caret = elt.findColumn(this.oldSelectionEnd.line,
+									   this.oldSelectionEnd.col + colChange);
+			
+			elt.rectangularSelectionAnchor = anchor;
+			elt.rectangularSelectionCaret = caret;
+//			dump(">>> Selected " + this.oldSelectionStart.line + ":" +
+//				 this.oldSelectionStart.col + "-" +
+//				 this.oldSelectionEnd.line + ":" +
+//				 this.oldSelectionEnd.col + "\n");	// debug
+		};
+		
+		/**
+		 * Updates the represented editor to reflect any changes to this proxy.
+		 * 
+		 * @param beginUndoGroup	{boolean}	True to begin a new undo group.
 		 * @returns {boolean}	True if the text changed.
 		 */
 		this.commit = function() {
-			if (this.value == this.initialValue) return false;
+			if (this.value == this.oldValue) return false;
 			
 			// Select the entire line, up to the cursor.
-			var lineNum = elt.lineFromPosition(this.selectionStart);
+			if (!selectionIsRectangle) {
+				lineNum = elt.lineFromPosition(elt.getSelectionNStart(selId));
+			}
 			var linePos = elt.positionFromLine(lineNum);
-			elt.setSelectionNStart(selId, elt.positionAtChar(linePos, 0));
-			var lineLen = elt.lineLength(lineNum);
-			elt.setSelectionNEnd(selId, elt.positionAtChar(linePos, lineLen));
-			dump(">>> Selected " + elt.getSelectionNStart(selId) + "-" + elt.getSelectionNEnd(selId) + "\n");	// debug
+//			dump(">>> Line " + lineNum + ", position " + linePos + "\n");		// debug
+			if (selectionIsRectangle) elt.clearSelections();
+			elt.setSelectionNStart(selId, linePos);
+			elt.setSelectionNEnd(selId, elt.getLineEndPosition(lineNum));
+//			dump(">>> Selected " + elt.selectionStart + "-" + elt.selectionEnd + "\n");	// debug
 			
 			// Replace the line's contents.
-			// delLineLeft()
-			dump(">>> Replacing '" + elt.selText + "' with '" + this.value + "'.\n");	// debug
-//			elt.replaceSel(this.value);
+//			dump(">>> Replacing '" + elt.selText + "' with '" + this.value + "'.\n");	// debug
+			// TODO: This will trample on any other selections.
+			elt.replaceSel(this.value);
 			
 			// Reset the selection.
-			var startPos = elt.positionAtChar(linePos, this.selectionStart);
-			elt.setSelectionNStart(selId, startPos);
-			var endPos = elt.positionAtChar(linePos, this.selectionEnd);
-			elt.setSelectionNEnd(selId, endPos);
-			dump(">>> After: " + elt.getSelectionNStart(selId) + "-" + elt.getSelectionNEnd(selId) + "\n");	// debug
+			if (selectionIsRectangle) {
+				// If we're on the last line of the selection, move the caret.
+				var colChange = 0;
+				if (lineNum == Math.max(this.oldSelectionStart.line,
+										this.oldSelectionEnd.line)) {
+					colChange = this.value.length - this.oldValue.length;
+				}
+				
+				this.reselectRectangle(colChange);
+			}
+			else {
+				var colChange = this.value.length - this.oldValue.length;
+				var startPos = elt.positionAtChar(linePos, this.selectionStart +
+														   colChange);
+				elt.setSelectionNStart(selId, startPos);
+				var endPos = elt.positionAtChar(linePos, this.selectionEnd +
+														 colChange);
+				elt.setSelectionNEnd(selId, endPos);
+//				dump(">>> After: " + elt.getSelectionNStart(selId) + "-" +
+//					 elt.getSelectionNEnd(selId) + "\n");							// debug
+			}
+//			dump("\t<" + sciMozGetLine(elt, selId) + ">\n");	// debug
 			
 			return true;
 		};
 	};
+	SciMozProxy.prototype = TextControlProxy;
 	
 	/**
 	 * Proxy for a SlideKit TextLayer object posing as an ordinary HTML <input>
@@ -297,6 +395,7 @@ function AVIM()	{
 //			dump(">>> after2: " + win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "string") + "\n");	// debug
 		};
 	};
+	SkitProxy.prototype = TextControlProxy;
 	
 	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
@@ -459,23 +558,6 @@ function AVIM()	{
 	 * 						has shifted.
 	 */
 	this.splice = function(el, index, len, repl) {
-		// SciMoz plugin
-		if (el.type == sciMozType) {
-//			dump("AVIM.splice -- value: " + el.value + "; from " + index + " out " + len + ", replace '" + text(el, index, len) + "' with '" + repl + "'\n");	// debug
-			var caretPos = el.currentPos;
-			var caret = el.charPosAtPosition(caretPos);
-			var lineNum = el.lineFromPosition(caretPos);
-			var linePos = el.positionFromLine(lineNum);
-//			dump("\tline #" + lineNum + " begins at " + linePos + "\n");		// debug
-			el.selectionStart = el.positionAtChar(linePos, index);
-			el.selectionEnd = el.positionAtChar(linePos, index + len);
-//			dump("\tselected from " + el.selectionStart + " to " + el.selectionEnd + "\n");	// debug
-			el.replaceSel(repl);
-			el.selectionStart = el.selectionEnd = el.positionAtChar(0, caret);
-			el.value = sciMozGetLine(el);
-			return el.selectionStart - caretPos;
-		}
-		
 //		// Bespin editor
 //		if (this.bespinEditor) {
 //			var pos = this.getBespinCursorPosition();
@@ -552,6 +634,7 @@ function AVIM()	{
 		// Ordinary DOM editing
 		var val = el.value;
 		el.value = val.substr(0, index) + repl + val.substr(index + len);
+//		dump("splice() -- <" + val + "> -> <" + el.value + ">\n");				// debug
 		return repl.length - len;
 	};
 	
@@ -921,9 +1004,6 @@ function AVIM()	{
 	 * 						cannot be found.
 	 */
 	this.getCursorPosition = function(obj) {
-		// SciMoz editor
-		if (obj.type == sciMozType) return sciMozGetCursorPosition(obj);
-		
 		//// Bespin editor
 		//if (this.bespinEditor) return this.getBespinCursorPosition().col;
 		
@@ -998,6 +1078,7 @@ function AVIM()	{
 		}
 		
 		var w = this.mozGetText(obj);
+//		dump(">>> start() -- w: <" + w + ">\n");								// debug
 		if (key.keyCode == 8 /* Backspace */ && key.shiftKey) key = "";
 		else key = fcc(key.which);
 		if (!w || ("sel" in obj && obj.sel)) return;
@@ -1253,9 +1334,8 @@ function AVIM()	{
 			}
 			this.splice(o, pos, 1 + !!r, replaceBy);
 			// Native editors only
-			if (o.type != sciMozType &&
-				!(o instanceof SciMozProxy || o instanceof SlightCtlProxy
-				  /* || o instanceof BespinProxy */ || o instanceof SkitProxy)) {
+			if (!(o instanceof SciMozProxy || o instanceof SlightCtlProxy
+				/* || o instanceof BespinProxy */ || o instanceof SkitProxy)) {
 				o.setSelectionRange(savePos, savePos);
 				o.scrollTop = sst;
 			}
@@ -1390,10 +1470,6 @@ function AVIM()	{
 			var c = skey[h % 24];
 			var sp = this.oc.selectionStart;
 			var end = this.oc.selectionEnd;
-			if (this.oc.type == sciMozType /* || this.bespinEditor */) {
-				sp = end = this.getCursorPosition(this.oc);
-//				dump("AVIM.normC -- sp: " + sp + "; end: " + end + "\n");		// debug
-			}
 			var pos = sp;
 			w = this.unV(w);
 			if(!this.changed) {
@@ -1413,12 +1489,6 @@ function AVIM()	{
 				}
 			}
 			
-			// SciMoz plugin
-			if (this.oc.type == sciMozType) {
-				var lineNum = this.oc.lineFromPosition(this.oc.currentPos);
-				var linePos = this.oc.positionFromLine(lineNum);
-				this.oc.currentPos = this.oc.positionAtChar(linePos, pos);
-			}
 			//// Bespin editor
 			//else if (this.bespinEditor) {
 			//	this.getBespinCursorPosition().col = pos;
@@ -1767,14 +1837,39 @@ function AVIM()	{
 		
 		el.beginUndoAction();
 		try {
-			// Fake a native textbox and keypress event.
-			var proxy = new SciMozProxy(el, 0);
+			// Fake a native textbox and keypress event for each selection.
+			var firstSel = 0;
+			var numSel = el.selections;
 			
-			this.sk = fcc(code);
-			this.start(proxy, e);
+			// Komodo only seems to support one selection at a time, but it does
+			// support rectangular selection.
+			var selectionIsRectangle = el.selectionMode == el.SC_SEL_RECTANGLE ||
+				el.selectionMode == el.SC_SEL_THIN;
+			if (selectionIsRectangle) {
+				var startLine = el.lineFromPosition(el.rectangularSelectionAnchor);
+				var endLine = el.lineFromPosition(el.rectangularSelectionCaret);
+				firstSel = Math.min(startLine, endLine);
+				numSel = Math.abs(endLine - startLine) + 1;
+//				dump(">>> Rectangular selection, lines " + firstSel + "-" +
+//					 (firstSel + numSel) + "\n");	// debug
+			}
 			
-			proxy.commit();
-			delete proxy;
+			var anyChanged = this.changed;
+			var proxy;
+			for (var i = firstSel; i < firstSel + numSel; i++) {
+				if (selectionIsRectangle) proxy = new SciMozProxy(el, 0, i);
+				else proxy = new SciMozProxy(el, i);
+				if (!proxy) continue;
+				
+				this.sk = fcc(code);
+				this.start(proxy, e);
+				
+				if (this.changed) anyChanged = true;
+				if (proxy.commit) proxy.commit();
+				delete proxy;
+				this.changed = false;
+			}
+			this.changed = anyChanged;
 		}
 		catch (exc) {
 // $if{Debug}
@@ -1785,20 +1880,10 @@ function AVIM()	{
 			el.endUndoAction();
 		}
 		
-		//el.value = sciMozGetLine(el);
-		//this.sk = fcc(code);
-		//el.beginUndoAction();
-		//this.start(el, e);
-		//el.endUndoAction();
-		//if (this.changed) {
-		//	this.changed = false;
-		//	e.stopPropagation();
-		//	this.updateContainer(el, el);
-		//	return false;
-		//}
 		if (this.changed) {
 			this.changed = false;
 			e.handled = true;
+			e.stopPropagation();
 			this.updateContainer(el, el);
 			return false;
 		}
