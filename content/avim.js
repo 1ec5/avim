@@ -1928,80 +1928,6 @@ function AVIM()	{
 		return true;
 	};
 	
-	// Java applets
-	
-	this.appletKeyAdapter;
-	/**
-	 * Attaches AVIM to Java applets in the page targeted by the given DOM load
-	 * event.
-	 *
-	 * @param evt	{object}	The DOMContentLoaded event.
-	 */
-	this.registerAppletsOnPageLoad = function(evt) {
-		try {
-//			// Initialize the Java key adapter.
-//			var liveConnect = {};
-//			Cu.import("resource://avim/LiveConnectUtils.js", liveConnect);
-//			var uuid = "{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}";
-//			var loader = liveConnect.initWithPrivs(java, uuid,
-//												   ["AVIMKeyAdapter.jar"])[0];
-//			var adapterClass = java.lang.Class.forName("AVIMKeyAdapter", true,
-//													   loader);
-//			var adapter = adapterClass.newInstance();
-////			var aStaticMethod = aClass.getMethod('getGreetings', []); // Fails here
-////	        var greeting = aStaticMethod.invoke(null, []);
-			
-			//var adapter = $("avimJavaKeyAdapter");
-			//if (!adapter) {
-			//	adapter =
-			//		document.createElementNS("http://www.w3.org/1999/xhtml",
-			//								 "applet");
-			//	adapter.id = "avimJavaKeyAdapter";
-			//	adapter.code = "AVIMKeyAdapter.class";
-			//	adapter.width = adapter.height = 100;
-			//	document.documentElement.appendChild(adapter);
-			//}
-			
-			var docWrapper = new XPCNativeWrapper(evt.originalTarget);
-			var doc = docWrapper.wrappedJSObject;
-			var applets = doc.getElementsByTagName("applet");
-			
-			if (!this.appletKeyAdapter && applets.length) {
-				// TODO: Get the URL from the extension path.
-				var jarUrl = new Packages.java.net.URL("file://localhost/Users/mxn/Documents/Code/version/avim/trunk/content/AVIMKeyAdapter.jar");
-				var loader = new Packages.java.net.URLClassLoader([jarUrl]);
-				var clsAdapter = loader.loadClass("AVIMKeyAdapter");
-				this.appletKeyAdapter = clsAdapter.newInstance();
-			}
-			
-			dump("registerAppletsOnPageLoad -- originalTarget: " + evt.originalTarget +
-				 "; target: " + evt.target + "\n");								// debug
-			for (var i = 0; i < applets.length; i++) {
-				dump("\t> " + applets[i] + "\n");								// debug
-				applets[i].addKeyListener(this.appletKeyAdapter);
-			}
-		}
-		catch (exc) {
-// $if{Debug}
-			dump(">>> Error registering applet (" + exc.lineNumber + "): " +
-				 exc + "\n");				// debug
-			throw exc;
-// $endif{}
-		}
-	};
-	
-	/**
-	 * Attaches AVIM to Java applets whenever their containers load. This method
-	 * currently attaches only when the pages load, not when the applets are
-	 * loaded dynamically via JavaScript.
-	 */
-	this.registerApplets = function() {
-		var appcontent = document.getElementById("appcontent");   // browser
-		if (!appcontent) return;
-		appcontent.addEventListener("pageshow", this.registerAppletsOnPageLoad,
-									true);
-	};
-	
 	// Silverlight applets
 	
 	/**
@@ -2790,7 +2716,6 @@ if (window && !("avim" in window) && !window.frameElement) {
 		if (!avim) return;
 		avim.registerPrefs();
 		avim.updateUI();
-		avim.registerApplets();
 		avim.registerSlights();
 	}, false);
 	addEventListener("unload", function() {
