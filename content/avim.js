@@ -2493,32 +2493,26 @@ function AVIM()	{
 	var frameMarkers = ["MVietOnOffButton", "DAWEOF"];
 	
 	/**
-	 * Given a context and marker, disables the Vietnamese JavaScript input
-	 * method editor (IME) with that marker.
+	 * Given a marker and sandboxed contexts, disables the Vietnamese JavaScript
+	 * input method editor (IME) with that marker.
 	 *
-	 * @param doc		{object}	An HTML document node.
-	 * @param marker	{object}	A JavaScript object (possibly a function)
-	 * 								that indicates the presence of the IME.
+	 * @param marker		{object}	A JavaScript object (possibly a
+	 *									function) that indicates the presence of
+	 *									the IME.
+	 * @param sandbox		{object}	JavaScript sandbox in the current page's
+	 *									context.
+	 * @param parentSandbox	{object}	JavaScript sandbox in the parent page's
+	 *									context.
 	 * @returns {boolean}	True if the disabler ran without errors (possibly
 	 * 						without effect); false if errors were raised.
 	 */
-	this.disableOther = function(doc, marker) {
-		// Since wrappedJSObject is only safe in Firefox 3 and above, sandbox
-		// all operations on it.
-		var winWrapper = new XPCNativeWrapper(doc.defaultView);
-		var win = winWrapper.wrappedJSObject;
-		if (!win || win == window) return false;
-		
+	this.disableOther = function(marker, sandbox, parentSandbox) {
 		try {
 			// Get the disabling code.
 			var disabler = markers[marker];
 			var js = disabler();
 			if (!js) return false;
-			
-			// Create a sandbox to execute the code in.
-//			dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
-			var sandbox = new Cu.Sandbox(doc.location.href);
-			sandbox.window = win;
+			js = js.replace("marker", "window." + marker, "g");
 			
 			// Try to disable the IME in the current document.
 			var hasMarker = false;
@@ -2528,31 +2522,20 @@ function AVIM()	{
 			}
 			catch (exc) {}
 			if (hasMarker) {
-				Cu.evalInSandbox(js.replace("marker", "window." + marker, "g"),
-								 sandbox);
+				Cu.evalInSandbox(js, sandbox);
 				return true;
 			}
 			
-			// Some IMEs are applied to rich textareas in iframes. See if that's
-			// the case.
-			win = winWrapper.frameElement && winWrapper.parent.wrappedJSObject;
-			if (!win) return false;
-			
-			// Create a new sandbox based on the parent document's URL.
-			var parentUrl = winWrapper.parent.location.href;
-//			dump("outer sandbox URL: " + parentUrl + "\n");								// debug
-			sandbox = new Cu.Sandbox(parentUrl);
-			sandbox.window = win;
-			
 			// Try to disable the IME in the parent document.
+			if (!parentSandbox) return false;
 			hasMarker = false;
 			try {
-				hasMarker = Cu.evalInSandbox("marker in window",
-											 sandbox) === true;
+				hasMarker = Cu.evalInSandbox("'" + marker + "' in window",
+											 parentSandbox) === true;
 			}
 			catch (exc) {}
 			if (hasMarker) {
-				Cu.evalInSandbox(js, sandbox);
+				Cu.evalInSandbox(js, parentSandbox);
 				return true;
 			}
 			return false;
@@ -2576,20 +2559,31 @@ function AVIM()	{
 	this.disableOthers = function(doc) {
 		if (!AVIMConfig.onOff || !AVIMConfig.disabledScripts.enabled) return;
 		
-		for (var marker in markers) {
-			if (this.disableOther(doc, marker)) return;
+		// Since wrappedJSObject is only safe in Firefox 3 and above, sandbox
+		// all operations on it.
+		var winWrapper = new XPCNativeWrapper(doc.defaultView);
+		var win = winWrapper.wrappedJSObject;
+		if (!win || win == window) return false;
+		
+		// Create a sandbox to execute the code in.
+//		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
+		var sandbox = new Cu.Sandbox(doc.location.href);
+		sandbox.window = win;
+		
+		// Some IMEs are applied to rich textareas in iframes. Create a new
+		// sandbox based on the parent document's URL.
+		var parentSandbox;
+		win = winWrapper.frameElement && winWrapper.parent.wrappedJSObject;
+		if (win) {
+//			dump("outer sandbox URL: " + winWrapper.parent.location.href + "\n");	// debug
+			parentSandbox = new Cu.Sandbox(winWrapper.parent.location.href);
+			parentSandbox.window = win;
 		}
 		
-//		// Some IMEs are applied to rich textareas in iframes.
-//		var winWrapper = new XPCNativeWrapper(doc.defaultView);
-//		dump(">>> frameElement: " + winWrapper.frameElement + "\n");					// debug
-//		var win = winWrapper.wrappedJSObject;
-//		if (!win || win == window) return;
-//		if (!win.frameElement) return;
-//		win = win.parent;
-//		for each (var marker in frameMarkers) {
-//			if (marker in win && this.disableOther(doc, marker)) return;
-//		}
+		for (var marker in markers) {
+			if (this.disableOther(marker, sandbox, parentSandbox)) return;
+		}
+		delete sandbox, parentSandbox;
 	};
 	
 //	this.onKeyDown = function(e) {
