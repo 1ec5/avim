@@ -1,8 +1,7 @@
  - Write bootstrap.js to load and unload AVIM without restarting. [1]
- - Support range selection in SciMoz.
  - Use XBL or XPCOM to allow each application to share the same overlay.
  - Make AVIM compatible with editors that do custom key event handling, like
-   Mozilla Skywriter (Bespin), 280slides [2], and textile-editor [3].
+   Ace (Bespin/Skywriter), 280slides [2], and textile-editor [3].
  - Bug: "Ng~uye^n" (Nguyễn)
  - Bug: "kilo^me't" (kilômét)
  - Bug: "xoa" (xoá), "Ng" (Ng~) in rich text editors, including Thunderbird and

@@ -9,6 +9,7 @@ var AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 function AVIM()	{
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
+	const Cu = Components.utils;
 	
 	this.methods = {
 		telex: {
@@ -56,7 +57,6 @@ function AVIM()	{
 	
 	const sciMozType = "application/x-scimoz-plugin";
 	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
-	//const bespinClass = "bespin.editor.API";
 	
 	// Local functions that don't require access to AVIM's fields.
 	
@@ -79,38 +79,60 @@ function AVIM()	{
 		return isNaN(w) || w == 'e';
 	};
 	
-	///**
-	// * Proxy for a Bespin editor, to encapsulate the oft-changing Bespin API
-	// * while posing as an ordinary HTML <textarea>.
-	// *
-	// * @param elt		{object}	The main <canvas> element's DOM node.
-	// * @param bespin	{object}	The Bespin editor object represented by this
-	// * 								proxy.
-	// */
-	//function BespinProxy(elt, bespin) {
-	//	this.elt = elt;
-	//	this.type = "textarea";
-	//	
-	//	var sel = bespin.view.getSelectedRange();
-	//	if (sel.start.row != sel.end.row) throw "Multiline selection";
-	//	this.selectionStart = sel.start.col;
-	//	this.selectionEnd = sel.end.col;
-	//	this.value =
-	//		bespin.model.lines[sel.start.row].substring(0, sel.end.col);
-	//	
-	//	/**
-	//	 * Updates the Bespin editor represented by this proxy to reflect any
-	//	 * changes made to the proxy.
-	//	 */
-	//	this.commit = function() {
-	//		bespin.model.replaceCharacters(sel, this.value);
-	//		sel.start.col = this.selectionStart;
-	//		sel.end.col = this.selectionEnd;
-	//		bespin.view.setSelection(sel);
-	//	};
-	//};
+	/**
+	 * Proxy for a specialized editor to appear as an ordinary HTML text field
+	 * control to the rest of the AVIM codebase.
+	 */
+	function TextControlProxy() {}
 	
-	var TextControlProxy = {};
+	/**
+	 * Proxy for an external toolkit's key events to appear as ordinary DOM key
+	 * events to the rest of the AVIM codebase.
+	 */
+	function TextEventProxy() {}
+	
+	/**
+	 * Proxy for an Ace editor, to encapsulate the oft-renamed
+	 * Bespin/Skywriter/Ace API while posing as an ordinary HTML <textarea>.
+	 * 
+	 * @param elt	{object}	The DOM element the editor is attached to.
+	 * @param env	{object}	Environment object (evt) for the editor
+	 *							represented by this proxy.
+	 */
+	function AceProxy(elt, env) {
+		this.elt = elt;
+		this.type = "text";
+		
+		if (env.document.selection.selectionAnchor) throw "Non-empty selection";
+		this.oldSelectionStart = env.document.selection.selectionLead;
+		this.oldSelectionEnd = this.oldSelectionStart;
+		this.selectionStart = this.selectionEnd = this.oldSelectionStart.column;
+		
+		this.oldValue = env.document.getLine(this.oldSelectionStart.row);
+		this.value = this.oldValue;
+		
+		dump("\tselection: " + this.oldSelectionStart.row + ":" + this.oldSelectionStart.column + "\n");	// debug
+		dump("\t<" + this.oldValue + ">");
+		
+		/**
+		 * Updates the Ace editor represented by this proxy to reflect any
+		 * changes made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+			if (this.value == this.oldValue) return false;
+			
+			dump("Replacing <" + env.document.doc.$lines[this.oldSelectionStart.row].substring(0, 10) + "> ");	// debug
+			env.document.doc.$lines[this.oldSelectionStart.row] = this.value;
+			dump("with <" + env.document.doc.$lines[this.oldSelectionStart.row] + ">\n");	// debug
+			var colChange = this.value.length - this.oldValue.length;
+			env.document.selection.moveCursorBy(0, colChange);
+			dump("selection: " + env.document.selection.selectionLead.row + ":" +
+				 env.document.selection.selectionLead.column + "\n");			// debug
+		};
+	};
+	AceProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Proxy for a Silverlight input control, to reduce back-and-forth between
@@ -140,7 +162,7 @@ function AVIM()	{
 			this.ctl.selectionLength = this.selectionEnd - ctl.selectionStart;
 		};
 	};
-	SlightCtlProxy.prototype = TextControlProxy;
+	SlightCtlProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Returns the Gecko-compatible virtual key code for the given Silverlight
@@ -166,8 +188,6 @@ function AVIM()	{
 		return charCode;
 	};
 	
-	var TextEventProxy = {};
-	
 	/**
 	 * Proxy for a Silverlight KeyboardEventArgs object posing as a DOM Event
 	 * object.
@@ -184,7 +204,7 @@ function AVIM()	{
 		this.which = this.charCode;
 //		dump("SlightEvtProxy -- " + this.which + " = '" + fcc(this.which) + "'\n");			// debug
 	};
-	SlightEvtProxy.prototype = TextEventProxy;
+	SlightEvtProxy.prototype = new TextEventProxy();
 	
 	/**
 	 * Returns the current position of the cursor in the given SciMoz plugin
@@ -367,24 +387,49 @@ function AVIM()	{
 			return true;
 		};
 	};
-	SciMozProxy.prototype = TextControlProxy;
+	SciMozProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Proxy for a SlideKit TextLayer object posing as an ordinary HTML <input>
 	 * element.
 	 */
 	function SkitProxy(skit, win) {
+//		{"format":"rosstf","version":3.1,"content":
+//			[
+//				{"list":false,"depth":0,"ordered":false,"content":
+//					[
+//						{"content":"s","style":
+//							{"size":48,"color":"FFFFFF","name":"Arial","bold":2,"italic":2,"underline":1}
+//						},
+//						{"content":"d","style":
+//							{"size":48,"color":"FFFFFF","name":"Arial","bold":1,"italic":2,"underline":1}
+//						},
+//						{"content":"f","style":
+//							{"size":48,"color":"FFFFFF","name":"Arial","bold":2,"italic":1,"underline":2}
+//						}
+//					 ],
+//				 "align":"center"
+//				}
+//			 ]
+//		}
+		
 		this.skit = skit;
 		this.type = "text";
 		var selectionRange = skit._selectionRange;
 		this.selectionStart = selectionRange.location;
 		this.selectionEnd = selectionRange.location + selectionRange.length;
+		this.innerHTML = win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "html");
 		var value = skit._currentParagraph.textContent;
+//		this.value = win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "string");
 		this.value = value.substring(0, value.length - 1);
 //		dump(">>> before: " + this.value + "\n");								// debug
 		
 		this.commit = function() {
-//			dump(">>> after: " + this.value + "\n");								// debug
+			dump(">>> after: " + this.value + "\n");								// debug
+//			var innerHTML = win.objj_msgSend(new SKTextString(),
+//											 "initWithTextLayer:html:isEmpty:",
+//											 this.skit, this.innerHTML,
+//											 this.innerHTML.length > 0);
 			win.objj_msgSend(this.skit, "setTextBody:", this.value);
 			this.skit._selectionRange.location = this.selectionStart;
 			this.skit._selectionRange.length = 0;
@@ -392,10 +437,10 @@ function AVIM()	{
 			win.objj_msgSend(this.skit, "resize");
 			win.objj_msgSend(this.skit, "positionCaret");
 			win.objj_msgSend(this.skit, "textDidChange");
-//			dump(">>> after2: " + win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "string") + "\n");	// debug
+			dump(">>> after2: " + win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "string") + "\n");	// debug
 		};
 	};
-	SkitProxy.prototype = TextControlProxy;
+	SkitProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
@@ -405,8 +450,7 @@ function AVIM()	{
 	 * @returns	{object}	The associated nsIEditor instance.
 	 */
 	var getEditor = function(el) {
-		if (!el || el instanceof SciMozProxy || el instanceof SlightCtlProxy ||
-			el instanceof SkitProxy) {
+		if (!el || el instanceof TextControlProxy) {
 			return undefined;
 		}
 		if (el.editor) return el.editor;
@@ -558,33 +602,6 @@ function AVIM()	{
 	 * 						has shifted.
 	 */
 	this.splice = function(el, index, len, repl) {
-//		// Bespin editor
-//		if (this.bespinEditor) {
-//			var pos = this.getBespinCursorPosition();
-////			pos = {row: pos.row, col: pos.col}; // copy
-//			var actions = this.bespinEditor.ui.actions;
-//			if ("deleteChunkAndInsertChunkAndSelect" in actions) {
-//				// Bespin 0.1-0.3
-//				actions.deleteChunkAndInsertChunkAndSelect({
-//					pos: {row: pos.row, col: index},
-//					endPos: {row: pos.row, col: index + len},
-//					queued: true,
-//					chunk: repl
-//				});
-//			}
-//			else {
-//				// Bespin 0.4
-//				actions.select({
-//					startPos: {row: pos.row, col: index},
-//					endPos: {row: pos.row, col: index + len}
-//				});
-//				actions.insertChunk({chunk: repl});
-//			}
-//			pos.col += repl.length - len;
-//			actions.select({startPos: pos, endPos: pos});
-//			return repl.length - len;
-//		}
-		
 		// Anonymous node-based editing
 		try {
 			var editor = getEditor(el);
@@ -691,7 +708,6 @@ function AVIM()	{
 	this.kl = 0;
 	this.range = null;
 	this.whit = false;
-	//this.bespinEditor = null;
 	
 	/**
 	 * Returns whether the given word, taking into account the given dead key,
@@ -980,21 +996,6 @@ function AVIM()	{
 			AVIMConfig.statusBarPanel ? "-moz-box" : "none";
 	};
 	
-	///**
-	// * Returns the current row and column of the cursor in Bespin. Note that
-	// * unlike getCursorPosition(), this method returns the full position in the
-	// * editor grid, not just an index from the start of the line.
-	// *
-	// * @returns {number}	The current cursor position, or -1 if the cursor
-	// * 						cannot be found.
-	// */
-	//this.getBespinCursorPosition = function() {
-	//	if ("cursorPosition" in this.bespinEditor) {
-	//		return this.bespinEditor.cursorPosition;
-	//	}
-	//	return this.bespinEditor.cursorManager.position;
-	//};
-	
 	/**
 	 * Returns the current position of the cursor in the given textbox.
 	 *
@@ -1004,16 +1005,10 @@ function AVIM()	{
 	 * 						cannot be found.
 	 */
 	this.getCursorPosition = function(obj) {
-		//// Bespin editor
-		//if (this.bespinEditor) return this.getBespinCursorPosition().col;
+		// Specialized control
+		if (obj instanceof TextControlProxy) return obj.selectionStart;
 		
-		// Silverlight applet or Bespin editor
-		if (obj instanceof SciMozProxy || obj instanceof SlightCtlProxy
-			/* || obj instanceof BespinProxy */ || obj instanceof SkitProxy) {
-			return obj.selectionStart;
-		}
-		
-		// Everything else
+		// Anything else
 		var data = (obj.data) ? obj.data : text(obj);
 		if (!data || !data.length) return -1;
 		if (obj.data) return obj.pos;
@@ -1334,8 +1329,7 @@ function AVIM()	{
 			}
 			this.splice(o, pos, 1 + !!r, replaceBy);
 			// Native editors only
-			if (!(o instanceof SciMozProxy || o instanceof SlightCtlProxy
-				/* || o instanceof BespinProxy */ || o instanceof SkitProxy)) {
+			if (!(o instanceof TextControlProxy)) {
 				o.setSelectionRange(savePos, savePos);
 				o.scrollTop = sst;
 			}
@@ -1489,18 +1483,11 @@ function AVIM()	{
 				}
 			}
 			
-			//// Bespin editor
-			//else if (this.bespinEditor) {
-			//	this.getBespinCursorPosition().col = pos;
-			//}
-			// Silverlight applet or Bespin editor
-			else if (this.oc instanceof SciMozProxy ||
-					 this.oc instanceof SlightCtlProxy /* ||
-					 this.oc instanceof BespinProxy */ ||
-					 this.oc instanceof SkitProxy) {
+			// Specialized control
+			else if (this.oc instanceof TextControlProxy) {
 				this.oc.selectionStart = this.oc.selectionEnd = pos;
 			}
-			// Everything else
+			// Anything else
 			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			
 			if(!this.ckspell(w, fS)) {
@@ -1890,68 +1877,56 @@ function AVIM()	{
 		return true;
 	};
 	
-	///**
-	// * Retrieves the current line from the Bespin editor.
-	// *
-	// * @returns {string}	The text of the current line.
-	// */
-	//this.bespinGetLine = function() {
-	//	var pos = this.getBespinCursorPosition();
-	//	return this.bespinEditor.model.getRowArray(pos.row).join("");
-	//};
-	
-//	/**
-//	 * Handles key presses in the Bespin editor. This function is triggered as
-//	 * soon as the key goes up.
-//	 *
-//	 * @param e		{object}	The keypress event.
-//	 * @param el	{object}	The DOM element node that represents the Bespin
-//	 * 							editor. Defaults to the given event's original
-//	 * 							target.
-//	 * @returns {boolean}	True if AVIM plans to modify the input; false
-//	 * 						otherwise.
-//	 */
-//	this.handleBespin = function(e, el) {
-//		dump("AVIM.handleBespin\n");											// debug
-//		if (!el) el = e.originalTarget;
-//		var code = e.which;
-//		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
-//			this.findIgnore(e.target)) {
-//			return false;
-//		}
-////		el.value = this.bespinGetLine();
-//////		dump("AVIM.handleBespin -- value: " + el.value + "\n");				// debug
-////		this.sk = fcc(code);
-////		this.start(el, e);
-////		if (this.changed) {
-////			this.changed = false;
-////			e.stopPropagation();
-//////			this.updateContainer(el, el);
-////			return false;
-////		}
-////		return true;
-//		
-//		try {
-//			// Fake a native textbox and keypress event.
-//			var proxy = new BespinProxy(el, el.ownerDocument.defaultView.bespin);
-//			
-//			avim.sk = fcc(code);
-//			avim.start(proxy, e);
-//			
-//			proxy.commit();
-//			delete proxy;
-//			if (avim.changed) {
-//				avim.changed = false;
-//				e.handled = true;
-//			}
-//		}
-//		catch (exc) {
-//// $if{Debug}
-//			throw exc;
-//// $endif{}
-//		}
-//		return true;
-//	};
+	/**
+	 * Handles key presses in the Ace editor. This function is triggered as soon
+	 * soon as the key goes up.
+	 *
+	 * @param evt	{object}	The keypress event.
+	 * @param elt	{object}	The DOM element node that represents the Ace
+	 * 							editor. Defaults to the given event's original
+	 * 							target.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleAce = function(evt, elt) {
+		dump("AVIM.handleAce\n");												// debug
+		if (!elt) elt = evt.originalTarget;
+		var code = evt.which;
+		if (evt.ctrlKey || evt.metaKey || evt.altKey || this.checkCode(code) ||
+			this.findIgnore(evt.target)) {
+			return false;
+		}
+		
+		try {
+			// Fake a native textbox.
+			dump("---AceProxy---\n");												// debug
+//			var aceWrapper = new XPCNativeWrapper(elt);
+//			dump("aceWrapper.wrappedJSObject:\n");	// debug
+//			for (var name in aceWrapper) dump("\t" + name + ": " + aceWrapper.wrappedJSObject[name] + "\n");	// debug
+			// TODO: No access to evt from here, even through wrappedJSObject.
+			var proxy = new AceProxy(elt, elt.evt);
+			
+			this.sk = fcc(code);
+			this.start(proxy, evt);
+			
+			proxy.commit();
+			delete proxy;
+		}
+		catch (exc) {
+// $if{Debug}
+			throw exc;
+// $endif{}
+		}
+		
+		if (this.changed) {
+			this.changed = false;
+			evt.handled = true;
+			evt.stopPropagation();
+			this.updateContainer(elt, elt);
+			return false;
+		}
+		return true;
+	};
 	
 	// Java applets
 	
@@ -1966,8 +1941,7 @@ function AVIM()	{
 		try {
 //			// Initialize the Java key adapter.
 //			var liveConnect = {};
-//			Components.utils.import("resource://avim/LiveConnectUtils.js",
-//									liveConnect);
+//			Cu.import("resource://avim/LiveConnectUtils.js", liveConnect);
 //			var uuid = "{2B8EFF80-1240-11DB-BF6C-934CD2EFDFE8}";
 //			var loader = liveConnect.initWithPrivs(java, uuid,
 //												   ["AVIMKeyAdapter.jar"])[0];
@@ -2480,76 +2454,79 @@ function AVIM()	{
 		// checks if the disabler can halt on error without failing to reach
 		// independent statements.
 		
-		AVIM: function(win, AVIMObj) {
-			if (!AVIMConfig.disabledScripts.AVIM) return;
-			AVIMObj.setMethod(-1);
+		AVIM: function() {
+			return AVIMConfig.disabledScripts.AVIM &&
+				"marker.setMethod(-1)";
 		},
-		Google: function(win, google) {
-			if (!AVIMConfig.disabledScripts.Google) return;
-			if (!("keyboard" in google.elements)) return;
-			google.elements.keyboard.Keyboard.prototype.setVisible(false);
+		Google: function() {
+			return AVIMConfig.disabledScripts.Google &&
+				"if ('keyboard' in marker.elements)" +
+					"marker.elements.keyboard.Keyboard.prototype." +
+						"setVisible(false);";
 		},
-		CHIM: function(win, CHIM) {
-			if (!AVIMConfig.disabledScripts.CHIM) return;
-			if (parseInt(CHIM.method) == 0) return;
-			CHIM.SetMethod(0);
+		CHIM: function() {
+			return AVIMConfig.disabledScripts.CHIM &&
+				"if (window.parseInt(marker.method))" +
+					"marker.SetMethod(0);";
 		},
-		HIM: function(win) {
-			if (!AVIMConfig.disabledScripts.AVIM) return;
-			if ("setMethod" in win) win.setMethod(-1);
-			win.on_off = 0;
+		HIM: function() {
+			return AVIMConfig.disabledScripts.AVIM &&
+				"if ('setMethod' in window) window.setMethod(-1);" +
+				"window.on_off = 0;";
 		},
-		Mudim: function(win, Mudim) {
-			if (!AVIMConfig.disabledScripts.Mudim) return;
-			if (parseInt(Mudim.method) == 0) return;
-			if ("Toggle" in Mudim) Mudim.Toggle();
-			else win.CHIM.Toggle();
+		Mudim: function() {
+			return AVIMConfig.disabledScripts.Mudim &&
+				"if (window.parseInt(marker.method) == 0) return;" +
+				"if ('Toggle' in marker) marker.Toggle();" +
+				"else window.CHIM.Toggle();";
 		},
-		MViet: function(win) {
-			if (!AVIMConfig.disabledScripts.MViet) return;
-			if (typeof(win.MVOff) == "boolean" && win.MVOff) return;
-			if ("MVietOnOffButton" in win &&
-				win.MVietOnOffButton instanceof Function) {
-				win.MVietOnOffButton();
-			}
-			else if ("button" in win) win.button(0);
+		MViet: function() {
+			return AVIMConfig.disabledScripts.MViet &&
+				"if (typeof(window.MVOff) == 'boolean' && window.MVOff) {" +
+					"return;" +
+				"}" +
+				"if ('MVietOnOffButton' in window &&" +
+					"window.MVietOnOffButton instanceof Function) {" +
+					"window.MVietOnOffButton();" +
+				"}" +
+				"else if ('button' in window) window.button(0);";
 		},
-		VietIMEW: function(win) {
-			if (!AVIMConfig.disabledScripts.VietIMEW) return;
-			if (!("VietIME" in win)) return;
-			for (var memName in win) {
-				var mem = win[memName];
-				if (mem.setTelexMode != undefined &&
-					mem.setNormalMode != undefined) {
-					mem.setNormalMode();
-					break;
-				}
-			}
+		VietIMEW: function() {
+			return AVIMConfig.disabledScripts.VietIMEW &&
+				"if (!('VietIME' in window)) return;" +
+				"for (var memName in window) {" +
+					"var mem = window[memName];" +
+					"if (mem.setTelexMode != undefined &&" +
+						"mem.setNormalMode != undefined) {" +
+						"mem.setNormalMode();" +
+						"break;" +
+					"}" +
+				"}";
 		},
-		VietTyping: function(win) {
-			if (!AVIMConfig.disabledScripts.VietTyping) return;
-			if ("changeMode" in win) win.changeMode(-1);
-			else win.ON_OFF = 0;
+		VietTyping: function() {
+			return AVIMConfig.disabledScripts.VietTyping &&
+				"if ('changeMode' in window) window.changeMode(-1);" +
+				"else window.ON_OFF = 0;";
 		},
-		VietUni: function(win) {
-			if (!AVIMConfig.disabledScripts.VietUni) return;
-			if("setTypingMode" in win) win.setTypingMode();
-			else if ("setMethod" in win) win.setMethod(0);
+		VietUni: function() {
+			return AVIMConfig.disabledScripts.VietUni &&
+				"if ('setTypingMode' in window) window.setTypingMode();" +
+				"else if ('setMethod' in window) window.setMethod(0);";
 		},
-		Vinova: function(win, vinova) {
-			if (!AVIMConfig.disabledScripts.Vinova) return;
-			vinova.reset(true);
+		Vinova: function() {
+			return AVIMConfig.disabledScripts.Vinova &&
+				"marker.reset(true);";
 		},
-		XaLo: function(win, marker) {
-			if (!AVIMConfig.disabledScripts.AVIM) return;
-			if (win._e_ && win.document.getElementsByClassName("vk").length) {
-				win._e_(null, 0);
-			}
+		XaLo: function() {
+			return AVIMConfig.disabledScripts.AVIM &&
+				"if (window._e_ &&" +
+					"window.document.getElementsByClassName('vk').length) {" +
+					"window._e_(null, 0);" +
+				"}";
 		},
-		xvnkb: function(win) {
-			if (!AVIMConfig.disabledScripts.CHIM) return;
-			if (parseInt(win.vnMethod) == 0) return;
-			win.VKSetMethod(0);
+		xvnkb: function() {
+			return AVIMConfig.disabledScripts.CHIM &&
+				"if (parseInt(window.vnMethod) != 0) window.VKSetMethod(0);";
 		}
 	};
 	var markers = {
@@ -2593,19 +2570,72 @@ function AVIM()	{
 	 * Given a context and marker, disables the Vietnamese JavaScript input
 	 * method editor (IME) with that marker.
 	 *
-	 * @param win		{object}	A JavaScript window object.
+	 * @param doc		{object}	An HTML document node.
 	 * @param marker	{object}	A JavaScript object (possibly a function)
 	 * 								that indicates the presence of the IME.
 	 * @returns {boolean}	True if the disabler ran without errors (possibly
 	 * 						without effect); false if errors were raised.
 	 */
-	this.disableOther = function(win, marker) {
+	this.disableOther = function(doc, marker) {
+		// Since wrappedJSObject is only safe in Firefox 3 and above, sandbox
+		// all operations on it.
+		var winWrapper = new XPCNativeWrapper(doc.defaultView);
+		var win = winWrapper.wrappedJSObject;
+		if (!win || win == window) return false;
+		
 		try {
+			// Get the disabling code.
 			var disabler = markers[marker];
-			disabler(win, win[marker]);
-			return true;
+			var js = disabler();
+			if (!js) return false;
+			
+			// Create a sandbox to execute the code in.
+//			dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
+			var sandbox = new Cu.Sandbox(doc.location.href);
+			sandbox.window = win;
+			
+			// Try to disable the IME in the current document.
+			var hasMarker = false;
+			try {
+				hasMarker = Cu.evalInSandbox("'" + marker + "' in window",
+											 sandbox) === true;
+			}
+			catch (exc) {}
+			if (hasMarker) {
+				Cu.evalInSandbox(js.replace("marker", "window." + marker, "g"),
+								 sandbox);
+				return true;
+			}
+			
+			// Some IMEs are applied to rich textareas in iframes. See if that's
+			// the case.
+			win = winWrapper.frameElement && winWrapper.parent.wrappedJSObject;
+			if (!win) return false;
+			
+			// Create a new sandbox based on the parent document's URL.
+			var parentUrl = winWrapper.parent.location.href;
+//			dump("outer sandbox URL: " + parentUrl + "\n");								// debug
+			sandbox = new Cu.Sandbox(parentUrl);
+			sandbox.window = win;
+			
+			// Try to disable the IME in the parent document.
+			hasMarker = false;
+			try {
+				hasMarker = Cu.evalInSandbox("marker in window",
+											 sandbox) === true;
+			}
+			catch (exc) {}
+			if (hasMarker) {
+				Cu.evalInSandbox(js, sandbox);
+				return true;
+			}
+			return false;
 		}
-		catch (e) {
+		catch (exc) {
+// $if{Debug}
+			dump(">>> Script monitor -- error on line " + exc.lineNumber + ": " +
+				 exc + "\n" + exc.stack + "\n");
+// $endif{}
 			return false;
 		}
 	};
@@ -2620,21 +2650,20 @@ function AVIM()	{
 	this.disableOthers = function(doc) {
 		if (!AVIMConfig.onOff || !AVIMConfig.disabledScripts.enabled) return;
 		
-		// Using wrappedJSObject is only safe in Firefox 3 and above.
-		var winWrapper = new XPCNativeWrapper(doc.defaultView);
-		var win = winWrapper.wrappedJSObject;
-		if (!win || win == window) return;
-		
 		for (var marker in markers) {
-			if (marker in win && this.disableOther(win, marker)) return;
+			if (this.disableOther(doc, marker)) return;
 		}
 		
-		// Some IMEs are applied to rich textareas in iframes.
-		if (!win.frameElement) return;
-		win = win.parent;
-		for each (var marker in frameMarkers) {
-			if (marker in win && this.disableOther(win, marker)) return;
-		}
+//		// Some IMEs are applied to rich textareas in iframes.
+//		var winWrapper = new XPCNativeWrapper(doc.defaultView);
+//		dump(">>> frameElement: " + winWrapper.frameElement + "\n");					// debug
+//		var win = winWrapper.wrappedJSObject;
+//		if (!win || win == window) return;
+//		if (!win.frameElement) return;
+//		win = win.parent;
+//		for each (var marker in frameMarkers) {
+//			if (marker in win && this.disableOther(doc, marker)) return;
+//		}
 	};
 	
 //	this.onKeyDown = function(e) {
@@ -2700,7 +2729,7 @@ function AVIM()	{
 			if (origTarget.localName.toLowerCase() == "html" &&
 				"objj_msgSend" in win && "SlideEditor" in win &&
 				"TextLayer" in win) {
-				return this.handleSkit(e, origTarget);
+				return this.handleSkit(e);
 			}
 		}
 		catch (exc) {
@@ -2708,32 +2737,27 @@ function AVIM()	{
 			dump(">>> AVIM.onKeyPress -- error on line " + exc.lineNumber + ": " +
 				 exc + "\n" + exc.stack + "\n");
 // $endif{}
-			return false;
+			// Instead of returning here, try to handle it as a normal textbox.
+//			return false;
 		}
 		
-//		// Bespin editor
-//		try {
-//			var winWrapper = new XPCNativeWrapper(doc.defaultView);
-//			var win = winWrapper.wrappedJSObject;
-//			// $("test-bespin").bespin.editor
-//			if (origTarget.localName.toLowerCase() == "canvas" &&
-//				"bespin" in win) {
-//				if ("_editor" in win) this.bespinEditor = win._editor;
-//				else this.bespinEditor = win.bespin.get("editor");
-//				if (this.bespinEditor.declaredClass == bespinClass &&
-//					this.bespinEditor.canvas == origTarget) {
-//					this.handleBespin(e, origTarget);
-//				}
-//				this.bespinEditor = null;
-//			}
-//		}
-//		catch (e) {
-//// $if{Debug}
-//			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");
-//// $endif{}
-//			this.bespinEditor = null;
+		// ACE editor
+		try {
+			// <pre id="editor" class="ace-editor">
+			var aceWrapper = new XPCNativeWrapper(origTarget);
+			if (origTarget.localName.toLowerCase() == "textarea" &&
+				"classList" in origTarget.parentNode &&
+				origTarget.parentNode.classList.contains("ace_editor")) {
+				this.handleAce(e, aceWrapper.wrappedJSObject.parentNode);
+			}
+		}
+		catch (e) {
+// $if{Debug}
+			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");
+// $endif{}
+			// Instead of returning here, try to handle it as a normal textbox.
 //			return false;
-//		}
+		}
 		
 		// Rich text editors
 		var wysiwyg =
