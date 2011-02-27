@@ -167,10 +167,10 @@ function AVIM()	{
 	function SlightCtlProxy(ctl) {
 		this.ctl = ctl;
 		this.type = ctl.getHost().type;
-		if ("text" in ctl) this.value = ctl.text;
+		if ("text" in ctl) this.value = this.oldValue = ctl.text;
 //		else if ("password" in ctl) this.value = ctl.password;
 		else throw "Not a TextBox control";
-		this.selectionStart = ctl.selectionStart;
+		this.selectionStart = this.oldSelectionStart = ctl.selectionStart;
 		this.selectionEnd = ctl.selectionStart + ctl.selectionLength;
 		
 		/**
@@ -178,12 +178,15 @@ function AVIM()	{
 		 * any changes made to the proxy.
 		 */
 		this.commit = function() {
+			if (this.value == this.oldValue) return;
+			
 			var tooLong = "maxLength" in this.ctl &&
 				this.ctl.maxLength && this.value.length > this.ctl.maxLength;
 			if ("text" in this.ctl && !tooLong) this.ctl.text = this.value;
 //			else if ("password" in this.ctl) this.ctl.password = this.value;
-			this.ctl.selectionStart = this.selectionStart;
-			this.ctl.selectionLength = this.selectionEnd - ctl.selectionStart;
+			this.ctl.selectionStart = this.oldSelectionStart +
+				this.value.length - this.oldValue.length;
+			this.ctl.selectionLength = 0;
 		};
 	};
 	SlightCtlProxy.prototype = new TextControlProxy();
