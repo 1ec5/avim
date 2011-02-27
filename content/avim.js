@@ -1681,8 +1681,7 @@ function AVIM()	{
 		var code = e.which;
 		var doc = e.originalTarget.ownerDocument;
 		var target = doc.documentElement;
-		var cwiWrapper = new XPCNativeWrapper(doc.defaultView);
-		var cwi = cwiWrapper.wrappedJSObject;
+		var cwi = new XPCNativeWrapper(doc.defaultView);
 		if(e.ctrlKey || e.metaKey || e.altKey) return;
 		if (this.findIgnore(target)) return;
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
@@ -1706,7 +1705,7 @@ function AVIM()	{
 		node.pos = node.data.length;
 		node.which = code;
 		
-		var editor = getEditor(cwiWrapper);
+		var editor = getEditor(cwi);
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
 			this.start(node, e);
@@ -1985,6 +1984,9 @@ function AVIM()	{
 	 */
 	this.handleSlightKeyDown = function(root, evt) {
 		try {
+			//root = XPCSafeJSObjectWrapper(root);
+			//evt = XPCSafeJSObjectWrapper(evt);
+			
 			var ctl = evt.source;	// TextBox
 			// TODO: Support password boxes.
 //			var isPasswordBox = "password" in ctl;
@@ -2033,6 +2035,9 @@ function AVIM()	{
 	 */
 	this.handleSlightKeyUp = function(root, evt) {
 		try {
+			//root = XPCSafeJSObjectWrapper(root);
+			//evt = XPCSafeJSObjectWrapper(evt);
+			
 			// Already handled by handleSlightKeyDown().
 			if (!("key" in evt) ||
 				virtualKeyFromSlight(evt.key, evt.shift) != 0xff) {
@@ -2097,13 +2102,17 @@ function AVIM()	{
 	 * @param slight	{object}	The DOM node representing the Silverlight
 	 * 								applet.
 	 */
-	this.registerSlight = function(slight) {
-		if (!slightTypeRe.test(slight.type)) return;
+	this.registerSlight = function(elt, sandbox) {
+		if (!slightTypeRe.test(elt.type)) return;
 //		dump("registerSlight -- " + slight.content.root + "\n");				// debug
-		slight.content.root.addEventListener("keyDown",
-											 avim.handleSlightKeyDown);
+		sandbox.importFunction(avim.handleSlightKeyDown, "handleSlightKeyDown");
+		Cu.evalInSandbox("elt.content.root.addEventListener('keyDown', " +
+						 "handleSlightKeyDown)", sandbox);
 		// Observing keyUp introduces problems with character limits.
-		slight.content.root.addEventListener("keyUp", avim.handleSlightKeyUp);
+//		slight.content.root.addEventListener("keyUp", avim.handleSlightKeyUp);
+		sandbox.importFunction(avim.handleSlightKeyUp, "handleSlightKeyUp");
+		Cu.evalInSandbox("elt.content.root.addEventListener('keyUp', " +
+						 "handleSlightKeyUp)", sandbox);
 //		dump("\t" + slight.content.root.children + "\n");						// debug
 	};
 	
@@ -2119,14 +2128,17 @@ function AVIM()	{
 	 */
 	this.registerSlightsOnPageLoad = function(evt) {
 		try {
-			var docWrapper = new XPCNativeWrapper(evt.originalTarget);
-			var doc = docWrapper.wrappedJSObject;
-			var slights = doc.getElementsByTagName("object");
+			//var docWrapper = new XPCNativeWrapper(evt.originalTarget);
+			var sandbox = new Cu.Sandbox(evt.originalTarget.location.href);
+			
+			var slights = evt.originalTarget.getElementsByTagName("object");
 //			dump("registerSlightsOnPageLoad -- originalTarget: " + evt.originalTarget +
 //				 "; target: " + evt.target + "\n");								// debug
 			for (var i = 0; i < slights.length; i++) {
 //				dump("\t> " + slights[i].id + "\n");								// debug
-				avim.registerSlight(slights[i]);
+//				avim.registerSlight(slights[i]);
+				sandbox.elt = slights[i].wrappedJSObject;
+				avim.registerSlight(slights[i], sandbox);
 			}
 //			doc.addEventListener("DOMNodeInserted",
 //								 avim.registerSlightsOnChange, true);
@@ -2160,7 +2172,6 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleSkit = function(evt) {
-		dump("AVIM.handleSkit\n");											// debug
 		var elt = evt.originalTarget;
 		var code = evt.which;
 		if (evt.ctrlKey || evt.metaKey || evt.altKey || this.checkCode(code)) {
@@ -2186,6 +2197,7 @@ function AVIM()	{
 		}
 		
 		// Fake a native textbox.
+		dump("AVIM.handleSkit\n");											// debug
 		var proxy = new SkitProxy(sandbox);
 		
 		this.sk = fcc(code);
@@ -2602,7 +2614,7 @@ function AVIM()	{
 		// all operations on it.
 		var winWrapper = new XPCNativeWrapper(doc.defaultView);
 		var win = winWrapper.wrappedJSObject;
-		if (!win || win == window) return;
+		if (win === undefined || win === null || win === window) return;
 		
 		// Create a sandbox to execute the code in.
 //		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
@@ -2613,7 +2625,7 @@ function AVIM()	{
 		// sandbox based on the parent document's URL.
 		var parentSandbox;
 		win = winWrapper.frameElement && winWrapper.parent.wrappedJSObject;
-		if (win) {
+		if (win !== undefined && win !== null) {
 //			dump("outer sandbox URL: " + winWrapper.parent.location.href + "\n");	// debug
 			parentSandbox = new Cu.Sandbox(winWrapper.parent.location.href);
 			parentSandbox.window = win;
@@ -2624,36 +2636,6 @@ function AVIM()	{
 		}
 		delete sandbox, parentSandbox;
 	};
-	
-//	this.onKeyDown = function(e) {
-//		dump("AVIM.onKeyDown -- code: " + fcc(e.which) + " #" + e.which +
-//			 "; target: " + e.target.nodeName + "#" + e.target.id +
-//			 "; originalTarget: " + e.originalTarget.nodeName + "#" + e.originalTarget.id + "\n");			// debug
-//		var target = e.target;
-//		var origTarget = e.originalTarget;
-//		var doc = target.ownerDocument;
-//		if (doc.defaultView == window) doc = origTarget.ownerDocument;
-//		this.disableOthers(doc);
-//		
-//		try {
-//			var winWrapper = new XPCNativeWrapper(doc.defaultView);
-//			var win = winWrapper.wrappedJSObject;
-//			if (origTarget.localName.toLowerCase() == "html" &&
-//				"objj_msgSend" in win && "SlideEditor" in win &&
-//				"TextLayer" in win) {
-//				return this.handleSkit(e, origTarget);
-//			}
-//		}
-//		catch (exc) {
-//// $if{Debug}
-//			dump(">>> AVIM.onKeyPress -- error on line " + exc.lineNumber + ": " +
-//				 exc + "\n" + exc.stack + "\n");
-//// $endif{}
-//			return false;
-//		}
-//		
-//		return true;
-//	};
 	
 	/**
 	 * First responder for keypress events.
@@ -2739,9 +2721,6 @@ if (window && !("avim" in window) && !window.frameElement) {
 		if (avim) avim.unregisterPrefs();
 		delete avim;
 	}, false);
-	//addEventListener("keydown", function(e) {
-	//	if (avim) avim.onKeyDown(e);
-	//}, true);
 	addEventListener("keypress", function(e) {
 		if (avim) avim.onKeyPress(e);
 	}, true);
