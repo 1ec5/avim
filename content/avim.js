@@ -103,16 +103,20 @@ function AVIM()	{
 		this.elt = elt;
 		this.type = "text";
 		
-		if (env.document.selection.selectionAnchor) throw "Non-empty selection";
+		if (!env.document.selection.isEmpty()) throw "Non-empty selection";
 		this.oldSelectionStart = env.document.selection.selectionLead;
-		this.oldSelectionEnd = this.oldSelectionStart;
+		this.oldSelectionStart = {row: this.oldSelectionStart.row,
+								  column: this.oldSelectionStart.column};
+		this.oldSelectionEnd = env.document.selection.selectionAnchor;
+		this.oldSelectionEnd = {row: this.oldSelectionEnd.row,
+								column: this.oldSelectionEnd.column};
 		this.selectionStart = this.selectionEnd = this.oldSelectionStart.column;
 		
 		this.oldValue = env.document.getLine(this.oldSelectionStart.row);
 		this.value = this.oldValue;
 		
-		dump("\tselection: " + this.oldSelectionStart.row + ":" + this.oldSelectionStart.column + "\n");	// debug
-		dump("\t<" + this.oldValue + ">");
+//		dump("\tselection: " + this.oldSelectionStart.row + ":" + this.oldSelectionStart.column + "\n");	// debug
+//		dump("\t<" + this.oldValue + ">");
 		
 		/**
 		 * Updates the Ace editor represented by this proxy to reflect any
@@ -123,13 +127,19 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == this.oldValue) return false;
 			
-			dump("Replacing <" + env.document.doc.$lines[this.oldSelectionStart.row].substring(0, 10) + "> ");	// debug
-			env.document.doc.$lines[this.oldSelectionStart.row] = this.value;
-			dump("with <" + env.document.doc.$lines[this.oldSelectionStart.row] + ">\n");	// debug
-			var colChange = this.value.length - this.oldValue.length;
-			env.document.selection.moveCursorBy(0, colChange);
-			dump("selection: " + env.document.selection.selectionLead.row + ":" +
-				 env.document.selection.selectionLead.column + "\n");			// debug
+//			dump("Replacing <" + env.document.doc.$lines[this.oldSelectionStart.row].substring(0, 10) + "> ");	// debug
+			env.document.doc.removeInLine(this.oldSelectionStart.row, 0,
+										  this.oldValue.length);
+			env.document.doc.insert(env.document.selection.selectionLead,
+									this.value);
+//			dump("with <" + env.document.doc.$lines[this.oldSelectionStart.row] + ">\n");	// debug
+			var newSelectionStart = this.oldSelectionStart;
+			newSelectionStart.column += this.value.length - this.oldValue.length;
+			env.editor.moveCursorToPosition(this.oldSelectionStart);
+//			dump("selection: " + env.document.selection.selectionLead.row + ":" +
+//				 env.document.selection.selectionLead.column + "\n");			// debug
+			
+			return true;
 		};
 	};
 	AceProxy.prototype = new TextControlProxy();
@@ -1903,8 +1913,16 @@ function AVIM()	{
 //			var aceWrapper = new XPCNativeWrapper(elt);
 //			dump("aceWrapper.wrappedJSObject:\n");	// debug
 //			for (var name in aceWrapper) dump("\t" + name + ": " + aceWrapper.wrappedJSObject[name] + "\n");	// debug
-			// TODO: No access to evt from here, even through wrappedJSObject.
-			var proxy = new AceProxy(elt, elt.evt);
+			var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
+			sandbox.elt = elt.wrappedJSObject;
+			// TODO: Pass the sandbox in instead of env.
+			var env = null;
+			try {
+				env = Cu.evalInSandbox("elt.env", sandbox);
+			}
+			catch (exc) {}
+			if (env === null || env === undefined) return false;
+			var proxy = new AceProxy(elt, env);
 			
 			this.sk = fcc(code);
 			this.start(proxy, evt);
@@ -1922,6 +1940,7 @@ function AVIM()	{
 			this.changed = false;
 			evt.handled = true;
 			evt.stopPropagation();
+			evt.preventDefault();
 			this.updateContainer(elt, elt);
 			return false;
 		}
@@ -2402,30 +2421,31 @@ function AVIM()	{
 		},
 		Mudim: function() {
 			return AVIMConfig.disabledScripts.Mudim &&
-				"if (window.parseInt(marker.method) == 0) return;" +
-				"if ('Toggle' in marker) marker.Toggle();" +
-				"else window.CHIM.Toggle();";
+				"if (window.parseInt(marker.method) != 0) {" +
+					"if ('Toggle' in marker) marker.Toggle();" +
+					"else window.CHIM.Toggle();" +
+				"}";
 		},
 		MViet: function() {
 			return AVIMConfig.disabledScripts.MViet &&
-				"if (typeof(window.MVOff) == 'boolean' && window.MVOff) {" +
-					"return;" +
-				"}" +
-				"if ('MVietOnOffButton' in window &&" +
-					"window.MVietOnOffButton instanceof Function) {" +
-					"window.MVietOnOffButton();" +
-				"}" +
-				"else if ('button' in window) window.button(0);";
+				"if (typeof(window.MVOff) != 'boolean' || !window.MVOff) {" +
+					"if ('MVietOnOffButton' in window &&" +
+						"window.MVietOnOffButton instanceof Function) {" +
+						"window.MVietOnOffButton();" +
+					"}" +
+					"else if ('button' in window) window.button(0);" +
+				"}";
 		},
 		VietIMEW: function() {
 			return AVIMConfig.disabledScripts.VietIMEW &&
-				"if (!('VietIME' in window)) return;" +
-				"for (var memName in window) {" +
-					"var mem = window[memName];" +
-					"if (mem.setTelexMode != undefined &&" +
-						"mem.setNormalMode != undefined) {" +
-						"mem.setNormalMode();" +
-						"break;" +
+				"if ('VietIME' in window) {" +
+					"for (var memName in window) {" +
+						"var mem = window[memName];" +
+						"if (mem.setTelexMode != undefined &&" +
+							"mem.setNormalMode != undefined) {" +
+							"mem.setNormalMode();" +
+							"break;" +
+						"}" +
 					"}" +
 				"}";
 		},
@@ -2496,7 +2516,7 @@ function AVIM()	{
 	 * Given a marker and sandboxed contexts, disables the Vietnamese JavaScript
 	 * input method editor (IME) with that marker.
 	 *
-	 * @param marker		{object}	A JavaScript object (possibly a
+	 * @param marker		{string}	Name of a JavaScript object (possibly a
 	 *									function) that indicates the presence of
 	 *									the IME.
 	 * @param sandbox		{object}	JavaScript sandbox in the current page's
@@ -2542,8 +2562,8 @@ function AVIM()	{
 		}
 		catch (exc) {
 // $if{Debug}
-			dump(">>> Script monitor -- error on line " + exc.lineNumber + ": " +
-				 exc + "\n" + exc.stack + "\n");
+			dump(">>> Script monitor -- marker: " + marker + "; error on line " +
+				 exc.lineNumber + ": " + exc + "\n" + exc.stack + "\n");
 // $endif{}
 			return false;
 		}
@@ -2563,7 +2583,7 @@ function AVIM()	{
 		// all operations on it.
 		var winWrapper = new XPCNativeWrapper(doc.defaultView);
 		var win = winWrapper.wrappedJSObject;
-		if (!win || win == window) return false;
+		if (!win || win == window) return;
 		
 		// Create a sandbox to execute the code in.
 //		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
@@ -2668,7 +2688,7 @@ function AVIM()	{
 			if (origTarget.localName.toLowerCase() == "textarea" &&
 				"classList" in origTarget.parentNode &&
 				origTarget.parentNode.classList.contains("ace_editor")) {
-				this.handleAce(e, aceWrapper.wrappedJSObject.parentNode);
+				this.handleAce(e, aceWrapper.parentNode);
 			}
 		}
 		catch (e) {
