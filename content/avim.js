@@ -140,9 +140,16 @@ function AVIM()	{
 //			dump("with <" + env.document.doc.$lines[this.oldSelectionStart.row] + ">\n");	// debug
 			var selectionStart = this.oldSelectionStart;
 			selectionStart.column += this.value.length - this.oldValue.length;
-			Cu.evalInSandbox("env.editor.moveCursorToPosition({row:" +
-							 selectionStart.row + ",column:" +
-							 selectionStart.column + "})", sandbox);
+			try {
+				Cu.evalInSandbox("env.editor.moveCursorToPosition({row:" +
+								 selectionStart.row + ",column:" +
+								 selectionStart.column + "})", sandbox);
+			}
+			catch (exc) {
+				Cu.evalInSandbox("env.document.selection.moveCursorToPosition" +
+								 "({row:" + selectionStart.row + ",column:" +
+								 selectionStart.column + "})", sandbox);
+			}
 //			dump("selection: " + env.document.selection.selectionLead.row + ":" +
 //				 env.document.selection.selectionLead.column + "\n");			// debug
 			
@@ -409,8 +416,13 @@ function AVIM()	{
 	/**
 	 * Proxy for a SlideKit TextLayer object posing as an ordinary HTML <input>
 	 * element.
+	 * 
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context. The window and the editor's
+	 * 								`textLayer` variable should be defined on
+	 * 								the sandbox.
 	 */
-	function SkitProxy(skit, win) {
+	function SkitProxy(sandbox) {
 //		{"format":"rosstf","version":3.1,"content":
 //			[
 //				{"list":false,"depth":0,"ordered":false,"content":
@@ -430,31 +442,31 @@ function AVIM()	{
 //			 ]
 //		}
 		
-		this.skit = skit;
 		this.type = "text";
-		var selectionRange = skit._selectionRange;
+		var selectionRange = sandbox.textLayer._selectionRange;
 		this.selectionStart = selectionRange.location;
 		this.selectionEnd = selectionRange.location + selectionRange.length;
-		this.innerHTML = win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "html");
-		var value = skit._currentParagraph.textContent;
-//		this.value = win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "string");
+		this.innerHTML = sandbox.window.objj_msgSend(sandbox.window.objj_msgSend(sandbox.textLayer, "textBody"), "html");
+		var value = sandbox.textLayer._currentParagraph.textContent;
+//		this.value = sandbox.window.objj_msgSend(sandbox.window.objj_msgSend(sandbox.textLayer, "textBody"), "string");
 		this.value = value.substring(0, value.length - 1);
 //		dump(">>> before: " + this.value + "\n");								// debug
 		
 		this.commit = function() {
 			dump(">>> after: " + this.value + "\n");								// debug
-//			var innerHTML = win.objj_msgSend(new SKTextString(),
+//			var innerHTML = sandbox.window.objj_msgSend(new SKTextString(),
 //											 "initWithTextLayer:html:isEmpty:",
-//											 this.skit, this.innerHTML,
+//											 sandbox.textLayer, this.innerHTML,
 //											 this.innerHTML.length > 0);
-			win.objj_msgSend(this.skit, "setTextBody:", this.value);
-			this.skit._selectionRange.location = this.selectionStart;
-			this.skit._selectionRange.length = 0;
-			win.objj_msgSend(this.skit, "selectionDidChange");
-			win.objj_msgSend(this.skit, "resize");
-			win.objj_msgSend(this.skit, "positionCaret");
-			win.objj_msgSend(this.skit, "textDidChange");
-			dump(">>> after2: " + win.objj_msgSend(win.objj_msgSend(this.skit, "textBody"), "string") + "\n");	// debug
+			// TODO: Support formatting.
+			sandbox.window.objj_msgSend(sandbox.textLayer, "setTextBody:", this.value);
+			sandbox.textLayer._selectionRange.location = this.selectionStart;
+			sandbox.textLayer._selectionRange.length = 0;
+			sandbox.window.objj_msgSend(sandbox.textLayer, "selectionDidChange");
+			sandbox.window.objj_msgSend(sandbox.textLayer, "resize");
+			sandbox.window.objj_msgSend(sandbox.textLayer, "positionCaret");
+			sandbox.window.objj_msgSend(sandbox.textLayer, "textDidChange");
+			dump(">>> after2: " + sandbox.window.objj_msgSend(sandbox.window.objj_msgSend(sandbox.textLayer, "textBody"), "string") + "\n");	// debug
 		};
 	};
 	SkitProxy.prototype = new TextControlProxy();
@@ -1906,7 +1918,7 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleAce = function(evt, elt) {
-		dump("AVIM.handleAce\n");												// debug
+//		dump("AVIM.handleAce\n");												// debug
 		if (!elt) elt = evt.originalTarget;
 		var code = evt.which;
 		if (evt.ctrlKey || evt.metaKey || evt.altKey || this.checkCode(code) ||
@@ -1914,35 +1926,27 @@ function AVIM()	{
 			return false;
 		}
 		
+//		dump("---AceProxy---\n");												// debug
+		// Build a sandbox with all the toys an Ace editor could want.
+		var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
+		sandbox.elt = elt.wrappedJSObject;
 		try {
-			// Fake a native textbox.
-//			dump("---AceProxy---\n");												// debug
-//			var aceWrapper = new XPCNativeWrapper(elt);
-//			dump("aceWrapper.wrappedJSObject:\n");	// debug
-//			for (var name in aceWrapper) dump("\t" + name + ": " + aceWrapper.wrappedJSObject[name] + "\n");	// debug
-			var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
-			sandbox.elt = elt.wrappedJSObject;
-			try {
-				sandbox.env = Cu.evalInSandbox("elt.env || null", sandbox);
-				if (sandbox.env === null) return false;
-			}
-			catch (exc) {
-				return false;
-			}
-			var proxy = new AceProxy(sandbox);
-			
-			this.sk = fcc(code);
-			this.start(proxy, evt);
-			
-			proxy.commit();
-			delete proxy;
-			delete sandbox;
+			sandbox.env = Cu.evalInSandbox("elt.env || null", sandbox);
+			if (sandbox.env === null) return false;
 		}
 		catch (exc) {
-// $if{Debug}
-			throw exc;
-// $endif{}
+			return false;
 		}
+		
+		// Fake a native textbox.
+		var proxy = new AceProxy(sandbox);
+		
+		this.sk = fcc(code);
+		this.start(proxy, evt);
+		
+		proxy.commit();
+		delete proxy;
+		delete sandbox;
 		
 		if (this.changed) {
 			this.changed = false;
@@ -2157,36 +2161,43 @@ function AVIM()	{
 	 */
 	this.handleSkit = function(evt) {
 		dump("AVIM.handleSkit\n");											// debug
-		var origTarget = evt.originalTarget;
-		var doc = origTarget.ownerDocument;
-		var winWrapper = new XPCNativeWrapper(doc.defaultView);
-		var win = winWrapper.wrappedJSObject;
+		var elt = evt.originalTarget;
 		var code = evt.which;
 		if (evt.ctrlKey || evt.metaKey || evt.altKey || this.checkCode(code)) {
 			return false;
 		}
 		
+		var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
+		sandbox.window = elt.ownerDocument.defaultView.wrappedJSObject;
 		try {
-			// Fake a native textbox and keypress event.
-			var controller = win.CPApp._mainWindow._windowController;
-			var shapeLayer = controller._slideEditor._firstResponder;
-			var proxy = new SkitProxy(shapeLayer._textLayer, win);
-			
-			this.sk = fcc(code);
-			this.start(proxy, evt);
-			
-			proxy.commit();
-			delete proxy;
-			if (this.changed) {
-				this.changed = false;
-				evt.preventDefault();
-				
+			if (!Cu.evalInSandbox("'objj_msgSend' in window &&" +
+								  "'SlideEditor' in window && " +
+								  "'TextLayer' in window", sandbox)) {
+				return false;
 			}
+			sandbox.textLayer =
+				Cu.evalInSandbox("window.CPApp._mainWindow._windowController." +
+								 "_slideEditor._firstResponder._textLayer ||" +
+								 "null", sandbox);
+			if (sandbox.textLayer === null) return false;
 		}
 		catch (exc) {
-// $if{Debug}
-			throw exc;
-// $endif{}
+			return false;
+		}
+		
+		// Fake a native textbox.
+		var proxy = new SkitProxy(sandbox);
+		
+		this.sk = fcc(code);
+		this.start(proxy, evt);
+		
+		proxy.commit();
+		delete proxy;
+		if (this.changed) {
+			this.changed = false;
+			evt.stopPropagation();
+			evt.preventDefault();
+			return false;
 		}
 		return true;
 	};
@@ -2662,46 +2673,30 @@ function AVIM()	{
 		this.disableOthers(doc);
 		
 		// SciMoz plugin
-		if (origTarget.localName.toLowerCase() == "scintilla") {
+		var tagName = origTarget.localName.toLowerCase();
+		if (tagName == "scintilla") {
 			origTarget = doc.getAnonymousElementByAttribute(origTarget, "type",
 															sciMozType);
 		}
-		if (origTarget.localName.toLowerCase() == "embed") {
-			return this.handleSciMoz(e, origTarget);
-		}
+		if (tagName == "embed") return this.handleSciMoz(e, origTarget);
 		
-		// SlideKit
+		// Specialized Web editors
 		try {
-			var winWrapper = new XPCNativeWrapper(doc.defaultView);
-			var win = winWrapper.wrappedJSObject;
-			if (origTarget.localName.toLowerCase() == "html" &&
-				"objj_msgSend" in win && "SlideEditor" in win &&
-				"TextLayer" in win) {
-				return this.handleSkit(e);
+			// SlideKit
+			if (tagName == "html" && this.handleSkit(e)) return true;
+			
+			// ACE editor
+			// <pre class="ace-editor">
+			if (tagName == "textarea" && "classList" in origTarget.parentNode &&
+				origTarget.parentNode.classList.contains("ace_editor") &&
+				this.handleAce(e, origTarget.parentNode)) {
+				return true;
 			}
 		}
 		catch (exc) {
 // $if{Debug}
-			dump(">>> AVIM.onKeyPress -- error on line " + exc.lineNumber + ": " +
-				 exc + "\n" + exc.stack + "\n");
-// $endif{}
-			// Instead of returning here, try to handle it as a normal textbox.
-//			return false;
-		}
-		
-		// ACE editor
-		try {
-			// <pre id="editor" class="ace-editor">
-			var aceWrapper = new XPCNativeWrapper(origTarget);
-			if (origTarget.localName.toLowerCase() == "textarea" &&
-				"classList" in origTarget.parentNode &&
-				origTarget.parentNode.classList.contains("ace_editor")) {
-				this.handleAce(e, aceWrapper.parentNode);
-			}
-		}
-		catch (e) {
-// $if{Debug}
-			dump(">>> AVIM.onKeyPress -- error on line " + e.lineNumber + ": " + e + "\n" + e.stack + "\n");
+			dump(">>> AVIM.onKeyPress -- error on line " + exc.lineNumber +
+				 ": " + exc + "\n" + exc.stack + "\n");
 // $endif{}
 			// Instead of returning here, try to handle it as a normal textbox.
 //			return false;

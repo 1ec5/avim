@@ -325,8 +325,7 @@ Version ${Version} (${Date})
  - Shift+Backspace (Shift+Del on the Mac) now removes a diacritical mark from
    the preceding word like GoTiengVietFx does.
  - Added support for rectangular selection in Komodo IDE and Komodo Edit.
- - Removed Bespin support, which is incompatible with recent "Bespin Reloaded"
-   releases.
+ - Added support for Ace, the successor to Bespin.
  - Moved the Mudim compatibility warning from AVIM's preferences dialog to the
    main Add-ons window.  (The compatibility warning is not available in Firefox
    4.)
