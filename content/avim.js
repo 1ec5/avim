@@ -95,24 +95,25 @@ function AVIM()	{
 	 * Proxy for an Ace editor, to encapsulate the oft-renamed
 	 * Bespin/Skywriter/Ace API while posing as an ordinary HTML <textarea>.
 	 * 
-	 * @param elt	{object}	The DOM element the editor is attached to.
-	 * @param env	{object}	Environment object (evt) for the editor
-	 *							represented by this proxy.
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context. The editor's `env` variable should
+	 * 								be defined on the sandbox.
 	 */
-	function AceProxy(elt, env) {
-		this.elt = elt;
+	function AceProxy(sandbox) {
 		this.type = "text";
 		
-		if (!env.document.selection.isEmpty()) throw "Non-empty selection";
-		this.oldSelectionStart = env.document.selection.selectionLead;
-		this.oldSelectionStart = {row: this.oldSelectionStart.row,
-								  column: this.oldSelectionStart.column};
-		this.oldSelectionEnd = env.document.selection.selectionAnchor;
-		this.oldSelectionEnd = {row: this.oldSelectionEnd.row,
-								column: this.oldSelectionEnd.column};
+		if (Cu.evalInSandbox("!env.document.selection.isEmpty()", sandbox)) {
+			throw "Non-empty selection";
+		}
+		var selLeadJS = "env.document.selection.selectionLead";
+		this.oldSelectionStart =
+			{row: Cu.evalInSandbox(selLeadJS + ".row+0", sandbox),
+			 column: Cu.evalInSandbox(selLeadJS + ".column+0", sandbox)};
 		this.selectionStart = this.selectionEnd = this.oldSelectionStart.column;
 		
-		this.oldValue = env.document.getLine(this.oldSelectionStart.row);
+		this.oldValue = Cu.evalInSandbox("env.document.getLine(" +
+										 this.oldSelectionStart.row + ")+''",
+										 sandbox);
 		this.value = this.oldValue;
 		
 //		dump("\tselection: " + this.oldSelectionStart.row + ":" + this.oldSelectionStart.column + "\n");	// debug
@@ -128,14 +129,20 @@ function AVIM()	{
 			if (this.value == this.oldValue) return false;
 			
 //			dump("Replacing <" + env.document.doc.$lines[this.oldSelectionStart.row].substring(0, 10) + "> ");	// debug
-			env.document.doc.removeInLine(this.oldSelectionStart.row, 0,
-										  this.oldValue.length);
-			env.document.doc.insert(env.document.selection.selectionLead,
-									this.value);
+			
+			var valueJS = "\"" + this.value.replace('"', "\\\"", "g") + "\"";
+			Cu.evalInSandbox("env.document.doc.removeInLine(" +
+							 this.oldSelectionStart.row + ",0," +
+							 this.oldValue.length + ")", sandbox);
+			Cu.evalInSandbox("env.document.doc.insert(" +
+							 "env.document.selection.selectionLead," + valueJS +
+							 ")", sandbox);
 //			dump("with <" + env.document.doc.$lines[this.oldSelectionStart.row] + ">\n");	// debug
-			var newSelectionStart = this.oldSelectionStart;
-			newSelectionStart.column += this.value.length - this.oldValue.length;
-			env.editor.moveCursorToPosition(this.oldSelectionStart);
+			var selectionStart = this.oldSelectionStart;
+			selectionStart.column += this.value.length - this.oldValue.length;
+			Cu.evalInSandbox("env.editor.moveCursorToPosition({row:" +
+							 selectionStart.row + ",column:" +
+							 selectionStart.column + "})", sandbox);
 //			dump("selection: " + env.document.selection.selectionLead.row + ":" +
 //				 env.document.selection.selectionLead.column + "\n");			// debug
 			
@@ -1909,26 +1916,27 @@ function AVIM()	{
 		
 		try {
 			// Fake a native textbox.
-			dump("---AceProxy---\n");												// debug
+//			dump("---AceProxy---\n");												// debug
 //			var aceWrapper = new XPCNativeWrapper(elt);
 //			dump("aceWrapper.wrappedJSObject:\n");	// debug
 //			for (var name in aceWrapper) dump("\t" + name + ": " + aceWrapper.wrappedJSObject[name] + "\n");	// debug
 			var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
 			sandbox.elt = elt.wrappedJSObject;
-			// TODO: Pass the sandbox in instead of env.
-			var env = null;
 			try {
-				env = Cu.evalInSandbox("elt.env", sandbox);
+				sandbox.env = Cu.evalInSandbox("elt.env || null", sandbox);
+				if (sandbox.env === null) return false;
 			}
-			catch (exc) {}
-			if (env === null || env === undefined) return false;
-			var proxy = new AceProxy(elt, env);
+			catch (exc) {
+				return false;
+			}
+			var proxy = new AceProxy(sandbox);
 			
 			this.sk = fcc(code);
 			this.start(proxy, evt);
 			
 			proxy.commit();
 			delete proxy;
+			delete sandbox;
 		}
 		catch (exc) {
 // $if{Debug}
