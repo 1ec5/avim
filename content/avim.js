@@ -459,15 +459,9 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == this.oldValue) return;
 			
-			// Setup
+			// Prepare SlideKit for the changes.
 			sandbox.objj_msgSend(sandbox.textLayer._undoManager,
 								 "beginUndoGrouping");
-			//sandbox.textLayer._selectionStart =
-			//	sandbox.objj_msgSend(sandbox.textLayer,
-			//						 "firstCharacterInParagraph:", paragraph);
-			//sandbox.textLayer._selectionEnd =
-			//	paragraph.children.item(this.selectionStart);
-			//sandbox.objj_msgSend(sandbox.textLayer, "calculateSelectedRange");
 			
 			// Compare the old and new strings, inserting or replacing
 			// characters as needed.
@@ -501,8 +495,9 @@ function AVIM()	{
 			sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:",
 								 selectionRange);
 			
-			// Cleanup
-			sandbox.objj_msgSend(sandbox.textLayer._undoManager, "endUndoGrouping");
+			// Update the rest of SlideKit to reflect the changes.
+			sandbox.objj_msgSend(sandbox.textLayer._undoManager,
+								 "endUndoGrouping");
 			sandbox.objj_msgSend(sandbox.textLayer, "selectionDidChange");
 			sandbox.objj_msgSend(sandbox.textLayer, "resize");
 			sandbox.objj_msgSend(sandbox.textLayer, "positionCaret");
@@ -2702,7 +2697,9 @@ function AVIM()	{
 			origTarget = doc.getAnonymousElementByAttribute(origTarget, "type",
 															sciMozType);
 		}
-		if (tagName == "embed") return this.handleSciMoz(e, origTarget);
+		if (origTarget.localName.toLowerCase() == "embed") {
+			return this.handleSciMoz(e, origTarget);
+		}
 		
 		// Specialized Web editors
 		try {

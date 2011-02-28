@@ -1,19 +1,18 @@
  - Write bootstrap.js to load and unload AVIM without restarting. [1]
  - Use XBL or XPCOM to allow each application to share the same overlay.
  - Make AVIM compatible with editors that do custom key event handling, like
-   280slides [2], and textile-editor [3].
+   textile-editor [2].
  - Bug: "Ng~uye^n" (Nguyễn)
  - Bug: "kilo^me't" (kilômét)
  - Bug: "xoa" (xoá), "Ng" (Ng~) in rich text editors, including Thunderbird and
    Composer.
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
  - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [4] Maybe limit this feature to bookmarks (FUEL), since
+   Preferences service. [3] Maybe limit this feature to bookmarks (FUEL), since
    the UI to set the preferences would be easier to figure out.
- - Get the AVIM core running in Camino [5], Chrome, and Safari.
+ - Get the AVIM core running in Camino [4], Chrome, and Safari.
 
 [1] https://wiki.mozilla.org/Extension_Manager:Bootstrapped_Extensions
-[2] http://280slides.com/Editor/
-[3] http://guillaume.bort.fr/textile-editor/
-[4] http://developer.mozilla.org/en/docs/Using_content_preferences
-[5] https://bugzilla.mozilla.org/show_bug.cgi?id=244890
+[2] http://guillaume.bort.fr/textile-editor/
+[3] http://developer.mozilla.org/en/docs/Using_content_preferences
+[4] https://bugzilla.mozilla.org/show_bug.cgi?id=244890
