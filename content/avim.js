@@ -425,115 +425,81 @@ function AVIM()	{
 	 * 								the sandbox.
 	 */
 	function SkitProxy(sandbox) {
-//		{"format":"rosstf","version":3.1,"content":
-//			[
-//				{"list":false,"depth":0,"ordered":false,"content":
-//					[
-//						{"content":"s","style":
-//							{"size":48,"color":"FFFFFF","name":"Arial","bold":2,"italic":2,"underline":1}
-//						},
-//						{"content":"d","style":
-//							{"size":48,"color":"FFFFFF","name":"Arial","bold":1,"italic":2,"underline":1}
-//						},
-//						{"content":"f","style":
-//							{"size":48,"color":"FFFFFF","name":"Arial","bold":2,"italic":1,"underline":2}
-//						}
-//					 ],
-//				 "align":"center"
-//				}
-//			 ]
-//		}
-		
 		this.type = "text";
 		if (sandbox.objj_msgSend(sandbox.textLayer, "hasSelection")) {
 			throw "Non-empty selection.";
 		}
-		var selectionRange = sandbox.objj_msgSend(sandbox.textLayer, "selectedRange");
-		dump(">>> selectionRange: " + selectionRange.location + "+" + selectionRange.length);	// debug
-		var paragraph = sandbox.textLayer._currentParagraph;
-		var kFirst = 1;
+		
+		// All this just to get the line-relative offset.
+		var selectionRange = sandbox.objj_msgSend(sandbox.textLayer,
+												  "selectedRange");
+//		dump(">>> selectionRange: " + selectionRange.location + "+" + selectionRange.length);	// debug
+//		var kFirst = 1;
 		// moveCaret:extendSelection: doesn't set the selection ends correctly.
 		//sandbox.objj_msgSend(sandbox.textLayer, "moveCaret:extendSelection:",
 		//					 kFirst, false);
 		//var linePos = sandbox.objj_msgSend(sandbox.textLayer, "selectedRange").location;
 		var linePos = selectionRange.location - 1;
-		var previousCharacter = sandbox.textLayer._previousCharacter;
-		while (previousCharacter) {
-			previousCharacter = previousCharacter.previousSibling;
-			if (!previousCharacter) break;
+		var prevChar = sandbox.textLayer._previousCharacter;
+		while (prevChar) {
+			prevChar = prevChar.previousSibling;
+			if (!prevChar) break;
 			linePos--;
 		}
-		dump("; linePos: " + linePos);											// debug
-//		dump("Before selectionRange: " + selectionRange.location + ":" +
-//			 selectionRange.length + "; linePos: " + linePos + "\n");					// debug
-		this.selectionStart = this.selectionEnd = selectionRange.location - linePos;
+//		dump("; linePos: " + linePos);											// debug
+		this.selectionStart = this.selectionEnd =
+			selectionRange.location - linePos;
 		
-		//this.selectionStart = selectionRange.location;
-		//this.selectionEnd = selectionRange.location + selectionRange.length;
-//		this.innerHTML = sandbox.objj_msgSend(sandbox.objj_msgSend(sandbox.textLayer, "textBody"), "html");
+		// Get the text value.
+		var paragraph = sandbox.textLayer._currentParagraph;
 		this.value = this.oldValue =
 			paragraph.textContent.substring(0, this.selectionStart);
-		dump("; value: <" + this.value + ">\n");								// debug
+//		dump("; value: <" + this.value + ">\n");								// debug
 		
 		this.commit = function() {
-//			dump(">>> after: " + this.value + "\n");								// debug
-//			var innerHTML = sandbox.objj_msgSend(new SKTextString(),
-//											 "initWithTextLayer:html:isEmpty:",
-//											 sandbox.textLayer, this.innerHTML,
-//											 this.innerHTML.length > 0);
-			
-			//// TODO: Support formatting.
-			//sandbox.objj_msgSend(sandbox.textLayer._undoManager, "beginUndoGrouping");
-			//sandbox.objj_msgSend(sandbox.textLayer, "setStringValue:", this.value);
-			//sandbox.objj_msgSend(sandbox.textLayer._undoManager, "endUndoGrouping");
-			//sandbox.objj_msgSend(sandbox.textLayer, "textDidChange");
-			//dump(">>> after2: <" + sandbox.textLayer._currentParagraph.textContent + ">\n");	// debug
-			//selectionRange.location += this.value.length - this.oldValue.length;
-			//var origValue = sandbox.textLayer._currentParagraph.textContent;
-			//if (selectionRange.location > origValue.length) {
-			//	selectionRange.location = origValue.length;
-			//}
-			//sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:", selectionRange);
+			if (this.value == this.oldValue) return;
 			
 			// Setup
-			sandbox.objj_msgSend(sandbox.textLayer._undoManager, "beginUndoGrouping");
-			sandbox.textLayer._selectionStart =
-				sandbox.objj_msgSend(sandbox.textLayer, "firstCharacterInParagraph:",
-									 paragraph);
-			sandbox.textLayer._selectionEnd =
-				paragraph.children.item(this.selectionStart);
-			sandbox.objj_msgSend(sandbox.textLayer, "calculateSelectedRange");
+			sandbox.objj_msgSend(sandbox.textLayer._undoManager,
+								 "beginUndoGrouping");
+			//sandbox.textLayer._selectionStart =
+			//	sandbox.objj_msgSend(sandbox.textLayer,
+			//						 "firstCharacterInParagraph:", paragraph);
+			//sandbox.textLayer._selectionEnd =
+			//	paragraph.children.item(this.selectionStart);
+			//sandbox.objj_msgSend(sandbox.textLayer, "calculateSelectedRange");
 			
-			// Replace
-			if (sandbox.objj_msgSend(sandbox.textLayer, "hasSelection")) {
-				sandbox.objj_msgSend(sandbox.textLayer, "deleteSelection");
-			}
-			selectionRange = sandbox.objj_msgSend(sandbox.textLayer, "selectedRange");
+			// Compare the old and new strings, inserting or replacing
+			// characters as needed.
 			for (var i = 0; i < this.value.length; i++) {
+				if (this.value[i] == this.oldValue[i]) continue;
+				
+				// Select the character.
+				sandbox.textLayer._selectionStart = paragraph.children.item(i);
+				if (this.oldValue[i]) {
+					sandbox.textLayer._selectionEnd =
+						paragraph.children.item(i + 1);
+				}
+				else {
+					sandbox.textLayer._selectionEnd =
+						sandbox.textLayer._selectionStart;
+				}
+				sandbox.objj_msgSend(sandbox.textLayer,
+									 "calculateSelectedRange");
+				
+				// Replace the character.
+				if (sandbox.objj_msgSend(sandbox.textLayer, "hasSelection")) {
+					sandbox.objj_msgSend(sandbox.textLayer, "deleteSelection");
+				}
 				sandbox.objj_msgSend(sandbox.textLayer,
 									 "insertCharacter:stillInserting:",
 									 this.value[i], true);
 			}
-			//selectionRange.location += this.value.length - this.oldValue.length;
-			//sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:", selectionRange);
 			
-			//var paragraphRange =
-			//	sandbox.window.CPMakeRange(paragraph.firstChild,
-			//							   paragraph.childElementCount);
-			//for (var i = 0; i < this.value.length; i++) {
-			//	if (this.value[i] == this.oldValue[i]) continue;
-			//	var replRange = sandbox.window.CPMakeRange();
-			//	sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:", selectionRange);
-			//}
-			//
-			//sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:", paragraphRange);
-			//sandbox.objj_msgSend(sandbox.textLayer, "setStringValue:", this.value);
-			//sandbox.objj_msgSend(sandbox.textLayer._undoManager, "endUndoGrouping");
-			//sandbox.objj_msgSend(sandbox.textLayer, "textDidChange");
-			//selectionRange.location += this.value.length - this.oldValue.length;
-			//sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:", selectionRange);
-			//objj_msgSend(self, "calculateSelectedRange");
-			//objj_msgSend(self, "selectionDidChange");
+			// Return the caret to its natural position.
+			selectionRange.location += this.value.length - this.oldValue.length;
+			sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:",
+								 selectionRange);
 			
 			// Cleanup
 			sandbox.objj_msgSend(sandbox.textLayer._undoManager, "endUndoGrouping");
@@ -541,12 +507,6 @@ function AVIM()	{
 			sandbox.objj_msgSend(sandbox.textLayer, "resize");
 			sandbox.objj_msgSend(sandbox.textLayer, "positionCaret");
 			sandbox.objj_msgSend(sandbox.textLayer, "textDidChange");
-			
-//			sandbox.textLayer._selectionRange.location += this.value.length - this.oldValue.length;
-//			sandbox.textLayer._selectionRange.length = 0;
-//			sandbox.objj_msgSend(sandbox.textLayer, "selectionDidChange");
-//			sandbox.objj_msgSend(sandbox.textLayer, "resize");
-//			sandbox.objj_msgSend(sandbox.textLayer, "positionCaret");
 		};
 	};
 	SkitProxy.prototype = new TextControlProxy();
