@@ -315,7 +315,7 @@ Version ${Version} (${Date})
  - Added support for Firefox 4.
  - Renamed the "Auto" input method to "Mixed".
  - Overhauled the preferences dialog. The reorganized and rewritten dialog is
-   easier to understand and much more reliable. It also includes script monitor
+   easier to understand and much more reliable. It also includes Script Monitor
    options that before were only accessible through about:config.
  - Added a Dutch localization by John Willemse.
  - Removed the French and Chinese localizations, which have not been maintained.
@@ -327,7 +327,7 @@ Version ${Version} (${Date})
    the preceding word like GoTiengVietFx does.
  - Added support for rectangular selection in Komodo IDE and Komodo Edit.
  - Added support for Ace, the successor to Bespin.
- - Added support for 280slides.
+ - Added support for 280 Slides.
  - Moved the Mudim compatibility warning from AVIM's preferences dialog to the
    main Add-ons window.  (The compatibility warning is not available in Firefox
    4.)

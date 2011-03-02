@@ -425,43 +425,100 @@ function AVIM()	{
 	 * 								the sandbox.
 	 */
 	function SkitProxy(sandbox) {
+		/**
+		 * Returns the result of an Objective-J call in the sandbox's context.
+		 *
+		 * @param type		{string}	Expected return type, as would be
+		 * 								returned by `typeof msgSend(...)`.
+		 * @param target	{string}	Sandboxed object to send the message to.
+		 * @param cmd		{string}	Selector of the message to pass.
+		 * @param args		{array}		Arguments in the message to pass.
+		 * @param field		{string}	Field within the message's return value.
+		 * 
+		 * @returns The return value of the sent Objective-J message.
+		 */
+		var msgSend = function(type, target, sel, args, field) {
+			var msgJS = "objj_msgSend(" + target + ",'" + sel + "'";
+			if (!args) args = [];
+			
+// $if{Debug}
+			// Ensure the required arguments have been provided.
+			var colons = sel.match(/:/g) || [];
+			if (args.length < colons.length) {
+				throw "Objective-J method -" + sel + " expects " +
+					colons.length + " arguments; " + args.length + " given.";
+			}
+// $endif{}
+			
+			// Add the arguments, quoting strings and objects.
+			for (var i = 0; i < args.length; i++) {
+				var arg = args[i];
+				if (typeof arg == "string" || typeof arg == "object") {
+					arg = "\"" + arg.replace(/"/g, "\\\"") + "\"";
+				}
+				msgJS += "," + arg;
+			}
+			msgJS += ")";
+			
+			if (field) msgJS += "." + field;
+			
+			// Cast the return value to a safe type.
+			switch (type) {
+				case "number": msgJS += "+0"; break;
+				case "boolean": msgJS = "!!" + msgJS; break;
+				case "string": msgJS += "+''"; break;
+			}
+			
+// $if{Debug}
+			try {
+// $endif{}
+				return Cu.evalInSandbox(msgJS, sandbox);
+// $if{Debug}
+			}
+			catch (exc) {
+				exc.message += "\n" + "Obj-J: " + msgJS;
+				throw exc;
+			}
+// $endif{}
+		};
+		
 		this.type = "text";
-		if (sandbox.objj_msgSend(sandbox.textLayer, "hasSelection")) {
+		if (msgSend("boolean", "textLayer", "hasSelection")) {
 			throw "Non-empty selection.";
 		}
 		
 		// All this just to get the line-relative offset.
-		var selectionRange = sandbox.objj_msgSend(sandbox.textLayer,
-												  "selectedRange");
+		var selectionRange = {
+			location: msgSend("number", "textLayer", "selectedRange", [],
+							  "location"),
+			length: msgSend("number", "textLayer", "selectedRange", [],
+							"length")
+		};
 //		dump(">>> selectionRange: " + selectionRange.location + "+" + selectionRange.length);	// debug
-//		var kFirst = 1;
 		// moveCaret:extendSelection: doesn't set the selection ends correctly.
 		//sandbox.objj_msgSend(sandbox.textLayer, "moveCaret:extendSelection:",
-		//					 kFirst, false);
+		//					 1 /* kFirst */, false);
 		//var linePos = sandbox.objj_msgSend(sandbox.textLayer, "selectedRange").location;
-		var linePos = selectionRange.location - 1;
-		var prevChar = sandbox.textLayer._previousCharacter;
-		while (prevChar) {
-			prevChar = prevChar.previousSibling;
-			if (!prevChar) break;
-			linePos--;
-		}
+		var linePosJS = "var p=" + (selectionRange.location - 1) +
+			";var c=textLayer._previousCharacter;" +
+			"while(c){c=c.previousSibling;if(!c)break;p--;}" +
+			"p";
+		var linePos = Cu.evalInSandbox(linePosJS, sandbox);
 //		dump("; linePos: " + linePos);											// debug
 		this.selectionStart = this.selectionEnd =
 			selectionRange.location - linePos;
 		
 		// Get the text value.
-		var paragraph = sandbox.textLayer._currentParagraph;
 		this.value = this.oldValue =
-			paragraph.textContent.substring(0, this.selectionStart);
+			Cu.evalInSandbox("textLayer._currentParagraph.textContent+''",
+							 sandbox).substring(0, this.selectionStart);
 //		dump("; value: <" + this.value + ">\n");								// debug
 		
 		this.commit = function() {
 			if (this.value == this.oldValue) return;
 			
 			// Prepare SlideKit for the changes.
-			sandbox.objj_msgSend(sandbox.textLayer._undoManager,
-								 "beginUndoGrouping");
+			msgSend(0, "textLayer._undoManager", "beginUndoGrouping");
 			
 			// Compare the old and new strings, inserting or replacing
 			// characters as needed.
@@ -469,39 +526,40 @@ function AVIM()	{
 				if (this.value[i] == this.oldValue[i]) continue;
 				
 				// Select the character.
-				sandbox.textLayer._selectionStart = paragraph.children.item(i);
+				var startJS = "textLayer._selectionStart=" +
+					"textLayer._currentParagraph.children.item(" + i + ")";
+				Cu.evalInSandbox(startJS, sandbox);
 				if (this.oldValue[i]) {
-					sandbox.textLayer._selectionEnd =
-						paragraph.children.item(i + 1);
+					Cu.evalInSandbox("textLayer._selectionEnd=" +
+									 "textLayer._currentParagraph.children." +
+									 "item(" + (i + 1) + ")", sandbox);
 				}
 				else {
-					sandbox.textLayer._selectionEnd =
-						sandbox.textLayer._selectionStart;
+					Cu.evalInSandbox("textLayer._selectionEnd=" +
+									 "textLayer._selectionStart", sandbox);
 				}
-				sandbox.objj_msgSend(sandbox.textLayer,
-									 "calculateSelectedRange");
+				msgSend(0, "textLayer", "calculateSelectedRange");
 				
 				// Replace the character.
-				if (sandbox.objj_msgSend(sandbox.textLayer, "hasSelection")) {
-					sandbox.objj_msgSend(sandbox.textLayer, "deleteSelection");
+				if (msgSend("boolean", "textLayer", "hasSelection")) {
+					msgSend(0, "textLayer", "deleteSelection");
 				}
-				sandbox.objj_msgSend(sandbox.textLayer,
-									 "insertCharacter:stillInserting:",
-									 this.value[i], true);
+				msgSend(0, "textLayer", "insertCharacter:stillInserting:",
+						[this.value[i], true]);
 			}
 			
 			// Return the caret to its natural position.
 			selectionRange.location += this.value.length - this.oldValue.length;
-			sandbox.objj_msgSend(sandbox.textLayer, "setSelectedRange:",
-								 selectionRange);
+			Cu.evalInSandbox("objj_msgSend(textLayer,'setSelectedRange:'," +
+				"{location:" + selectionRange.location + ",length:" +
+				selectionRange.length + "})", sandbox);
 			
 			// Update the rest of SlideKit to reflect the changes.
-			sandbox.objj_msgSend(sandbox.textLayer._undoManager,
-								 "endUndoGrouping");
-			sandbox.objj_msgSend(sandbox.textLayer, "selectionDidChange");
-			sandbox.objj_msgSend(sandbox.textLayer, "resize");
-			sandbox.objj_msgSend(sandbox.textLayer, "positionCaret");
-			sandbox.objj_msgSend(sandbox.textLayer, "textDidChange");
+			msgSend(0, "textLayer._undoManager", "endUndoGrouping");
+			msgSend(0, "textLayer", "selectionDidChange");
+			msgSend(0, "textLayer", "resize");
+			msgSend(0, "textLayer", "positionCaret");
+			msgSend(0, "textLayer", "textDidChange");
 		};
 	};
 	SkitProxy.prototype = new TextControlProxy();
@@ -2234,7 +2292,7 @@ function AVIM()	{
 		}
 		
 		// Fake a native textbox.
-		dump("AVIM.handleSkit\n");											// debug
+//		dump("AVIM.handleSkit\n");											// debug
 		var proxy = new SkitProxy(sandbox);
 		
 		this.sk = fcc(code);
