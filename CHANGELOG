@@ -308,7 +308,7 @@ Version 20080728.366 (Sunday, March 7, 2010)
    disabled.
  - The Script Monitor can now disable VietUni 1.7 in webpages.
 
-Version ${Version} (${Date})
+Version 20080728.450 (Saturday, March 5, 2011)
  - Restored support for Firefox 2 after nearly two years. (Welcome back, Windows
    98 users!) Older versions of other Mozilla-based applications are now
    supported too.
@@ -339,3 +339,5 @@ Version ${Version} (${Date})
  - Added an option to recognize password boxes to the options panel in Fennec.
  - Fixed a regression in SeaMonkey where icons would not appear for the toolbar
    buttons except in the Customize Toolbar dialog.
+
+Version ${Version} (${Date})
