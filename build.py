@@ -220,7 +220,7 @@ def get_repo_url(file_path):
 
 def minify_properties(src):
     """Returns a minified version of the given properties file source."""
-    min_re = re.compile(r"([^\\](?:\\\\)*)#.*$", re.M)
+    min_re = re.compile(r"(^|[^\\](?:\\\\)*)#.*$", re.M)
     src = min_re.sub(r"\1", src)
     src = re.sub(r"\n+", r"\n", src)
     return src
