@@ -18,8 +18,10 @@
 <!ENTITY method-config-button.label "定制…">
 <!ENTITY method-config-button.accesskey "C">
 
+<!-- $if{Debug} -->
 <!ENTITY tester-button.label "">
 <!ENTITY tester-button.accesskey "">
+<!-- $endif{} -->
 <!ENTITY spell-check.label "">
 <!ENTITY spell-check.false.label "">
 <!ENTITY spell-check.false.accesskey "">

@@ -18,8 +18,10 @@
 <!ENTITY method-config-button.label "Benutzerdefiniert…">
 <!ENTITY method-config-button.accesskey "B">
 
+<!-- $if{Debug} -->
 <!ENTITY tester-button.label "Test…">
 <!ENTITY tester-button.accesskey "T">
+<!-- $endif{} -->
 <!ENTITY spell-check.label "Wenn ein Wort nicht den vietnamesischen Rechtschreibregeln entspricht…">
 <!ENTITY spell-check.false.label "Akzente trotzdem auf ein Wort setzen">
 <!ENTITY spell-check.false.accesskey "A">

@@ -18,8 +18,10 @@
 <!ENTITY method-config-button.label "Tùy biến…">
 <!ENTITY method-config-button.accesskey "b">
 
+<!-- $if{Debug} -->
 <!ENTITY tester-button.label "Đo thử…">
 <!ENTITY tester-button.accesskey "o">
+<!-- $endif{} -->
 <!ENTITY spell-check.label "Khi nào gặp từ không theo quy tắc chính tả tiếng Việt:">
 <!ENTITY spell-check.false.label "Cứ bỏ dấu vào từ">
 <!ENTITY spell-check.false.accesskey "d">

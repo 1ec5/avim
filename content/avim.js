@@ -696,7 +696,8 @@ function AVIM()	{
 			winUtils.sendCompositionEvent("compositionend");
 			
 			// Clear the clipboard.
-			board.emptyClipboard(board.kGlobalClipboard);
+			boardHelper.copyString(null);
+			//board.emptyClipboard(board.kGlobalClipboard);
 			return true;
 		};
 	};

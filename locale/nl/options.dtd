@@ -13,8 +13,10 @@
 <!ENTITY method-viqr-star-item.label "VIQR*">
 <!ENTITY method-config-button.label "Aanpassen…">
 <!ENTITY method-config-button.accesskey "A">
+<!-- $if{Debug} -->
 <!ENTITY tester-button.label "Testen…">
 <!ENTITY tester-button.accesskey "T">
+<!-- $endif{} -->
 <!ENTITY spell-check.label "Als een woord de Vietnamese spellingsregels breekt:">
 <!ENTITY spell-check.false.label "Accenten toch toepassen">
 <!ENTITY spell-check.false.accesskey "c">

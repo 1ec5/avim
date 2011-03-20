@@ -18,8 +18,10 @@
 <!ENTITY method-config-button.label "Personalizar…">
 <!ENTITY method-config-button.accesskey "P">
 
+<!-- $if{Debug} -->
 <!ENTITY tester-button.label "Probar…">
 <!ENTITY tester-button.accesskey "b">
+<!-- $endif{} -->
 <!ENTITY spell-check.label "Cuando una palabra no sea de acuerdo con las reglas ortográficas vietnamitas:">
 <!ENTITY spell-check.false.label "Poner los signos diacríticos sobre la palabra">
 <!ENTITY spell-check.false.accesskey "d">
