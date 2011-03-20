@@ -86,6 +86,14 @@ function AVIM()	{
 	function TextControlProxy() {}
 	
 	/**
+	 * @see https://developer.mozilla.org/en/DOM/Input.setSelectionRange
+	 */
+	TextControlProxy.prototype.setSelectionRange = function(start, end) {
+		this.selectionStart = start;
+		this.selectionEnd = end;
+	};
+	
+	/**
 	 * Proxy for an external toolkit's key events to appear as ordinary DOM key
 	 * events to the rest of the AVIM codebase.
 	 */
@@ -472,7 +480,8 @@ function AVIM()	{
 // $if{Debug}
 			try {
 // $endif{}
-				return Cu.evalInSandbox(msgJS, sandbox);
+				var ret = Cu.evalInSandbox(msgJS, sandbox);
+				return type ? ret : undefined;
 // $if{Debug}
 			}
 			catch (exc) {
@@ -565,6 +574,135 @@ function AVIM()	{
 	SkitProxy.prototype = new TextControlProxy();
 	
 	/**
+	 * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param evt	{object}	The keyPress event.
+	 */
+	function KixProxy(evt) {
+		var doc = evt.originalTarget.ownerDocument;
+		if (!doc || !doc.body) throw "No document body to copy from.";
+		
+		var winUtils = QueryInterface(Ci.nsIInterfaceRequestor)
+			.getInterface(Ci.nsIDOMWindowUtils);
+		if (!winUtils || !("sendKeyEvent" in winUtils &&
+						   "sendCompositionEvent" in winUtils &&
+						   "sendContentCommandEvent" in winUtils)) {
+			// Parts of the API are only available starting in Gecko 1.9 or 2.0.
+			throw "Can't issue native events."
+		}
+		
+		/**
+		 * Generates a right-arrow key event that returns the selection to where
+		 * it was before KixProxy started modifying it.
+		 */
+		this.revertSelection = function() {
+			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
+		};
+		
+		this.type = "text";
+		
+		// Abort if there is a selection. The selection rectangle is an overlay
+		// element that can be identified by its (platform-specific) class.
+		var frame = doc.defaultView.frameElement;
+		if (!frame) throw "Not in iframe.";
+		var frameDoc = frame.ownerDocument;
+		var sel = frameDoc.getElementsByClassName("kix-selection-overlay");
+		if (!sel.length) {
+			sel = frameDoc.getElementsByClassName("kix-selection-overlay-mac");
+		}
+		if (sel.length) throw "Non-empty selection.";
+		
+		// Select the previous word.
+		// Mozilla observes the following platform-specific bindings for
+		// cmd_selectWordPrevious:
+		// /content/xbl/builtin/unix/platformHTMLBindings.xml	control,shift
+		// /content/xbl/builtin/mac/platformHTMLBindings.xml	alt,shift
+		// /content/xbl/builtin/emacs/platformHTMLBindings.xml	control,shift
+		// /content/xbl/builtin/win/platformHTMLBindings.xml	control,shift
+		var modifiers = isMac ? (Event.ALT_MASK | Event.SHIFT_MASK) :
+			(Event.CONTROL_MASK | Event.SHIFT_MASK);
+		winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_LEFT, 0, modifiers);
+		
+		// Copy the word.
+		// TODO: Find some other way of getting the text before the caret, to
+		// avoid clobbering the user's clipboard data.
+		winUtils.sendContentCommandEvent("copy");
+		
+		// Retrieve the text from the clipboard.
+		// https://developer.mozilla.org/en/Using_the_Clipboard
+		const board = Cc["@mozilla.org/widget/clipboard;1"]
+			.getService(Ci.nsIClipboard);
+		if (!board.hasDataMatchingFlavors(["text/unicode"], 1,
+										  board.kGlobalClipboard)) {
+			throw "Nothing to modify.";
+		}
+		var xfer = Cc["@mozilla.org/widget/transferable;1"]
+			.createInstance(Ci.nsITransferable);
+		xfer.addDataFlavor("text/unicode");
+		board.getData(xfer, board.kGlobalClipboard);
+		var str = new Object(), len = new Object();
+		try {
+			xfer.getTransferData("text/unicode", str, len);
+		}
+		catch (exc) {
+			// At the beginning of a new line (but not the beginning of the
+			// document), the previous line break has been selected.
+			this.revertSelection();
+			throw "Probably the beginning of a line; nothing to modify.";
+		}
+		if (str) {
+			str = str.value.QueryInterface(Ci.nsISupportsString);
+			// text/unicode is apparently stored as UTF-16.
+			this.value = this.oldValue = str.data.substring(0, len.value / 2);
+		}
+		if (!str || !this.value) throw "No value.";
+		
+		this.selectionStart = this.selectionEnd = this.value.length;
+		
+		/**
+		 * Updates the Kix editor represented by this proxy to reflect any
+		 * changes made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+//			dump("value: " + this.value + "; oldValue: " + this.oldValue + "\n");	// debug
+			if (this.value == this.oldValue) {
+				this.revertSelection();
+				return false;
+			}
+			
+			// Copy the updated string back to the clipboard.
+			const boardHelper = Cc["@mozilla.org/widget/clipboardhelper;1"]
+				.getService(Ci.nsIClipboardHelper);
+			boardHelper.copyString(this.value);
+			
+			//{
+			//	xfer = Cc["@mozilla.org/widget/transferable;1"]
+			//		.createInstance(Ci.nsITransferable);
+			//	xfer.addDataFlavor("text/unicode");
+			//	board.getData(xfer, board.kGlobalClipboard);
+			//	str = new Object(), len = new Object();
+			//	xfer.getTransferData("text/unicode", str, len);
+			//	if (str && len) {
+			//		str = str.value.QueryInterface(Ci.nsISupportsString);
+			//		dump("About to paste: <" + str.data.substring(0, len.value / 2) + ">\n");	// debug
+			//	}
+			//}
+			
+			// Paste the updated string into the editor.
+			winUtils.sendCompositionEvent("compositionstart");
+			winUtils.sendContentCommandEvent("paste");
+			winUtils.sendCompositionEvent("compositionend");
+			
+			// Clear the clipboard.
+			board.emptyClipboard(board.kGlobalClipboard);
+			return true;
+		};
+	};
+	KixProxy.prototype = new TextControlProxy();
+	
+	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
 	 * XUL or HTML element.
 	 *
@@ -591,8 +729,7 @@ function AVIM()	{
 			var editingSession = webNavigation
 				.QueryInterface(Ci.nsIInterfaceRequestor)
 				.getInterface(Ci.nsIEditingSession);
-			return editingSession.getEditorForWindow(el)
-				.QueryInterface(Ci.nsIHTMLObjectResizer);
+			return editingSession.getEditorForWindow(el);
 		}
 		catch (e) {}
 //		dump("AVIM.getEditor -- couldn't get editor: " + e + "\n");		// debug
@@ -1605,10 +1742,6 @@ function AVIM()	{
 				}
 			}
 			
-			// Specialized control
-			else if (this.oc instanceof TextControlProxy) {
-				this.oc.selectionStart = this.oc.selectionEnd = pos;
-			}
 			// Anything else
 			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			
@@ -1775,14 +1908,13 @@ function AVIM()	{
 		var doc = e.originalTarget.ownerDocument;
 		var target = doc.documentElement;
 		var cwi = new XPCNativeWrapper(doc.defaultView);
-		if(e.ctrlKey || e.metaKey || e.altKey) return;
 		if (this.findIgnore(target)) return;
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
 		this.ifInit(cwi);
 		var node = this.range.endContainer, newPos;
 		this.sk = fcc(code);
 		this.saveStr = "";
-		if(this.checkCode(code) || !this.range.startOffset || (typeof(node.data) == 'undefined')) return;
+		if (!this.range.startOffset || node.data == undefined) return;
 		node.sel = false;
 		if(node.data) {
 			this.saveStr = node.data.substr(this.range.endOffset);
@@ -1828,6 +1960,13 @@ function AVIM()	{
 		}
 	};
 	
+	/**
+	 * Returns whether the given key code should be ignored by AVIM.
+	 *
+	 * @param code	{number}	Virtual key code.
+	 * @returns {boolean}	True if AVIM is to ignore the keypress; false
+	 * 						otherwise.
+	 */
 	this.checkCode = function(code) {
 		return !AVIMConfig.onOff || (code < 45 && code != 8 /* Backspace */ &&
 									 code != 42 && code != 32 && code != 39 &&
@@ -1879,9 +2018,8 @@ function AVIM()	{
 		// "e-mail" or "email" in .ignoredFieldIds).
 		const htmlTypes = ["search", "text", "textarea"];
 		
-		var el = e.originalTarget || e.target, code = e.which;
-//		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + code + "\n");	// debug
-		if (e.ctrlKey || e.metaKey || e.altKey) return false;
+		var el = e.originalTarget || e.target;
+//		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + e.which + "\n");	// debug
 		if (this.findIgnore(e.target)) return false;
 		var isHTML = htmlTypes.indexOf(el.type) >= 0 ||
 			(el.type == "password" && AVIMConfig.passwords) ||
@@ -1889,9 +2027,9 @@ function AVIM()	{
 								  AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
 			(el.type == "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
 									AVIMConfig.exclude.indexOf("e-mail") < 0));
+		if (!isHTML) return false;
 		
-		if(!isHTML || this.checkCode(code)) return false;
-		this.sk = fcc(code);
+		this.sk = fcc(e.which);
 		var editor = getEditor(el);
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
@@ -1933,12 +2071,8 @@ function AVIM()	{
 	 */
 	this.handleSciMoz = function(e, el) {
 		if (!el) el = e.originalTarget;
-		var code = e.which;
-//		dump("AVIM.handleSciMoz -- target: " + el + "; type: " + el.type + "; code: " + code + "\n");	// debug
-		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(code) ||
-			el.type != sciMozType || this.findIgnore(e.target)) {
-			return false;
-		}
+//		dump("AVIM.handleSciMoz -- target: " + el + "; type: " + el.type + "; code: " + e.which + "\n");	// debug
+		if (el.type != sciMozType || this.findIgnore(e.target)) return false;
 //		dump("xul:scintilla:\n" + [prop for (prop in el)] + "\n");				// debug
 //		el.setSelectionNStart(0, 8);											// debug
 //		dump(">>> scimoz.getSelectionNStart: " + el.selections ? el.getSelectionNStart(0) : "" + "\n");					// debug
@@ -1969,7 +2103,7 @@ function AVIM()	{
 				else proxy = new SciMozProxy(el, i);
 				if (!proxy) continue;
 				
-				this.sk = fcc(code);
+				this.sk = fcc(e.which);
 				this.start(proxy, e);
 				
 				if (this.changed) anyChanged = true;
@@ -2012,11 +2146,7 @@ function AVIM()	{
 	this.handleAce = function(evt, elt) {
 //		dump("AVIM.handleAce\n");												// debug
 		if (!elt) elt = evt.originalTarget;
-		var code = evt.which;
-		if (evt.ctrlKey || evt.metaKey || evt.altKey || this.checkCode(code) ||
-			this.findIgnore(evt.target)) {
-			return false;
-		}
+		if (this.findIgnore(evt.target)) return false;
 		
 //		dump("---AceProxy---\n");												// debug
 		// Build a sandbox with all the toys an Ace editor could want.
@@ -2033,7 +2163,7 @@ function AVIM()	{
 		// Fake a native textbox.
 		var proxy = new AceProxy(sandbox);
 		
-		this.sk = fcc(code);
+		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
 		
 		proxy.commit();
@@ -2266,10 +2396,6 @@ function AVIM()	{
 	 */
 	this.handleSkit = function(evt) {
 		var elt = evt.originalTarget;
-		var code = evt.which;
-		if (evt.ctrlKey || evt.metaKey || evt.altKey || this.checkCode(code)) {
-			return false;
-		}
 		
 		var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
 		sandbox.window = elt.ownerDocument.defaultView.wrappedJSObject;
@@ -2295,13 +2421,44 @@ function AVIM()	{
 //		dump("AVIM.handleSkit\n");											// debug
 		var proxy = new SkitProxy(sandbox);
 		
-		this.sk = fcc(code);
+		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
 		
 		proxy.commit();
 		delete proxy, sandbox;
 		if (this.changed) {
 			this.changed = false;
+			evt.stopPropagation();
+			evt.preventDefault();
+			return false;
+		}
+		return true;
+	};
+	
+	/**
+	 * Handles key presses in the Kix editor. This function is triggered as soon
+	 * soon as the key goes up.
+	 *
+	 * @param evt	{object}	The keypress event.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleKix = function(evt) {
+//		dump("AVIM.handleKix\n");												// debug
+		var elt = evt.originalTarget;
+		
+		// Fake a native textbox.
+		var proxy = new KixProxy(evt);
+		
+		this.sk = fcc(evt.which);
+		this.start(proxy, evt);
+		
+		proxy.commit();
+		delete proxy;
+		
+		if (this.changed) {
+			this.changed = false;
+			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
 			return false;
@@ -2745,6 +2902,10 @@ function AVIM()	{
 //		dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
 //			 "; target: " + e.target.nodeName + "#" + e.target.id +
 //			 "; originalTarget: " + e.originalTarget.nodeName + "#" + e.originalTarget.id + "\n");			// debug
+		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
+			return false;
+		}
+		
 		var target = e.target;
 		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
@@ -2763,6 +2924,17 @@ function AVIM()	{
 		
 		// Specialized Web editors
 		try {
+			// Google Kix
+			if (tagName == "html" &&
+				!origTarget.baseURI.indexOf("https://docs.google.com/")) {
+				var kixFrame = origTarget.ownerDocument.defaultView.frameElement;
+				if (kixFrame && "classList" in kixFrame &&
+					kixFrame.classList.contains("docs-texteventtarget-iframe") &&
+					kixFrame.ownerDocument.location.host == "docs.google.com") {
+					return this.handleKix(e);
+				}
+			}
+			
 			// SlideKit
 			if (tagName == "html" && this.handleSkit(e)) return true;
 			
