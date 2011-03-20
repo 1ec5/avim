@@ -596,6 +596,7 @@ function AVIM()	{
 		 * it was before KixProxy started modifying it.
 		 */
 		this.revertSelection = function() {
+			dump(">>> revertSelection\n");										// debug
 			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
 		};
 		
@@ -624,8 +625,6 @@ function AVIM()	{
 		winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_LEFT, 0, modifiers);
 		
 		// Copy the word.
-		// TODO: Find some other way of getting the text before the caret, to
-		// avoid clobbering the user's clipboard data.
 		winUtils.sendContentCommandEvent("copy");
 		
 		// Retrieve the text from the clipboard.
@@ -655,7 +654,9 @@ function AVIM()	{
 			// text/unicode is apparently stored as UTF-16.
 			this.value = this.oldValue = str.data.substring(0, len.value / 2);
 		}
-		if (!str || !this.value) throw "No value.";
+		if (!str || !this.value || this.value == "\ufeff" /* BOM */) {
+			throw "No value.";
+		}
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
@@ -666,9 +667,9 @@ function AVIM()	{
 		 * @returns {boolean}	True if anything was changed; false otherwise.
 		 */
 		this.commit = function() {
-//			dump("value: " + this.value + "; oldValue: " + this.oldValue + "\n");	// debug
+//			dump("value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
 			if (this.value == this.oldValue) {
-				this.revertSelection();
+				if (this.value) this.revertSelection();
 				return false;
 			}
 			
@@ -695,9 +696,6 @@ function AVIM()	{
 			winUtils.sendContentCommandEvent("paste");
 			winUtils.sendCompositionEvent("compositionend");
 			
-			// Clear the clipboard.
-			boardHelper.copyString(null);
-			//board.emptyClipboard(board.kGlobalClipboard);
 			return true;
 		};
 	};
@@ -2448,14 +2446,65 @@ function AVIM()	{
 //		dump("AVIM.handleKix\n");												// debug
 		var elt = evt.originalTarget;
 		
-		// Fake a native textbox.
-		var proxy = new KixProxy(evt);
+		// Get the existing clipboard data in as many formats as the application
+		// would likely recognize. Unfortunately, everything else will be lost.
+		// TODO: Implement nsIClipboardDragDropHooks to override the clipboard,
+		// to avoid dropping any clipboard data.
+		const board = Cc["@mozilla.org/widget/clipboard;1"]
+			.getService(Ci.nsIClipboard);
+		var xfer = Cc["@mozilla.org/widget/transferable;1"]
+			.createInstance(Ci.nsITransferable);
+		var flavors = [
+			// /widget/public/nsITransferable.idl
+			"text/plain",				// kTextMime
+			"text/unicode",				// kUnicodeMime
+			"text/x-moz-text-internal",	// kMozTextInternal
+			"text/html",				// kHTMLMime
+			//"AOLMAIL",					// kAOLMailMime
+			"image/png",				// kPNGImageMime
+			"image/jpg",				// kJPEGImageMime
+			"image/gif",				// kGIFImageMime
+			"application/x-moz-file",	// kFileMime
+			// Registering "text/x-moz-url" and its variants cause the
+			// application to crash.
+			//"text/x-moz-url",			// kURLMime
+			//"text/x-moz-url-data",		// kURLDataMime
+			//"text/x-moz-url-desc",		// kURLDescriptionMime
+			//"text/x-moz-url-priv",		// kURLPrivateMime
+			"application/x-moz-nativeimage",// kNativeImageMime
+			"application/x-moz-nativehtml",	// kNativeHTMLMime
+			
+			// /widget/src/xpwidgets/nsClipboardPrivacyHandler.cpp
+			"application/x-moz-private-browsing"	// NS_MOZ_DATA_FROM_PRIVATEBROWSING
+		];
+		for (var i = 0; i < flavors.length; i++) xfer.addDataFlavor(flavors[i]);
+		board.getData(xfer, board.kGlobalClipboard);
 		
-		this.sk = fcc(evt.which);
-		this.start(proxy, evt);
-		
-		proxy.commit();
-		delete proxy;
+		try {
+			// Fake a native textbox.
+			var proxy = new KixProxy(evt);
+			
+			this.sk = fcc(evt.which);
+			this.start(proxy, evt);
+			
+			proxy.commit();
+			delete proxy;
+		}
+		catch (exc) {
+			throw exc;
+		}
+		finally {
+			// Revert the clipboard to the preexisting contents.
+			board.setData(xfer, null, board.kGlobalClipboard);
+			
+			// Clear the clipboard.
+			//var xfer = Cc["@mozilla.org/widget/transferable;1"]
+			//	.createInstance(Ci.nsITransferable);
+			//var board = Cc["@mozilla.org/widget/clipboard;1"]
+			//	.getService(Ci.nsIClipboard);
+			//board.setData(xfer, null, board.kGlobalClipboard);
+			//board.emptyClipboard(board.kGlobalClipboard);
+		}
 		
 		if (this.changed) {
 			this.changed = false;
