@@ -591,12 +591,71 @@ function AVIM()	{
 			throw "Can't issue native events."
 		}
 		
+		//const btnIds = {
+		//	bold: "boldButton", italic: "italicButton",
+		//	underline: "underlineButton"
+		//};
+		//
+		///**
+		// * Returns the formatting styles that apply at the current selection.
+		// *
+		// * @returns {object}	Boolean attributes mapped to whether they apply.
+		// */
+		//this.getFormatting = function() {
+		//	var fmt = {};
+		//	for (var attr in btnIds) {
+		//		var btn = frameDoc.getElementById(btnIds[attr]);
+		//		fmt[attr] = btn && btn.getAttribute("aria-pressed") == "true";
+		//	}
+		//	dump("KixProxy.getFormatting -- bold: " + fmt.bold + "\n");			// debug
+		//	return fmt;
+		//};
+		//
+		///**
+		// * Applies the given formatting styles to the text at the current
+		// * selection.
+		// *
+		// * @param fmt	{object}	Boolean attributes mapped to whether they
+		// * 							apply.
+		// */
+		//this.applyFormatting = function(fmt) {
+		//	var curFmt = this.getFormatting();
+		//	for (var attr in fmt) {
+		//		var btn = frameDoc.getElementById(btnIds[attr]);
+		//		if (fmt[attr] == curFmt[attr]) continue;
+		//		
+		//		// Click the button to toggle it.
+		//		dump("KixProxy.applyFormatting -- toggling " + attr + "\n");	// debug
+		//		var clickEvt = document.createEvent("MouseEvents");
+		//		clickEvt.initMouseEvent("click", true, true, null, 0, 0, 0, 0,
+		//								0, false, false, false, false, 0, null);
+		//		btn.dispatchEvent(clickEvt);
+		//	}
+		//};
+		
+		/**
+		 * Generates a key event that selects the previous word.
+		 *
+		 * Mozilla observes the following platform-specific bindings for
+		 * cmd_selectWordPrevious:
+		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	control,shift
+		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	alt,shift
+		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	control,shift
+		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	control,shift
+		 */
+		this.selectPrecedingWord = function() {
+			var modifiers = isMac ? (Event.ALT_MASK | Event.SHIFT_MASK) :
+				(Event.CONTROL_MASK | Event.SHIFT_MASK);
+			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_LEFT, 0,
+								  modifiers);
+		};
+		
 		/**
 		 * Generates a right-arrow key event that returns the selection to where
 		 * it was before KixProxy started modifying it.
 		 */
 		this.revertSelection = function() {
-			dump(">>> revertSelection\n");										// debug
+//			dump(">>> revertSelection\n");										// debug
 			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
 		};
 		
@@ -613,16 +672,12 @@ function AVIM()	{
 		}
 		if (sel.length) throw "Non-empty selection.";
 		
+		//// Remember any simple inline styles (B/I/U) that might've been toggled
+		//// just before the keypress event.
+		//var oldFmt = this.getFormatting();
+		
 		// Select the previous word.
-		// Mozilla observes the following platform-specific bindings for
-		// cmd_selectWordPrevious:
-		// /content/xbl/builtin/unix/platformHTMLBindings.xml	control,shift
-		// /content/xbl/builtin/mac/platformHTMLBindings.xml	alt,shift
-		// /content/xbl/builtin/emacs/platformHTMLBindings.xml	control,shift
-		// /content/xbl/builtin/win/platformHTMLBindings.xml	control,shift
-		var modifiers = isMac ? (Event.ALT_MASK | Event.SHIFT_MASK) :
-			(Event.CONTROL_MASK | Event.SHIFT_MASK);
-		winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_LEFT, 0, modifiers);
+		this.selectPrecedingWord();
 		
 		// Copy the word.
 		winUtils.sendContentCommandEvent("copy");
@@ -637,6 +692,7 @@ function AVIM()	{
 		}
 		var xfer = Cc["@mozilla.org/widget/transferable;1"]
 			.createInstance(Ci.nsITransferable);
+		// TODO: Use the text/html flavor to retain formatting.
 		xfer.addDataFlavor("text/unicode");
 		board.getData(xfer, board.kGlobalClipboard);
 		var str = new Object(), len = new Object();
@@ -654,9 +710,8 @@ function AVIM()	{
 			// text/unicode is apparently stored as UTF-16.
 			this.value = this.oldValue = str.data.substring(0, len.value / 2);
 		}
-		if (!str || !this.value || this.value == "\ufeff" /* BOM */) {
-			throw "No value.";
-		}
+		// Empty string or BOM can occur at the beginning of the document.
+		if (!str || !this.value || this.value == "\ufeff") throw "No value.";
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
@@ -669,7 +724,18 @@ function AVIM()	{
 		this.commit = function() {
 //			dump("value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
 			if (this.value == this.oldValue) {
-				if (this.value) this.revertSelection();
+				if (this.value) {
+					//// When begining a new word, bring back any simple inline
+					//// formatting that was toggled just before entering it.
+					//if (this.oldValue.search(/\s$/) > 0) {
+					//	dump("Beginning a new word\n");									// debug
+					//	this.selectPrecedingWord();
+					//	this.applyFormatting(oldFmt);
+					//	this.revertSelection();
+					//}
+					//else this.revertSelection();
+					this.revertSelection();
+				}
 				return false;
 			}
 			
@@ -2481,6 +2547,11 @@ function AVIM()	{
 		board.getData(xfer, board.kGlobalClipboard);
 		
 		try {
+			// Clear the clipboard.
+			board.setData(Cc["@mozilla.org/widget/transferable;1"]
+							.createInstance(Ci.nsITransferable),
+						  null, board.kGlobalClipboard);
+			
 			// Fake a native textbox.
 			var proxy = new KixProxy(evt);
 			
