@@ -676,6 +676,19 @@ function AVIM()	{
 		//// just before the keypress event.
 		//var oldFmt = this.getFormatting();
 		
+		// TODO: Support tables.
+		// Possible solution: If Table | Table Properties is enabled, generate a
+		// space, select the preceding word, ignore the extra space. If nothing
+		// changed, remove the space.
+		//var itemPath =
+		//	"//div[@role='menuitem' and contains(div, 'Table properties')]";
+		//var tablePropsItem = frameDoc.evaluate(itemPath, frameDoc, null,
+		//									   XPathResult.ANY_TYPE, null)
+		//	.iterateNext();
+		//var isInTable = tablePropsItem &&
+		//	tablePropsItem.getAttribute("aria-disabled") == "false";
+		//if (isInTable) dump("KixProxy -- in table\n");							// debug
+		
 		// Select the previous word.
 		this.selectPrecedingWord();
 		
@@ -712,6 +725,12 @@ function AVIM()	{
 		}
 		// Empty string or BOM can occur at the beginning of the document.
 		if (!str || !this.value || this.value == "\ufeff") throw "No value.";
+		// Tab can occur at the beginning of a table cell.
+		//if (this.value == "\t") {
+		//	winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_LEFT, 0, 0);
+		//	this.revertSelection();
+		//	throw "Probably the beginning of a table cell; nothing to modify.";
+		//}
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
@@ -1398,7 +1417,7 @@ function AVIM()	{
 		
 		var w = this.mozGetText(obj);
 //		dump(">>> start() -- w: <" + w + ">\n");								// debug
-		if (key.keyCode == 8 /* Backspace */ && key.shiftKey) key = "";
+		if (key.keyCode == key.DOM_VK_BACK_SPACE && key.shiftKey) key = "";
 		else key = fcc(key.which);
 		if (!w || ("sel" in obj && obj.sel)) return;
 		
@@ -1977,7 +1996,8 @@ function AVIM()	{
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
 		this.ifInit(cwi);
 		var node = this.range.endContainer, newPos;
-		this.sk = fcc(code);
+		if (e.keyCode == e.DOM_VK_BACK_SPACE && this.range.toString()) return;
+		else this.sk = fcc(code);
 		this.saveStr = "";
 		if (!this.range.startOffset || node.data == undefined) return;
 		node.sel = false;
@@ -2033,9 +2053,10 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.checkCode = function(code) {
-		return !AVIMConfig.onOff || (code < 45 && code != 8 /* Backspace */ &&
-									 code != 42 && code != 32 && code != 39 &&
-									 code != 40 && code != 43) ||
+		return !AVIMConfig.onOff ||
+			(code < 45 && code != KeyEvent.DOM_VK_BACK_SPACE && code != 42 &&
+			 /* code != KeyEvent.DOM_VK_SPACE && */ code != 39 && code != 40 &&
+			 code != 43) ||
 			code == 145 || code == 255;
 	};
 	
