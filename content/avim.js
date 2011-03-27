@@ -591,6 +591,29 @@ function AVIM()	{
 			throw "Can't issue native events."
 		}
 		
+		var frame = doc.defaultView.frameElement;
+		if (!frame) throw "Not in iframe.";
+		var frameDoc = frame.ownerDocument;
+		
+		/**
+		 * Returns whether the caret is currently in a table.
+		 *
+		 * The caret is in a table if the Table | Table Properties menu item is
+		 * enabled.
+		 *
+		 * @returns {boolean}	True if the caret is in a table; false
+		 * 						otherwise.
+		 */
+		this.isInTable = function() {
+			const itemPath =
+				"//div[@role='menuitem' and contains(div, 'Table properties')]";
+			var tablePropsItem = frameDoc.evaluate(itemPath, frameDoc, null,
+												   XPathResult.ANY_TYPE, null)
+				.iterateNext();
+			return tablePropsItem &&
+				tablePropsItem.getAttribute("aria-disabled") == "false";
+		};
+		
 		//const btnIds = {
 		//	bold: "boldButton", italic: "italicButton",
 		//	underline: "underlineButton"
@@ -634,20 +657,31 @@ function AVIM()	{
 		//};
 		
 		/**
-		 * Generates a key event that selects the previous word.
+		 * Generates a key event that selects the previous word or, when inside
+		 * a table, the entire line up to the caret.
 		 *
 		 * Mozilla observes the following platform-specific bindings for
 		 * cmd_selectWordPrevious:
-		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	control,shift
-		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	alt,shift
-		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	control,shift
-		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	control,shift
+		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	VK_LEFT	control,shift
+		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	VK_LEFT	alt,shift
+		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	VK_LEFT	control,shift
+		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	VK_LEFT	control,shift
+		 * and for cmd_selectBeginLine:
+		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	VK_HOME	shift
+		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	VK_LEFT	accel,shift
+		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	VK_HOME	shift
+		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	VK_HOME	shift
 		 */
 		this.selectPrecedingWord = function() {
-			var modifiers = isMac ? (Event.ALT_MASK | Event.SHIFT_MASK) :
-				(Event.CONTROL_MASK | Event.SHIFT_MASK);
-			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_LEFT, 0,
-								  modifiers);
+			var isInTable = this.isInTable();
+			var key = (isMac || !isInTable) ?
+				KeyEvent.DOM_VK_LEFT : KeyEvent.DOM_VK_HOME;
+			var modifiers = (isMac || isInTable) ?
+				Event.SHIFT_MASK : (Event.CONTROL_MASK | Event.SHIFT_MASK);
+			if (isMac) {
+				modifiers |= isInTable ? Event.META_MASK : Event.ALT_MASK;
+			}
+			winUtils.sendKeyEvent("keypress", key, 0, modifiers);
 		};
 		
 		/**
@@ -655,7 +689,6 @@ function AVIM()	{
 		 * it was before KixProxy started modifying it.
 		 */
 		this.revertSelection = function() {
-//			dump(">>> revertSelection\n");										// debug
 			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
 		};
 		
@@ -663,9 +696,6 @@ function AVIM()	{
 		
 		// Abort if there is a selection. The selection rectangle is an overlay
 		// element that can be identified by its (platform-specific) class.
-		var frame = doc.defaultView.frameElement;
-		if (!frame) throw "Not in iframe.";
-		var frameDoc = frame.ownerDocument;
 		var sel = frameDoc.getElementsByClassName("kix-selection-overlay");
 		if (!sel.length) {
 			sel = frameDoc.getElementsByClassName("kix-selection-overlay-mac");
@@ -675,19 +705,6 @@ function AVIM()	{
 		//// Remember any simple inline styles (B/I/U) that might've been toggled
 		//// just before the keypress event.
 		//var oldFmt = this.getFormatting();
-		
-		// TODO: Support tables.
-		// Possible solution: If Table | Table Properties is enabled, generate a
-		// space, select the preceding word, ignore the extra space. If nothing
-		// changed, remove the space.
-		//var itemPath =
-		//	"//div[@role='menuitem' and contains(div, 'Table properties')]";
-		//var tablePropsItem = frameDoc.evaluate(itemPath, frameDoc, null,
-		//									   XPathResult.ANY_TYPE, null)
-		//	.iterateNext();
-		//var isInTable = tablePropsItem &&
-		//	tablePropsItem.getAttribute("aria-disabled") == "false";
-		//if (isInTable) dump("KixProxy -- in table\n");							// debug
 		
 		// Select the previous word.
 		this.selectPrecedingWord();
@@ -725,12 +742,12 @@ function AVIM()	{
 		}
 		// Empty string or BOM can occur at the beginning of the document.
 		if (!str || !this.value || this.value == "\ufeff") throw "No value.";
-		// Tab can occur at the beginning of a table cell.
-		//if (this.value == "\t") {
-		//	winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_LEFT, 0, 0);
-		//	this.revertSelection();
-		//	throw "Probably the beginning of a table cell; nothing to modify.";
-		//}
+		
+		// This sequence can appear immediately following a table. (Actual tabs
+		// are represented as series of spaces.)
+		if (this.value.substr(-2) == "\n\t") {
+			throw "Probably right after a table; nothing to modify.";
+		}
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
