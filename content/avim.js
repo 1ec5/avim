@@ -595,6 +595,31 @@ function AVIM()	{
 		if (!frame) throw "Not in iframe.";
 		var frameDoc = frame.ownerDocument;
 		
+		const overlayClass = "kix-selection-overlay" + (isMac ? "-mac" : "");
+		
+		/**
+		 * Returns whether text is currently selected in the editor, as
+		 * indicated by the presence of a selection rectangle overlay.
+		 *
+		 * Currently, Kix doesn't seem to display the selection rectangle when
+		 * only spaces have been selected, but does when any object is selected.
+		 */
+		this.hasSelection = function() {
+			var sel = frameDoc.getElementsByClassName(overlayClass);
+			return sel.length;
+		};
+		
+		const tablePropsItemPath =
+			"//div[@role='menuitem' and contains(div, 'Table properties')]";
+		const tablePropsItem = frameDoc.evaluate(tablePropsItemPath, frameDoc,
+												 null, XPathResult.ANY_TYPE,
+												 null).iterateNext();
+// $if{Debug}
+		if (!tablePropsItem) {
+			dump("KixProxy -- Can't find menu item Table | Table properties.");
+		}
+// $endif{}
+		
 		/**
 		 * Returns whether the caret is currently in a table.
 		 *
@@ -605,11 +630,6 @@ function AVIM()	{
 		 * 						otherwise.
 		 */
 		this.isInTable = function() {
-			const itemPath =
-				"//div[@role='menuitem' and contains(div, 'Table properties')]";
-			var tablePropsItem = frameDoc.evaluate(itemPath, frameDoc, null,
-												   XPathResult.ANY_TYPE, null)
-				.iterateNext();
 			return tablePropsItem &&
 				tablePropsItem.getAttribute("aria-disabled") == "false";
 		};
@@ -657,8 +677,8 @@ function AVIM()	{
 		//};
 		
 		/**
-		 * Generates a key event that selects the previous word or, when inside
-		 * a table, the entire line up to the caret.
+		 * Generates a key event that selects the previous word or optionally to
+		 * to beginning of the line.
 		 *
 		 * Mozilla observes the following platform-specific bindings for
 		 * cmd_selectWordPrevious:
@@ -671,17 +691,53 @@ function AVIM()	{
 		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	VK_LEFT	accel,shift
 		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	VK_HOME	shift
 		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	VK_HOME	shift
+		 *
+		 * @param toLineStart	{boolean}	True to extend the selection to the
+		 * 									start of the line; false otherwise.
 		 */
-		this.selectPrecedingWord = function() {
-			var isInTable = this.isInTable();
-			var key = (isMac || !isInTable) ?
+		this.selectPrecedingWord = function(toLineStart) {
+			var key = (isMac || !toLineStart) ?
 				KeyEvent.DOM_VK_LEFT : KeyEvent.DOM_VK_HOME;
-			var modifiers = (isMac || isInTable) ?
+			var modifiers = (isMac || toLineStart) ?
 				Event.SHIFT_MASK : (Event.CONTROL_MASK | Event.SHIFT_MASK);
 			if (isMac) {
-				modifiers |= isInTable ? Event.META_MASK : Event.ALT_MASK;
+				modifiers |= toLineStart ? Event.META_MASK : Event.ALT_MASK;
 			}
 			winUtils.sendKeyEvent("keypress", key, 0, modifiers);
+		};
+		
+		const board = Cc["@mozilla.org/widget/clipboard;1"]
+			.getService(Ci.nsIClipboard);
+		
+		/**
+		 * Returns the text contents of the clipboard.
+		 */
+		this.getClipboardText = function() {
+			// Retrieve the text from the clipboard.
+			// https://developer.mozilla.org/en/Using_the_Clipboard
+			if (!board.hasDataMatchingFlavors(["text/unicode"], 1,
+											  board.kGlobalClipboard)) {
+				return "";
+			}
+			var xfer = Cc["@mozilla.org/widget/transferable;1"]
+				.createInstance(Ci.nsITransferable);
+			// TODO: Use the text/html flavor to retain formatting.
+			xfer.addDataFlavor("text/unicode");
+			board.getData(xfer, board.kGlobalClipboard);
+			var str = new Object(), len = new Object();
+			try {
+				xfer.getTransferData("text/unicode", str, len);
+			}
+			catch (exc) {
+				// At the beginning of a new line (but not the beginning of the
+				// document), the previous line break has been selected.
+				return "\n";
+			}
+			str = str && str.value.QueryInterface(Ci.nsISupportsString);
+			// text/unicode is apparently stored as UTF-16.
+			str = str && str.data.substring(0, len.value / 2);
+			// BOM can occur at the beginning of the document.
+			return str != "\ufeff" && str;
 		};
 		
 		/**
@@ -690,6 +746,38 @@ function AVIM()	{
 		 */
 		this.revertSelection = function() {
 			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
+		};
+		
+		/**
+		 * Copies and retrieves the selected text. Callers are responsible for
+		 * reverting the clipboard contents.
+		 *
+		 * @throws {string}	when there was no selection, or the selection was
+		 * 					nothing but spaces, in which case the selection is
+		 * 					reverted.
+		 */
+		this.getSelectedText = function(isInTable) {
+			// Clear the clipboard.
+			board.setData(Cc["@mozilla.org/widget/transferable;1"]
+							.createInstance(Ci.nsITransferable),
+						  null, board.kGlobalClipboard);
+			
+			// Copy the word.
+			winUtils.sendContentCommandEvent("copy");
+			
+			// Retrieve the text from the clipboard.
+			var value = this.getClipboardText();
+			if (!value) {
+				// Objects may not be copied as text, but they may be selected.
+				if (this.hasSelection()) this.revertSelection();
+				throw "No value.";
+			}
+			// Probably the beginning of a line (or the line has just spaces).
+			if (!value.trim()) {
+				this.revertSelection();
+				throw "Start of line.";
+			}
+			return value;
 		};
 		
 		this.type = "text";
@@ -707,48 +795,33 @@ function AVIM()	{
 		//var oldFmt = this.getFormatting();
 		
 		// Select the previous word.
-		this.selectPrecedingWord();
-		
-		// Copy the word.
-		winUtils.sendContentCommandEvent("copy");
-		
-		// Retrieve the text from the clipboard.
-		// https://developer.mozilla.org/en/Using_the_Clipboard
-		const board = Cc["@mozilla.org/widget/clipboard;1"]
-			.getService(Ci.nsIClipboard);
-		if (!board.hasDataMatchingFlavors(["text/unicode"], 1,
-										  board.kGlobalClipboard)) {
-			throw "Nothing to modify.";
-		}
-		var xfer = Cc["@mozilla.org/widget/transferable;1"]
-			.createInstance(Ci.nsITransferable);
-		// TODO: Use the text/html flavor to retain formatting.
-		xfer.addDataFlavor("text/unicode");
-		board.getData(xfer, board.kGlobalClipboard);
-		var str = new Object(), len = new Object();
-		try {
-			xfer.getTransferData("text/unicode", str, len);
-		}
-		catch (exc) {
-			// At the beginning of a new line (but not the beginning of the
-			// document), the previous line break has been selected.
+		var wasInTable = this.isInTable();
+		this.selectPrecedingWord(wasInTable);
+		if (!wasInTable && this.isInTable()) {
+			// The selection now lies in the table, so the caret was right after
+			// the table.
 			this.revertSelection();
-			throw "Probably the beginning of a line; nothing to modify.";
+			throw "Right after table.";
 		}
-		if (str) {
-			str = str.value.QueryInterface(Ci.nsISupportsString);
-			// text/unicode is apparently stored as UTF-16.
-			this.value = this.oldValue = str.data.substring(0, len.value / 2);
-		}
-		// Empty string or BOM can occur at the beginning of the document.
-		if (!str || !this.value || this.value == "\ufeff") throw "No value.";
-		
-		// This sequence can appear immediately following a table. (Actual tabs
-		// are represented as series of spaces.)
-		if (this.value.substr(-2) == "\n\t") {
-			throw "Probably right after a table; nothing to modify.";
+		if (this.hasSelection() > 1) {
+			// A horizontal line may have been included in the selection, or the
+			// word spans more than one line.
+			this.revertSelection();
+			// There will only be one word in this selection.
+			this.selectPrecedingWord(true);
 		}
 		
+		// Get the selected text.
+		var value = this.getSelectedText();
+		
+		if (wasInTable) {
+			// Reselect the text, this time just the preceding word.
+			this.revertSelection();
+			this.selectPrecedingWord(false);
+			value = this.getSelectedText();
+		}
+		
+		this.value = this.oldValue = value;
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
 		/**
@@ -2585,11 +2658,6 @@ function AVIM()	{
 		board.getData(xfer, board.kGlobalClipboard);
 		
 		try {
-			// Clear the clipboard.
-			board.setData(Cc["@mozilla.org/widget/transferable;1"]
-							.createInstance(Ci.nsITransferable),
-						  null, board.kGlobalClipboard);
-			
 			// Fake a native textbox.
 			var proxy = new KixProxy(evt);
 			
