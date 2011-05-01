@@ -46,7 +46,7 @@
 <!ENTITY passwords-check.label "Bỏ qua các hộp mật khẩu">
 <!ENTITY passwords-check.accesskey "m">
 
-<!ENTITY statuspanel-check.label "Hiện trong thanh trạng thái">
+<!ENTITY statuspanel-check.label "Hiện trong Thanh Tiện ích">
 <!ENTITY statuspanel-check.accesskey "H">
 
 <!ENTITY avim-blacklist.style "width: 35em;">

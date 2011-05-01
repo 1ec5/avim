@@ -16,7 +16,7 @@
 <!-- Text surrounded by [square brackets] is linked. "Hieu Dang" should match em.contributor in install.dtd, if that name was localized there. "The competition" refers to other Vietnamese IME extensions; that text is linked to a feature comparison table. -->
 <!ENTITY description.advanced "Based on Hieu Dang’s [JavaScript package] of the same name, AVIM has been refined with a number of convenient and innovative features you won’t find in [the competition], including:">
 
-<!ENTITY description.advanced.ui "A compact status bar panel, optional toolbar buttons, and a preference window">
+<!ENTITY description.advanced.ui "A compact Add-on Bar button, optional toolbar buttons, and a preference window">
 <!-- Text surrounded by [square brackets] is linked. The "script monitor" refers to the same feature as script-enabled-check.label in options.dtd. "Available separately" links to a Greasemonkey script based on AVIM that also disables in-page IMEs. -->
 <!ENTITY description.advanced.scriptmonitor "A script monitor that automatically turns off in-page IMEs to prevent collisions (also [available separately])">
 <!-- Text surrounded by *asterisks* is in bold font. -->

@@ -35,7 +35,7 @@
 <!ENTITY script-config-button.accesskey "f">
 <!ENTITY passwords-check.label "Wachtwoordvelden negeren">
 <!ENTITY passwords-check.accesskey "W">
-<!ENTITY statuspanel-check.label "Toon in statusbalk">
+<!ENTITY statuspanel-check.label "Toon in Add-onbalk">
 <!ENTITY statuspanel-check.accesskey "s">
 <!ENTITY avim-blacklist.style "width: 35em;">
 <!ENTITY blacklist-pane.label "Uitzonderingen">

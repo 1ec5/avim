@@ -9,7 +9,7 @@
 
 <!ENTITY description.advanced "Basiert auf dem gleichnamigen [JavaScript-Paket] von Hieu Dang. AVIM wurde mit etlichen nützlichen und innovativen Funktionen verfeinert und weiterentwickelt, die es bei der [Konkurrenz] nicht gibt, wie z.B.:">
 
-<!ENTITY description.advanced.ui "Eine kompakte Statusleistenanzeige, optionale Symbolleisten-Schaltflächen, und ein Einstellungsfenster">
+<!ENTITY description.advanced.ui "Eine kompakte Add-on-Leiste-Schaltfläche, optionale Symbolleisten-Schaltflächen, und ein Einstellungsfenster">
 <!ENTITY description.advanced.scriptmonitor "Eine Skript-Monitor, welche Webseiten auf integrierte IMEs überwacht und diese automatisch deaktiviert, um Konflikte zu vermeiden (auch [separat erhältlich])">
 <!ENTITY description.advanced.compatible "Kompatibilität mit *jeder* Webseite die Sie besuchen, und mit *jedem* Fenster das Sie öffnen">
 <!ENTITY description.advanced.inplace "Positionsgebundene Eingabe, welche das Herumspringen von Textfeldern während der Eingabe verhindert – auch bei Rückgängig-/Wiederherstellen Aktionen">

@@ -46,7 +46,7 @@
 <!ENTITY passwords-check.label "Ignorar las cajas de contraseña">
 <!ENTITY passwords-check.accesskey "c">
 
-<!ENTITY statuspanel-check.label "Mostrar en la barra de estado">
+<!ENTITY statuspanel-check.label "Mostrar en la barra de complementos">
 <!ENTITY statuspanel-check.accesskey "e">
 
 <!ENTITY avim-blacklist.style "width: 35em;">

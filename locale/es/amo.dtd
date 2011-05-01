@@ -9,7 +9,7 @@
 
 <!ENTITY description.advanced "Basada en el paquete JavaScript del mismo nombre por Hieu Dang, se ha perfeccionado AVIM con muchos innovaciones convenientes que la competencia no tiene:">
 
-<!ENTITY description.advanced.ui "Un panel compacto en la barra de estado, los botones para la barra de herramientas, y una ventana de preferencias">
+<!ENTITY description.advanced.ui "Un botón compacto en la barra de complementos, los botones para la barra de herramientas, y una ventana de preferencias">
 <!ENTITY description.advanced.scriptmonitor "Un monitor de scripts que automáticamente apaga los IMEs de las páginas para evitar los colisiones (también [disponible separadamente])">
 <!ENTITY description.advanced.compatible "Compatibilidad con *absolutamente cada* página Web y ventana">
 <!ENTITY description.advanced.inplace "La capabilidad de editar estacionariamente, así que las cajas de texto no se agiten mientras que tecles o deshacer">

@@ -5,7 +5,7 @@
 <!ENTITY description.basics.shortcuts "Logische sneltoetsen (zoals CTRL+ALT+V) om AVIM te configureren terwijl je typt">
 <!ENTITY description.basics.webapps "Volledige ondersteuning voor webapplicaties als Gmail en Google Docs">
 <!ENTITY description.advanced "Gebaseerd op Hieu Dang's [gelijknamige JavaScript toepassing], AVIM is verfijnd met een aantal handige en innovatieve features, die je niet bij [vergelijkbare software] zult vinden, zoals:">
-<!ENTITY description.advanced.ui "Een compact statusbalkpaneel, optionele werkbalkknoppen en een venster met voorkeuren">
+<!ENTITY description.advanced.ui "Een compact Add-onbalkpaneel, optionele werkbalkknoppen en een venster met voorkeuren">
 <!ENTITY description.advanced.scriptmonitor "Een script dat automatisch andere IME’s op een pagina uitschakelt, om conflicten te voorkomen (ook [los verkrijgbaar])">
 <!ENTITY description.advanced.compatible "Werkt met *elke* webpagina die je bezoekt, en *elk* venster dat je opent">
 <!ENTITY description.advanced.inplace "Werk met een editor die niet heen en weer springt op het scherm – ook niet als je wijzigingen ongedaan maakt of terugzet.">

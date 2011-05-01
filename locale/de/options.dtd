@@ -46,7 +46,7 @@
 <!ENTITY passwords-check.label "Passwortfelder ignorieren">
 <!ENTITY passwords-check.accesskey "P">
 
-<!ENTITY statuspanel-check.label "In der Statusleiste anzeigen">
+<!ENTITY statuspanel-check.label "In der Add-on-Leiste anzeigen">
 <!ENTITY statuspanel-check.accesskey "S">
 
 <!ENTITY avim-blacklist.style "width: 35em;">

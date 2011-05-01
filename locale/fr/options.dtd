@@ -46,7 +46,7 @@
 <!ENTITY passwords-check.label "">
 <!ENTITY passwords-check.accesskey "">
 
-<!ENTITY statuspanel-check.label "Afficher dans la barre d’état">
+<!ENTITY statuspanel-check.label "Afficher dans la barre des modules">
 <!ENTITY statuspanel-check.accesskey "b">
 
 <!ENTITY avim-blacklist.style "width: 35em;">

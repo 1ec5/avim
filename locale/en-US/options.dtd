@@ -1,6 +1,6 @@
 <!-- Main dialog =========================================================== -->
 
-<!-- Name of the extension, used in various places, including the status bar and toolbar. "AVIM" stands for "Advanced Vietnamese Input Method". Most localizations can keep this string the same. This string should match AVIM.label in avim.dtd exactly. -->
+<!-- Name of the extension, used in various places, including the Add-on Bar and toolbar. "AVIM" stands for "Advanced Vietnamese Input Method". Most localizations can keep this string the same. This string should match AVIM.label in avim.dtd exactly. -->
 <!ENTITY AVIM.label "AVIM">
 <!-- Title of AVIM's preferences dialog. This string should be kept the same, unless declension requires otherwise. -->
 <!ENTITY avim-preferences.title "&AVIM.label;">
@@ -84,9 +84,9 @@
 <!-- Mneumonic for the checkbox for preventing AVIM from to convert keystrokes into diacritics in password fields. This string should contain a single character that also appears in passwords-check.label. The user can press Alt+P (Ctrl+P on the Mac) to toggle the checkbox. -->
 <!ENTITY passwords-check.accesskey "p">
 
-<!-- Label of the checkbox that is checked when the AVIM panel is shown in the status bar and unchecked when the panel is hidden. This string can be read as "Show AVIM in the status bar". -->
-<!ENTITY statuspanel-check.label "Show in status bar">
-<!-- Mneumonic for the checkbox that is checked when the AVIM panel is shown in the status bar and unchecked when the panel is hidden. This string should contain a single character that also appears in statuspanel-check.label. The user can press Alt+B (Ctrl+B on the Mac) to toggle the checkbox. -->
+<!-- Label of the checkbox that is checked when the AVIM button is shown in the Add-on Bar and unchecked when the button is hidden. This string can be read as "Show AVIM in the Add-on Bar". -->
+<!ENTITY statuspanel-check.label "Show in Add-on Bar">
+<!-- Mneumonic for the checkbox that is checked when the AVIM button is shown in the Add-on Bar and unchecked when the button is hidden. This string should contain a single character that also appears in statuspanel-check.label. The user can press Alt+B (Ctrl+B on the Mac) to toggle the checkbox. -->
 <!ENTITY statuspanel-check.accesskey "b">
 
 <!-- Blacklist dialog ====================================================== -->

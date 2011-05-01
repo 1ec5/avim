@@ -46,7 +46,7 @@
 <!ENTITY passwords-check.label "">
 <!ENTITY passwords-check.accesskey "">
 
-<!ENTITY statuspanel-check.label "在状态栏上显示">
+<!ENTITY statuspanel-check.label "在附加组件栏上显示">
 <!ENTITY statuspanel-check.accesskey "B">
 
 <!ENTITY avim-blacklist.style "width: 35em;">
