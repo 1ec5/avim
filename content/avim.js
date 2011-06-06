@@ -796,6 +796,7 @@ function AVIM()	{
 		
 		// Select the previous word.
 		var wasInTable = this.isInTable();
+//		if (wasInTable) dump("KixProxy -- Caret in table.\n");					// debug
 		this.selectPrecedingWord(wasInTable);
 		if (!wasInTable && this.isInTable()) {
 			// The selection now lies in the table, so the caret was right after
@@ -804,6 +805,7 @@ function AVIM()	{
 			throw "Right after table.";
 		}
 		if (this.hasSelection() > 1) {
+//			dump("KixProxy -- More than one line selected.\n");					// debug
 			// A horizontal line may have been included in the selection, or the
 			// word spans more than one line.
 			this.revertSelection();
@@ -813,9 +815,11 @@ function AVIM()	{
 		
 		// Get the selected text.
 		var value = this.getSelectedText();
+//		dump("KixProxy -- value: <" + value + ">\n");							// debug
 		
 		if (wasInTable) {
 			// Reselect the text, this time just the preceding word.
+//			dump("KixProxy -- Reselecting text in table.\n");					// debug
 			this.revertSelection();
 			this.selectPrecedingWord(false);
 			value = this.getSelectedText();
@@ -831,7 +835,7 @@ function AVIM()	{
 		 * @returns {boolean}	True if anything was changed; false otherwise.
 		 */
 		this.commit = function() {
-//			dump("value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
+//			dump("KixProxy.commit -- value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
 			if (this.value == this.oldValue) {
 				if (this.value) {
 					//// When begining a new word, bring back any simple inline
@@ -867,9 +871,16 @@ function AVIM()	{
 			//}
 			
 			// Paste the updated string into the editor.
-			winUtils.sendCompositionEvent("compositionstart");
+			// In Kix 3790525131, which sends events to
+			// "docs-texteventtarget-iframe", wrapping the paste operation in a
+			// composition prevents the selection from flashing.
+			// In Kix 3491395419, "kix-clipboard-iframe" inserts a newline after
+			// the composition ends, breaking editing.
+			var compose =
+				!frame.classList.contains("kix-clipboard-iframe");
+			if (compose) winUtils.sendCompositionEvent("compositionstart");
 			winUtils.sendContentCommandEvent("paste");
-			winUtils.sendCompositionEvent("compositionend");
+			if (compose) winUtils.sendCompositionEvent("compositionend");
 			
 			return true;
 		};
@@ -2087,7 +2098,7 @@ function AVIM()	{
 		this.ifInit(cwi);
 		var node = this.range.endContainer, newPos;
 		if (e.keyCode == e.DOM_VK_BACK_SPACE && this.range.toString()) return;
-		else this.sk = fcc(code);
+		this.sk = fcc(code);
 		this.saveStr = "";
 		if (!this.range.startOffset || node.data == undefined) return;
 		node.sel = false;
@@ -3155,8 +3166,10 @@ function AVIM()	{
 			if (tagName == "html" &&
 				!origTarget.baseURI.indexOf("https://docs.google.com/")) {
 				var kixFrame = origTarget.ownerDocument.defaultView.frameElement;
-				if (kixFrame && "classList" in kixFrame &&
-					kixFrame.classList.contains("docs-texteventtarget-iframe") &&
+				dump("kixFrame.className: " + kixFrame.className + "\n");		// debug
+				if (kixFrame && //"classList" in kixFrame &&
+					//(kixFrame.classList.contains("docs-texteventtarget-iframe") ||
+					// kixFrame.classList.contains("kix-clipboard-iframe")) &&
 					kixFrame.ownerDocument.location.host == "docs.google.com") {
 					return this.handleKix(e);
 				}
