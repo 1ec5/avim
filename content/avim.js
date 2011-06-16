@@ -83,7 +83,9 @@ function AVIM()	{
 	 * Proxy for a specialized editor to appear as an ordinary HTML text field
 	 * control to the rest of the AVIM codebase.
 	 */
-	function TextControlProxy() {}
+	function TextControlProxy() {
+		this.type = "text";
+	}
 	
 	/**
 	 * @see https://developer.mozilla.org/en/DOM/Input.setSelectionRange
@@ -108,8 +110,6 @@ function AVIM()	{
 	 * 								be defined on the sandbox.
 	 */
 	function AceProxy(sandbox) {
-		this.type = "text";
-		
 		if (Cu.evalInSandbox("!env.document.selection.isEmpty()", sandbox)) {
 			throw "Non-empty selection";
 		}
@@ -165,6 +165,51 @@ function AVIM()	{
 		};
 	};
 	AceProxy.prototype = new TextControlProxy();
+	
+	/**
+	 * Proxy for an Eclipse Orion editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context. The window's `editor` object
+	 * 								should be defined on the sandbox.
+	 */
+	function OrionProxy(sandbox) {
+		if (Cu.evalInSandbox("editor.getSelection().start!==" +
+							 "editor.getSelection().end", sandbox)) {
+			throw "Non-empty selection";
+		}
+		var offset = Cu.evalInSandbox("editor.getCaretOffset()+0", sandbox);
+		var lineStart =
+			Cu.evalInSandbox("editor.getModel().getLineStart(" +
+							 "editor.getModel().getLineAtOffset(" + offset +
+							 ")) + 0", sandbox);
+		this.selectionStart = this.selectionEnd = offset - lineStart;
+		
+		this.oldValue = Cu.evalInSandbox("editor.getText(" + lineStart + "," +
+										 offset + ")+''", sandbox);
+		this.value = this.oldValue;
+		
+		/**
+		 * Updates the Orion editor represented by this proxy to reflect any
+		 * changes made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+			if (this.value == this.oldValue) return false;
+			
+			var valueJS = "\"" + this.value.replace('"', "\\\"", "g") + "\"";
+			Cu.evalInSandbox("editor.setText(" + valueJS + "," + lineStart +
+							 "," + offset + ")", sandbox);
+			offset += this.value.length - this.oldValue.length;
+			Cu.evalInSandbox("editor.redrawRange(" + lineStart + "," + offset +
+							 ")", sandbox);
+			Cu.evalInSandbox("editor.setCaretOffset(" + offset + ")", sandbox);
+			
+			return true;
+		};
+	};
+	OrionProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Proxy for a Silverlight input control, to reduce back-and-forth between
@@ -317,7 +362,6 @@ function AVIM()	{
 		if ((selId || 0) >= elt.selections) return;
 		
 		this.elt = elt;
-		this.type = "text";
 //		dump("---SciMozProxy---\n");											// debug
 		
 		// Save the current selection.
@@ -491,7 +535,6 @@ function AVIM()	{
 // $endif{}
 		};
 		
-		this.type = "text";
 		if (msgSend("boolean", "textLayer", "hasSelection")) {
 			throw "Non-empty selection.";
 		}
@@ -779,8 +822,6 @@ function AVIM()	{
 			}
 			return value;
 		};
-		
-		this.type = "text";
 		
 		// Abort if there is a selection. The selection rectangle is an overlay
 		// element that can be identified by its (platform-specific) class.
@@ -2324,15 +2365,17 @@ function AVIM()	{
 	 * soon as the key goes up.
 	 *
 	 * @param evt	{object}	The keypress event.
-	 * @param elt	{object}	The DOM element node that represents the Ace
-	 * 							editor. Defaults to the given event's original
-	 * 							target.
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
 	 * 						otherwise.
 	 */
-	this.handleAce = function(evt, elt) {
+	this.handleAce = function(evt) {
 //		dump("AVIM.handleAce\n");												// debug
-		if (!elt) elt = evt.originalTarget;
+		var elt = evt.originalTarget.parentNode;
+		// <pre class="ace-editor">
+		if (!("classList" in elt &&
+			  elt.classList.contains("ace_editor"))) {
+			return false;
+		}
 		if (this.findIgnore(evt.target)) return false;
 		
 //		dump("---AceProxy---\n");												// debug
@@ -2349,6 +2392,58 @@ function AVIM()	{
 		
 		// Fake a native textbox.
 		var proxy = new AceProxy(sandbox);
+		
+		this.sk = fcc(evt.which);
+		this.start(proxy, evt);
+		
+		proxy.commit();
+		delete proxy;
+		delete sandbox;
+		
+		if (this.changed) {
+			this.changed = false;
+			evt.handled = true;
+			evt.stopPropagation();
+			evt.preventDefault();
+			this.updateContainer(elt, elt);
+			return false;
+		}
+		return true;
+	};
+	
+	/**
+	 * Handles key presses in the Eclipse Orion editor. This function is
+	 * triggered as soon soon as the key goes up.
+	 *
+	 * @param evt	{object}	The keypress event.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleOrion = function(evt) {
+		var elt = evt.originalTarget;
+		if (elt.id != "clientDiv") return false;
+		if (!("classList" in elt && elt.classList.contains("editorContent"))) {
+			return false;
+		}
+		var parentWin = elt.ownerDocument.defaultView.parent;
+		if (!parentWin) return false;
+		
+		var sandbox = new Cu.Sandbox(parentWin.location.href);
+		sandbox.window = parentWin.wrappedJSObject;
+		try {
+			if (!Cu.evalInSandbox("'eclipse' in window && 'editor' in window",
+								  sandbox)) {
+				return false;
+			}
+			sandbox.editor = Cu.evalInSandbox("window.editor", sandbox);
+			if (sandbox.editor === null) return false;
+		}
+		catch (exc) {
+			return false;
+		}
+		
+		// Fake a native textbox.
+		var proxy = new OrionProxy(sandbox);
 		
 		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
@@ -2633,6 +2728,14 @@ function AVIM()	{
 	this.handleKix = function(evt) {
 //		dump("AVIM.handleKix\n");												// debug
 		var elt = evt.originalTarget;
+		if (elt.baseURI.indexOf("https://docs.google.com/")) return false;
+		var frame = elt.ownerDocument.defaultView.frameElement;
+		if (!frame || !("classList" in frame) ||
+			!(frame.classList.contains("docs-texteventtarget-iframe") ||
+			  frame.classList.contains("kix-clipboard-iframe")) ||
+			frame.ownerDocument.location.host != "docs.google.com") {
+			return false;
+		}
 		
 		// Get the existing clipboard data in as many formats as the application
 		// would likely recognize. Unfortunately, everything else will be lost.
@@ -3162,29 +3265,16 @@ function AVIM()	{
 		
 		// Specialized Web editors
 		try {
-			// Google Kix
-			if (tagName == "html" &&
-				!origTarget.baseURI.indexOf("https://docs.google.com/")) {
-				var kixFrame = origTarget.ownerDocument.defaultView.frameElement;
-				dump("kixFrame.className: " + kixFrame.className + "\n");		// debug
-				if (kixFrame && //"classList" in kixFrame &&
-					//(kixFrame.classList.contains("docs-texteventtarget-iframe") ||
-					// kixFrame.classList.contains("kix-clipboard-iframe")) &&
-					kixFrame.ownerDocument.location.host == "docs.google.com") {
-					return this.handleKix(e);
-				}
-			}
-			
-			// SlideKit
-			if (tagName == "html" && this.handleSkit(e)) return true;
-			
-			// ACE editor
-			// <pre class="ace-editor">
-			if (tagName == "textarea" && "classList" in origTarget.parentNode &&
-				origTarget.parentNode.classList.contains("ace_editor") &&
-				this.handleAce(e, origTarget.parentNode)) {
+			// Google Kix, SlideKit
+			if (tagName == "html" && (this.handleKix(e) || this.handleSkit(e))) {
 				return true;
 			}
+			
+			// ACE editor
+			if (tagName == "textarea" && this.handleAce(e)) return true;
+			
+			// Eclipse Orion
+			if (tagName == "div" && this.handleOrion(e)) return true;
 		}
 		catch (exc) {
 // $if{Debug}
