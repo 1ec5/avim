@@ -345,3 +345,5 @@ Version ${Version} (${Date})
    later (requires Firefox 4 or equivalent).
  - Fixed an issue in rich text controls where selecting text and pressing
    Backspace would delete one character too many.
+ - Added support for Eclipse's Orion editor.
+ - Added support for Ymacs, an emacs-style code editor.

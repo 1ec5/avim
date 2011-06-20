@@ -114,9 +114,10 @@ function AVIM()	{
 			throw "Non-empty selection";
 		}
 		var selLeadJS = "env.document.selection.selectionLead";
-		this.oldSelectionStart =
-			{row: Cu.evalInSandbox(selLeadJS + ".row+0", sandbox),
-			 column: Cu.evalInSandbox(selLeadJS + ".column+0", sandbox)};
+		this.oldSelectionStart = {
+			row: parseInt(Cu.evalInSandbox(selLeadJS + ".row+0", sandbox)),
+			column: parseInt(Cu.evalInSandbox(selLeadJS + ".column+0", sandbox))
+		};
 		this.selectionStart = this.selectionEnd = this.oldSelectionStart.column;
 		
 		this.oldValue = Cu.evalInSandbox("env.document.getLine(" +
@@ -178,7 +179,8 @@ function AVIM()	{
 							 "editor.getSelection().end", sandbox)) {
 			throw "Non-empty selection";
 		}
-		var offset = Cu.evalInSandbox("editor.getCaretOffset()+0", sandbox);
+		var offset = parseInt(Cu.evalInSandbox("editor.getCaretOffset()+0",
+											   sandbox));
 		var lineStart =
 			Cu.evalInSandbox("editor.getModel().getLineStart(" +
 							 "editor.getModel().getLineAtOffset(" + offset +
@@ -210,6 +212,62 @@ function AVIM()	{
 		};
 	};
 	OrionProxy.prototype = new TextControlProxy();
+	
+	/**
+	 * Proxy for a Ymacs editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context. The window's `ymacs` object should
+	 * 								be defined on the sandbox.
+	 */
+	function YmacsProxy(sandbox) {
+		var bufferJS = "ymacs.getActiveBuffer()";
+		if (Cu.evalInSandbox(bufferJS + ".transientMarker&&" + bufferJS +
+							 ".caretMarker.position!==" + bufferJS +
+							 ".transientMarker.position", sandbox)) {
+			throw "Non-empty selection";
+		}
+		var oldSelection = {
+			row: parseInt(Cu.evalInSandbox(bufferJS +
+										   ".caretMarker.rowcol.row+0",
+										   sandbox)),
+			column: parseInt(Cu.evalInSandbox(bufferJS +
+											  ".caretMarker.rowcol.col+0",
+											  sandbox))
+		};
+		this.selectionStart = this.selectionEnd = oldSelection.column;
+		
+		this.oldValue = Cu.evalInSandbox(bufferJS + ".getLine(" +
+										 oldSelection.row + ")+''", sandbox);
+		this.value = this.oldValue;
+		
+		/**
+		 * Updates the Ymacs editor represented by this proxy to reflect any
+		 * changes made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+			if (this.value == this.oldValue) return false;
+			
+			var linePos =
+				parseInt(Cu.evalInSandbox(bufferJS + "._rowColToPosition(" +
+										  oldSelection.row + ",0)+0", sandbox));
+			var pos = linePos + oldSelection.column +
+				this.value.length - this.oldValue.length;
+			var valueJS = "\"" + this.value.replace('"', "\\\"", "g") + "\"";
+			Cu.evalInSandbox(bufferJS + "._replaceLine(" + oldSelection.row +
+							 "," + valueJS + ")", sandbox);
+			Cu.evalInSandbox(bufferJS + ".redrawDirtyLines()", sandbox);
+			Cu.evalInSandbox(bufferJS + ".caretMarker.setPosition(" + pos + ")",
+							 sandbox);
+			var after = Cu.evalInSandbox(bufferJS + ".getLine(" +
+										 oldSelection.row + ")+''", sandbox);
+			
+			return true;
+		};
+	};
+	YmacsProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Proxy for a Silverlight input control, to reduce back-and-forth between
@@ -525,6 +583,7 @@ function AVIM()	{
 			try {
 // $endif{}
 				var ret = Cu.evalInSandbox(msgJS, sandbox);
+				if (type == "number") ret = parseInt(ret);
 				return type ? ret : undefined;
 // $if{Debug}
 			}
@@ -2463,6 +2522,53 @@ function AVIM()	{
 		return true;
 	};
 	
+	/**
+	 * Handles key presses in the Ymacs editor. This function is
+	 * triggered as soon soon as the key goes up.
+	 *
+	 * @param evt	{object}	The keypress event.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleYmacs = function(evt) {
+		var elt = evt.originalTarget;
+		
+		var win = elt.ownerDocument.defaultView;
+		var sandbox = new Cu.Sandbox(win.location.href);
+		sandbox.window = win.wrappedJSObject;
+		try {
+			if (!Cu.evalInSandbox("'YMACS_SRC_PATH' in window &&" +
+								  "'ymacs' in window", sandbox)) {
+				return false;
+			}
+			sandbox.ymacs = Cu.evalInSandbox("window.ymacs", sandbox);
+			if (sandbox.ymacs === null) return false;
+		}
+		catch (exc) {
+			return false;
+		}
+		
+		// Fake a native textbox.
+		var proxy = new YmacsProxy(sandbox);
+		
+		this.sk = fcc(evt.which);
+		this.start(proxy, evt);
+		
+		proxy.commit();
+		delete proxy;
+		delete sandbox;
+		
+		if (this.changed) {
+			this.changed = false;
+			evt.handled = true;
+			evt.stopPropagation();
+			evt.preventDefault();
+			this.updateContainer(elt, elt);
+			return false;
+		}
+		return true;
+	};
+	
 	// Silverlight applets
 	
 	/**
@@ -3265,8 +3371,9 @@ function AVIM()	{
 		
 		// Specialized Web editors
 		try {
-			// Google Kix, SlideKit
-			if (tagName == "html" && (this.handleKix(e) || this.handleSkit(e))) {
+			// Google Kix, SlideKit, Ymacs
+			if (tagName == "html" && (this.handleKix(e) || this.handleSkit(e) ||
+									  this.handleYmacs(e))) {
 				return true;
 			}
 			
