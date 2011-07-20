@@ -2,6 +2,10 @@
  * A controller for the AVIM test suite window.
  */
 function AVIMTester() {
+	const Cc = Components.classes;
+	const Ci = Components.interfaces;
+	const Cu = Components.utils;
+	
 	const inputFileBoxId = "input-file";
 	const inputTextBoxId = "input-textbox";
 	
@@ -59,17 +63,48 @@ function AVIMTester() {
 	this.results = [];
 	
 	/**
-	 * Returns the textual source of the specified file.
+	 * Prompts the user for files and returns the textual source of the
+	 * selected files.
 	 *
-	 * @returns {string}	The textual soruce of the specified file.
+	 * @returns {string}	The textual source of the selected files.
 	 */
 	this.getInputSource = function() {
-		var inputFileBox = document.getElementById(inputFileBoxId);
-		var fileList = inputFileBox.files;
-		var src = "";
-		for (var i = 0; i < fileList.length; i++) {
-			src += fileList[i].getAsText("") + "\n";
+		// https://developer.mozilla.org/en/XPCOM_Interface_Reference/nsIFilePicker
+		var fp = Cc["@mozilla.org/filepicker;1"]
+			.createInstance(Ci.nsIFilePicker);
+		fp.init(window, "Choose Input File", Ci.nsIFilePicker.modeOpenMultiple);
+		fp.appendFilters(Ci.nsIFilePicker.filterText);
+		
+		var rv = fp.show();
+		if (rv != Ci.nsIFilePicker.returnOK &&
+			rv != Ci.nsIFilePicker.returnReplace) {
+			return "";
 		}
+		
+		var files = fp.files;
+		var src = "";
+		while (files.hasMoreElements()) {
+			var file = files.getNext().QueryInterface(Ci.nsILocalFile);
+			
+			var fstream = Cc["@mozilla.org/network/file-input-stream;1"]
+				.createInstance(Ci.nsIFileInputStream);
+			var cstream = Cc["@mozilla.org/intl/converter-input-stream;1"]
+				.createInstance(Ci.nsIConverterInputStream);
+			fstream.init(file, -1, 0, 0);
+			cstream.init(fstream, "UTF-8", 0, 0);
+			
+			let (str = {}) {
+				let read = 0;
+				do {
+					read = cstream.readString(0xffffffff, str);
+					src += str.value;
+				} while (read);
+			}
+			cstream.close();
+			
+			src += "\n";
+		}
+		
 		return src;
 	};
 	

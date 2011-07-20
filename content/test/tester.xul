@@ -23,16 +23,15 @@
 	
 	<broadcasterset id="mainBroadcasterSet" />
 	
-	<groupbox id="config-group">
+	<!-- <groupbox id="config-group">
 		<caption label="Configuration" />
 		
 		<hbox align="baseline">
 			<label id="input-label" value="Input file (plain text format):" accesskey="I" control="input-file" aria-labelledby="input-label input-file" />
-			<!-- <filefield id="input-file" flex="1" /> -->
 			<html:input id="input-file" type="file" aria-labelledby="input-label" />
 		</hbox>
-		<!-- <checkbox id="moveback-check" label="Enter diacritical marks at the end of each word" accesskey="d" /> -->
-	</groupbox>
+		<checkbox id="moveback-check" label="Enter diacritical marks at the end of each word" accesskey="d" />
+	</groupbox> -->
 	
 	<hbox align="center">
 		<progressmeter id="run-progress" />
