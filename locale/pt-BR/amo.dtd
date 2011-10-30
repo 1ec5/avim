@@ -1,0 +1,20 @@
+<!ENTITY summary "Um método de entrada (IME) para o vietnamita. Digite no idioma vietnamita com todas as letras acentuadas diretamente em qualquer página ou janela usando um teclado comum.">
+
+<!ENTITY description.intro "O AVIM – Método de Entrada Avançado para o Vietnamita – é um método de entrada rápido para o idioma vietnamita que permite digitar tão naturalmente que você nem o percebe. Ele vem com todas as funcionalidades que se espera de um IME moderno, tais como:">
+
+<!ENTITY description.basics.methods "Suporte aos [quatro principais métodos de entrada]: Telex, VNI, VIQR e VIQR*">
+<!ENTITY description.basics.spelling "Correção automática de acentos e verificação com base nas regras ortográficas">
+<!ENTITY description.basics.shortcuts "Atalhos de teclado (como Ctrl+Alt+V) para configurar o AVIM durante a digitação">
+<!ENTITY description.basics.webapps "Suporte total à aplicações web como Gmail e Google Docs">
+
+<!ENTITY description.advanced "Baseado no [script de mesmo nome] de Hieu Dang, o AVIM foi aprimorado com uma série de recursos convenientes e inovadores que você não vai encontrar na [concorrência], incluindo:">
+
+<!ENTITY description.advanced.ui "Um painel compacto na barra de status, botões opcionais na barra de ferramentas e uma janela de configuração">
+<!ENTITY description.advanced.scriptmonitor "Um monitor de script que desliga automaticamente os IMEs fornecidos pelos sites, a fim de evitar conflitos (também [disponível em separado])">
+<!ENTITY description.advanced.compatible "Compatibilidade com *qualquer* página que você visitar e *qualquer* janela que você abrir">
+<!ENTITY description.advanced.inplace "Edição local que impede os campos de ficarem saltando enquanto se digita – mesmo quando se aciona o desfazer ou refazer">
+
+<!ENTITY description.conclusion "Em resumo, *o AVIM simplesmente funciona*.">
+
+<!ENTITY developer.script "Esta extensão contém a tecnologia de [Advanced Vietnamese Input Method] ([download]), um script criado por Hieu Dang que permite incorporar um IME do idioma vietnamita em seu próprio site.">
+<!ENTITY developer.dictionary "Para uma digitação ideal, use esta extensão juntamente com a extensão [Dicionário Vietnamita].">

@@ -1,0 +1,99 @@
+<!ENTITY AVIM.label "AVIM">
+<!ENTITY avim-preferences.title "&AVIM.label;">
+
+<!ENTITY enabled-check.label "Ativar &AVIM.label; para digitação em vietnamita">
+<!ENTITY enabled-check.accesskey "V">
+
+<!ENTITY blacklist-button.label "Exceções…">
+<!ENTITY blacklist-button.accesskey "E">
+
+<!ENTITY method-menu.label "Método de entrada:">
+<!ENTITY method-menu.accesskey "M">
+<!ENTITY method-auto-item.label "Misto">
+<!ENTITY method-telex-item.label "Telex">
+<!ENTITY method-vni-item.label "VNI">
+<!ENTITY method-viqr-item.label "VIQR">
+<!ENTITY method-viqr-star-item.label "VIQR*">
+
+<!ENTITY method-config-button.label "Personalizar…">
+<!ENTITY method-config-button.accesskey "z">
+
+<!-- $if{Debug} -->
+<!ENTITY tester-button.label "Testar…">
+<!ENTITY tester-button.accesskey "T">
+<!-- $endif{} -->
+<!ENTITY spell-check.label "Quando uma palavra infringir as regras ortográficas do vietnamita:">
+<!ENTITY spell-check.false.label "Aplicar acentos à palavra mesmo assim">
+<!ENTITY spell-check.false.accesskey "A">
+<!ENTITY spell-check.true.label "Inserir caracteres sem alteração (impor ortografia)">
+<!ENTITY spell-check.true.accesskey "I">
+
+<!ENTITY informal-check.label "Exceto após padrões de ortografia informal com “dz” e “f”">
+<!ENTITY informal-check.accesskey "x">
+<!ENTITY oldaccents-check.label "Quando uma palavra terminar em duas vogais, aplicar acentos:">
+<!ENTITY oldaccents-check.true.label "Na primeira vogal (estilo tradicional)">
+<!ENTITY oldaccents-check.true.accesskey "p">
+<!ENTITY oldaccents-check.false.label "Na segunda vogal (estilo contemporâneo)">
+<!ENTITY oldaccents-check.false.accesskey "s">
+
+<!ENTITY script-enabled-check.label "Desligar métodos de entrada fornecidos pelos sites">
+<!ENTITY script-enabled-check.accesskey "D">
+
+<!ENTITY script-config-button.label "Configurar…">
+<!ENTITY script-config-button.accesskey "C">
+
+<!ENTITY passwords-check.label "Ignorar campos de senha">
+<!ENTITY passwords-check.accesskey "g">
+
+<!ENTITY statuspanel-check.label "Exibir na barra de status">
+<!ENTITY statuspanel-check.accesskey "b">
+
+<!ENTITY avim-blacklist.style "width: 35em;">
+
+<!ENTITY blacklist-pane.label "Exceções">
+
+<!ENTITY ignore-text.label "ID do campo:">
+<!ENTITY ignore-button.label "Ignorar">
+<!ENTITY ignore-button.accesskey "I">
+
+<!ENTITY ignored-desc.label "Você pode indicar quais campos o &AVIM.label; deve ignorar. Por exemplo, você pode querer que o &AVIM.label; ignore um certo campo que contém um endereço de site, porque o método de entrada pode interferir na digitação do endereço.">
+<!ENTITY ignored-instructions.label "Para ignorar um campo, primeiro encontre o ID dele procurando no código-fonte da página. Depois, digite o ID e clique no botão &ignore-button.label;.">
+
+<!ENTITY remove-button.label "Remover ID">
+<!ENTITY remove-button.accesskey "R">
+
+<!ENTITY reset-button.label "Restaurar padrões">
+<!ENTITY reset-button.accesskey "p">
+
+<!ENTITY avim-method-config.style "width: 25em;">
+
+<!ENTITY auto-methods.label "Aceitar teclas digitadas nos métodos de entrada a seguir quando &method-auto-item.label; estiver selecionado:">
+<!ENTITY auto-telex-check.accesskey "T">
+<!ENTITY auto-vni-check.accesskey "N">
+<!ENTITY auto-viqr-check.accesskey "Q">
+<!ENTITY auto-viqr-star-check.accesskey "R">
+
+<!ENTITY avim-script-config.style "width: 25em;">
+
+<!ENTITY script-config-pane.label "Monitor de Scripts">
+
+<!ENTITY script-grid.label "Para evitar conflitos, desligar automaticamente os seguintes métodos de entrada ao digitar em uma página que já os contenha:">
+
+<!ENTITY script-avim-check.label "AVIM">
+<!ENTITY script-avim-check.accesskey "A">
+<!ENTITY script-chim-check.label "CHIM">
+<!ENTITY script-chim-check.accesskey "C">
+<!ENTITY script-google-check.label "Google">
+<!ENTITY script-google-check.accesskey "G">
+<!ENTITY script-mudim-check.label "Mudim">
+<!ENTITY script-mudim-check.accesskey "d">
+<!ENTITY script-mviet-check.label "MViet">
+<!ENTITY script-mviet-check.accesskey "M">
+<!ENTITY script-vietimew-check.label "VietIMEW">
+<!ENTITY script-vietimew-check.accesskey "W">
+<!ENTITY script-viettyping-check.label "VietTyping">
+<!ENTITY script-viettyping-check.accesskey "Y">
+<!ENTITY script-vietuni-check.label "VietUni">
+<!ENTITY script-vietuni-check.accesskey "U">
+<!ENTITY script-vinova-check.label "Vinova">
+<!ENTITY script-vinova-check.accesskey "V">

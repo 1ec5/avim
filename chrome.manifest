@@ -6,6 +6,7 @@ locale	avim	de		locale/de/
 locale	avim	es		locale/es/
 # locale	avim	fr		locale/fr/
 locale	avim	nl		locale/nl/
+locale	avim	pt-BR		locale/pt-BR/
 locale	avim	vi		locale/vi/
 # locale	avim	zh-CN	locale/zh-CN/
 # locale	avim	zh-TW	locale/zh-TW/

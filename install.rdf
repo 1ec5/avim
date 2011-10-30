@@ -206,6 +206,19 @@
 			</Description>
 		</em:localized>
 		
+		<!-- Portuguese (Brazil) -->
+		<em:localized>
+			<Description>
+				<em:locale>pt-BR</em:locale>
+				<em:name>AVIM</em:name>
+				<em:description>Digite no idioma vietnamita com todas as letras acentuadas diretamente em qualquer página ou janela usando um teclado comum.</em:description>
+				<em:creator>Minh Nguyen</em:creator>
+				<em:contributor>Hieu Dang</em:contributor>
+				<em:translator>Mauro José da Silva</em:translator>
+				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+			</Description>
+		</em:localized>
+		
 		<!-- Vietnamese -->
 		<em:localized>
 			<Description>

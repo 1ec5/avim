@@ -1,0 +1,25 @@
+<!ENTITY enabled-check.title "Ativar digitação em vietnamita">
+
+<!ENTITY method-menu.title "Método de entrada">
+<!ENTITY method-auto-item.title "Misto">
+<!ENTITY method-telex-item.title "Telex">
+<!ENTITY method-vni-item.title "VNI">
+<!ENTITY method-viqr-item.title "VIQR">
+<!ENTITY method-viqr-star-item.title "VIQR*">
+
+<!ENTITY spell-check.title "Impor ortografia">
+<!ENTITY spell-check.desc "Reconhecer apenas palavras que seguem as regras ortográficas do vietnamita">
+
+<!ENTITY informal-check.title "Reconhecer ortografia informal">
+<!ENTITY informal-check.desc "Colocar acentos em palavras começando com “dz” ou “f”">
+
+<!ENTITY oldaccents-check.title "Usar acentuação tradicional">
+<!ENTITY oldaccents-check.desc "Colocar acentos na primeira vogal de um ditongo final">
+
+<!ENTITY script-enabled-check.title "Desligar IMEs dos sites">
+<!ENTITY script-enabled-check.desc "Desligar automaticamente IMEs fornecidos pelos sites">
+
+<!ENTITY passwords-check.title "Reconhecer campos de senha">
+
+<!ENTITY ignore-text.title "Exceções">
+<!ENTITY ignore-text.desc "Ignorar campos com estes IDs">
