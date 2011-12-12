@@ -102,6 +102,11 @@ function AVIM()	{
 	function TextEventProxy() {}
 	
 	/**
+	 * Proxy for a DOM Range object.
+	 */
+	function SelectionRangeProxy() {}
+	
+	/**
 	 * Proxy for an Ace editor, to encapsulate the oft-renamed
 	 * Bespin/Skywriter/Ace API while posing as an ordinary HTML <textarea>.
 	 * 
@@ -978,9 +983,9 @@ function AVIM()	{
 			// the composition ends, breaking editing.
 			var compose =
 				!frame.classList.contains("kix-clipboard-iframe");
-			if (compose) winUtils.sendCompositionEvent("compositionstart");
+			if (compose) winUtils.sendCompositionEvent("compositionstart", "", "");
 			winUtils.sendContentCommandEvent("paste");
-			if (compose) winUtils.sendCompositionEvent("compositionend");
+			if (compose) winUtils.sendCompositionEvent("compositionend", "", "");
 			
 			return true;
 		};
@@ -2197,6 +2202,14 @@ function AVIM()	{
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
 		this.ifInit(cwi);
 		var node = this.range.endContainer, newPos;
+		// Zoho Writer places a cursor <span> right at the caret.
+		if (node.localName == "span" && !node.id.indexOf("z-cursor-start-")) {
+			var prevNode = node.previousSibling;
+			if (prevNode.data) {
+				this.range.setEnd(prevNode, prevNode.data.length);
+				node = this.range.endContainer;
+			}
+		}
 		if (e.keyCode == e.DOM_VK_BACK_SPACE && this.range.toString()) return;
 		this.sk = fcc(code);
 		this.saveStr = "";
@@ -2241,6 +2254,7 @@ function AVIM()	{
 		}
 		if(this.changed) {
 			this.changed = false;
+			e.stopPropagation();
 			e.preventDefault();
 			this.updateContainer(null, target);
 		}
@@ -2395,7 +2409,7 @@ function AVIM()	{
 				
 				if (this.changed) anyChanged = true;
 				if (proxy.commit) proxy.commit();
-				delete proxy;
+				proxy = null;
 				this.changed = false;
 			}
 			this.changed = anyChanged;
@@ -2456,8 +2470,8 @@ function AVIM()	{
 		this.start(proxy, evt);
 		
 		proxy.commit();
-		delete proxy;
-		delete sandbox;
+		proxy = null;
+		sandbox = null;
 		
 		if (this.changed) {
 			this.changed = false;
@@ -2508,8 +2522,8 @@ function AVIM()	{
 		this.start(proxy, evt);
 		
 		proxy.commit();
-		delete proxy;
-		delete sandbox;
+		proxy = null;
+		sandbox = null;
 		
 		if (this.changed) {
 			this.changed = false;
@@ -2548,6 +2562,8 @@ function AVIM()	{
 			return false;
 		}
 		
+//		dump("AVIM.handleYmacs\n");												// debug
+		
 		// Fake a native textbox.
 		var proxy = new YmacsProxy(sandbox);
 		
@@ -2555,8 +2571,8 @@ function AVIM()	{
 		this.start(proxy, evt);
 		
 		proxy.commit();
-		delete proxy;
-		delete sandbox;
+		proxy = null;
+		sandbox = null;
 		
 		if (this.changed) {
 			this.changed = false;
@@ -2622,7 +2638,8 @@ function AVIM()	{
 			avim.start(ctlProxy, evtProxy);
 			
 			ctlProxy.commit();
-			delete ctlProxy, evtProxy;
+			ctlProxy = null;
+			evtProxy = null;
 			if (avim.changed) {
 				avim.changed = false;
 				evt.handled = true;
@@ -2687,7 +2704,8 @@ function AVIM()	{
 			avim.start(ctlProxy, evtProxy);
 			
 			ctlProxy.commit();
-			delete ctlProxy, evtProxy;
+			ctlProxy = null;
+			evtProxy = null;
 			avim.changed = false;
 			evt.handled = true;
 //			dump("After -- text: \"" + text + "\"; ctl.text: \"" + ctl.text + "\"\n");	// debug
@@ -2784,6 +2802,7 @@ function AVIM()	{
 	 */
 	this.handleSkit = function(evt) {
 		var elt = evt.originalTarget;
+		if (elt.baseURI.indexOf("http://280slides.com/") != 0) return false;
 		
 		var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
 		sandbox.window = elt.ownerDocument.defaultView.wrappedJSObject;
@@ -2813,7 +2832,8 @@ function AVIM()	{
 		this.start(proxy, evt);
 		
 		proxy.commit();
-		delete proxy, sandbox;
+		proxy = null;
+		sandbox = null;
 		if (this.changed) {
 			this.changed = false;
 			evt.stopPropagation();
@@ -2832,9 +2852,8 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleKix = function(evt) {
-//		dump("AVIM.handleKix\n");												// debug
 		var elt = evt.originalTarget;
-		if (elt.baseURI.indexOf("https://docs.google.com/")) return false;
+		if (elt.baseURI.indexOf("https://docs.google.com/") != 0) return false;
 		var frame = elt.ownerDocument.defaultView.frameElement;
 		if (!frame || !("classList" in frame) ||
 			!(frame.classList.contains("docs-texteventtarget-iframe") ||
@@ -2842,6 +2861,8 @@ function AVIM()	{
 			frame.ownerDocument.location.host != "docs.google.com") {
 			return false;
 		}
+		
+//		dump("AVIM.handleKix\n");												// debug
 		
 		// Get the existing clipboard data in as many formats as the application
 		// would likely recognize. Unfortunately, everything else will be lost.
@@ -2885,7 +2906,7 @@ function AVIM()	{
 			this.start(proxy, evt);
 			
 			proxy.commit();
-			delete proxy;
+			proxy = null;
 		}
 		catch (exc) {
 			throw exc;
@@ -3335,7 +3356,8 @@ function AVIM()	{
 		for (var marker in markers) {
 			if (this.disableOther(marker, sandbox, parentSandbox)) return;
 		}
-		delete sandbox, parentSandbox;
+		sandbox = null;
+		parentSandbox = null;
 	};
 	
 	/**
@@ -3372,8 +3394,10 @@ function AVIM()	{
 		// Specialized Web editors
 		try {
 			// Google Kix, SlideKit, Ymacs
-			if (tagName == "html" && (this.handleKix(e) || this.handleSkit(e) ||
-									  this.handleYmacs(e))) {
+			// Zoho Writer: window.editor<HTMLArea>.eventHandlerFunction(evt)
+			if ((tagName == "html" || tagName == "body") &&
+				(this.handleKix(e) || this.handleSkit(e) ||
+				 this.handleYmacs(e))) {
 				return true;
 			}
 			
@@ -3427,7 +3451,7 @@ if (window && !("avim" in window) && !window.frameElement) {
 	}, false);
 	addEventListener("unload", function() {
 		if (avim) avim.unregisterPrefs();
-		delete avim;
+		avim = null;
 	}, false);
 	addEventListener("keypress", function(e) {
 		if (avim) avim.onKeyPress(e);
