@@ -686,6 +686,10 @@ function AVIM()	{
 	 * @param evt	{object}	The keyPress event.
 	 */
 	function KixProxy(evt) {
+		if (evt.keyCode == evt.DOM_VK_BACK_SPACE && !evt.shiftKey) {
+			throw "Backspace.";
+		}
+		
 		var doc = evt.originalTarget.ownerDocument;
 		if (!doc || !doc.body) throw "No document body to copy from.";
 		
@@ -703,6 +707,7 @@ function AVIM()	{
 		var frameDoc = frame.ownerDocument;
 		
 		const overlayClass = "kix-selection-overlay" + (isMac ? "-mac" : "");
+		const presItemType = "http://schema.org/CreativeWork/PresentationObject";
 		
 		/**
 		 * Returns whether text is currently selected in the editor, as
@@ -803,6 +808,7 @@ function AVIM()	{
 		 * 									start of the line; false otherwise.
 		 */
 		this.selectPrecedingWord = function(toLineStart) {
+//			dump("KixProxy.selectPrecedingWord()\n");							// debug
 			var key = (isMac || !toLineStart) ?
 				KeyEvent.DOM_VK_LEFT : KeyEvent.DOM_VK_HOME;
 			var modifiers = (isMac || toLineStart) ?
@@ -852,6 +858,7 @@ function AVIM()	{
 		 * it was before KixProxy started modifying it.
 		 */
 		this.revertSelection = function() {
+//			dump("KixProxy.revertSelection()\n");								// debug
 			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
 		};
 		
@@ -983,7 +990,8 @@ function AVIM()	{
 			// In Kix 3491395419, "kix-clipboard-iframe" inserts a newline after
 			// the composition ends, breaking editing.
 			var compose =
-				!frame.classList.contains("kix-clipboard-iframe");
+				!frame.classList.contains("kix-clipboard-iframe") &&
+				frame.ownerDocument.body.getAttribute("itemtype") != presItemType;
 			if (compose) winUtils.sendCompositionEvent("compositionstart", "", "");
 			winUtils.sendContentCommandEvent("paste");
 			if (compose) winUtils.sendCompositionEvent("compositionend", "", "");
@@ -2480,7 +2488,6 @@ function AVIM()	{
 			evt.stopPropagation();
 			evt.preventDefault();
 			this.updateContainer(elt, elt);
-			return false;
 		}
 		return true;
 	};
@@ -2532,7 +2539,6 @@ function AVIM()	{
 			evt.stopPropagation();
 			evt.preventDefault();
 			this.updateContainer(elt, elt);
-			return false;
 		}
 		return true;
 	};
@@ -2581,7 +2587,6 @@ function AVIM()	{
 			evt.stopPropagation();
 			evt.preventDefault();
 			this.updateContainer(elt, elt);
-			return false;
 		}
 		return true;
 	};
@@ -2839,7 +2844,6 @@ function AVIM()	{
 			this.changed = false;
 			evt.stopPropagation();
 			evt.preventDefault();
-			return false;
 		}
 		return true;
 	};
@@ -2930,7 +2934,6 @@ function AVIM()	{
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
-			return false;
 		}
 		return true;
 	};
