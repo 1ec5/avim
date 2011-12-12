@@ -877,12 +877,12 @@ function AVIM()	{
 			if (!value) {
 				// Objects may not be copied as text, but they may be selected.
 				if (this.hasSelection()) this.revertSelection();
-				throw "No value.";
+				return "";
 			}
 			// Probably the beginning of a line (or the line has just spaces).
 			if (!value.trim()) {
 				this.revertSelection();
-				throw "Start of line.";
+				return "";
 			}
 			return value;
 		};
@@ -920,15 +920,16 @@ function AVIM()	{
 		
 		// Get the selected text.
 		var value = this.getSelectedText();
-//		dump("KixProxy -- value: <" + value + ">\n");							// debug
-		
 		if (wasInTable) {
-			// Reselect the text, this time just the preceding word.
 //			dump("KixProxy -- Reselecting text in table.\n");					// debug
-			this.revertSelection();
+			// Unselect the text, unless the cell and selection are empty.
+			if (value) this.revertSelection();
+			// Reselect the text, this time just the preceding word.
 			this.selectPrecedingWord(false);
 			value = this.getSelectedText();
 		}
+		if (!value) throw "No text.";
+//		dump("KixProxy -- value: <" + value + ">\n");							// debug
 		
 		this.value = this.oldValue = value;
 		this.selectionStart = this.selectionEnd = this.value.length;
