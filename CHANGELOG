@@ -349,3 +349,5 @@ Version 20080728.489 (Sunday, December 11, 2011)
  - Added support for Zoho Writer.
  - Added support for Eclipse's Orion editor.
  - Added support for Ymacs, an emacs-style code editor.
+
+Version ${Version} (${Date})
