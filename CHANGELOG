@@ -340,7 +340,7 @@ Version 20080728.450 (Saturday, March 5, 2011)
  - Fixed a regression in SeaMonkey where icons would not appear for the toolbar
    buttons except in the Customize Toolbar dialog.
 
-Version 20080728.489 (Sunday, December 11, 2011)
+Version ${Version} (${Date})
  - Added support for editing Google Docs text documents created in June 2010 or
    later (requires Firefox 4 or equivalent).
  - Fixed an issue in rich text controls where selecting text and pressing
@@ -349,5 +349,5 @@ Version 20080728.489 (Sunday, December 11, 2011)
  - Added support for Zoho Writer.
  - Added support for Eclipse's Orion editor.
  - Added support for Ymacs, an emacs-style code editor.
-
-Version ${Version} (${Date})
+ - Fixed an issue in Ace and 280 Slides editors that in some cases caused the
+   current line to be executed as unprivileged JavaScript code.

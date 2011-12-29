@@ -63,7 +63,7 @@ function AVIM()	{
 	var fcc = String.fromCharCode;
 	var up = String.toUpperCase;
 	
-	var codesFromChars = function(chars) {
+	function codesFromChars(chars) {
 		var codes = [];
 		for (var i = 0; i < chars.length; i++) {
 			codes.push(chars[i].charCodeAt(0));
@@ -71,13 +71,23 @@ function AVIM()	{
 		return codes;
 	};
 	
-	var $ = function(id) {
+	function $(id) {
 		return document.getElementById(id);
 	};
 	
-	var nan = function(w) {
+	function nan(w) {
 		return isNaN(w) || w == 'e';
 	};
+	
+	/**
+	 * Returns the JavaScript string literal representing the given string.
+	 */
+	function quoteJS(str) {
+		return "\"" + str.replace(/\\/g, "\\\\").replace(/\b/g, "\\b")
+						 .replace(/\f/g, "\\f").replace(/\n/g, "\\n")
+						 .replace(/\r/g, "\\r").replace(/\t/g, "\\t")
+						 .replace(/\v/g, "\\v").replace(/"/g, "\\\"") + "\"";
+	}
 	
 	/**
 	 * Proxy for a specialized editor to appear as an ordinary HTML text field
@@ -144,13 +154,12 @@ function AVIM()	{
 			
 //			dump("Replacing <" + env.document.doc.$lines[this.oldSelectionStart.row].substring(0, 10) + "> ");	// debug
 			
-			var valueJS = "\"" + this.value.replace('"', "\\\"", "g") + "\"";
 			Cu.evalInSandbox("env.document.doc.removeInLine(" +
 							 this.oldSelectionStart.row + ",0," +
 							 this.oldValue.length + ")", sandbox);
 			Cu.evalInSandbox("env.document.doc.insert(" +
-							 "env.document.selection.selectionLead," + valueJS +
-							 ")", sandbox);
+							 "env.document.selection.selectionLead," +
+							 quoteJS(this.value) + ")", sandbox);
 //			dump("with <" + env.document.doc.$lines[this.oldSelectionStart.row] + ">\n");	// debug
 			var selectionStart = this.oldSelectionStart;
 			selectionStart.column += this.value.length - this.oldValue.length;
@@ -205,9 +214,8 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == this.oldValue) return false;
 			
-			var valueJS = "\"" + this.value.replace('"', "\\\"", "g") + "\"";
-			Cu.evalInSandbox("editor.setText(" + valueJS + "," + lineStart +
-							 "," + offset + ")", sandbox);
+			Cu.evalInSandbox("editor.setText(" + quoteJS(this.value) + "," +
+							 lineStart + "," + offset + ")", sandbox);
 			offset += this.value.length - this.oldValue.length;
 			Cu.evalInSandbox("editor.redrawRange(" + lineStart + "," + offset +
 							 ")", sandbox);
@@ -260,9 +268,8 @@ function AVIM()	{
 										  oldSelection.row + ",0)+0", sandbox));
 			var pos = linePos + oldSelection.column +
 				this.value.length - this.oldValue.length;
-			var valueJS = "\"" + this.value.replace('"', "\\\"", "g") + "\"";
 			Cu.evalInSandbox(bufferJS + "._replaceLine(" + oldSelection.row +
-							 "," + valueJS + ")", sandbox);
+							 "," + quoteJS(this.value) + ")", sandbox);
 			Cu.evalInSandbox(bufferJS + ".redrawDirtyLines()", sandbox);
 			Cu.evalInSandbox(bufferJS + ".caretMarker.setPosition(" + pos + ")",
 							 sandbox);
@@ -569,7 +576,7 @@ function AVIM()	{
 			for (var i = 0; i < args.length; i++) {
 				var arg = args[i];
 				if (typeof arg == "string" || typeof arg == "object") {
-					arg = "\"" + arg.replace(/"/g, "\\\"") + "\"";
+					arg = quoteJS(arg);
 				}
 				msgJS += "," + arg;
 			}
