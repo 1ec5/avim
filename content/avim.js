@@ -83,7 +83,7 @@ function AVIM()	{
 	 * Returns the JavaScript string literal representing the given string.
 	 */
 	function quoteJS(str) {
-		return "\"" + str.replace(/\\/g, "\\\\").replace(/\b/g, "\\b")
+		return "\"" + str.replace(/\\/g, "\\\\").replace(/[\b]/g, "\\b")
 						 .replace(/\f/g, "\\f").replace(/\n/g, "\\n")
 						 .replace(/\r/g, "\\r").replace(/\t/g, "\\t")
 						 .replace(/\v/g, "\\v").replace(/"/g, "\\\"") + "\"";
