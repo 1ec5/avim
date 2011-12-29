@@ -45,7 +45,7 @@
 <!ENTITY passwords-check.label "Ignorar campos de senha">
 <!ENTITY passwords-check.accesskey "g">
 
-<!ENTITY statuspanel-check.label "Exibir na barra de status">
+<!ENTITY statuspanel-check.label "Exibir na Barra de Extensões">
 <!ENTITY statuspanel-check.accesskey "b">
 
 <!ENTITY avim-blacklist.style "width: 35em;">

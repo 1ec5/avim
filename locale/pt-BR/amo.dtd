@@ -9,7 +9,7 @@
 
 <!ENTITY description.advanced "Baseado no [script de mesmo nome] de Hieu Dang, o AVIM foi aprimorado com uma série de recursos convenientes e inovadores que você não vai encontrar na [concorrência], incluindo:">
 
-<!ENTITY description.advanced.ui "Um painel compacto na barra de status, botões opcionais na barra de ferramentas e uma janela de configuração">
+<!ENTITY description.advanced.ui "Um painel compacto na Barra de Extensões, botões opcionais na barra de ferramentas e uma janela de configuração">
 <!ENTITY description.advanced.scriptmonitor "Um monitor de script que desliga automaticamente os IMEs fornecidos pelos sites, a fim de evitar conflitos (também [disponível em separado])">
 <!ENTITY description.advanced.compatible "Compatibilidade com *qualquer* página que você visitar e *qualquer* janela que você abrir">
 <!ENTITY description.advanced.inplace "Edição local que impede os campos de ficarem saltando enquanto se digita – mesmo quando se aciona o desfazer ou refazer">
