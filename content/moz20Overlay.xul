@@ -4,6 +4,33 @@
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+	<!-- Firefox > Edit > Vietnamese Input -->
+	<!-- Copied from avim.xul -->
+	<vbox id="appmenuPrimaryPane">
+		<menu id="avim-appmenu" label="&avim-menu.label;" insertafter="appmenu_find">
+			<menupopup id="avim-appmenu-popup">
+				<menuitem id="avim-appmenu-enabled" type="checkbox" label="&avim-enabled.label;" key="avim-enabled-key" observes="avim-enabled-bc" />
+				
+				<!-- Input methods -->
+				<menuseparator id="avim-appmenu-methods-separator" />
+				<menuitem id="avim-appmenu-auto" name="viet_method" type="radio" key="avim-auto-key" observes="avim-auto-bc" />
+				<menuitem id="avim-appmenu-telex" name="viet_method" type="radio" key="avim-telex-key" observes="avim-telex-bc" />
+				<menuitem id="avim-appmenu-vni" name="viet_method" type="radio" key="avim-vni-key" observes="avim-vni-bc" />
+				<menuitem id="avim-appmenu-viqr" name="viet_method" type="radio" key="avim-viqr-key" observes="avim-viqr-bc" />
+				<menuitem id="avim-appmenu-viqr-star" name="viet_method" type="radio" key="avim-viqr-star-key" observes="avim-viqr-star-bc" />
+				
+				<menuseparator id="avim-appmenu-cycle-separator" />
+				<menuitem id="avim-appmenu-prev-method" label="&avim-menu-prev-method.label;" key="avim-prev-method-key" command="avim-prev-method-cmd" />
+				<menuitem id="avim-appmenu-next-method" label="&avim-menu-next-method.label;" key="avim-next-method-key" command="avim-next-method-cmd" />
+				
+				<!-- Options -->
+				<menuseparator id="avim-appmenu-options-separator" />
+				<menuitem id="avim-appmenu-spell" key="avim-spell-key" observes="avim-spell-bc" />
+				<menuitem id="avim-appmenu-oldaccents" key="avim-oldaccents-key" observes="avim-oldaccents-bc" />
+			</menupopup>
+		</menu>
+	</vbox>
+	
 	<!-- Add-on bar menu -->
 	<statusbar id="addon-bar">
 		<statusbarpanel id="avim-status" label="&AVIM.label;" disabledLabel="&avim-disabled.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" ondblclick="avim.toggle();" />

@@ -343,6 +343,7 @@ Version 20080728.450 (Saturday, March 5, 2011)
 Version ${Version} (${Date})
  - Added support for editing Google Docs text documents created in June 2010 or
    later (requires Firefox 4 or equivalent).
+ - Added a Vietnamese Input menu under the Firefox menu (Windows and Linux).
  - Fixed an issue in rich text controls where selecting text and pressing
    Backspace would delete one character too many.
  - Added a Brazilian Portuguese localization by Mauro José da Silva.

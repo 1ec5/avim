@@ -75,7 +75,7 @@
 	</toolbarpalette>
 	
 	<!-- Edit > Vietnamese Input -->
-	<!-- Copied in communicatorOverlay.xul, composerOverlay.xul, and komodoOverlay.xul -->
+	<!-- Copied in communicatorOverlay.xul, composerOverlay.xul, komodoOverlay.xul, and moz20Overlay.xul -->
 	<menupopup id="menu_EditPopup">
 		<menuseparator id="avim-separator" />
 		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
