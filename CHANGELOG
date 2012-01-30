@@ -344,6 +344,8 @@ Version ${Version} (${Date})
  - Added support for editing Google Docs text documents created in June 2010 or
    later (requires Firefox 4 or equivalent).
  - Added a Vietnamese Input menu under the Firefox menu (Windows and Linux).
+ - Firefox Sync can now keep AVIM preferences synchronized across different
+   installations of Firefox and Firefox Mobile.
  - Fixed an issue in rich text controls where selecting text and pressing
    Backspace would delete one character too many.
  - Added a Brazilian Portuguese localization by Mauro José da Silva.
