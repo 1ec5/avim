@@ -2219,6 +2219,7 @@ function AVIM()	{
 		this.ifInit(cwi);
 		var node = this.range.endContainer, newPos;
 		// Zoho Writer places a cursor <span> right at the caret.
+//		dump("AVIM.ifMoz -- node: " + node.localName + "#" + node.id + "\n");	// debug
 		if (node.localName == "span" && !node.id.indexOf("z-cursor-start-")) {
 			var prevNode = node.previousSibling;
 			if (prevNode.data) {
@@ -2745,15 +2746,17 @@ function AVIM()	{
 	 * 								applet.
 	 */
 	this.registerSlight = function(elt, sandbox) {
-		if (!slightTypeRe.test(elt.type)) return;
+		if (!elt || !slightTypeRe.test(elt.type)) return;
 //		dump("registerSlight -- " + slight.content.root + "\n");				// debug
 		sandbox.importFunction(avim.handleSlightKeyDown, "handleSlightKeyDown");
-		Cu.evalInSandbox("elt.content.root.addEventListener('keyDown', " +
+		Cu.evalInSandbox("elt.content &&" +
+						 "elt.content.root.addEventListener('keyDown', " +
 						 "handleSlightKeyDown)", sandbox);
 		// Observing keyUp introduces problems with character limits.
 //		slight.content.root.addEventListener("keyUp", avim.handleSlightKeyUp);
 		sandbox.importFunction(avim.handleSlightKeyUp, "handleSlightKeyUp");
-		Cu.evalInSandbox("elt.content.root.addEventListener('keyUp', " +
+		Cu.evalInSandbox("elt.content &&" +
+						 "elt.content.root.addEventListener('keyUp', " +
 						 "handleSlightKeyUp)", sandbox);
 //		dump("\t" + slight.content.root.children + "\n");						// debug
 	};
