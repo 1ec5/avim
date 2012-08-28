@@ -538,156 +538,6 @@ function AVIM()	{
 	SciMozProxy.prototype = new TextControlProxy();
 	
 	/**
-	 * Proxy for a SlideKit TextLayer object posing as an ordinary HTML <input>
-	 * element.
-	 * 
-	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context. The window and the editor's
-	 * 								`textLayer` variable should be defined on
-	 * 								the sandbox.
-	 */
-	function SkitProxy(sandbox) {
-		/**
-		 * Returns the result of an Objective-J call in the sandbox's context.
-		 *
-		 * @param type		{string}	Expected return type, as would be
-		 * 								returned by `typeof msgSend(...)`.
-		 * @param target	{string}	Sandboxed object to send the message to.
-		 * @param cmd		{string}	Selector of the message to pass.
-		 * @param args		{array}		Arguments in the message to pass.
-		 * @param field		{string}	Field within the message's return value.
-		 * 
-		 * @returns The return value of the sent Objective-J message.
-		 */
-		var msgSend = function(type, target, sel, args, field) {
-			var msgJS = "objj_msgSend(" + target + ",'" + sel + "'";
-			if (!args) args = [];
-			
-// $if{Debug}
-			// Ensure the required arguments have been provided.
-			var colons = sel.match(/:/g) || [];
-			if (args.length < colons.length) {
-				throw "Objective-J method -" + sel + " expects " +
-					colons.length + " arguments; " + args.length + " given.";
-			}
-// $endif{}
-			
-			// Add the arguments, quoting strings and objects.
-			for (var i = 0; i < args.length; i++) {
-				var arg = args[i];
-				if (typeof arg == "string" || typeof arg == "object") {
-					arg = quoteJS(arg);
-				}
-				msgJS += "," + arg;
-			}
-			msgJS += ")";
-			
-			if (field) msgJS += "." + field;
-			
-			// Cast the return value to a safe type.
-			switch (type) {
-				case "number": msgJS += "+0"; break;
-				case "boolean": msgJS = "!!" + msgJS; break;
-				case "string": msgJS += "+''"; break;
-			}
-			
-// $if{Debug}
-			try {
-// $endif{}
-				var ret = Cu.evalInSandbox(msgJS, sandbox);
-				if (type == "number") ret = parseInt(ret);
-				return type ? ret : undefined;
-// $if{Debug}
-			}
-			catch (exc) {
-				exc.message += "\n" + "Obj-J: " + msgJS;
-				throw exc;
-			}
-// $endif{}
-		};
-		
-		if (msgSend("boolean", "textLayer", "hasSelection")) {
-			throw "Non-empty selection.";
-		}
-		
-		// All this just to get the line-relative offset.
-		var selectionRange = {
-			location: msgSend("number", "textLayer", "selectedRange", [],
-							  "location"),
-			length: msgSend("number", "textLayer", "selectedRange", [],
-							"length")
-		};
-//		dump(">>> selectionRange: " + selectionRange.location + "+" + selectionRange.length);	// debug
-		// moveCaret:extendSelection: doesn't set the selection ends correctly.
-		//sandbox.objj_msgSend(sandbox.textLayer, "moveCaret:extendSelection:",
-		//					 1 /* kFirst */, false);
-		//var linePos = sandbox.objj_msgSend(sandbox.textLayer, "selectedRange").location;
-		var linePosJS = "var p=" + (selectionRange.location - 1) +
-			";var c=textLayer._previousCharacter;" +
-			"while(c){c=c.previousSibling;if(!c)break;p--;}" +
-			"p";
-		var linePos = Cu.evalInSandbox(linePosJS, sandbox);
-//		dump("; linePos: " + linePos);											// debug
-		this.selectionStart = this.selectionEnd =
-			selectionRange.location - linePos;
-		
-		// Get the text value.
-		this.value = this.oldValue =
-			Cu.evalInSandbox("textLayer._currentParagraph.textContent+''",
-							 sandbox).substring(0, this.selectionStart);
-//		dump("; value: <" + this.value + ">\n");								// debug
-		
-		this.commit = function() {
-			if (this.value == this.oldValue) return;
-			
-			// Prepare SlideKit for the changes.
-			msgSend(0, "textLayer._undoManager", "beginUndoGrouping");
-			
-			// Compare the old and new strings, inserting or replacing
-			// characters as needed.
-			for (var i = 0; i < this.value.length; i++) {
-				if (this.value[i] == this.oldValue[i]) continue;
-				
-				// Select the character.
-				var startJS = "textLayer._selectionStart=" +
-					"textLayer._currentParagraph.children.item(" + i + ")";
-				Cu.evalInSandbox(startJS, sandbox);
-				if (this.oldValue[i]) {
-					Cu.evalInSandbox("textLayer._selectionEnd=" +
-									 "textLayer._currentParagraph.children." +
-									 "item(" + (i + 1) + ")", sandbox);
-				}
-				else {
-					Cu.evalInSandbox("textLayer._selectionEnd=" +
-									 "textLayer._selectionStart", sandbox);
-				}
-				msgSend(0, "textLayer", "calculateSelectedRange");
-				
-				// Replace the character.
-				if (msgSend("boolean", "textLayer", "hasSelection")) {
-					msgSend(0, "textLayer", "deleteSelection");
-				}
-				msgSend(0, "textLayer", "insertCharacter:stillInserting:",
-						[this.value[i], true]);
-			}
-			
-			// Return the caret to its natural position.
-			selectionRange.location += this.value.length - this.oldValue.length;
-			Cu.evalInSandbox("objj_msgSend(textLayer,'setSelectedRange:'," +
-				"{location:" + selectionRange.location + ",length:" +
-				selectionRange.length + "})", sandbox);
-			
-			// Update the rest of SlideKit to reflect the changes.
-			msgSend(0, "textLayer._undoManager", "endUndoGrouping");
-			msgSend(0, "textLayer", "selectionDidChange");
-			msgSend(0, "textLayer", "resize");
-			msgSend(0, "textLayer", "positionCaret");
-			msgSend(0, "textLayer", "textDidChange");
-		};
-	};
-	SkitProxy.prototype = new TextControlProxy();
-	
-	/**
 	 * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
 	 * 
 	 * @param evt	{object}	The keyPress event.
@@ -2807,57 +2657,6 @@ function AVIM()	{
 									true);
 	};
 	
-	// SlideKit text fields
-	
-	/**
-	 * Handles key presses in a SlideKit text field.
-	 *
-	 * @param evt	{object}		The keypress event.
-	 * @returns {boolean}	True if AVIM plans to modify the input; false
-	 * 						otherwise.
-	 */
-	this.handleSkit = function(evt) {
-		var elt = evt.originalTarget;
-		if (elt.baseURI.indexOf("http://280slides.com/") != 0) return false;
-		
-		var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
-		sandbox.window = elt.ownerDocument.defaultView.wrappedJSObject;
-		try {
-			if (!Cu.evalInSandbox("'objj_msgSend' in window &&" +
-								  "'SlideEditor' in window && " +
-								  "'TextLayer' in window", sandbox)) {
-				return false;
-			}
-			sandbox.objj_msgSend = Cu.evalInSandbox("window.objj_msgSend",
-													sandbox);
-			sandbox.textLayer =
-				Cu.evalInSandbox("window.CPApp._mainWindow._windowController." +
-								 "_slideEditor._firstResponder._textLayer ||" +
-								 "null", sandbox);
-			if (sandbox.textLayer === null) return false;
-		}
-		catch (exc) {
-			return false;
-		}
-		
-		// Fake a native textbox.
-//		dump("AVIM.handleSkit\n");											// debug
-		var proxy = new SkitProxy(sandbox);
-		
-		this.sk = fcc(evt.which);
-		this.start(proxy, evt);
-		
-		proxy.commit();
-		proxy = null;
-		sandbox = null;
-		if (this.changed) {
-			this.changed = false;
-			evt.stopPropagation();
-			evt.preventDefault();
-		}
-		return true;
-	};
-	
 	/**
 	 * Handles key presses in the Kix editor. This function is triggered as soon
 	 * soon as the key goes up.
@@ -3407,11 +3206,10 @@ function AVIM()	{
 		
 		// Specialized Web editors
 		try {
-			// Google Kix, SlideKit, Ymacs
+			// Google Kix, Ymacs
 			// Zoho Writer: window.editor<HTMLArea>.eventHandlerFunction(evt)
 			if ((tagName == "html" || tagName == "body") &&
-				(this.handleKix(e) || this.handleSkit(e) ||
-				 this.handleYmacs(e))) {
+				(this.handleKix(e) || this.handleYmacs(e))) {
 				return true;
 			}
 			
