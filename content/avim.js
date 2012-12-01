@@ -2975,9 +2975,29 @@ function AVIM()	{
 			marker.setMethod(-1);
 		},
 		Google: function(win, marker) {
-			if ("keyboard" in marker.elements) {
+			if (!("keyboard" in marker.elements)) return;
+			
+			// Try the Virtual Keyboard API first.
+			if ("Keyboard" in marker.elements.keyboard) {
 				marker.elements.keyboard.Keyboard.prototype.setVisible(false);
+				return;
 			}
+			
+			// Get the selected item in the keyboard menu. If no item is
+			// selected, there is nothing to disable.
+			var sel = win.document.getElementsByClassName("ita-kd-selected")[0];
+			if (sel) return;
+			
+			// Deselect the menu item.
+			var evt = win.document.createEvent("MouseEvents");
+			evt.initMouseEvent("mouseup", true /* canBubble */,
+							   true /* cancelable */, window, 0 /* detail */,
+							   0 /* screenX */, 0 /* screenY */,
+							   0 /* clientX */, 0 /* clientY */,
+							   false /* ctrlKey */, false /* altKey */,
+							   false /* shiftKey */, false /* metaKey */,
+							   0 /* button */, null /* relatedTarget */);
+			sel.dispatchEvent(evt);
 		},
 		CHIM: function(win, marker) {
 			if (win.parseInt(marker.method)) marker.SetMethod(0);
