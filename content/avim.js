@@ -2975,7 +2975,9 @@ function AVIM()	{
 			marker.setMethod(-1);
 		},
 		Google: function(win, marker) {
-			if (!("keyboard" in marker.elements)) return;
+			if (!("elements" in marker && "keyboard" in marker.elements)) {
+				return;
+			}
 			
 			// Try the Virtual Keyboard API first.
 			if ("Keyboard" in marker.elements.keyboard) {
@@ -2983,10 +2985,17 @@ function AVIM()	{
 				return;
 			}
 			
+			// Try closing the Virtual Keyboard itself if it's open.
+			var kb = win.document.getElementsByClassName("vk-t-btn-o")[0];
+			if (kb) {
+				kb.click();
+				return;
+			}
+			
 			// Get the selected item in the keyboard menu. If no item is
 			// selected, there is nothing to disable.
 			var sel = win.document.getElementsByClassName("ita-kd-selected")[0];
-			if (sel) return;
+			if (!sel) return;
 			
 			// Deselect the menu item.
 			var evt = win.document.createEvent("MouseEvents");

@@ -349,7 +349,8 @@ Version ${Version} (${Date})
  - Fixed an issue in rich text controls where selecting text and pressing
    Backspace would delete one character too many.
  - Added a Brazilian Portuguese localization by Mauro José da Silva.
- - The Script Monitor can now disable the Virtual Keyboard at Google.com.
+ - The Script Monitor can now disable the Virtual Keyboard features at Google
+   Tiếng Việt and Google Việt Nam.
  - Added support for Zoho Writer.
  - Added support for Eclipse's Orion editor.
  - Added support for Ymacs, an emacs-style code editor.
