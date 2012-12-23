@@ -51,8 +51,7 @@ VAR_NAMES = ["options.dtd"]
 DEBUG_DIRS = [path.join("content", "test"),
 			  path.join("content", "skin", "test"), path.join("skin", "test"),
 			  # Unmaintained localizations
-			  path.join("locale", "fr"), path.join("locale", "zh-CN"),
-			  path.join("locale", "zh-TW")]
+			  path.join("locale", "fr"), path.join("locale", "zh-TW")]
 
 # Names of localization files that should be omitted from a release build.
 L10N_FILES = ["amo.dtd", "install.dtd"]

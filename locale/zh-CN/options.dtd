@@ -1,7 +1,7 @@
 <!ENTITY AVIM.label "AVIM">
 <!ENTITY avim-preferences.title "&AVIM.label;">
 
-<!ENTITY enabled-check.label "启用&AVIM.label;以输入越南文">
+<!ENTITY enabled-check.label "启用 &AVIM.label; 以输入越南文">
 <!ENTITY enabled-check.accesskey "E">
 
 <!ENTITY blacklist-button.label "例外…">
@@ -9,66 +9,66 @@
 
 <!ENTITY method-menu.label "输入法：">
 <!ENTITY method-menu.accesskey "M">
-<!ENTITY method-auto-item.label "">
+<!ENTITY method-auto-item.label "混合">
 <!ENTITY method-telex-item.label "Telex">
 <!ENTITY method-vni-item.label "VNI">
 <!ENTITY method-viqr-item.label "VIQR">
 <!ENTITY method-viqr-star-item.label "VIQR*">
 
-<!ENTITY method-config-button.label "定制…">
+<!ENTITY method-config-button.label "自定义…">
 <!ENTITY method-config-button.accesskey "C">
 
 <!-- $if{Debug} -->
-<!ENTITY tester-button.label "">
-<!ENTITY tester-button.accesskey "">
+<!ENTITY tester-button.label "测试…">
+<!ENTITY tester-button.accesskey "T">
 <!-- $endif{} -->
-<!ENTITY spell-check.label "">
-<!ENTITY spell-check.false.label "">
-<!ENTITY spell-check.false.accesskey "">
-<!ENTITY spell-check.true.label "">
-<!ENTITY spell-check.true.accesskey "">
+<!ENTITY spell-check.label "单词违反越南文拼写规则时：">
+<!ENTITY spell-check.false.label "仍然为单词应用音调符号">
+<!ENTITY spell-check.false.accesskey "A">
+<!ENTITY spell-check.true.label "原样插入字符（强制拼写）">
+<!ENTITY spell-check.true.accesskey "L">
 
-<!ENTITY informal-check.label "">
-<!ENTITY informal-check.accesskey "">
+<!ENTITY informal-check.label "除了在“dz”和“f”这种非正式拼写格式之后">
+<!ENTITY informal-check.accesskey "I">
 
-<!ENTITY oldaccents-check.label "">
-<!ENTITY oldaccents-check.true.label "">
-<!ENTITY oldaccents-check.true.accesskey "">
-<!ENTITY oldaccents-check.false.label "">
-<!ENTITY oldaccents-check.false.accesskey "">
+<!ENTITY oldaccents-check.label "单词以两个元音结尾时，添加音调符号到：">
+<!ENTITY oldaccents-check.true.label "第一个元音字母(传统风格)">
+<!ENTITY oldaccents-check.true.accesskey "F">
+<!ENTITY oldaccents-check.false.label "第二个元音字母(现代风格)">
+<!ENTITY oldaccents-check.false.accesskey "S">
 
-<!ENTITY script-enabled-check.label "">
-<!ENTITY script-enabled-check.accesskey "">
+<!ENTITY script-enabled-check.label "关闭网页中内嵌的输入法编辑器">
+<!ENTITY script-enabled-check.accesskey "W">
 
-<!ENTITY script-config-button.label "">
-<!ENTITY script-config-button.accesskey "">
+<!ENTITY script-config-button.label "配置…">
+<!ENTITY script-config-button.accesskey "G">
 
-<!ENTITY passwords-check.label "">
-<!ENTITY passwords-check.accesskey "">
+<!ENTITY passwords-check.label "忽略密码框">
+<!ENTITY passwords-check.accesskey "P">
 
-<!ENTITY statuspanel-check.label "在附加组件栏上显示">
+<!ENTITY statuspanel-check.label "在状态栏上显示">
 <!ENTITY statuspanel-check.accesskey "B">
 
 <!ENTITY avim-blacklist.style "width: 35em;">
 
-<!ENTITY blacklist-pane.label "">
+<!ENTITY blacklist-pane.label "黑名单">
 
-<!ENTITY ignore-text.label "文本框标识符：">
+<!ENTITY ignore-text.label "文本框 ID：">
 <!ENTITY ignore-button.label "忽略">
 <!ENTITY ignore-button.accesskey "I">
 
-<!ENTITY ignored-desc.label "您可以选择&AVIM.label;该忽略哪些文件框。例如您可以使&AVIM.label;忽略包含网址的某个文件框，因为此输入法也许会影响输入该网址。">
-<!ENTITY ignored-instructions.label "为了忽略某个文件框，请先从包含该文件框网页的源代码里将标识符找出来，再在下面输入标识符，最后点击&ignore-button.label;。">
+<!ENTITY ignored-desc.label "你可以指定 &AVIM.label; 应该忽略哪些文本框。例如，你可能需要 &AVIM.label; 忽略某个包含网址的文本框，因为输入法可能会影响网址的输入。">
+<!ENTITY ignored-instructions.label "要忽略某个文本框，首先需要查看该文本框所在网页源代码并找到它的 ID。然后在下面输入 ID 并点击&ignore-button.label;。">
 
-<!ENTITY remove-button.label "删除标识符">
+<!ENTITY remove-button.label "删除 ID">
 <!ENTITY remove-button.accesskey "R">
 
-<!ENTITY reset-button.label "将设置还原成默认">
+<!ENTITY reset-button.label "恢复默认设置">
 <!ENTITY reset-button.accesskey "D">
 
 <!ENTITY avim-method-config.style "width: 25em;">
 
-<!ENTITY auto-methods.label "用&method-auto-item.label;时从下面的输入法接受按键：">
+<!ENTITY auto-methods.label "选择&method-auto-item.label;时，接受下列输入法的按键：">
 <!ENTITY auto-telex-check.accesskey "T">
 <!ENTITY auto-vni-check.accesskey "N">
 <!ENTITY auto-viqr-check.accesskey "Q">
@@ -76,9 +76,9 @@
 
 <!ENTITY avim-script-config.style "width: 25em;">
 
-<!ENTITY script-config-pane.label "">
+<!ENTITY script-config-pane.label "可以自动关闭网页自带的输入法">
 
-<!ENTITY script-grid.label "">
+<!ENTITY script-grid.label "为了避免冲突，在包含下列输入法编辑器的网页中输入时自动关闭它们：">
 
 <!ENTITY script-avim-check.label "AVIM">
 <!ENTITY script-avim-check.accesskey "A">

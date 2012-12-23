@@ -1,20 +1,20 @@
-<!ENTITY summary "一个为越南文专门做的输入法。仅用普通的键盘将完全带着调号的越南文输入到任何网页或对话框。">
+<!ENTITY summary "一个越南文输入法（IME）。使用标准键盘即可在任何网页和对话框中输入带重音符的越南文。">
 
-<!ENTITY description.intro "">
+<!ENTITY description.intro "AVIM（高级的越南文输入法）是一个快速的越南文输入法编辑器，可以让你自然地输入而不会注意到输入法的存在。它包含一个现代输入法应具有的所有功能，比如：">
 
-<!ENTITY description.basics.methods "">
-<!ENTITY description.basics.spelling "">
-<!ENTITY description.basics.shortcuts "">
-<!ENTITY description.basics.webapps "">
+<!ENTITY description.basics.methods "支持[四种常用的输入法]：Telex、VNI、VIQR 和 VIQR*">
+<!ENTITY description.basics.spelling "自动修正音调符号和基于拼写规则的拼写检查">
+<!ENTITY description.basics.shortcuts "输入时用来配置 AVIM 的键盘快捷键（如 Ctrl+Alt+V）">
+<!ENTITY description.basics.webapps "完全支持 Web 应用如 Gmail 和 Google 文档">
 
-<!ENTITY description.advanced "">
+<!ENTITY description.advanced "AVIM 是基于邓陈孝的同名[JavaScript 包]的精致的输入法，它具有大量的[同类工具]所不具有的方便和创新性的功能，包括：">
 
-<!ENTITY description.advanced.ui "">
-<!ENTITY description.advanced.scriptmonitor "">
-<!ENTITY description.advanced.compatible "">
-<!ENTITY description.advanced.inplace "">
+<!ENTITY description.advanced.ui "紧凑的状态栏面板、可选的工具栏按钮和首选项窗口">
+<!ENTITY description.advanced.scriptmonitor "可以自动关闭网页自带的输入法以防止冲突的脚本监控器（也可[独立使用]）">
+<!ENTITY description.advanced.compatible "兼容你访问的*每个*网页以及你打开的*每个*窗口">
+<!ENTITY description.advanced.inplace "原地编辑功能阻止输入时文本框移动 – 即使当你撤销或者重做时也有效">
 
-<!ENTITY description.conclusion "">
+<!ENTITY description.conclusion "简单的说，*AVIM 可以良好的运行*。">
 
-<!ENTITY developer.script "此附加组件是以由邓陈孝创作的高级越南文输入法（[AVIM]：[下载]）脚本为基础。">
-<!ENTITY developer.dictionary "为了最理想的输入经验，请您连同此附加组件也用[越南语詞典]附加组件。">
+<!ENTITY developer.script "此扩展来自[高级越南文输入法]（[下载]），它是邓陈孝创作的可以内嵌到网页中的越南文输入法脚本。">
+<!ENTITY developer.dictionary "要获得最理想的输入体验，请将此扩展与[越南语词典]扩展一起使用。">

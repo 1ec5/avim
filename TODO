@@ -1,5 +1,8 @@
  - Write bootstrap.js to load and unload AVIM without restarting. [1]
  - Use XBL or XPCOM to allow each application to share the same overlay.
+ - Support Zoho Show. It uses #texteditable[contenteditable] but does something
+   tricky behind the scenes. ShapeEvent.text and ShapeEditor.text.editor look
+   like good starting points for a proxy.
  - Make AVIM compatible with editors that do custom key event handling, like
    textile-editor [2].
  - Nuke sandboxes to avoid leaks [3].

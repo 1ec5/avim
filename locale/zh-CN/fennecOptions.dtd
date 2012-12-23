@@ -1,25 +1,25 @@
-<!ENTITY enabled-check.title "启用输入越南文">
+<!ENTITY enabled-check.title "启用越南文输入">
 
 <!ENTITY method-menu.title "输入法">
-<!ENTITY method-auto-item.title "">
+<!ENTITY method-auto-item.title "混合">
 <!ENTITY method-telex-item.title "Telex">
 <!ENTITY method-vni-item.title "VNI">
 <!ENTITY method-viqr-item.title "VIQR">
 <!ENTITY method-viqr-star-item.title "VIQR*">
 
-<!ENTITY spell-check.title "">
-<!ENTITY spell-check.desc "">
+<!ENTITY spell-check.title "强制拼写规则">
+<!ENTITY spell-check.desc "仅识别遵循越南文拼写规则的单词">
 
-<!ENTITY informal-check.title "">
-<!ENTITY informal-check.desc "">
+<!ENTITY informal-check.title "识别非正式的拼写">
+<!ENTITY informal-check.desc "为以“dz”或“f”开头的单词添加音调符号">
 
-<!ENTITY oldaccents-check.title "">
-<!ENTITY oldaccents-check.desc "">
+<!ENTITY oldaccents-check.title "使用传统音调符号添加方式">
+<!ENTITY oldaccents-check.desc "在最后一个双元音的第一个元音字母上添加音调符号">
 
-<!ENTITY script-enabled-check.title "">
-<!ENTITY script-enabled-check.desc "">
+<!ENTITY script-enabled-check.title "禁用页面内输入法">
+<!ENTITY script-enabled-check.desc "自动禁用网页中的 JavaScript 输入法">
 
-<!ENTITY passwords-check.title "">
+<!ENTITY passwords-check.title "识别密码框">
 
 <!ENTITY ignore-text.title "黑名单">
-<!ENTITY ignore-text.desc "">
+<!ENTITY ignore-text.desc "忽略具有这些 ID 的文本框">
