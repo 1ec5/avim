@@ -7,6 +7,7 @@
    textile-editor [2].
  - Nuke sandboxes to avoid leaks [3].
  - Bug: "Ng~uye^n" (Nguyễn)
+ - Bug: "tie^'t^" -> "tie't"
  - Bug: "xoa" (xoá), "Ng" (Ng~) in rich text editors, including Thunderbird and
    Composer.
  - Place diacritics on the nearest valid syllable, to support foreign words like
