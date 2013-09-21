@@ -11,7 +11,7 @@
 
 <!ENTITY description.advanced.ui "Giao diện đầy đủ có nút gọn gàng trên thanh tiện ích, các nút cho thanh công cụ, và cửa sổ tùy chọn">
 <!ENTITY description.advanced.scriptmonitor "Bộ giám sát script tự động tắt các bộ gõ của trang Web để tránh xung đột (cũng [có sẵn riêng])">
-<!ENTITY description.advanced.compatible "Tương tích với [bất cứ mọi] trang Web và cửa sổ mà bạn sẽ mở">
+<!ENTITY description.advanced.compatible "Tương thích với [bất cứ mọi] trang Web và cửa sổ mà bạn sẽ mở">
 <!ENTITY description.advanced.inplace "Chỉnh sửa ngay tại chỗ, không cho phép hộp văn bản nhảy tới lui trong lúc gõ – ngay cả khi hoàn tác">
 
 <!ENTITY description.conclusion "Nói đơn giản, *AVIM chạy ngon lành*.">
