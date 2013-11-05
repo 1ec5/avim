@@ -12,13 +12,13 @@ CONFIG = BuildConfig.RELEASE
 # extension's version string.
 AVIM_VERSION = 20080728
 
-# Format of URL to view a project file in the public-facing Subversion
-# repository, given the relative path of that file.
-REPO_URL = "http://version.1ec5.org/viewvc/avim/trunk/%(path)s" \
-           "?revision=%(rev)s&view=markup"
+# Format of URL to view a project file in the public-facing Git repository,
+# given the relative path of that file.
+REPO_URL = "https://github.com/1ec5/avim/blob/%(rev)s/%(path)s"
 
-# Revision number in the Subversion repository.
-REVISION = None
+# Incremented revision number, originally based on the latest Subversion
+# revision.
+REVISION = 523
 
 # Build date.
 DATE = None
@@ -63,31 +63,6 @@ LOCALE_DIRS = {"en": "en-US", "es": "es-ES"}
 # Name of the fallback locale that is guaranteed to contain translations for all
 # the extension's strings and that contains documentation for each string.
 MAIN_LOCALE = "en-US"
-
-# Paths to files to which a license block will be prepended.
-LICENSE_FILES = [path.join("content", "avim.js")]
-
-# A dictionary of language-specific comment specifications in the form: (block
-# start, line start, block end).
-COMMENT_FORMATS = {"C": ("/*", " * ", " */"),
-                   "Python": ('__license__ = """\\', None, '"""'),
-                   "SGML": ("<!--", "\t", "  -->"),
-                   "shell": (None, "# ", None)}
-
-# A dictionary mapping lowercase file extensions to the comment format of the
-# file's language.
-EXT_COMMENTS = {"c": "C", "cpp": "C", "h": "C", "m": "C", "java": "C",
-                "js": "C", "jsm": "C", "php": "C", "css": "C", "py": "Python",
-                "html": "SGML", "xhtml": "SGML", "xml": "SGML", "rdf": "SGML",
-                "xul": "SGML", "dtd": "SGML", "xsl": "SGML", "xslt": "SGML",
-                "svg": "SGML", "mml": "SGML", "pl": "shell", "rb": "shell",
-                "manifest": "shell", "properties": "shell", "sh": "shell"}
-
-# A dictionary mapping lowercase file extensions to the beginnings of lines
-# that must appear at the beginning of a file (prolog or shebang lines).
-EXT_PROLOGS = {"py": "#!", "xhtml": "<?xml", "xml": "<?xml", "rdf": "<?xml",
-               "xul": "<?xml", "xsl": "<?xml", "xslt": "<?xml", "svg": "<?xml",
-               "mml": "<?xml", "pl": "#!", "rb": "#!", "sh": "#!"}
 
 # Paths to the final XPI files.
 XPI_FILES = ["%(package)s.xpi", "%(package)s-%(version)s.xpi"]

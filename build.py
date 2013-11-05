@@ -6,7 +6,7 @@ Mozilla-based applications as an extension. Inspired by build.sh by Nickolay
 Ponomarev.
 
 This module requires Python 2.5 or above and is dependent on the following
-command-line utilities: python, svn, svnversion. It takes its configuration from
+command-line utilities: python, git. It takes its configuration from
 config_build.py in the same directory as itself."""
 
 __version__ = "2.2"
@@ -41,6 +41,8 @@ from datetime import date
 from StringIO import StringIO
 from jsmin import JavascriptMinify
 from config_build import *
+
+BLOB = None
 
 class BuildConfig:
     """An enumeration of build configurations."""
@@ -123,56 +125,6 @@ def list_files(root, excluded_dirs, excluded_files):
                 dirs.remove(subdir)
     return files
 
-def insert_license(file_path, src):
-    """Inserts a language-aware license block at the top of the given source
-       string, based on the file's `license' property in the Subversion
-       repository."""
-    # Get the file's extension.
-    ext = path.splitext(file_path)[1]
-    if not ext:
-        return src
-    ext = ext[1:].lower() # remove the period and force to lowercase
-
-    # Get the file's language's comment and prolog format.
-    try:
-        block_start, line_start, block_end = COMMENT_FORMATS[EXT_COMMENTS[ext]]
-    except KeyError:
-        return src
-    try:
-        prolog_start = EXT_PROLOGS[ext]
-    except KeyError:
-        prolog_start = None
-
-    # Get license block text.
-    license_txt = subprocess.Popen("svn pg license %s" % file_path,
-                                   stdout=subprocess.PIPE,
-                                   shell=True).communicate()[0]
-    license_txt = license_txt.splitlines()
-
-    # Construct license block.
-    block = []
-    if block_start:
-        block.append(block_start)
-    if line_start:
-        license_txt = [line_start + line for line in license_txt]
-    block.extend(license_txt)
-    if block_end:
-        block.append(block_end)
-
-    # Skip prolog lines.
-    src = src.splitlines()
-    if prolog_start:
-        prolog = []
-        while src[0].startswith(prolog_start):
-            prolog.append(src.pop(0))
-        prolog.extend(block)
-        block = prolog
-
-    # Prepend comment block.
-    src = "\n".join(block) + "\n" + "\n".join(src)
-
-    return src
-
 def preprocess(src, debug=False, vals=None):
     """Returns the given source string, with variables substituted and testing
        code removed.
@@ -214,7 +166,10 @@ def preprocess(src, debug=False, vals=None):
 def get_repo_url(file_path):
     """Returns the URL of the file in ViewVC."""
     try:
-        return REPO_URL % {"path": file_path, "rev": str(int(REVISION))}
+        return REPO_URL % {
+            "path": file_path,
+            "rev": BLOB or "master",
+        }
     except (ValueError, TypeError):
         return REPO_URL % {"path": file_path, "rev": ""}
 
@@ -403,14 +358,18 @@ def local_to_jar(src, package_name):
     return src
 
 def main():
-    global CONFIG
+    global CONFIG, BLOB
+    
+    blob = subprocess.Popen("git show --abbrev-commit",
+                            stdout=subprocess.PIPE,
+                            shell=True).communicate()[0]
+    blob = blob and re.match(r"^commit ([\w]+)$", blob, re.M)
+    BLOB = blob and blob.group(1)
     
     # Defaults
 ##    config_file = None
     package_name = PACKAGE_NAME
-    revision = REVISION or subprocess.Popen("svnversion -n",
-                                            stdout=subprocess.PIPE,
-                                            shell=True).communicate()[0]
+    revision = REVISION
     version = "%i.%s" % (AVIM_VERSION, revision) if AVIM_VERSION else revision
     today = (DATE or date.today()).strftime("%A, %B %e, %Y")
     year = date.today().year
@@ -480,12 +439,12 @@ def main():
     # Directories
     tmp_dir = "build"
     chrome_dir = path.join(tmp_dir, "chrome")
-    omit_dirs = [".svn", "CVS"]
+    omit_dirs = [".git", ".svn", "CVS"]
 
     # Files
     jar_path = path.join(chrome_dir, "%s.jar" % package_name)
     root_files = ROOT_FILES.extend(["install.rdf", "chrome.manifest"])
-    omit_files = [".DS_Store", "Thumbs.db"]
+    omit_files = [".DS_Store", "Thumbs.db", ".gitattributes", ".gitignore"]
     if CONFIG is not BuildConfig.L10N:
         omit_files.extend(L10N_FILES)
     xml_ext_re = r".*\.(?:xml|xul|xbl|dtd|rdf|svg|mml|x?html|css)$"
@@ -513,9 +472,6 @@ def main():
         src_file = file(f, "r")
         src = src_file.read()
         src_file.close()
-        # Prepend license block.
-        if f in LICENSE_FILES:
-            src = insert_license(f, src)
         # Preprocess the file.
         if f in VAR_FILES or path.basename(f) in VAR_NAMES:
             print "\t%s" % f
@@ -564,9 +520,6 @@ def main():
         src_file = file(f, "r")
         src = src_file.read()
         src_file.close()
-        # Prepend license block.
-        if f in LICENSE_FILES:
-            src = insert_license(f, src)
         # Preprocess the file.
         if f in VAR_FILES or path.basename(f) in VAR_NAMES:
             print "\t%s" % f
