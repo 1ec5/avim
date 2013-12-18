@@ -19,10 +19,6 @@
 				<menuitem id="avim-appmenu-viqr" name="viet_method" type="radio" key="avim-viqr-key" observes="avim-viqr-bc" />
 				<menuitem id="avim-appmenu-viqr-star" name="viet_method" type="radio" key="avim-viqr-star-key" observes="avim-viqr-star-bc" />
 				
-				<menuseparator id="avim-appmenu-cycle-separator" />
-				<menuitem id="avim-appmenu-prev-method" label="&avim-menu-prev-method.label;" key="avim-prev-method-key" command="avim-prev-method-cmd" />
-				<menuitem id="avim-appmenu-next-method" label="&avim-menu-next-method.label;" key="avim-next-method-key" command="avim-next-method-cmd" />
-				
 				<!-- Options -->
 				<menuseparator id="avim-appmenu-options-separator" />
 				<menuitem id="avim-appmenu-spell" key="avim-spell-key" observes="avim-spell-bc" />
