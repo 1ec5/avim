@@ -1,3 +1,4 @@
+pref("extensions.avim.prefVersion", 0);
 /* Enabled */
 pref("extensions.avim.enabled", true);
 pref("services.sync.prefs.sync.extensions.avim.enabled", true);

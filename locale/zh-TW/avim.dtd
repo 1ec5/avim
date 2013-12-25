@@ -27,8 +27,6 @@
 <!ENTITY avim-menu-next-method.label "下一個輸入法">
 <!ENTITY avim-menu-next-method.accesskey "N">
 
-<!ENTITY avim-disabled.label "已停用">
-
 <!ENTITY avim-spell.modifiers "accel alt">
 <!ENTITY avim-spell.key "S">
 <!ENTITY avim-spell.label "堅持正確拼寫法">

@@ -34,6 +34,6 @@
 	
 	<!-- Status bar menu -->
 	<statusbar id="statusbarviewbox">
-		<statusbarpanel id="avim-status" label="&AVIM.label;" disabledLabel="&avim-disabled.label;" tooltip="avim-status-tooltip" popup="avim-status-popup" ondblclick="avim.toggle();" />
+		<statusbarpanel id="avim-status" tooltip="avim-status-tooltip" popup="avim-status-popup" observes="avim-status-bc" ondblclick="avim.toggle();" />
 	</statusbar>
 </overlay>

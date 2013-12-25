@@ -27,8 +27,6 @@
 <!ENTITY avim-menu-next-method.label "Méthode de saisie suivante">
 <!ENTITY avim-menu-next-method.accesskey "s">
 
-<!ENTITY avim-disabled.label "Désactiver">
-
 <!ENTITY avim-spell.modifiers "accel alt">
 <!ENTITY avim-spell.key "o">
 <!ENTITY avim-spell.label "Correction d’orthographe">

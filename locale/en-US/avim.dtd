@@ -18,8 +18,6 @@
 <!ENTITY avim-enabled.accesskey "E">
 <!-- Description of the Edit > Vietnamese Input > Enabled menu item. It may be displayed in the Add-on Bar when the user highlights the menu item. This string should match enabled-check.label in options.dtd. For consistency, it should embed AVIM.label, unless declension requires otherwise. -->
 <!ENTITY avim-enabled.description "Enable &AVIM.label; for Vietnamese input">
-<!-- Label of AVIM's Add-on Bar button when AVIM is turned off (as opposed to disabled via the Add-ons window). "Off" is used in the English localization because it is shorter than "Disabled". If "Disabled" is shorter in your locale, translate that instead. -->
-<!ENTITY avim-disabled.label "Off">
 
 <!-- Modifier keys that, in conjunction with avim-prev-method.key, switch to the previous input method listed in the Edit > Vietnamese Input menu. In this string, "accel" means Ctrl on Windows and Cmd on the Mac. Try to choose a keyboard shortcuts for avim-prev-method and avim-next-method that are close to each other, so the user can easily switch between input methods using the keyboard. For example, Ctrl+: and Ctrl+; (Cmd+: and Cmd+; on the Mac) were chosen for the English localization because ";" is the same as Shift+: on standard U.S. English keyboards. -->
 <!ENTITY avim-prev-method.modifiers "accel">

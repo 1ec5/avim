@@ -6,12 +6,12 @@
 	<script type="application/x-javascript" src="chrome://avim/content/avim.js" />
 	
 	<commandset>
-		<command id="avim-enabled-cmd" oncommand="avim.toggle();" />
-		<command id="avim-method-cmd" oncommand="avim.setMethod(this.value || this.getAttribute('value'));" />
+		<command id="avim-enabled-cmd" oncommand="avim.toggle(); event.stopPropagation();" />
+		<command id="avim-method-cmd" oncommand="avim.setMethod(this.value || this.getAttribute('value')); event.stopPropagation();" />
 		<command id="avim-prev-method-cmd" oncommand="avim.cycleMethod(-1);" />
 		<command id="avim-next-method-cmd" oncommand="avim.cycleMethod(1);" />
-		<command id="avim-spell-cmd" oncommand="avim.toggleSpell();" />
-		<command id="avim-oldaccents-cmd" oncommand="avim.toggleDauCu();" />
+		<command id="avim-spell-cmd" oncommand="avim.toggleSpell(); event.stopPropagation();" />
+		<command id="avim-oldaccents-cmd" oncommand="avim.toggleDauCu(); event.stopPropagation();" />
 	</commandset>
 	
 	<keyset>
@@ -40,6 +40,8 @@
 		<!-- Options -->
 		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" statustext="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
 		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" statustext="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
+		
+		<broadcaster id="avim-status-bc" label="&AVIM.label;" />
 	</broadcasterset>
 	
 	<popupset>
@@ -64,14 +66,11 @@
 	
 	<!-- Toolbar buttons -->
 	<toolbarpalette id="BrowserToolbarPalette">
-		<toolbarbutton id="avim-tb-enabled" class="avim-tb" type="checkbox" orient="vertical" label="&AVIM.label;" tooltiptext="&avim-enabled.description;" observes="avim-enabled-bc" />
-		
-		<!-- Input methods -->
-		<toolbarbutton id="avim-tb-auto" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="0" observes="avim-auto-bc" />
-		<toolbarbutton id="avim-tb-telex" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="1" observes="avim-telex-bc" />
-		<toolbarbutton id="avim-tb-vni" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="2" observes="avim-vni-bc" />
-		<toolbarbutton id="avim-tb-viqr" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="3" observes="avim-viqr-bc" />
-		<toolbarbutton id="avim-tb-viqr-star" class="avim-tb" group="avim-tb-group" type="radio" orient="vertical" value="4" observes="avim-viqr-star-bc" />
+		<toolbarbutton id="avim-tb" class="toolbarbutton-1" type="menu-button" label="&AVIM.label;" tooltip="avim-status-tooltip" contextmenu="avim-status-popup" autocheck="false" command="avim-enabled-cmd" observes="avim-status-bc">
+			<menupopup id="avim-tb-popup" onpopupshowing="avim.buildPopup(this);">
+				<menuitem id="avim-tb-enabled" type="checkbox" label="&avim-enabled.label;" observes="avim-enabled-bc" default="true" oncommand="" />
+			</menupopup>
+		</toolbarbutton>
 	</toolbarpalette>
 	
 	<!-- Edit > Vietnamese Input -->

@@ -1,4 +1,3 @@
-
 /**
  * Default preferences. Be sure to update defaults/preferences/avim.js to
  * reflect any changes to the default preferences. Initially, this variable
@@ -10,6 +9,8 @@ function AVIM()	{
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
 	const Cu = Components.utils;
+	
+	const PREF_VERSION = 1;
 	
 	this.methods = {
 		telex: {
@@ -53,7 +54,7 @@ function AVIM()	{
 		spell: "avim-spell-bc",
 		oldAccents: "avim-oldaccents-bc"
 	};
-	const panelId = "avim-status";
+	const panelBroadcasterId = "avim-status-bc";
 	
 	const sciMozType = "application/x-scimoz-plugin";
 	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
@@ -1368,6 +1369,12 @@ function AVIM()	{
 		this.setStatusPanel(!AVIMConfig.statusBarPanel);
 	};
 	
+	function setCheckedState(elt, checked) {
+		if (!elt) return;
+		if (checked) elt.setAttribute("checked", "true");
+		else elt.removeAttribute("checked");
+	}
+	
 	/**
 	 * Updates the XUL menus and status bar panel to reflect AVIM's current
 	 * state.
@@ -1376,7 +1383,7 @@ function AVIM()	{
 		// Enabled/disabled
 		var enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
-			enabledBcId.setAttribute("checked", "" + AVIMConfig.onOff);
+			setCheckedState(enabledBcId, AVIMConfig.onOff);
 		}
 		
 		// Disable methods and options if AVIM is disabled
@@ -1392,23 +1399,50 @@ function AVIM()	{
 			$(bcId).removeAttribute("key");
 		}
 		var selBc = $(broadcasterIds.methods[AVIMConfig.method]);
-		if (selBc) selBc.setAttribute("checked", "true");
+		if (selBc) setCheckedState(selBc, true);
 		
 		// Options
 		var spellBc = $(broadcasterIds.spell);
-		if (spellBc) spellBc.setAttribute("checked", "" + AVIMConfig.ckSpell);
+		if (spellBc) setCheckedState(spellBc, AVIMConfig.ckSpell);
 		var oldBc = $(broadcasterIds.oldAccents);
-		if (oldBc) oldBc.setAttribute("checked", "" + AVIMConfig.oldAccent);
+		if (oldBc) setCheckedState(oldBc, AVIMConfig.oldAccent);
 		
-		// Status bar panel
-		var panel = $(panelId);
-		if (!panel) return;
-		if (AVIMConfig.onOff) {
-			panel.setAttribute("label", selBc.getAttribute("label"));
+		// Status bar panel and toolbar button
+		var panelBc = $(panelBroadcasterId);
+		if (!panelBc) return;
+		panelBc.setAttribute("label", selBc.getAttribute("label"));
+		panelBc.setAttribute("avim-inputmethod", "" + AVIMConfig.method);
+		panelBc.setAttribute("avim-disabled", "" + !AVIMConfig.onOff);
+		// Ignored by toolbar button.
+		panelBc.setAttribute("avim-hidden", "" + !AVIMConfig.statusBarPanel);
+	};
+	
+	/**
+	 * Populates the given XUL menu popup with the contents of its parent
+	 * element’s context menu popup.
+	 */
+	this.buildPopup = function (popup) {
+		this.updateUI();
+		
+		var mainPopupId = popup.parentElement.contextMenu;
+		var mainPopup = $(mainPopupId);
+		if (!mainPopup) return;
+		
+		var items = [];
+		for (var item = mainPopup.firstChild; item; item = item.nextSibling) {
+			var clone = item.cloneNode();
+			if (clone.id) clone.id += "-dynamic";
+			items.push(clone);
 		}
-		else panel.setAttribute("label", panel.getAttribute("disabledLabel"));
-		panel.style.display =
-			AVIMConfig.statusBarPanel ? "-moz-box" : "none";
+		if (!items.length) return;
+		
+		items[0].setAttribute("oncommand", "");
+		items[0].setAttribute("default", "true");
+		
+		while (popup.firstChild) popup.removeChild(popup.firstChild);
+		for (var i = 0; i < items.length; i++) {
+			popup.appendChild(items[i]);
+		}
 	};
 	
 	/**
@@ -2820,14 +2854,21 @@ function AVIM()	{
 			"scriptMonitor.vietUni": AVIMConfig.disabledScripts.VietUni,
 			"scriptMonitor.vinova": AVIMConfig.disabledScripts.Vinova
 		};
-		if (changedPref && changedPref in boolPrefs) {
-			prefs.setBoolPref(changedPref, !!boolPrefs[changedPref]);
+		if (changedPref) {
+			if (changedPref in boolPrefs) {
+				prefs.setBoolPref(changedPref, !!boolPrefs[changedPref]);
+			}
 		}
-		else for (var pref in boolPrefs) {
-			prefs.setBoolPref(pref, !!boolPrefs[pref]);
+		else {
+			for (var pref in boolPrefs) {
+				prefs.setBoolPref(pref, !!boolPrefs[pref]);
+			}
 		}
 		
 		// Integer preferences
+		if (!changedPref || changedPref == "prefVersion") {
+			prefs.setIntPref("prefVersion", AVIMConfig.prefVersion);
+		}
 		if (!changedPref || changedPref == "method") {
 			prefs.setIntPref("method", AVIMConfig.method);
 		}
@@ -2854,6 +2895,10 @@ function AVIM()	{
 				// Fall through when changedPref isn't defined, which happens at
 				// startup, when we want to get all the preferences.
 				specificPref = false;
+			
+			case "prefVersion":
+				AVIMConfig.prefVersion = prefs.getIntPref("prefVersion");
+				if (specificPref) break;
 			
 			// Basic options
 			case "enabled":
@@ -3280,6 +3325,47 @@ function AVIM()	{
 			}
 		}
 	}
+	
+	/**
+	 * Installs the toolbar button with the given ID into the given
+	 * toolbar, if it is not already present in the document.
+	 *
+	 * @param {string} toolbarId The ID of the toolbar to install to.
+	 * @param {string} id The ID of the button to install.
+	 * @param {string} afterId The ID of the element to insert after. @optional
+	 *
+	 * <https://developer.mozilla.org/en-US/Add-ons/Code_snippets/Toolbar#Adding_button_by_default>
+	 */
+	function installToolbarButton(toolbarId, id, afterId) {
+		if (!$(id)) {
+			var toolbar = $(toolbarId);
+			var target = $(toolbarId + "-customization-target") || toolbar;
+			
+			// If no afterId is given, then append the item to the toolbar
+			var before = null;
+			if (afterId) {
+				var elem = $(afterId);
+				if (elem && elem.parentNode == target) {
+					before = elem.nextElementSibling;
+				}
+			}
+			
+			target.insertItem(id, before);
+			toolbar.setAttribute("currentset", toolbar.currentSet);
+			document.persist(toolbar.id, "currentset");
+			
+//			if (toolbarId == "addon-bar") toolbar.collapsed = false;
+		}
+	}
+	
+	this.doFirstRun = function () {
+		if (AVIMConfig.prefVersion < PREF_VERSION && $("PanelUI-menu-button")) {
+			installToolbarButton("nav-bar", "avim-tb");
+			AVIMConfig.prefVersion = PREF_VERSION;
+			this.setPrefs("prefVersion");
+			this.setStatusPanel(false);
+		}
+	}
 };
 
 if (window && !("avim" in window) && !window.frameElement) {
@@ -3289,6 +3375,7 @@ if (window && !("avim" in window) && !window.frameElement) {
 		avim.registerPrefs();
 		avim.updateUI();
 		avim.registerSlights();
+		avim.doFirstRun();
 	}, false);
 	addEventListener("unload", function() {
 		if (avim) avim.unregisterPrefs();

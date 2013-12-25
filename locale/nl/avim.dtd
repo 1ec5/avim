@@ -6,7 +6,6 @@
 <!ENTITY avim-enabled.label "Ingeschakeld">
 <!ENTITY avim-enabled.accesskey "I">
 <!ENTITY avim-enabled.description "&AVIM.label; voor Vietnamese ingave inschakelen">
-<!ENTITY avim-disabled.label "Uit">
 <!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-menu-prev-method.label "Vorige Ingavemethode">

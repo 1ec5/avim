@@ -1,32 +1,47 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-#avim-tb-enabled {
-	list-style-image: url("chrome://avim/content/skin/tb-enabled.png");
-}
-#avim-tb-auto {
-	list-style-image: url("chrome://avim/content/skin/tb-auto.png");
-}
-#avim-tb-telex {
-	list-style-image: url("chrome://avim/content/skin/tb-telex.png");
-}
-#avim-tb-vni {
-	list-style-image: url("chrome://avim/content/skin/tb-vni.png");
-}
-#avim-tb-viqr {
-	list-style-image: url("chrome://avim/content/skin/tb-viqr.png");
-}
-#avim-tb-viqr-star {
-	list-style-image: url("chrome://avim/content/skin/tb-viqr-star.png");
+#avim-tb {
+	color: rgb(34, 34, 34);
+	list-style-image: url("chrome://avim/content/skin/tb.png");
+	-moz-image-region: rect(0, 18px, 18px, 0);
 }
 
-.avim-tb {
-	-moz-image-region: rect(0px, 24px, 24px, 0px);
+#avim-tb[open="true"] {
+	-moz-image-region: rect(18px, 18px, 36px, 0);
 }
 
-toolbar[iconsize="small"] .avim-tb {
-	-moz-image-region: rect(0px, 40px, 16px, 24px);
+#avim-tb[cui-areatype="menu-panel"],
+toolbarpaletteitem[place="palette"] > #avim-tb {
+	list-style-image: url("chrome://avim/content/skin/tb@2x.png");
+	-moz-image-region: rect(0, 32px, 32px, 0);
 }
 
-.avim-tb[disabled="true"] {
-	opacity: 0.8;
+#avim-tb[cui-areatype="menu-panel"][open="true"],
+toolbarpaletteitem[place="palette"] > #avim-tb[open="true"] {
+	-moz-image-region: rect(36px, 32px, 66px, 0);
+}
+
+#avim-tb:not([cui-areatype="menu-panel"]) .toolbarbutton-menubutton-button {
+	-moz-box-orient: horizontal;
+}
+
+#avim-status[avim-hidden="true"],
+#avim-tb .toolbarbutton-icon,
+toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-text {
+	display: none;
+}
+
+#avim-tb .toolbarbutton-text,
+#avim-tb[cui-areatype="menu-panel"] .toolbarbutton-icon,
+toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
+	display: -moz-box;
+}
+
+#avim-tb[avim-disabled="true"] .toolbarbutton-text,
+#avim-status[avim-disabled="true"] {
+	text-decoration: line-through;
+}
+
+#avim-status[avim-hidden="true"] {
+	display: none;
 }

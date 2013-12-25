@@ -27,8 +27,6 @@
 <!ENTITY avim-menu-next-method.label "Método de entrada siguiente">
 <!ENTITY avim-menu-next-method.accesskey "S">
 
-<!ENTITY avim-disabled.label "Apagada">
-
 <!ENTITY avim-spell.modifiers "accel,alt">
 <!ENTITY avim-spell.key "S">
 <!ENTITY avim-spell.label "Ortografía correcta">
