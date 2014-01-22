@@ -341,8 +341,6 @@ Version 20080728.450 (Saturday, March 5, 2011)
    buttons except in the Customize Toolbar dialog.
 
 Version ${Version} (${Date})
- - Added support for editing Google Docs text documents created in June 2010 or
-   later (requires Firefox 4 or equivalent).
  - Added a Vietnamese Input menu under the Firefox menu (Windows and Linux).
  - Consolidated the various toolbar buttons into a single toolbar button that
    resembles the status bar panel. When upgrading to Firefox 29, this button is
