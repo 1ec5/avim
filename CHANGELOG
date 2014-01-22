@@ -5,8 +5,9 @@ Notes about versioning:
    avim.js that the extension was based on, while the remaining version part
    indicates the version of the extension itself, expressed as a Subversion
    revision number.
- - Starting with ${Version}, the second version part no longer indicates a
-   Subversion revision number, because AVIM has moved to a Git repository.
+ - Starting with version 20080728.523, the second version part no longer
+   indicates a Subversion revision number, because AVIM has moved to a Git
+   repository.
 
 Version 20060714 (Friday, July 14, 2006)
  - Initial release by Hieu Dang.
