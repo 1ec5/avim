@@ -1,9 +1,12 @@
-A note about versioning:
-   Until version 20061001, the version number indicated the extension's release
-   date. Starting with the 20080224.x series, the first part indicates the
-   version of avim.js that the extension was based on, while the remaining
-   version part indicates the version of the extension itself, expressed as a
-   Subversion revision number.
+Notes about versioning:
+ - Until version 20061001, the version number indicated the extension's release
+   date.
+ - Starting with the 20080224.x series, the first part indicated the version of
+   avim.js that the extension was based on, while the remaining version part
+   indicates the version of the extension itself, expressed as a Subversion
+   revision number.
+ - Starting with ${Version}, the second version part no longer indicates a
+   Subversion revision number, because AVIM has moved to a Git repository.
 
 Version 20060714 (Friday, July 14, 2006)
  - Initial release by Hieu Dang.
@@ -358,3 +361,4 @@ Version ${Version} (${Date})
  - Removed support for 280 Slides, which has gone offline.
  - Fixed an issue in the Ace editor that in some cases caused the current line
    to be executed as unprivileged JavaScript code.
+ - Fixed compatibility issues in Komodo Edit 8.x.

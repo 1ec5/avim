@@ -56,7 +56,6 @@ function AVIM()	{
 	};
 	const panelBroadcasterId = "avim-status-bc";
 	
-	const sciMozType = "application/x-scimoz-plugin";
 	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
 	
 	// Local functions that don't require access to AVIM's fields.
@@ -1758,7 +1757,7 @@ function AVIM()	{
 		if (!inner) return;
 		var inputEvent = document.createEvent("Events");
 		inputEvent.initEvent("input", true, true);
-		inner.dispatchEvent(inputEvent);
+		if (inner.dispatchEvent) inner.dispatchEvent(inputEvent);
 		
 		// Autocomplete textboxes for Toolkit
 		if (outer && outer.form) {
@@ -1832,7 +1831,7 @@ function AVIM()	{
 			// start() will render the application inoperable.
 			if (editor && editor.endTransaction) editor.endTransaction();
 		}
-		if(this.changed) {
+		if (this.changed) {
 			this.changed = false;
 			e.stopPropagation();
 			e.preventDefault();
@@ -1953,7 +1952,7 @@ function AVIM()	{
 	this.handleSciMoz = function(e, el) {
 		if (!el) el = e.originalTarget;
 //		dump("AVIM.handleSciMoz -- target: " + el + "; type: " + el.type + "; code: " + e.which + "\n");	// debug
-		if (el.type != sciMozType || this.findIgnore(e.target)) return false;
+		if (this.findIgnore(e.target)) return false;
 //		dump("xul:scintilla:\n" + [prop for (prop in el)] + "\n");				// debug
 //		el.setSelectionNStart(0, 8);											// debug
 //		dump(">>> scimoz.getSelectionNStart: " + el.selections ? el.getSelectionNStart(0) : "" + "\n");					// debug
@@ -2844,9 +2843,9 @@ function AVIM()	{
 	 * 						keypress.
 	 */
 	this.onKeyPress = function(e) {
-//		dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
-//			 "; target: " + e.target.nodeName + "#" + e.target.id +
-//			 "; originalTarget: " + e.originalTarget.nodeName + "#" + e.originalTarget.id + "\n");			// debug
+		//dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
+		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
+		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
 		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
 			return false;
 		}
@@ -2858,16 +2857,14 @@ function AVIM()	{
 		this.disableOthers(doc);
 		
 		// SciMoz plugin
-		var tagName = origTarget.localName.toLowerCase();
-		if (tagName == "scintilla") {
-			origTarget = doc.getAnonymousElementByAttribute(origTarget, "type",
-															sciMozType);
-		}
-		if (origTarget.localName.toLowerCase() == "embed") {
-			return this.handleSciMoz(e, origTarget);
+		var scintilla = window.ko && ko.views.manager.currentView.scintilla;
+		if (scintilla && scintilla.inputField &&
+			origTarget == scintilla.inputField.inputField) {
+			return this.handleSciMoz(e, ko.views.manager.currentView.scimoz);
 		}
 		
 		// Specialized Web editors
+		var tagName = origTarget.localName.toLowerCase();
 		try {
 			// Ymacs
 			// Zoho Writer: window.editor<HTMLArea>.eventHandlerFunction(evt)
