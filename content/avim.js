@@ -2857,7 +2857,9 @@ function AVIM()	{
 		this.disableOthers(doc);
 		
 		// SciMoz plugin
-		var scintilla = window.ko && ko.views.manager.currentView.scintilla;
+		var koManager = window.ko && ko.views && ko.views.manager;
+		var koView = koManager && koManager.currentView;
+		var scintilla = koView && koView.scintilla;
 		if (scintilla && scintilla.inputField &&
 			origTarget == scintilla.inputField.inputField) {
 			return this.handleSciMoz(e, ko.views.manager.currentView.scimoz);
