@@ -90,6 +90,18 @@ function AVIM()	{
 	}
 	
 	/**
+	 * Returns whether VIQR or VIQR* is the current input method, taking into
+	 * account whether they are enabled for Auto.
+	 *
+	 * @returns {bool}	True if VIQR or VIQR* is the current input method.
+	 */
+	var methodIsVIQR = function () {
+		if (AVIMConfig.method > 2) return true;
+		return AVIMConfig.method == 0 && (AVIMConfig.autoMethods.viqr ||
+										  AVIMConfig.autoMethods.viqrStar);
+	};
+	
+	/**
 	 * Proxy for a specialized editor to appear as an ordinary HTML text field
 	 * control to the rest of the AVIM codebase.
 	 */
@@ -307,7 +319,8 @@ function AVIM()	{
 				this.ctl.maxLength && this.value.length > this.ctl.maxLength;
 			if ("text" in this.ctl && !tooLong) this.ctl.text = this.value;
 //			else if ("password" in this.ctl) this.ctl.password = this.value;
-			this.ctl.selectionStart = this.selectionStart;
+			var numExtraChars = this.value.length - this.oldValue.length;
+			this.ctl.selectionStart = this.selectionStart + numExtraChars;
 			this.ctl.selectionLength = this.selectionEnd - this.selectionStart;
 		};
 	};
@@ -317,24 +330,30 @@ function AVIM()	{
 	 * Returns the Gecko-compatible virtual key code for the given Silverlight
 	 * virtual key code.
 	 *
-	 * @param	charCode	{number}	Silverlight virtual key code.
-	 * @param	shiftKey	{boolean}	True if the Shift key is held down;
-	 * 									false otherwise.
+	 * @param	keyCode			{number}	Silverlight virtual key code.
+	 * @param	platformKeyCode	{number}	Platform key code.
+	 * @param	shiftKey		{boolean}	True if the Shift key is held down;
+	 * 										false otherwise.
 	 * @returns	A Gecko-compatible virtual key code, or 0xff (255) if no virtual
 	 * 			key is applicable.
 	 *
 	 * @see		http://msdn.microsoft.com/en-us/library/bb979636%28VS.95%29.aspx
+	 * @see		https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
 	 */
-	var virtualKeyFromSlight = function(charCode, shiftKey) {
-		if (charCode > 19 && charCode < 30) {	// number row
+	var virtualKeyFromSlight = function(keyCode, platformKeyCode, shiftKey) {
+//		dump("key code: " + keyCode + "; platform key code: " + platformKeyCode + "\n");	// debug
+		if (keyCode > 19 && keyCode < 30) {	// number row
 			if (shiftKey) return 0xff;
-			else charCode += 28;
+			else keyCode += 28;
 		}
-		else if (charCode > 29 && charCode < 56) {	// alphabetic
-			charCode += 35;
-			if (!shiftKey) charCode += 32;
+		else if (keyCode > 29 && keyCode < 56) {	// alphabetic
+			keyCode += 35;
+			if (!shiftKey) keyCode += 32;
 		}
-		return charCode;
+//		if (keyCode == 0xff && platformKeyCode == 39) {	// '
+//			keyCode = platformKeyCode;
+//		}
+		return keyCode;
 	};
 	
 	/**
@@ -349,7 +368,8 @@ function AVIM()	{
 		this.target = evt.source;
 		this.shiftKey = evt.shift;
 		this.ctrlKey = evt.ctrl;
-		this.charCode = charCode || virtualKeyFromSlight(evt.key, evt.shift);
+		this.charCode = charCode ||
+			virtualKeyFromSlight(evt.key, evt.platformKeyCode, evt.shift);
 		this.which = this.charCode;
 //		dump("SlightEvtProxy -- " + this.which + " = '" + fcc(this.which) + "'\n");			// debug
 	};
@@ -1144,18 +1164,6 @@ function AVIM()	{
 	}
 	
 	/**
-	 * Returns whether VIQR or VIQR* is the current input method, taking into
-	 * account whether they are enabled for Auto.
-	 *
-	 * @returns {bool}	True if VIQR or VIQR* is the current input method.
-	 */
-	this.methodIsVIQR = function() {
-		if (AVIMConfig.method > 2) return true;
-		return AVIMConfig.method == 0 && (AVIMConfig.autoMethods.viqr ||
-										  AVIMConfig.autoMethods.viqrStar);
-	};
-	
-	/**
 	 * Retrieves the relevant state from the given textbox.
 	 * 
 	 * @param obj		{object}	The DOM element representing the current
@@ -1170,7 +1178,7 @@ function AVIM()	{
 		
 		var data = obj.data || text(obj);
 		var w = data.substring(0, pos);
-		if (w.substr(-1) == "\\" && this.methodIsVIQR()) return ["\\", pos];
+		if (w.substr(-1) == "\\" && methodIsVIQR()) return ["\\", pos];
 		w = wordRe.exec(w);
 		return [w ? w[0] : "", pos];
 	};
@@ -1201,7 +1209,9 @@ function AVIM()	{
 		
 		var w = this.mozGetText(obj);
 //		dump(">>> start() -- w: <" + w + ">\n");								// debug
-		if (key.keyCode == key.DOM_VK_BACK_SPACE && key.shiftKey) key = "";
+		if (key.keyCode && key.keyCode == key.DOM_VK_BACK_SPACE && key.shiftKey) {
+			key = "";
+		}
 		else key = fcc(key.which);
 		if (!w || ("sel" in obj && obj.sel)) return;
 		
@@ -1280,7 +1290,7 @@ function AVIM()	{
 	 */
 	this.findC = function(w, k, sf) {
 		var method = AVIMConfig.method;
-		if (this.methodIsVIQR() && w.substr(-1) == "\\") {
+		if (methodIsVIQR() && w.substr(-1) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
 		var str = "", res, cc = "", pc = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
@@ -2187,13 +2197,9 @@ function AVIM()	{
 	 */
 	this.handleSlightKeyDown = function(root, evt) {
 		try {
-			//root = XPCSafeJSObjectWrapper(root);
-			//evt = XPCSafeJSObjectWrapper(evt);
-			
 			var ctl = evt.source;	// TextBox
 			// TODO: Support password boxes.
 //			var isPasswordBox = "password" in ctl;
-//			if (AVIMConfig.method > 2) return;	// TODO: Support VIQR.			// debug -- uncomment
 			if (!("text" in ctl /* || isPasswordBox */)) return;
 //			if (isPasswordBox && !AVIMConfig.passwords) return;
 			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
@@ -2208,17 +2214,30 @@ function AVIM()	{
 			// Fake a native textbox and keypress event.
 			var ctlProxy = new SlightCtlProxy(ctl);
 			var evtProxy = new SlightEvtProxy(evt);
-			if (!evtProxy.charCode || evtProxy.charCode == 0xff) return;
+			if (!evtProxy.charCode || evtProxy.charCode == 0xff) {
+				setTimeout(function () {
+					avim.handleSlightByEatingChar(root, evt);
+				}, 0);
+				return;
+			}
 			
 			avim.sk = fcc(evtProxy.charCode);
 			avim.start(ctlProxy, evtProxy);
 			
-			ctlProxy.commit();
-			ctlProxy = null;
-			evtProxy = null;
 			if (avim.changed) {
 				avim.changed = false;
 				evt.handled = true;
+				setTimeout(function () {
+					ctlProxy.commit();
+					
+					ctlProxy = null;
+					evtProxy = null;
+				}, 0);
+			}
+			else {
+				ctlProxy.commit();
+				ctlProxy = null;
+				evtProxy = null;
 			}
 		}
 		catch (exc) {
@@ -2237,30 +2256,29 @@ function AVIM()	{
 	 * @param root	{object}	The root XAML element in the Silverlight applet.
 	 * @param evt	{object}	The keyUp event.
 	 */
-	this.handleSlightKeyUp = function(root, evt) {
+	this.handleSlightByEatingChar = function(root, evt) {
 		try {
-			//root = XPCSafeJSObjectWrapper(root);
-			//evt = XPCSafeJSObjectWrapper(evt);
-			
 			// Already handled by handleSlightKeyDown().
 			if (!("key" in evt) ||
-				virtualKeyFromSlight(evt.key, evt.shift) != 0xff) {
+				0xff != virtualKeyFromSlight(evt.key, evt.platformKeyCode,
+											 evt.shift)) {
 				return;
 			}
 			
 			var ctl = evt.source;	// TextBox
 			if (!("text" in ctl)) return;
-			if (AVIMConfig.method < 3) return;
-			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
-			if (!("isReadOnly" in ctl && !ctl.isReadOnly)) return;
-			if (evt.ctrl || avim.slightFindIgnore(ctl)) return;
+			if (!methodIsVIQR()) return;
 			if (isMac && evt.platformKeyCode == 0x37) return;	// Cmd on Mac
 //			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
 //				 ", ctrl: " + evt.ctrl.toString() + ") UP on " + ctl + " -- " + ctl.text + "\n");	// debug
 			
+			var selStart = ctl.selectionStart;
+			if (!selStart || ctl.selectionLength) return;
+			
 			// Override the event proxy's key code using the last character.
 			var text = ctl.text;
-			var lastChar = text.substr(-1);
+			var lastChar = text.substr(selStart - 1, 1);
+//			dump("lastChar: " + lastChar + "\n");								// debug
 			var charCode = lastChar.charCodeAt(0);
 			if (charCode == 0xff) return;
 //			dump("\tUsing " + charCode + "(" + lastChar + ") instead.\n");		// debug
@@ -2268,9 +2286,9 @@ function AVIM()	{
 			// Remove the last character from the textbox and move the caret
 			// back.
 			var selStart = ctl.selectionStart;
-			ctl.text = text.substr(0, text.length - 1);
+//			dump("Before: “" + ctl.text.replace(new RegExp("(.{" + ctl.selectionStart + "})"), "$1|") + "”\n");								// debug
+			ctl.text = text.substring(0, selStart - 1) + text.substring(selStart, text.length);
 			ctl.selectionStart = selStart - 1;
-//			dump("\t\"" + text + "\" @ " + ctl.selectionStart + "\n");		// debug
 			
 			// Fake a native textbox and keypress event.
 			var ctlProxy = new SlightCtlProxy(ctl);
@@ -2311,21 +2329,11 @@ function AVIM()	{
 		if (!elt || !slightTypeRe.test(elt.type)) return;
 //		dump("registerSlight -- " + slight.content.root + "\n");				// debug
 		sandbox.importFunction(avim.handleSlightKeyDown, "handleSlightKeyDown");
-		Cu.evalInSandbox("elt.content &&" +
-						 "elt.content.root.addEventListener('keyDown', " +
-						 "handleSlightKeyDown)", sandbox);
 		// Observing keyUp introduces problems with character limits.
-//		slight.content.root.addEventListener("keyUp", avim.handleSlightKeyUp);
-		sandbox.importFunction(avim.handleSlightKeyUp, "handleSlightKeyUp");
-		Cu.evalInSandbox("elt.content &&" +
-						 "elt.content.root.addEventListener('keyUp', " +
-						 "handleSlightKeyUp)", sandbox);
+		Cu.evalInSandbox("elt.content && elt.content.root.addEventListener(" +
+						 "'keyDown', handleSlightKeyDown)", sandbox);
 //		dump("\t" + slight.content.root.children + "\n");						// debug
 	};
-	
-//	this.registerSlightsOnChange = function(evt) {
-//		this.registerSlight(evt.target);
-//	};
 	
 	/**
 	 * Attaches AVIM to Silverlight applets in the page targeted by the given
@@ -2352,6 +2360,7 @@ function AVIM()	{
 		}
 		catch (exc) {
 // $if{Debug}
+			dump("registerSlightsOnPageLoad -- " + exc + "\n");					// debug
 			throw exc;
 // $endif{}
 		}
