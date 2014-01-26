@@ -1,28 +1,7 @@
- - Write bootstrap.js to load and unload AVIM without restarting. [1]
- - Use XBL or XPCOM to allow each application to share the same overlay.
- - Support Zoho Show. It uses #texteditable[contenteditable] but does something
-   tricky behind the scenes. ShapeEvent.text and ShapeEditor.text.editor look
-   like good starting points for a proxy.
  - Make AVIM compatible with editors that do custom key event handling, like
-   textile-editor [2].
- - Nuke sandboxes to avoid leaks [3].
- - Bug: "Ng~uye^n" (Nguyễn)
- - Bug: "tie^'t^" -> "tie't"
- - Bug: "xoa" (xoá), "Ng" (Ng~) in rich text editors, including Thunderbird and
-   Composer.
- - Place diacritics on the nearest valid syllable, to support foreign words like
-   "kilo^me't" (kilômét) as well as Vietnam2000^WVietnamese2020 [4].
- - Add an option to treat hyphens literally in VIQR/VIQR*, to make words like
-   "ki-lô-mét" easier to type.
+   textile-editor [1].
  - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
- - Optionally remember on/off state per-site, using FUEL or the Content
-   Preferences service. [5] Maybe limit this feature to bookmarks (FUEL), since
-   the UI to set the preferences would be easier to figure out.
- - Get the AVIM core running in Camino [6], Chrome, and Safari.
+ - Get the AVIM core running in Camino [2], Chrome, and Safari.
 
-[1] https://wiki.mozilla.org/Extension_Manager:Bootstrapped_Extensions
-[2] http://guillaume.bort.fr/textile-editor/
-[3] https://github.com/mozilla/addon-sdk/pull/479/files
-[4] http://vny2k.net/vny2k/CaitoCachVietChuViet-Unicode.htm
-[5] http://developer.mozilla.org/en/docs/Using_content_preferences
-[6] https://bugzilla.mozilla.org/show_bug.cgi?id=244890
+[1] https://github.com/guillaumebort/textile-editor
+[2] https://bugzilla.mozilla.org/show_bug.cgi?id=244890
