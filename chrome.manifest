@@ -51,6 +51,7 @@ style	chrome://browser/content/browser.xul					chrome://avim/content/skin/avim.c
 overlay	chrome://browser/content/browser.xul					chrome://avim/content/generalOverlay.xul	appversion<4.0b7
 overlay	chrome://browser/content/browser.xul					chrome://avim/content/moz20Overlay.xul		appversion>=4.0b7
 overlay	chrome://browser/content/browser.xul					chrome://avim/content/moz18Overlay.xul		appversion<3.0a1pre
+override	chrome://avim/content/moz20Overlay.xul				chrome://avim/content/australisOverlay.xul	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384} appversion>=29.0a1
 # Preferences window
 overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
 overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/moz18Overlay.xul		appversion<3.0a1pre

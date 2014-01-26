@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<?xul-overlay href="chrome://avim/content/avim.xul"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
+
+<overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+</overlay>

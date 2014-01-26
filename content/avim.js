@@ -2948,7 +2948,6 @@ function AVIM()	{
 			installToolbarButton("nav-bar", "avim-tb");
 			AVIMConfig.prefVersion = PREF_VERSION;
 			this.setPrefs("prefVersion");
-			this.setStatusPanel(false);
 		}
 	}
 };
