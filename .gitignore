@@ -1,7 +1,12 @@
-.DS_Store
-.gz
-.jar
-.pyc
-.tar
-.xpi
-.zip
+*.DS_Store
+*.gz
+*.jar
+*.tar
+*.xpi
+*.zip
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+*.komodoproject
