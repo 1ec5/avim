@@ -364,3 +364,4 @@ Version ${Version} (${Date})
  - Removed support for 280 Slides, which has gone offline.
  - Fixed an issue in the Ace editor that in some cases caused the current line
    to be executed as unprivileged JavaScript code.
+ - Adopted the Silvermel version of the AVIM logo as the extension icon.
