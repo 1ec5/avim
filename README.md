@@ -12,6 +12,27 @@ Visit [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/).
 
 *Hãy truy cập [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/).*
 
+Building
+--------
+
+To package the code as an extension yourself, you can use the included build script, which requires Python 2.5–2.7. In a command line window, navigate to the `avim/` directory and execute the following commands:
+
+```bash
+pip install -r requirements.txt
+python build.py
+```
+
+Two installable archives, `avim.xpi` and `avim-VERSION.xpi`, should now reside in that directory.
+
+*Để gói lấy mã nguồn thành phần mở rộng, bạn có thể sử dụng script xây dựng, cần Python 2.5–2.7. Trong cửa sổ dòng lệnh, hãy duyệt tới thư mục `avim/` và chạy lệnh sau:*
+
+```bash
+pip install -r requirements.txt
+python build.py
+```
+
+*Hai gói cài đặt được, `avim.xpi` và `avim-PHIÊN_BẢN.xpi`, sẽ nằm trong thư mục đó. Script xây dựng có vài tùy chọn, chẳng hạn để sản xuất một phiên bản soát lỗi có bộ phận đo thử.*
+
 License
 -------
 
