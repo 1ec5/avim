@@ -1,7 +1,6 @@
+![](icon.png?raw=true)
 AVIM for Firefox
 ================
-
-[![Build Status](https://travis-ci.org/1ec5/avim.png?branch=master)](https://travis-ci.org/1ec5/avim)
 
 AVIM is a extension for Firefox and similar applications that provides an input method editor for Vietnamese, based on Hiếu Đặng’s [webpage script](http://sourceforge.net/projects/rhos/) of the same name. Hiếu was the original developer of this extension; Minh Nguyễn has been the developer since 2007.
 
@@ -16,6 +15,8 @@ Visit [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/).
 
 Building
 --------
+
+[![Build Status](https://travis-ci.org/1ec5/avim.png?branch=master)](https://travis-ci.org/1ec5/avim)
 
 To package the code as an extension yourself, you can use the included build script, which requires Python 2.5–2.7. In a command line window, navigate to the `avim/` directory and execute the following commands:
 
