@@ -36,6 +36,11 @@ python build.py
 
 *Hai gói cài đặt được, `avim.xpi` và `avim-PHIÊN_BẢN.xpi`, sẽ nằm trong thư mục đó. Script xây dựng có vài tùy chọn, chẳng hạn để sản xuất một phiên bản soát lỗi có bộ phận đo thử.*
 
+Translations
+------------
+
+AVIM’s user interface is currently available in Dutch, English, German, Brazilian Portuguese, Spanish, and Vietnamese. Please help translate AVIM into additional languages at [BabelZilla Beta](http://beta.babelzilla.org/projects/p/avim/).
+
 License
 -------
 
