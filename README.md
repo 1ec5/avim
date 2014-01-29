@@ -41,6 +41,8 @@ Translations
 
 AVIM’s user interface is currently available in Dutch, English, German, Brazilian Portuguese, Spanish, and Vietnamese. Please help translate AVIM into additional languages at [BabelZilla Beta](http://beta.babelzilla.org/projects/p/avim/).
 
+*Giao diện của AVIM hiện có sẵn trong các tiếng Anh, Bồ Đào Nha tại Brasil, Đức, Hà Lan, Tây Ban Nha, Việt. Xin hãy giúp biên dịch AVIM ra thêm ngôn ngữ tại [BabelZilla Beta](http://beta.babelzilla.org/projects/p/avim/).*
+
 License
 -------
 
