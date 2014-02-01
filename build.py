@@ -562,7 +562,7 @@ def main():
     sha.update(xpi.read())
     xpi.close()
     props = [("Configuration", CONFIG),
-             ("Version", "%s (r%s)" % (version, revision)),
+             ("Version", "%s (commit %s)" % (version, BLOB)),
              ("Date", today),
              ("Size compressed", "%i B (%.1f kB)" % (size, size_kb)),
              ("Size uncompressed", "%i B (%.1f kB)" % (r_size, r_size_kb)),
