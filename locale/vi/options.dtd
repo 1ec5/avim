@@ -76,7 +76,7 @@
 
 <!ENTITY avim-script-config.style "width: 25em;">
 
-<!ENTITY script-config-pane.label "Bộ Giám sát Script">
+<!ENTITY script-config-pane.label "Bộ Giám sát Kịch bản">
 
 <!ENTITY script-grid.label "Để tránh xung đột, tự động tắt các bộ gõ ở dưới khi nào gõ trong trang web cung cấp nó:">
 
