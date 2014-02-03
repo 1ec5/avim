@@ -13,7 +13,7 @@ html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
+small, strike, strong, tt, var,
 b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
@@ -157,7 +157,7 @@ p img {
   border: none;
 }
 
-pre, code {
+pre, code, kbd, samp {
   width: 100%;
   color: #222;
   background-color: #fff;
@@ -177,13 +177,13 @@ pre {
   overflow: auto;
 }
 
-code {
+code, kbd, samp {
   padding: 3px;
   margin: 0 3px;
   box-shadow: 0 0 10px rgba(0,0,0,.1);
 }
 
-pre code {
+pre code, pre kbd, pre samp {
   display: block;
   box-shadow: none;
 }
@@ -254,6 +254,10 @@ form {
   padding: 20px;
 }
 
+.fine-print {
+  font-size: 80%;
+}
+
 /*******************************************************************************
 Full-Width Styles
 *******************************************************************************/
@@ -308,6 +312,10 @@ Full-Width Styles
 
 #header_wrap .inner {
   padding: 50px 10px 30px 10px;
+}
+
+#header_wrap a:hover {
+  -moz-text-decoration-color: #fff;
 }
 
 #project_title {
@@ -418,12 +426,54 @@ Full-Width Styles
 
 #languages ul > li {
   display: inline;
-  font-weight: bold;
   margin-right: 1em;
 }
 
-#languages ul > li a {
-  font-weight: normal;
+#languages:lang(en-US) li:lang(en-US),
+#languages:lang(es) li:lang(es),
+#languages:lang(vi) li:lang(vi) {
+  font-weight: bold;
+}
+
+#compare-methods caption {
+  color:#222222;
+  font-weight: 700;
+  font-size: 24px;
+  font-family: 'Lucida Grande', 'Calibri', Helvetica, Arial, sans-serif;
+  letter-spacing: -1px;
+}
+
+#compare-methods td {
+  border: 0;
+}
+
+#compare-methods th[scope="row"] {
+  text-align: center;
+}
+
+.keystrokes {
+  white-space: nowrap;
+}
+
+.keystrokes kbd {
+  font: inherit;
+  display: inline-block;
+  margin: auto 2px;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  background: linear-gradient(#000, #aaa) repeat scroll 0% 0% #000;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1), 0px -2px 1px rgba(0, 0, 0, 0.5) inset;
+  border-radius: 3px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.5);
+  text-transform: capitalize;
+}
+
+.keystrokes kbd.modifier {
+  width: auto;
+  padding: 0 4px;
 }
 
 #footer_wrap {
