@@ -55,6 +55,6 @@ AVIM is licensed under the [MIT license](LICENSE).
 More information
 ----------------
 
-For a detailed documentation and a feature comparison against other Vietnamese IMEs, see [AVIM’s official website](http://www.1ec5.org/software/avim/).
+For a detailed documentation and a feature comparison against other Vietnamese IMEs, see [AVIM’s official website](http://avim.1ec5.org/en/) and [project wiki](https://github.com/1ec5/avim/wiki).
 
-*Xem tài liệu đầy đủ và bảng các tính năng so với các bộ gõ tiếng Việt khác tại [trang chủ AVIM](http://www.1ec5.org/software/avim/index.vi.html).*
+*Xem tài liệu đầy đủ và bảng các tính năng so với các bộ gõ tiếng Việt khác tại [trang chủ AVIM](http://avim.1ec5.org/) và [wiki của dự án](https://github.com/1ec5/avim/wiki).*
