@@ -11,7 +11,7 @@
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-next-method.modifiers "accel">
 <!ENTITY avim-next-method.key ";">
-<!ENTITY avim-auto.label "Tổng hộp">
+<!ENTITY avim-auto.label "Tổng hợp">
 <!ENTITY avim-auto.accesskey "T">
 <!ENTITY avim-telex.label "Telex">
 <!ENTITY avim-telex.accesskey "X">
