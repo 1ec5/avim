@@ -1773,7 +1773,7 @@ function AVIM()	{
 		if (outer && outer.form) {
 			var controller = Cc["@mozilla.org/autocomplete/controller;1"]
 				.getService(Ci.nsIAutoCompleteController);
-			controller.handleText(true);
+			controller.handleEndComposition();
 		}
 	};
 	
