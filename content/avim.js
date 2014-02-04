@@ -2631,24 +2631,24 @@ function AVIM()	{
 			var kb = win.document.getElementsByClassName("vk-t-btn-o")[0];
 			if (kb) {
 				kb.click();
-				return;
+//				return;
 			}
 			
-			// Get the selected item in the keyboard menu. If no item is
-			// selected, there is nothing to disable.
-			var sel = win.document.getElementsByClassName("ita-kd-selected")[0];
-			if (!sel) return;
-			
-			// Deselect the menu item.
-			var evt = win.document.createEvent("MouseEvents");
-			evt.initMouseEvent("mouseup", true /* canBubble */,
-							   true /* cancelable */, window, 0 /* detail */,
-							   0 /* screenX */, 0 /* screenY */,
-							   0 /* clientX */, 0 /* clientY */,
-							   false /* ctrlKey */, false /* altKey */,
-							   false /* shiftKey */, false /* metaKey */,
-							   0 /* button */, null /* relatedTarget */);
-			sel.dispatchEvent(evt);
+			//// Get the selected item in the keyboard menu. If no item is
+			//// selected, there is nothing to disable.
+			//var toggle = win.document.getElementById("inputToolsToggleButton");
+			//if (!toggle || toggle.getAttribute("aria-pressed") !== "true") return;
+			//
+			//// Deselect the menu item.
+			//var evt = win.document.createEvent("MouseEvents");
+			//evt.initMouseEvent("mouseup", true /* canBubble */,
+			//				   true /* cancelable */, win, 0 /* detail */,
+			//				   0 /* screenX */, 0 /* screenY */,
+			//				   0 /* clientX */, 0 /* clientY */,
+			//				   false /* ctrlKey */, false /* altKey */,
+			//				   false /* shiftKey */, false /* metaKey */,
+			//				   0 /* button */, null /* relatedTarget */);
+			//toggle.dispatchEvent(evt);
 		},
 		CHIM: function(win, marker) {
 			if (win.parseInt(marker.method)) marker.SetMethod(0);
@@ -2845,6 +2845,24 @@ function AVIM()	{
 	};
 	
 	/**
+	 * First responder for keydown events.
+	 *
+	 * @param e {object}	The generated event.
+	 */
+	this.onKeyDown = function (e) {
+		//dump("AVIM.onKeyDown -- code: " + fcc(e.which) + " #" + e.which +
+		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
+		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
+		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
+			return false;
+		}
+		var doc = e.target.ownerDocument;
+		if (doc.defaultView == window) doc = origTarget.ownerDocument;
+		this.disableOthers(doc);
+		return false;
+	};
+	
+	/**
 	 * First responder for keypress events.
 	 *
 	 * @param e	{object}	The generated event.
@@ -2863,7 +2881,6 @@ function AVIM()	{
 		var origTarget = e.originalTarget;
 		var doc = target.ownerDocument;
 		if (doc.defaultView == window) doc = origTarget.ownerDocument;
-		this.disableOthers(doc);
 		
 		// SciMoz plugin
 		var koManager = window.ko && ko.views && ko.views.manager;
@@ -2976,6 +2993,9 @@ if (window && !("avim" in window) && !window.frameElement) {
 		if (avim) avim.unregisterPrefs();
 		avim = null;
 	}, false);
+	addEventListener("keydown", function(e) {
+		if (avim) avim.onKeyDown(e);
+	}, true);
 	addEventListener("keypress", function(e) {
 		if (avim) avim.onKeyPress(e);
 	}, true);
