@@ -151,7 +151,7 @@
 		<em:description>Type fully-accented Vietnamese directly into any web page or dialog box using a standard keyboard.</em:description>
 		<em:creator>Minh Nguyen</em:creator>
 		<em:contributor>Hieu Dang</em:contributor>
-		<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+		<em:homepageURL>http://avim.1ec5.org/en/</em:homepageURL>
 		<em:iconURL>chrome://avim/content/avim.png</em:iconURL>
 		
 		<!-- German -->
@@ -163,7 +163,7 @@
 				<em:creator>Minh Nguyen</em:creator>
 				<em:contributor>Hieu Dang</em:contributor>
 				<em:translator>Erwin D. Glockner (erglo)</em:translator>
-				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -175,7 +175,7 @@
 				<em:description>Teclar en vietnamita con todos los acentos, directamente en cualquier página Web o caja de diálogo usando un teclado estándar.</em:description>
 				<em:creator>Minh Nguyen</em:creator>
 				<em:contributor>Hieu Dang</em:contributor>
-				<em:homepageURL>http://www.1ec5.org/software/avim/index.es.html</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/es/</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -189,7 +189,7 @@
 				<em:contributor>Hieu Dang</em:contributor>
 				<em:translator>myahoo</em:translator>
 				<em:translator>mr.txhuy</em:translator>
-				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -202,7 +202,7 @@
 				<em:creator>Minh Nguyen</em:creator>
 				<em:contributor>Hieu Dang</em:contributor>
 				<em:translator>John Willemse</em:translator>
-				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -215,7 +215,7 @@
 				<em:creator>Minh Nguyen</em:creator>
 				<em:contributor>Hieu Dang</em:contributor>
 				<em:translator>Mauro José da Silva</em:translator>
-				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -227,7 +227,7 @@
 				<em:description>Gõ tiếng Việt có dấu thẳng vào bất cứ trang Web hay hộp thoại nào, chỉ cần bàn phím thường.</em:description>
 				<em:creator>Nguyễn Xuân Minh</em:creator>
 				<em:contributor>Đặng Trần Hiếu</em:contributor>
-				<em:homepageURL>http://www.1ec5.org/software/avim/index.vi.html</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -241,7 +241,7 @@
 				<em:contributor>邓陈孝</em:contributor>
 				<em:translator>Karan Misra</em:translator>
 				<em:translator>Wang.H.K</em:translator>
-				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/</em:homepageURL>
 			</Description>
 		</em:localized>
 		
@@ -254,7 +254,7 @@
 				<em:creator>阮春明</em:creator>
 				<em:contributor>鄧陳孝</em:contributor>
 				<em:translator>Karan Misra</em:translator>
-				<em:homepageURL>http://www.1ec5.org/software/avim/</em:homepageURL>
+				<em:homepageURL>http://avim.1ec5.org/</em:homepageURL>
 			</Description>
 		</em:localized>
 	</Description>
