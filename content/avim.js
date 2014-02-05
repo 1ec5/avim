@@ -558,6 +558,89 @@ function AVIM()	{
 	SciMozProxy.prototype = new TextControlProxy();
 	
 	/**
+	 * Proxy for the Pages editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context. The window's `$GSAUI` and `$GSF`
+	 * 								objects should be defined on the sandbox.
+	 */
+	function CacTrangProxy(sandbox) {
+		// window.GP.mainPage.mainPane.firstResponder
+		// window.GP.mainPage.textContent.content
+		// window.GSAUI.selectionController.topSelection[0].getTextStorage()
+		// window.GSAUI.selectionController.canvasSelection[0].getTextStorage()._string.getCompleteString()
+		// window.GSAUI.selectionController.canvasSelection[0].getNormalizedRange(), .isInsertionPoint()
+		// window.GSAUI.selectionController.topSelection[0].getTextStorage().getWordAtCharIndex(0)
+		sandbox.$selection = Cu.evalInSandbox("$GSAUI.selectionController.topSelection[0]||null",
+									   sandbox);
+		if (sandbox.$selection === null) throw "No selection";
+		if (Cu.evalInSandbox("$selection.getClassName()!=='GSWP.TextSelection'",
+							 sandbox)) {
+			throw "Non-text selection";
+		}
+		if (Cu.evalInSandbox("$selection.isInsertionPoint()===false", sandbox)) {
+			throw "Non-empty selection";
+		}
+		
+		sandbox.$storage = Cu.evalInSandbox("$selection.getTextStorage()||null", sandbox);
+		if (sandbox.$storage === null) throw "No text storage";
+		
+		var selectionStart =
+			Cu.evalInSandbox("$selection.getNormalizedRange().location+0", sandbox);
+		
+		sandbox.$wordRange = Cu.evalInSandbox("$storage.getWordAtCharIndex(" +
+											  selectionStart + ")||null", sandbox);
+		if (sandbox.$wordRange === null) throw "No word range";
+		var wordStart = Cu.evalInSandbox("$wordRange.location+0", sandbox);
+		
+		// getWordAtCharIndex() tends to return the word beginning at the caret,
+		// but we want the word up to the caret.
+		if (selectionStart > 0 && wordStart >= selectionStart) {
+			sandbox.$wordRange = Cu.evalInSandbox("$storage.getWordAtCharIndex(" +
+												  (selectionStart - 1) + ")||null",
+												  sandbox);
+			if (sandbox.$wordRange === null) throw "No word range";
+			wordStart = Cu.evalInSandbox("$wordRange.location+0", sandbox);
+		}
+		
+		this.value = Cu.evalInSandbox("$storage.getSubstring(" + wordStart +
+									  "," + (selectionStart - wordStart) +
+									  ")+''", sandbox);
+		this.oldValue = this.value;
+		
+		this.selectionStart = this.selectionEnd = this.value.length;
+		
+		dump("\tselection: " + selectionStart + " back to " + wordStart + "\n");	// debug
+		dump("\t<" + this.oldValue + ">\n");
+		
+		/**
+		 * Updates the editor represented by this proxy to reflect any changes
+		 * made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+			if (this.value == this.oldValue) return false;
+			// GSAUI.selectionController.topSelection[0].getTextStorage().replaceCharactersInRange()
+			// GSF.DirectionalRange.createWithHeadAndTail(0, 5)
+			
+			dump(">>> Replacing <" + this.oldValue + "> with <" + this.value + ">\n");	// debug
+			
+			sandbox.$changedRange =
+				Cu.evalInSandbox("$GSF.DirectionalRange.createWithHeadAndTail(" +
+								 wordStart + "," + selectionStart + ")", sandbox);
+			Cu.evalInSandbox("$storage.replaceCharactersInRange($changedRange," +
+							 quoteJS(this.value) + ")", sandbox);
+			
+			//Cu.evalInSandbox("$storage.didChangeRange($changedRange," +
+			//				 quoteJS(this.value) + ")", sandbox);
+			
+			return true;
+		};
+	};
+	CacTrangProxy.prototype = new TextControlProxy();
+	
+	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
 	 * XUL or HTML element.
 	 *
@@ -2378,6 +2461,54 @@ function AVIM()	{
 									true);
 	};
 	
+	/**
+	 * Handles key presses in Pages. This function is triggered as soon soon as
+	 * the key goes up.
+	 *
+	 * @param evt	{object}	The keypress event.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleCacTrang = function(evt) {
+		var elt = evt.originalTarget;
+		
+		var win = elt.ownerDocument.defaultView;
+		var sandbox = new Cu.Sandbox(win.location.href);
+		sandbox.window = win.wrappedJSObject;
+		try {
+			if (!Cu.evalInSandbox("'GSAUI'in window&&" + "'GSF'in window",
+								  sandbox)) {
+				return false;
+			}
+			sandbox.$GSAUI = Cu.evalInSandbox("window.GSAUI||null", sandbox);
+			sandbox.$GSF = Cu.evalInSandbox("window.GSF||null", sandbox);
+			if (sandbox.$GSAUI === null || sandbox.$GSF === null) return false;
+		}
+		catch (exc) {
+			return false;
+		}
+		
+		dump(">>> AVIM.handleCacTrang\n");												// debug
+		
+		// Fake a native textbox.
+		var proxy = new CacTrangProxy(sandbox);
+		
+		this.sk = fcc(evt.which);
+		this.start(proxy, evt);
+		
+		proxy.commit();
+		proxy = null;
+		sandbox = null;
+		
+		if (this.changed) {
+			this.changed = false;
+			evt.handled = true;
+			evt.stopPropagation();
+			evt.preventDefault();
+		}
+		return true;
+	};
+	
 	// Integration with Mozilla preferences service
 	
 	// Root for AVIM preferences
@@ -2889,6 +3020,11 @@ function AVIM()	{
 		if (scintilla && scintilla.inputField &&
 			origTarget == scintilla.inputField.inputField) {
 			return this.handleSciMoz(e, ko.views.manager.currentView.scimoz);
+		}
+		
+		// iCloud Pages
+		if (doc.location.hostname === "www.icloud.com" && origTarget.isContentEditable) {
+			return this.handleCacTrang(e);
 		}
 		
 		// Specialized Web editors
