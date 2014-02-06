@@ -63,6 +63,21 @@ function AVIM()	{
 	var fcc = String.fromCharCode;
 	var up = String.toUpperCase;
 	
+	// Include characters from major scripts that separate words with a space.
+	var wordChars =
+		"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
+		"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
+		"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
+			"\ua720-\ua7ff\ufb00-\ufb4f" +	// Latin
+		"\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufeff" +	// Arabic
+		"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
+		"\u0900-\u097f" +	// Devanagari
+		"\u02b0-\u02ff" +	// spacing modifier letters
+		"0-9" +	// numerals
+		"₫\u0303" +	// miscellaneous Vietnamese characters
+		"’";	// word-inner punctuation not found in Vietnamese
+	var wordRe = new RegExp("[" + wordChars + "]*$");
+	
 	function codesFromChars(chars) {
 		var codes = [];
 		for (var i = 0; i < chars.length; i++) {
@@ -588,25 +603,12 @@ function AVIM()	{
 		var selectionStart =
 			Cu.evalInSandbox("$selection.getNormalizedRange().location+0", sandbox);
 		
-		sandbox.$wordRange = Cu.evalInSandbox("$storage.getWordAtCharIndex(" +
-											  selectionStart + ")||null", sandbox);
-		if (sandbox.$wordRange === null) throw "No word range";
-		var wordStart = Cu.evalInSandbox("$wordRange.location+0", sandbox);
-		
-		// getWordAtCharIndex() tends to return the word beginning at the caret,
-		// but we want the word up to the caret.
-		if (selectionStart > 0 && wordStart >= selectionStart) {
-			sandbox.$wordRange = Cu.evalInSandbox("$storage.getWordAtCharIndex(" +
-												  (selectionStart - 1) + ")||null",
-												  sandbox);
-			if (sandbox.$wordRange === null) throw "No word range";
-			wordStart = Cu.evalInSandbox("$wordRange.location+0", sandbox);
-		}
-		
-		this.value = Cu.evalInSandbox("$storage.getSubstring(" + wordStart +
-									  "," + (selectionStart - wordStart) +
-									  ")+''", sandbox);
-		this.oldValue = this.value;
+		var beforeString = Cu.evalInSandbox("$storage.getSubstring(0," +
+											selectionStart + ")+''", sandbox);
+		var match = wordRe.exec(beforeString);
+		this.oldValue = this.value = match && match[0];
+		if (!this.value || !this.value.length) throw "No word";
+		var wordStart = selectionStart - this.value.length;
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
@@ -623,17 +625,17 @@ function AVIM()	{
 			if (this.value == this.oldValue) return false;
 			// GSAUI.selectionController.topSelection[0].getTextStorage().replaceCharactersInRange()
 			// GSF.DirectionalRange.createWithHeadAndTail(0, 5)
+			// GSWP.TextEditingController
 			
 			dump(">>> Replacing <" + this.oldValue + "> with <" + this.value + ">\n");	// debug
 			
 			sandbox.$changedRange =
-				Cu.evalInSandbox("$GSF.DirectionalRange.createWithHeadAndTail(" +
-								 wordStart + "," + selectionStart + ")", sandbox);
+				Cu.evalInSandbox("$GSF.Range.createWithHeadAndTail(" + wordStart +
+								 "," + selectionStart + ")", sandbox);
 			Cu.evalInSandbox("$storage.replaceCharactersInRange($changedRange," +
 							 quoteJS(this.value) + ")", sandbox);
 			
-			//Cu.evalInSandbox("$storage.didChangeRange($changedRange," +
-			//				 quoteJS(this.value) + ")", sandbox);
+			Cu.evalInSandbox("$storage.didChangeRange($changedRange,0)", sandbox);
 			
 			return true;
 		};
@@ -879,21 +881,6 @@ function AVIM()	{
 	const mocA = "ớờởỡợơứừửữựưỚỜỞỠỢƠỨỪỬỮỰƯ".split('');
 	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
 	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
-	
-	// Include characters from major scripts that separate words with a space.
-	var wordChars =
-		"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
-		"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
-		"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
-			"\ua720-\ua7ff\ufb00-\ufb4f" +	// Latin
-		"\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufeff" +	// Arabic
-		"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
-		"\u0900-\u097f" +	// Devanagari
-		"\u02b0-\u02ff" +	// spacing modifier letters
-		"0-9" +	// numerals
-		"₫\u0303" +	// miscellaneous Vietnamese characters
-		"’";	// word-inner punctuation not found in Vietnamese
-	var wordRe = new RegExp("[" + wordChars + "]*$");
 	
 	var isMac = window.navigator.platform == "MacPPC" ||
 		window.navigator.platform == "MacIntel";
