@@ -162,8 +162,8 @@ AVIM.prototype.observe = function (subject, topic, data) {
 			this.didObserveStartup = true;
 			break;
 		case "quit-application":
-			observerSvc.removeObserver(this, "domwindowopened");
-			observerSvc.addObserver(this, "quit-application");
+			observerSvc.removeObserver(this, "domwindowopened", false);
+			observerSvc.addObserver(this, "quit-application", false);
 			break;
 		case "domwindowopened":
 			this.onWindowOpen(subject);
