@@ -58,6 +58,8 @@ function AVIM()	{
 	
 	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
 	
+	const iCloudHostname = "www.icloud.com";
+	
 	// Local functions that don't require access to AVIM's fields.
 	
 	var fcc = String.fromCharCode;
@@ -576,20 +578,15 @@ function AVIM()	{
 	 * Proxy for the Pages editor to pose as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context. The window's `$GSAUI` and `$GSF`
-	 * 								objects should be defined on the sandbox.
+	 * 								context. The window's `$GSAUI`, `$GSK`, and
+	 * 								`$GSWP` objects should be defined on the
+	 * 								sandbox.
 	 */
 	function CacTrangProxy(sandbox) {
-		// window.GP.mainPage.mainPane.firstResponder
-		// window.GP.mainPage.textContent.content
-		// window.GSAUI.selectionController.topSelection[0].getTextStorage()
-		// window.GSAUI.selectionController.canvasSelection[0].getTextStorage()._string.getCompleteString()
-		// window.GSAUI.selectionController.canvasSelection[0].getNormalizedRange(), .isInsertionPoint()
-		// window.GSAUI.selectionController.topSelection[0].getTextStorage().getWordAtCharIndex(0)
 		sandbox.$selection = Cu.evalInSandbox("$GSAUI.selectionController.topSelection[0]||null",
 									   sandbox);
 		if (sandbox.$selection === null) throw "No selection";
-		if (Cu.evalInSandbox("$selection.getClassName()!=='GSWP.TextSelection'",
+		if (Cu.evalInSandbox("!($selection instanceof $GSWP.TextSelection)",
 							 sandbox)) {
 			throw "Non-text selection";
 		}
@@ -605,15 +602,17 @@ function AVIM()	{
 		
 		var beforeString = Cu.evalInSandbox("$storage.getSubstring(0," +
 											selectionStart + ")+''", sandbox);
-		var match = wordRe.exec(beforeString);
+		var match;
+		if (beforeString.substr(-1) === "\\" && methodIsVIQR()) match = "\\";
+		else match = wordRe.exec(beforeString);
 		this.oldValue = this.value = match && match[0];
 		if (!this.value || !this.value.length) throw "No word";
 		var wordStart = selectionStart - this.value.length;
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
-		dump("\tselection: " + selectionStart + " back to " + wordStart + "\n");	// debug
-		dump("\t<" + this.oldValue + ">\n");
+		//dump("\tselection: " + selectionStart + " back to " + wordStart + "\n");	// debug
+		//dump("\t<" + this.oldValue + ">\n");
 		
 		/**
 		 * Updates the editor represented by this proxy to reflect any changes
@@ -623,19 +622,21 @@ function AVIM()	{
 		 */
 		this.commit = function() {
 			if (this.value == this.oldValue) return false;
-			// GSAUI.selectionController.topSelection[0].getTextStorage().replaceCharactersInRange()
-			// GSF.DirectionalRange.createWithHeadAndTail(0, 5)
-			// GSWP.TextEditingController
 			
-			dump(">>> Replacing <" + this.oldValue + "> with <" + this.value + ">\n");	// debug
+			//dump(">>> Replacing <" + this.oldValue + "> with <" + this.value + ">\n");	// debug
 			
-			sandbox.$changedRange =
-				Cu.evalInSandbox("$GSF.Range.createWithHeadAndTail(" + wordStart +
-								 "," + selectionStart + ")", sandbox);
-			Cu.evalInSandbox("$storage.replaceCharactersInRange($changedRange," +
-							 quoteJS(this.value) + ")", sandbox);
-			
-			Cu.evalInSandbox("$storage.didChangeRange($changedRange,0)", sandbox);
+			sandbox.$editor =
+				Cu.evalInSandbox("$GSK.DocumentViewController.currentController." +
+								 "canvasViewController.getEditorController()." +
+								 "getMostSpecificCurrentEditor()", sandbox);
+			sandbox.$wordSelection =
+				Cu.evalInSandbox("$GSWP.TextSelection.createWithStartAndStopAndCaretAffinity(" +
+								 "$storage," + wordStart + "," + selectionStart + ",null)",
+								 sandbox);
+			sandbox.$cmd = Cu.evalInSandbox("$editor._createReplaceTextCommand(" +
+											"$wordSelection," + quoteJS(this.value) +
+											")", sandbox);
+			Cu.evalInSandbox("$editor._executeCommand($cmd)", sandbox);
 			
 			return true;
 		};
@@ -2468,14 +2469,15 @@ function AVIM()	{
 				return false;
 			}
 			sandbox.$GSAUI = Cu.evalInSandbox("window.GSAUI||null", sandbox);
-			sandbox.$GSF = Cu.evalInSandbox("window.GSF||null", sandbox);
-			if (sandbox.$GSAUI === null || sandbox.$GSF === null) return false;
+			sandbox.$GSK = Cu.evalInSandbox("window.GSK||null", sandbox);
+			sandbox.$GSWP = Cu.evalInSandbox("window.GSWP||null", sandbox);
+			if (sandbox.$GSAUI === null || sandbox.$SDK === null || sandbox.$GSWP === null) return false;
 		}
 		catch (exc) {
 			return false;
 		}
 		
-		dump(">>> AVIM.handleCacTrang\n");												// debug
+		//dump(">>> AVIM.handleCacTrang\n");												// debug
 		
 		// Fake a native textbox.
 		var proxy = new CacTrangProxy(sandbox);
@@ -3010,7 +3012,7 @@ function AVIM()	{
 		}
 		
 		// iCloud Pages
-		if (doc.location.hostname === "www.icloud.com" && origTarget.isContentEditable) {
+		if (doc.location.hostname === iCloudHostname && origTarget.isContentEditable) {
 			return this.handleCacTrang(e);
 		}
 		
