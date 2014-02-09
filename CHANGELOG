@@ -355,13 +355,14 @@ Version ${Version} (${Date})
    Backspace would delete one character too many.
  - Added a Brazilian Portuguese localization by Mauro José da Silva.
  - Added a Simplified Chinese localization by Wang.H.K.
- - The Script Monitor can now disable the Virtual Keyboard features at Google
-   Tiếng Việt and Google Việt Nam.
+ - Added support for iCloud.
  - Added support for Komodo Edit 8.x.
  - Added support for Silverlight 4 and above.
  - Added support for Eclipse's Orion editor.
  - Added support for Ymacs, an emacs-style code editor.
  - Removed support for 280 Slides, which has gone offline.
+ - The Script Monitor can now disable the Virtual Keyboard features at Google
+   Tiếng Việt and Google Việt Nam.
  - Fixed an issue in the Ace editor that in some cases caused the current line
    to be executed as unprivileged JavaScript code.
  - Adopted the Silvermel version of the AVIM logo as the extension icon.

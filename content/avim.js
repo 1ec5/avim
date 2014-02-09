@@ -58,10 +58,27 @@ function AVIM()	{
 	
 	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
 	
+	const iCloudHostname = "www.icloud.com";
+	
 	// Local functions that don't require access to AVIM's fields.
 	
 	var fcc = String.fromCharCode;
 	var up = String.toUpperCase;
+	
+	// Include characters from major scripts that separate words with a space.
+	var wordChars =
+		"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
+		"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
+		"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
+			"\ua720-\ua7ff\ufb00-\ufb4f" +	// Latin
+		"\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufeff" +	// Arabic
+		"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
+		"\u0900-\u097f" +	// Devanagari
+		"\u02b0-\u02ff" +	// spacing modifier letters
+		"0-9" +	// numerals
+		"₫\u0303" +	// miscellaneous Vietnamese characters
+		"’";	// word-inner punctuation not found in Vietnamese
+	var wordRe = new RegExp("[" + wordChars + "]*$");
 	
 	function codesFromChars(chars) {
 		var codes = [];
@@ -558,6 +575,75 @@ function AVIM()	{
 	SciMozProxy.prototype = new TextControlProxy();
 	
 	/**
+	 * Proxy for the Pages editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context. The window's `$GSAUI`, `$GSK`, and
+	 * 								`$GSWP` objects should be defined on the
+	 * 								sandbox.
+	 */
+	function CacTrangProxy(sandbox) {
+		sandbox.$selection = Cu.evalInSandbox("$GSAUI.selectionController.topSelection[0]||null",
+									   sandbox);
+		if (sandbox.$selection === null) throw "No selection";
+		if (Cu.evalInSandbox("!($selection instanceof $GSWP.TextSelection)",
+							 sandbox)) {
+			throw "Non-text selection";
+		}
+		if (Cu.evalInSandbox("$selection.isInsertionPoint()===false", sandbox)) {
+			throw "Non-empty selection";
+		}
+		
+		sandbox.$storage = Cu.evalInSandbox("$selection.getTextStorage()||null", sandbox);
+		if (sandbox.$storage === null) throw "No text storage";
+		
+		var selectionStart =
+			Cu.evalInSandbox("$selection.getNormalizedRange().location+0", sandbox);
+		
+		var beforeString = Cu.evalInSandbox("$storage.getSubstring(0," +
+											selectionStart + ")+''", sandbox);
+		var match;
+		if (beforeString.substr(-1) === "\\" && methodIsVIQR()) match = "\\";
+		else match = wordRe.exec(beforeString);
+		this.oldValue = this.value = match && match[0];
+		if (!this.value || !this.value.length) throw "No word";
+		var wordStart = selectionStart - this.value.length;
+		
+		this.selectionStart = this.selectionEnd = this.value.length;
+		
+		//dump("\tselection: " + selectionStart + " back to " + wordStart + "\n");	// debug
+		//dump("\t<" + this.oldValue + ">\n");
+		
+		/**
+		 * Updates the editor represented by this proxy to reflect any changes
+		 * made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+			if (this.value == this.oldValue) return false;
+			
+			//dump(">>> Replacing <" + this.oldValue + "> with <" + this.value + ">\n");	// debug
+			
+			sandbox.$editor =
+				Cu.evalInSandbox("$GSK.DocumentViewController.currentController." +
+								 "canvasViewController.getEditorController()." +
+								 "getMostSpecificCurrentEditor()", sandbox);
+			sandbox.$wordSelection =
+				Cu.evalInSandbox("$GSWP.TextSelection.createWithStartAndStopAndCaretAffinity(" +
+								 "$storage," + wordStart + "," + selectionStart + ",null)",
+								 sandbox);
+			sandbox.$cmd = Cu.evalInSandbox("$editor._createReplaceTextCommand(" +
+											"$wordSelection," + quoteJS(this.value) +
+											")", sandbox);
+			Cu.evalInSandbox("$editor._executeCommand($cmd)", sandbox);
+			
+			return true;
+		};
+	};
+	CacTrangProxy.prototype = new TextControlProxy();
+	
+	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
 	 * XUL or HTML element.
 	 *
@@ -796,21 +882,6 @@ function AVIM()	{
 	const mocA = "ớờởỡợơứừửữựưỚỜỞỠỢƠỨỪỬỮỰƯ".split('');
 	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
 	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
-	
-	// Include characters from major scripts that separate words with a space.
-	var wordChars =
-		"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
-		"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
-		"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
-			"\ua720-\ua7ff\ufb00-\ufb4f" +	// Latin
-		"\u0600-\u06ff\u0750-\u077f\ufb50-\ufdff\ufe70-\ufeff" +	// Arabic
-		"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
-		"\u0900-\u097f" +	// Devanagari
-		"\u02b0-\u02ff" +	// spacing modifier letters
-		"0-9" +	// numerals
-		"₫\u0303" +	// miscellaneous Vietnamese characters
-		"’";	// word-inner punctuation not found in Vietnamese
-	var wordRe = new RegExp("[" + wordChars + "]*$");
 	
 	var isMac = window.navigator.platform == "MacPPC" ||
 		window.navigator.platform == "MacIntel";
@@ -1765,6 +1836,7 @@ function AVIM()	{
 	 */
 	this.updateContainer = function(outer, inner) {
 		if (!inner) return;
+		if (inner.document.location.hostname === iCloudHostname) return; // #36
 		var inputEvent = document.createEvent("Events");
 		inputEvent.initEvent("input", true, true);
 		if (inner.dispatchEvent) inner.dispatchEvent(inputEvent);
@@ -2378,6 +2450,55 @@ function AVIM()	{
 									true);
 	};
 	
+	/**
+	 * Handles key presses in Pages. This function is triggered as soon soon as
+	 * the key goes up.
+	 *
+	 * @param evt	{object}	The keypress event.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleCacTrang = function(evt) {
+		var elt = evt.originalTarget;
+		
+		var win = elt.ownerDocument.defaultView;
+		var sandbox = new Cu.Sandbox(win.location.href);
+		sandbox.window = win.wrappedJSObject;
+		try {
+			if (!Cu.evalInSandbox("'GSAUI'in window&&" + "'GSF'in window",
+								  sandbox)) {
+				return false;
+			}
+			sandbox.$GSAUI = Cu.evalInSandbox("window.GSAUI||null", sandbox);
+			sandbox.$GSK = Cu.evalInSandbox("window.GSK||null", sandbox);
+			sandbox.$GSWP = Cu.evalInSandbox("window.GSWP||null", sandbox);
+			if (sandbox.$GSAUI === null || sandbox.$SDK === null || sandbox.$GSWP === null) return false;
+		}
+		catch (exc) {
+			return false;
+		}
+		
+		//dump(">>> AVIM.handleCacTrang\n");												// debug
+		
+		// Fake a native textbox.
+		var proxy = new CacTrangProxy(sandbox);
+		
+		this.sk = fcc(evt.which);
+		this.start(proxy, evt);
+		
+		proxy.commit();
+		proxy = null;
+		sandbox = null;
+		
+		if (this.changed) {
+			this.changed = false;
+			evt.handled = true;
+			evt.stopPropagation();
+			evt.preventDefault();
+		}
+		return true;
+	};
+	
 	// Integration with Mozilla preferences service
 	
 	// Root for AVIM preferences
@@ -2889,6 +3010,11 @@ function AVIM()	{
 		if (scintilla && scintilla.inputField &&
 			origTarget == scintilla.inputField.inputField) {
 			return this.handleSciMoz(e, ko.views.manager.currentView.scimoz);
+		}
+		
+		// iCloud Pages
+		if (doc.location.hostname === iCloudHostname && origTarget.isContentEditable) {
+			return this.handleCacTrang(e);
 		}
 		
 		// Specialized Web editors
