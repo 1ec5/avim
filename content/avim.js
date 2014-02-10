@@ -1034,25 +1034,39 @@ function AVIM()	{
 		this.setPrefs("enabled");
 	};
 	
-	this.cueOnToggle;
-	
 	/**
 	 * Enables AVIM if currently disabled; disables AVIM otherwise.
-	 *
-	 * @param playCue {boolean}	true to play a sound; false to toggle silently.
 	 */
-	this.toggle = function(playCue) {
+	this.toggle = function() {
 		this.setEnabled(!AVIMConfig.onOff);
+	};
+	
+	this.onCue = this.offCue = null;
+	
+	/**
+	 * Plays a sound to alert the user that AVIM's settings have changed, in
+	 * case all the UI is hidden.
+	 */
+	this.playCueAfterToggle = function () {
+		var enabled = AVIMConfig.onOff;
+		if (this.onCue) this.onCue.pause();
+		if (this.offCue) this.offCue.pause();
 		
-		if (!playCue) return;
-		// Even if the user hides all the UI, they still need to know when an
-		// errant key press leads to AVIM being toggled.
-		if (!this.cueOnToggle) {
-			this.cueOnToggle = new Audio("chrome://global/content/notfound.wav");
-			this.cueOnToggle.volume = 0.1;
+		if (enabled && !this.onCue) {
+			this.onCue = new Audio("chrome://avim/content/on.wav");
+			this.onCue.volume = 0.2;
+			this.onCue.autoplay = true;
 		}
-		this.cueOnToggle.currentTime = 0;
-		this.cueOnToggle.play();
+		else if (!enabled && !this.offCue) {
+			this.offCue = new Audio("chrome://avim/content/off.wav");
+			this.offCue.volume = 0.2;
+			this.offCue.autoplay = true;
+		}
+		else {
+			var cue = enabled ? this.onCue : this.offCue;
+			cue.currentTime = 0;
+			cue.play();
+		}
 	};
 	
 	/**
@@ -3121,6 +3135,7 @@ function AVIM()	{
 				if (++avim.numCtrlPresses > 1) {
 					avim.stopListeningForCtrl();
 					avim.toggle(true);
+					avim.playCueAfterToggle();
 				}
 			}
 			else avim.stopListeningForCtrl();
