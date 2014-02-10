@@ -40,6 +40,7 @@ from os import path
 from datetime import date
 from StringIO import StringIO
 from jsmin import JavascriptMinify
+from cssmin import cssmin
 from config_build import *
 
 BLOB = None
@@ -201,12 +202,21 @@ def minify_js(file_path, src):
     JavascriptMinify().minify(in_str, out_str)
     url = get_repo_url(file_path)
     if url:
-        src = "// Minified using JSMin: see %s\n%s" % (url, out_str.getvalue())
+        src = "// Minified with JSMin: see %s\n%s" % (url, out_str.getvalue())
     else:
         src = out_str.getvalue()
     in_str.close()
     out_str.close()
     return src
+
+def minify_css(file_path, src):
+    """Returns a minified version of the given CSS source string."""
+    min_src = cssmin(src)
+    if src.strip() == min_src.strip(): return min_src
+    url = get_repo_url(file_path)
+    if url:
+        min_src = "/* Minified with cssmin: see %s */\n%s" % (url, min_src)
+    return min_src
 
 def l10n_main_locale_equiv(file_path):
     """Changes the given file path to point to the equivalent file for the main
@@ -447,7 +457,7 @@ def main():
     omit_files = [".DS_Store", "Thumbs.db", ".gitattributes", ".gitignore"]
     if CONFIG is not BuildConfig.L10N:
         omit_files.extend(L10N_FILES)
-    xml_ext_re = r".*\.(?:xml|xul|xbl|dtd|rdf|svg|mml|x?html|css)$"
+    xml_ext_re = r".*\.(?:xml|xul|xbl|dtd|rdf|svg|mml|x?html)$"
 
     # Remove any leftovers from previous build.
     print "Removing leftovers from previous build..."
@@ -493,6 +503,8 @@ def main():
                 src = minify_properties(src)
             elif f.endswith(".js"):
                 src = minify_js(f, src)
+            elif f.endswith(".css"):
+                src = minify_css(f, src)
         if CONFIG == BuildConfig.SB:
             info = zipfile.ZipInfo(f)
             info.external_attr = (0660 << 16L) | (010 << 28L)
@@ -537,6 +549,8 @@ def main():
                 src = minify_xml(f, src)
             elif f.endswith(".js"):
                 src = minify_js(f, src)
+            elif f.endswith(".css"):
+                src = minify_css(f, src)
         if CONFIG == BuildConfig.SB:
             info = zipfile.ZipInfo(f)
             info.external_attr = (0660 << 16L) | (010 << 28L)
