@@ -39,12 +39,12 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 
 #avim-tb .toolbarbutton-text,
 #avim-status {
-	-moz-text-decoration-color: red;
+	animation: enabled 2s ease-in-out;
 }
 
 #avim-tb[avim-disabled="true"] .toolbarbutton-text,
 #avim-status[avim-disabled="true"] {
-	transition: -moz-text-decoration-color 2s ease-in-out;
+	animation: disabled 2s ease-in-out;
 	text-decoration: line-through;
 	-moz-text-decoration-style: double;
 	-moz-text-decoration-color: currentColor;
@@ -62,4 +62,24 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 :-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)[avim-accel="mac"]
 	:-moz-any(.menu-accel, .menu-iconic-accel)::before {
 	content: "\2303\2303";
+}
+
+@keyframes enabled {
+	from {
+		color: #3366ff;
+	}
+	
+	to {
+		color: currentColor;
+	}
+}
+
+@keyframes disabled {
+	from {
+		-moz-text-decoration-color: red;
+	}
+	
+	to {
+		-moz-text-decoration-color: currentColor;
+	}
 }
