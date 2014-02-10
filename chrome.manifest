@@ -60,6 +60,8 @@ overlay	chrome://mozapps/content/extensions/extensions.xul		chrome://avim/conten
 
 ### Thunderbird ################################################################
 
+overlay	chrome://messenger/content/messenger.xul				chrome://avim/content/moz20Overlay.xul		appversion>=17
+
 # Preferences and associated dialogs
 overlay	chrome://messenger/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
 
