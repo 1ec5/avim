@@ -56,7 +56,7 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 
 :-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)
 	:-moz-any(.menu-accel, .menu-iconic-accel)::before {
-	content: "Ctrl+Ctrl";
+	content: "Ctrl Ctrl";
 }
 
 :-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)[avim-accel="mac"]
