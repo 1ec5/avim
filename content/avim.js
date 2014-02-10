@@ -1153,6 +1153,7 @@ function AVIM()	{
 		var enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
 			setCheckedState(enabledBcId, AVIMConfig.onOff);
+			$("avim-status-enabled").setAttribute("avim-accel", isMac ? "mac" : "");
 		}
 		
 		// Disable methods and options if AVIM is disabled

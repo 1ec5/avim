@@ -53,3 +53,13 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 #avim-status[avim-hidden="true"] {
 	display: none;
 }
+
+:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)
+	:-moz-any(.menu-accel, .menu-iconic-accel)::before {
+	content: "Ctrl+Ctrl";
+}
+
+:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)[avim-accel="mac"]
+	:-moz-any(.menu-accel, .menu-iconic-accel)::before {
+	content: "\2303\2303";
+}
