@@ -37,10 +37,17 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 	display: -moz-box;
 }
 
+#avim-tb .toolbarbutton-text,
+#avim-status {
+	-moz-text-decoration-color: red;
+}
+
 #avim-tb[avim-disabled="true"] .toolbarbutton-text,
 #avim-status[avim-disabled="true"] {
+	transition: -moz-text-decoration-color 2s ease-in-out;
 	text-decoration: line-through;
 	-moz-text-decoration-style: double;
+	-moz-text-decoration-color: currentColor;
 }
 
 #avim-status[avim-hidden="true"] {
