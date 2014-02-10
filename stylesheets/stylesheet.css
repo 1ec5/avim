@@ -9,12 +9,12 @@ by Jason Costello, @jsncostello
 MeyerWeb Reset
 *******************************************************************************/
 
-html, body, div, span, applet, object, iframe,
+html, body, div, span, applet, object,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, tt, var,
-b, u, i, center,
+center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
@@ -474,6 +474,16 @@ Full-Width Styles
 .keystrokes kbd.modifier {
   width: auto;
   padding: 0 4px;
+}
+
+.toolbar {
+  -moz-appearance: toolbar;
+}
+
+.toolbar button {
+  -moz-appearance: toolbarbutton;
+  line-height: 2em;
+  width: 4em;
 }
 
 #footer_wrap {

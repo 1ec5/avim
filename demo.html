@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Thử sử dụng AVIM cho Firefox, phần mở rộng cung cấp bộ gõ tiếng Việt" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png">
+    <link rel="up" href="index.html">
+    <link rel="alternate" lang="en-US" href="en/demo.html">
+    
+	<style type="text/css">
+		.wide {
+			width: 100%;
+		}
+		.tall {
+			height: 20em;
+		}
+	</style>
+	<script src="./javascripts/ace/ace.js" type="text/javascript" charset="utf-8" defer></script>
+	<script type="text/javascript" charset="utf-8" defer>
+		var passwordBoxId = "test-input-password";
+		var passwordOutputId = "test-input-password-value";
+		function revealPassword() {
+			var inbox = document.getElementById(passwordBoxId);
+			var outbox = document.getElementById(passwordOutputId);
+			if (inbox && outbox) {
+				if (inbox.value) {
+					outbox.innerHTML = "Bạn cho vào: <kbd>" + inbox.value +
+						"<\/kbd>";
+				}
+				else outbox.innerHTML = "Bạn không cho vào mật khẩu.";
+			}
+		}
+		
+		var textareaId = "test-textarea";
+		var lipsum =
+			"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed " +
+			"do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+			"Ut enim ad minim veniam, quis nostrud exercitation ullamco " +
+			"laboris nisi ut aliquip ex ea commodo consequat. Duis aute " +
+			"irure dolor in reprehenderit in voluptate velit esse cillum " +
+			"dolore eu fugiat nulla pariatur. Excepteur sint occaecat " +
+			"cupidatat non proident, sunt in culpa qui officia deserunt " +
+			"mollit anim id est laborum.";
+		function insertLipsum() {
+			var textarea = document.getElementById(textareaId);
+			if (textarea) textarea.value += "\n" + lipsum;
+		}
+		
+		var iframeId = "test-iframe";
+		function loadIframe() {
+			var iframe = document.getElementById(iframeId);
+			if (!iframe) return;
+			var doc = iframe.contentDocument;
+			var textarea = doc.createElement("textarea");
+			textarea.style.height = textarea.style.width = "99%";
+			doc.body.appendChild(textarea);
+		}
+		addEventListener("load", loadIframe, false);
+		
+		var midasId = "test-midas";
+		function loadMidas() {
+			var midas = document.getElementById(midasId);
+			if (midas) midas.contentWindow.document.designMode = "on";
+		}
+		addEventListener("load", loadMidas, false);
+		
+		function execMidasCmd(cmd) {
+			var midas = document.getElementById(midasId);
+			if (midas) {
+				midas.contentWindow.document.execCommand(cmd, false, null);
+			}
+		}
+		
+		var contentEditableId = "test-contenteditable";
+		function loadContentEditable() {
+			var contentEditable = document.getElementById(contentEditableId);
+			if (contentEditable) contentEditable.contentEditable = "true";
+		}
+		addEventListener("load", loadContentEditable, false);
+		
+		function displayPrompt() {
+			prompt("Dùng AVIM, bạn có thể nhập văn bản tiếng Việt vào hộp ở duới. " +
+				   "Mudim có biết làm vậy không?");
+		}
+		
+		function buildAce() {
+		  var editor = ace.edit("editor");
+		  editor.setTheme("ace/theme/tomorrow");
+		  editor.session.setMode("ace/mode/markdown");
+		  
+		  editor.renderer.setShowInvisibles(true);
+		  editor.getSession().setUseWrapMode(true);
+		  editor.blur();
+		}
+		addEventListener("load", buildAce, false);
+	</script>
+
+    <title>Gõ Thử &ndash; AVIM cho Firefox</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a rel="up" href="."><h1 id="project_title">AVIM cho Firefox</h1></a>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+
+<nav id="languages">
+  <ul>
+    <li lang="en-US"><a href="en/demo.html" rel="alternate" hreflang="en">English</a></li>
+    <li lang="es">Español</li>
+    <li lang="vi">Tiếng Việt</li>
+  </ul>
+</nav>
+
+<h1>Gõ thử</h1>
+
+<p>Sau khi cài đặt <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> cho Firefox, thử phần mở rộng tại trang này. Trang không có nhúng script bộ gõ nào, chỉ có <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> giúp bạn đánh chữ.</p>
+
+<h2 id="plain">Các điều khiển văn bản thuần <acronym title="HyperText Markup Language" class="initialism">HTML</acronym></h2>
+
+<p>Phần sau biểu hiện <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> sẽ giúp bạn điền đơn trực tuyến như thế nào:</p>
+
+<section>
+  <h3><label for="test-input-text">Hộp văn bản một dòng</label></h3>
+  
+  <input id="test-input-text" type="text" autofocus="autofocus" value="" />
+  <p class="fine-print">Thử cho vào nhiều từ để cho hộp văn bản cuộn bên phải. Để ý rằng trong lúc gõ và bỏ dấu, hộp văn bản không bao giờ nhảy lại đầu.</p>
+</section>
+
+<section>
+  <h3><label for="test-input-password">Hộp mật khẩu</label></h3>
+  
+  <input id="test-input-password" type="password" value="" />
+  <button id="test-input-password-reveal" type="button" onclick="revealPassword();">Tiết lộ Mật khẩu</button>
+  <p id="test-input-password-value" />
+  <p class="fine-print">Theo mặc định, <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> bỏ qua các hộp mật khẩu. Nếu không, nó có thể bỏ dấu mà bạn không biết được.</p>
+</section>
+
+<section>
+  <h3><label for="test-textarea">Hộp văn bản đa dòng</label></h3>
+  
+  <textarea id="test-textarea" class="wide tall"></textarea>
+  <p class="fine-print">Thử cho vào nhiều từ để cho hộp văn bản cuộn xuống. <button onclick="insertLipsum(); return false;">Nhấn tại đây</button> để chèn văn bản mẫu <a href="http://en.wikipedia.org/wiki/Lorem_ipsum" hreflang="en" rel="bookmark" title="Wikipedia: Lorem ipsum"><i lang="la" xml:lang="la">lorem ipsum</i></a> cho tiện. Để ý rằng trong lúc gõ và bỏ dấu, hộp văn bản không nhảy lại đầu.
+</section>
+
+<section>
+  <h3><label for="test-iframe">Khu vực văn bản trong khung nội bộ</label></h3>
+  
+  <iframe id="test-iframe" class="wide tall"></iframe>
+  <p class="fine-print">Nhiều ứng dụng Web nhúng hộp văn bản vào trong nhiều tầng khung. Các khung nội bộ rất quan trọng đối với các ứng dụng như Gmail.</p>
+</section>
+
+<section>
+  <h3><label for="test-isindex">Hộp tìm kiếm chỉ mục</label></h3>
+  
+  <isindex id="test-isindex" />
+  <p class="fine-print">Hộp tìm kiếm chỉ mục là một phần cũ của <acronym title="HyperText Markup Language" class="initialism">HTML</acronym> mà gần như không có ai còn nhớ đến. <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> vẫn hỗ trợ nó.</p>
+</section>
+
+<section>
+  <h3><label for="test-ime-mode">Tắt bộ gõ dùng <acronym title="Cascading Style Sheets">CSS</acronym></label></h3>
+  
+  <input id="test-ime-mode" type="text" style="ime-mode: disabled;" />
+  <p class="fine-print">Các tác giả trang Web có thể tự động tắt các bộ gõ hệ thống tùy theo hộp văn bản dùng thuộc tính <a href="https://developer.mozilla.org/En/CSS/Ime-mode" hreflang="en" rel="bookmark" title="Mozilla Developer Center: ime-mode"><code>ime-mode</code></a> của <acronym title="Cascading Style Sheets">CSS</acronym>. <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> chấp nhận thuộc tính này.</p>
+</section>
+
+<h2 id="html5">Các điều khiển văn bản thuần <acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5</h2>
+
+<p><acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5 định rõ nhiều loại điều khiển mới. Bắt đầu với Firefox 4, nhiều kịch bản bộ gõ được nhúng vào trang bị vỡ vì các điều khiển không còn là hộp văn bản bình thường:</p>
+
+<section>
+  <h3><label for="test-input-search">Hộp tìm kiếm</label></h3>
+  
+  <input id="test-input-search" type="search" value="" />
+</section>
+
+<section>
+  <h3><label for="test-input-url">Hộp địa chỉ <acronym title="Uniform resource locator" class="initialism">URL</acronym></label></h3>
+  
+  <input id="test-url-search" type="url" value="" />
+  <p class="fine-print"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> bỏ qua các hộp địa chỉ <acronym title="uniform resource locator" class="initialism">URL</acronym> khi nào <code>url</code> hoặc <code>urlbar</code> được liệt kê trong Danh sách đen trong cửa sổ tùy chọn của <acronym title="Advanced Vietnamese Input Method">AVIM</acronym>.</p>
+</section>
+
+<section>
+  <h3><label for="test-input-email">Hộp đia chỉ thư điện tử</label></h3>
+  
+  <input id="test-email-search" type="email" value="" />
+  <p class="fine-print"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> bỏ qua các hộp địa chỉ thư điện tử khi nào <code>e-mail</code> hoặc <code>email</code> được liệt kê trong Danh sách đen trong cửa sổ tùy chọn của <acronym title="Advanced Vietnamese Input Method">AVIM</acronym>. Cả hai được liệt kê theo mặc định.</p>
+</section>
+
+<h2 id="rich">Các điều khiển văn bản có định dạng <acronym title="HyperText Markup Language" class="initialism">HTML</acronym></h2>
+
+<p>Nhiều ứng dụng trực tuyến nâng cao cho phép định dạng hóa văn bản. <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> tương tác với những ứng dụng đó không sao:</p>
+
+<section>
+  <h3>Midas</h3>
+  
+  <div id="test-midas-toolbar" class="toolbar">
+	<button type="button" onclick="execMidasCmd('bold');" title="Bật/tắt chữ đậm" style="font-weight: bold;">B</button>
+	<button type="button" onclick="execMidasCmd('italic');" title="Bật/tắt chữ xiên" style="font-style: italic;">I</button>
+	<button type="button" onclick="execMidasCmd('underline');" title="Bật/tắt đường gạch duới"><span style="text-decoration: underline;">U</span></button>
+	<button type="button" onclick="execMidasCmd('strikethrough');" title="Bật/tắt đường gạch ngang"><span style="text-decoration: line-through;">&nbsp;S&nbsp;</span></button>
+	&nbsp;&nbsp;
+	<button type="button" onclick="execMidasCmd('superscript');" title="Bật/tắt viết lên trên"><var>x</var>&sup2;</button>
+	<button type="button" onclick="execMidasCmd('subscript');" title="Bật/tắt viết xuống dưới"><var>x</var>&#x2082;</button>
+	&nbsp;&nbsp;
+	<button type="button" onclick="execMidasCmd('insertunorderedlist');" title="Bật/tắt danh sách không đánh số">&bull;</button>
+	<button type="button" onclick="execMidasCmd('insertorderedlist');" title="Bật/tắt danh sách đánh số">1.</button>
+	<button type="button" onclick="execMidasCmd('inserthorizontalrule');" title="Chèn hàng ngang">&mdash;</button>
+  </div>
+  <iframe id="test-midas" class="wide tall"></iframe>
+  <p class="fine-print">Nhiều trình soạn trực tuyến dựa trên Midas để hỗ trợ Firefox.</p>
+</section>
+
+<section>
+  <h3>Nội dung có thể sửa đổi</h3>
+  
+  <table id="test-contenteditable" summary="Mỗi hàng có lời chào trong một ngôn ngữ khác. Cột bên trái là ngôn ngữ, còn cột bên phải là lời chào trong ngôn ngữ đó." style="width: 100%;">
+	<caption>Lời chào trong một vài ngôn ngữ</caption>
+	<thead>
+	  <tr><th>Ngôn ngữ</th><th>Lời chào</th></tr>
+	</thead>
+	<tbody>
+	  <tr><td>Anh</td><td lang="en" xml:lang="en">Hello!</td></tr>
+	  <tr><td>Bồ Đào Nha</td><td lang="pt" xml:lang="pt">Olá!</td></tr>
+	  <tr><td>Hà Lan</td><td lang="nl" xml:lang="nl">Hallo!</td></tr>
+	  <!-- <tr><td>Pháp</td><td lang="fr" xml:lang="fr">Bonjour!</td></tr> -->
+	  <tr><td>Tây Ban Nha</td><td lang="es" xml:lang="es">¡Hola!</td></tr>
+	  <tr><td>Trung Quốc</td><td lang="zh" xml:lang="zh">你好！</td></tr>
+	  <tr><td>Việt</td><td>Chào!</td></tr>
+	</tbody>
+  </table>
+  <p class="fine-print">Bảng ở trên không nằm trong trình soạn nào đó, nhưng bạn vẫn có thể sửa đổi nó giống như thể nó nằm trong một tài liệu Word. Trang chỉ cần đặt thuộc tính <code>contentEditable</code> để cho phép độc giả sửa đổi bảng ngay tại chỗ. Phần nhiều trình soạn trực tuyến dựa trên <code>contentEditable</code> để hỗ trợ Internet Explorer.</p>
+</section>
+
+<h2 id="misc">Các điều khiển văn bản nâng cao</h2>
+
+<p>Để bày tỏ mức độ hỗ trợ gõ tiếng Việt của <acronym title="Advanced Vietnamese Input Method">AVIM</acronym>, đây có một vài loại điều khiển khác đến độ các phần mở rộng khác không có đầu mối:</p>
+
+<section>
+  <h3><label for="test-dlg-prompt">Hộp nhắc JavaScript</label></h3>
+  
+  <button id="test-dlg-prompt-btn" type="button" onclick="displayPrompt();">Hỏi Tôi</button>
+</section>
+
+<section>
+  <h3><label for="test-ace"><a href="http://ace.c9.io/" hreflang="en" rel="bookmark" title="ACE">Trình&nbsp;soạn <acronym title="Ajax.org Code Editor">Ace</acronym></a></label></h3>
+  
+  <!-- https://github.com/1ec5/avim/wiki/Tính+năng -->
+  <pre id="editor" class="wide tall">Tính năng
+=========
+
+Hiện đại
+--------
+
+Phần mở rộng AVIM cho phép bạn đánh máy trong tiếng Việt **một cách hiện đại** do một trong những bộ gõ tiếng Việt nhanh nhẹn và đầy đủ nhất:
+
+* AVIM hỗ trợ **bốn kiểu gõ chuẩn** (Telex, VNI, và hai kiểu VIQR), cũng như kiểu gõ “Tổng hợp” mặc định, tức là tổng hợp Telex và VNI.
+* Không giống các bảng gõ thường, AVIM để bạn nhập dấu phụ bất cứ chỗ nào sau chữ gốc của nó, và có thể nhập các dấu phụ theo thứ tự nào. AVIM **tự động chỉnh lại** văn bản để tuân theo các quy tắc chính tả tiếng Việt. Chẳng hạn khi sử dụng kiểu gõ VIQR, ```ddu+o+`ng```, ```dduo+`ng```, ```dduo+ng` ```, ```ddu+`ong+```, ```duon`g+d```, và ngay cả ```dduong+'?~.` ``` đều cho ra “đường”.
+* AVIM không kiểm tra chính tả đầy đủ – cần phần mở rộng [Từ điển tiếng Việt](https://addons.mozilla.org/vi/firefox/addon/vietnamese-dictionary/) – nhưng tính năng **kiểm tra theo quy tắc chính tả** vẫn giúp bạn tránh lỗi khi viết. Khi nào AVIM gặp một từ không theo quy tắc chính tả, nó xử lý các phím sau theo ý nghĩa đầu tiên, nên thay vì thêm dấu vào từ thì phím sẽ cho ra ký tự thường của nó. Cách này có ích khi cần pha trộn những từ ngoại ngữ vào văn bản tiếng Việt.
+* AVIM hiểu **cả hai kiểu bỏ dấu** – kiểu cũ (thí dụ “xóa”) và kiểu mới (“xoá”) – và tự động chỉnh lại văn bản theo một kiểu, tùy lựa chọn của bạn.
+* Ít khi gặp lỗi trong tính năng tự động bỏ dấu, tại vì AVIM đã được **sử dụng rộng rãi** trong nhiều trường hợp. Nó được thử dùng ngay cả toàn bộ danh sách từ của [Dự án Từ điển tiếng Việt miễn phí](http://www.informatik.uni-leipzig.de/~duc/Dict/). Phiên bản kịch bản được phát triển từ khoảng năm 2005, Phần mở rộng này rất vững vì phiên bản kịch bản được phát triển từ khoảng năm 2005, trong thời gian này nó được sử dụng tại nhiều website ở khắp Internet. Mỗi ngày hàng ngàn người dùng AVIM trong Firefox.
+
+Giao diện đầy đủ
+----------------
+
+Phần mở rộng có **giao diện đầy đủ**, để cho bạn điều khiển được sự đánh máy hơn các bộ gõ ở trong trang Web:
+
+* Một panel gọn gàng trên **Thanh tiện ích** của Firefox, rất giống các nút trên Thanh Tiện ích của Microsoft Word, hiển thị kiểu gõ hiện đang bật lên. Khi nhấn chuột trái vào panel, có trình đơn để tắt hoặc chuyên biệt AVIM. Có thể giấu panel này. Có thể thêm một nút tương tự vào **thanh công cụ**.
+* Một trình đơn rất giống dưới **trình đơn Chỉnh sửa**, **trình đơn Firefox** (Windows), và **trình đơn Customize and Control Firefox** cho phép chuyên biệt AVIM một cách dễ dàng ngay cả khi bạn giấu nút hoặc cả Thanh Tiện ích.
+* **Hộp thoại tùy chỉnh** có sẵn từ cửa sổ Tiện ích (Công cụ ▸ Các Tiện ích), ở đấy bạn có thể thiết lập các chi tiết của AVIM.
+* Vài **phím tắt** để bạn khỏi cần với tay tới chuột. Có thể bật hay tắt AVIM dễ dàng dùng khoản Bật trong trình đơn, hoặc bằng cách bấm Ctrl+Alt+V (⌥⌘V trên Mac). Phím tắt này rất tiện khi cần nhập những từ ngoại ngữ hay mã nguồn vào trang Web.
+* AVIM có sẵn trong **bảy thứ tiếng** – Anh, Bồ Đào Nha, Đức, Hà Lan, Tây Ban Nha, Trung giản thể, Việt – cả ba được cài đặt cùng lúc. Phần mở rộng tự động nhận ra ngôn ngữ giao diện để hợp với bản dịch Firefox đang được sử dụng; nếu AVIM không có sẵn trong ngôn ngữ của Firefox, nó sử dụng tiếng Anh mặc định.
+
+Mọi lúc mọi nơi
+---------------
+
+Không giống những bộ gõ khác có sẵn để cài đặt trong Firefox, AVIM **hoạt động mọi lúc mọi nơi**:
+
+* AVIM nhận ra **mỗi hộp văn bản trong mỗi trang Web** mà bạn mở lên. (Tuy nhiên, AVIM bỏ qua các hộp mật khẩu theo mặc định.)
+* Phần mở rộng này cũng nhận ra **bất cứ mọi hộp văn bản trong Firefox**, bao gồm các hộp trong cửa sổ chuẩn như Lưu trữ (trước đây gọi là Trình Quản lý Đánh dấu), cửa sổ do phần mở rộng nào đó mở, và hộp thoại này mà trang Web hiển thị dùng JavaScript.
+* AVIM hỗ trợ đầy đủ bất cứ trang Web nào được viết bằng HTML, ngay cả các ứng dụng Web đủ có như các **[Ứng dụng Web cho Office](http://office.microsoft.com/vi-VN/web-apps/)** và **[iCloud](http://www.icloud.com/)**.
+* AVIM là phần mở rộng bộ gõ duy nhất hỗ trợ phần bổ trợ **[Microsoft Silverlight](http://www.microsoft.com/silverlight/)**.
+* Phần mở rộng còn hỗ trợ các ứng dụng khác như trình chơi nhạc **[Nightingale](http://getnightingale.com/)**, chương trình thư điện tử **[Thunderbird](http://www.mozilla.org/vi/thunderbird/)**, và môi trường lập trình **[Komodo IDE](http://www.activestate.com/komodo-ide)**.
+
+Không làm trật bước
+-------------------
+
+AVIM cố gắng hoạt động một cách dễ hiểu, **không làm bạn trật bước**:
+
+* Khi nào thay đổi tùy chỉnh của AVIM, thay đổi đó được **áp dụng ngay** ở các cửa sổ Firefox đã mở lên, và được tự động áp dụng vào cửa sổ Firefox nào mà bạn mở lên từ lúc đó.
+* Các phím tắt của AVIM’s không những **không có xung đột với** các phím tắt mặc định của Firefox, mà còn tránh khỏi các phím tắt của nhiều phần mở rộng.
+* Các hộp văn bản **không cuộn lên trên hay nhảy lại đầu dòng** mỗi lần thêm dấu, và con nháy đứng yên khi bạn hoàn tác.
+* Hộp thoại tùy chỉnh của phiên bản mới nhận ra khi phần mở rộng [Mudim](https://addons.mozilla.org/vi/firefox/addon/mudim/) cũng được cài đặt và bật lên và có nút để dễ tắt nó, để **tránh sự xung đột**. AVIM không vô hiệu hóa cả phần mở rộng Mudim mà chỉ chuyển nó qua chế độ Tắt.
+* Tương tự, _**bộ giám sát kịch bản**_ của phần mở rộng tự động tắt các kịch bản (_script_) cung cấp bộ gõ được nhúng vào trang mà có thể xung đột với AVIM.
+* AVIM có giao diện chuẩn hoàn toàn, nên nó **có vẻ như một phần có sẵn trong Firefox**, bất chấp bạn chuyển qua giao diện (_theme_) nào trong Firefox.
+
+[So với Mudim và AVIM cho Chrome](compare.html) thì AVIM rõ ràng là công cụ gõ tiếng Việt đầy đủ nhất trong dạng phần mở rộng.</pre>
+  <p class="fine-print"><a href="http://ace.c9.io/" hreflang="en" rel="bookmark" title="ACE"><acronym title="Ajax.org Code Editor">Ace</acronym></a>, trước đây Bespin, là một trình soạn mã nguồn có tính năng đầy đủ. Hộp này tô màu theo cú pháp <a href="http://daringfireball.net/projects/markdown/" hreflang="en-US">Markdown</a> thường được sử dụng trong các blog, wiki, diễn đàn, và kho mã nguồn.</p>
+</section>
+
+<section>
+  <h3>Hộp văn bản <a href="http://www.microsoft.com/silverlight/" rel="bookmark" title="Microsoft: The Official Site of Silverlight">Microsoft Silverlight</a></h3>
+  
+  <script type="text/xaml" id="test-slight-xaml">
+	<?xml version="1.0"?>
+	<TextBox xmlns="http://schemas.microsoft.com/client/2007" Width="Auto" Height="Auto" TextWrapping="Wrap" AcceptsReturn="True" />
+  </script>
+  <div id="test-slight-host">
+	<object class="wide tall" type="application/x-silverlight-2" data="data:application/x-silverlight-2,">
+	  <param name="source" value="#test-slight-xaml" />
+	  <param name="background" value="white" />
+	  <a href="http://go.microsoft.com/fwlink/?LinkID=149156" style="text-decoration: none;"><img src="http://go.microsoft.com/fwlink/?LinkId=108181" alt="Get Microsoft Silverlight" style="border-style: none;" /></a>
+	</object>
+	<iframe id="_sl_historyFrame" style="visibility: hidden; height: 0px; width: 0px; margin: 0px; border: 0px;"></iframe>
+</div>
+<p class="fine-print"><a href="http://www.microsoft.com/silverlight/" rel="bookmark" title="Microsoft: The Official Site of Silverlight">Microsoft Silverlight</a> là một phần bổ trợ dành cho các ứng dụng có đồ họa phong phú, giống như Adobe Flash Player. <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> là phần mở rộng bộ gõ duy nhất mà hỗ trợ các điều khiển văn bản chuẩn của Silverlight. (Nhấn chuột phải vào hộp văn bản để xác nhận rằng nó nằm trong ứng dụng Silverlight.)</p>
+</section>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">AVIM được bảo quản bởi <a href="https://github.com/1ec5">Nguyễn Xuân Minh</a></p>
+        <p>Xuất bản qua <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
