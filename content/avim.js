@@ -1836,7 +1836,7 @@ function AVIM()	{
 	 */
 	this.updateContainer = function(outer, inner) {
 		if (!inner) return;
-		if (inner.document.location.hostname === iCloudHostname) return; // #36
+		if (inner.document && inner.document.location.hostname === iCloudHostname) return; // #36
 		var inputEvent = document.createEvent("Events");
 		inputEvent.initEvent("input", true, true);
 		if (inner.dispatchEvent) inner.dispatchEvent(inputEvent);
