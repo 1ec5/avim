@@ -2978,7 +2978,7 @@ function AVIM()	{
 			return false;
 		}
 		var doc = e.target.ownerDocument;
-		if (doc.defaultView == window) doc = origTarget.ownerDocument;
+		if (doc.defaultView == window) doc = e.originalTarget.ownerDocument;
 		this.disableOthers(doc);
 		return false;
 	};
