@@ -2965,6 +2965,35 @@ function AVIM()	{
 		parentSandbox = null;
 	};
 	
+	this.numCtrlPresses = 0;
+	this.isWaitingForCtrlKeyUp = false;
+	
+	/**
+	 * Starts listening for Ctrl press events to track the toggling key binding.
+	 */
+	this.startListeningForCtrl = function () {
+		//dump(">>> Start listening with " + this.numCtrlPresses + " key press(es)\n");	// debug
+		this.isWaitingForCtrlKeyUp = true;
+		if (!this.numCtrlPresses) {
+			addEventListener("keyup", this.onKeyUp, true);
+			addEventListener("mousedown", this.stopListeningForCtrl, true);
+			addEventListener("mouseup", this.stopListeningForCtrl, true);
+		}
+	};
+	
+	/**
+	 * Stops listening for Ctrl press events and resets the Ctrl key counter.
+	 */
+	this.stopListeningForCtrl = function () {
+		//dump(">>> Stop listening with " + avim.numCtrlPresses + " key press(es)\n");	// debug
+		avim.isWaitingForCtrlKeyUp = false;
+		avim.numCtrlPresses = 0;
+		removeEventListener("keyup", avim.onKeyUp, true);
+		removeEventListener("mousedown", avim.stopListeningForCtrl, true);
+		removeEventListener("mouseup", avim.stopListeningForCtrl, true);
+		return false;
+	};
+	
 	/**
 	 * First responder for keydown events.
 	 *
@@ -2974,12 +3003,20 @@ function AVIM()	{
 		//dump("AVIM.onKeyDown -- code: " + fcc(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
+		if (e.which == e.DOM_VK_CONTROL && e.ctrlKey && !e.metaKey &&
+			!e.altKey && !e.shiftKey) {
+			this.startListeningForCtrl();
+			return false;
+		}
+		this.stopListeningForCtrl();
+		
 		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
 			return false;
 		}
 		var doc = e.target.ownerDocument;
 		if (doc.defaultView == window) doc = e.originalTarget.ownerDocument;
 		this.disableOthers(doc);
+		
 		return false;
 	};
 	
@@ -2994,6 +3031,7 @@ function AVIM()	{
 		//dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
+		this.stopListeningForCtrl();
 		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
 			return false;
 		}
@@ -3050,6 +3088,29 @@ function AVIM()	{
 		
 		// Plain text editors
 		return this.handleKeyPress(e);
+	};
+	
+	/**
+	 * First responder for keyup events.
+	 *
+	 * @param e {object}	The generated event.
+	 */
+	this.onKeyUp = function (e) {
+		//dump("AVIM.onKeyUp -- code: " + fcc(e.which) + " #" + e.which +
+		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
+		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
+		if (avim && avim.isWaitingForCtrlKeyUp) {
+			avim.isWaitingForCtrlKeyUp = false;
+			if (e.which == e.DOM_VK_CONTROL && !e.ctrlKey && !e.metaKey &&
+				!e.altKey && !e.shiftKey) {
+				if (++avim.numCtrlPresses > 1) {
+					avim.stopListeningForCtrl();
+					avim.toggle();
+				}
+			}
+			else avim.stopListeningForCtrl();
+		}
+		return false;
 	};
 	
 	// IME and DiMENSiON extension
