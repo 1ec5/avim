@@ -349,6 +349,8 @@ Version ${Version} (${Date})
  - Consolidated the various toolbar buttons into a single toolbar button that
    resembles the status bar panel. When upgrading to Firefox 29, this button is
    automatically added to the toolbar.
+ - You can now toggle AVIM by pressing Ctrl twice in a row, just like in AVIM
+   for Chrome. AVIM plays a faint sound to alert you that it has been toggled.
  - Firefox Sync can now keep AVIM preferences synchronized across different
    installations of Firefox and Firefox Mobile.
  - Fixed an issue in rich text controls where selecting text and pressing
