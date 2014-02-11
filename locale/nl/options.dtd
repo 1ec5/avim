@@ -37,6 +37,8 @@
 <!ENTITY passwords-check.accesskey "W">
 <!ENTITY statuspanel-check.label "Toon in Add-onbalk">
 <!ENTITY statuspanel-check.accesskey "s">
+<!ENTITY volume-scale.label "Volume:">
+<!ENTITY volume-scale.accesskey "V">
 <!ENTITY avim-blacklist.style "width: 35em;">
 <!ENTITY blacklist-pane.label "Uitzonderingen">
 <!ENTITY ignore-text.label "ID van tekstveld:">

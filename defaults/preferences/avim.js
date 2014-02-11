@@ -25,6 +25,10 @@ pref("services.sync.prefs.sync.extensions.avim.oldAccents", true);
 pref("extensions.avim.informal", false);
 pref("services.sync.prefs.sync.extensions.avim.informal", true);
 
+/* Volume of the cues that are played when toggling AVIM, from 0 through 100. */
+pref("extensions.avim.volume", 20);
+pref("services.sync.prefs.sync.extensions.avim.volume", true);
+
 /* Display the status bar panel. */
 pref("extensions.avim.statusBarPanel", true);
 pref("services.sync.prefs.sync.extensions.avim.statusBarPanel", true);

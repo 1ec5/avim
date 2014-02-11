@@ -89,6 +89,11 @@
 <!-- Mneumonic for the checkbox that is checked when the AVIM button is shown in the Add-on Bar and unchecked when the button is hidden. This string should contain a single character that also appears in statuspanel-check.label. The user can press Alt+B (Ctrl+B on the Mac) to toggle the checkbox. -->
 <!ENTITY statuspanel-check.accesskey "b">
 
+<!-- Label of the slider for the volume of the audio cue that is played when toggling AVIM on and off with the Ctrl key. -->
+<!ENTITY volume-scale.label "Volume:">
+<!-- Mneumonic for the slider for the volume of the audio cue that is played when toggling AVIM on and off with the Ctrl key. This string should contain a single character that also appears in volume-scale.label. The user can press Alt+V (Ctrl+V on the Mac) to focus the slider. -->
+<!ENTITY volume-scale.accesskey "V">
+
 <!-- Blacklist dialog ====================================================== -->
 
 <!-- CSS style rule that applies to the Blacklist dialog box. It should only specify the width of the dialog in em units. Localizations can keep this string the same unless they have words so long that they cause unseemly line wrapping. -->

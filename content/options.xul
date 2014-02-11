@@ -33,6 +33,7 @@
 			<preference id="statuspanel-pref" name="extensions.avim.statusBarPanel" type="bool" />
 			<preference id="script-enabled-pref" name="extensions.avim.scriptMonitor.enabled" type="bool" onchange="optionsPanel.validateForScriptMonitor();" />
 			<preference id="passwords-pref" name="extensions.avim.passwords" type="bool" inverted="true" />
+			<preference id="volume-pref" name="extensions.avim.volume" type="int" />
 		</preferences>
 		
 		<hbox id="enabled-box" align="center">
@@ -91,7 +92,14 @@
 			<button id="script-config-button" label="&script-config-button.label;" accesskey="&script-config-button.accesskey;" observes="script-enabled-bc" oncommand="optionsPanel.openScriptConfig();" />
 		</hbox>
 		<checkbox id="passwords-check" preference="passwords-pref" label="&passwords-check.label;" accesskey="&passwords-check.accesskey;" observes="disabled-bc" />
-		<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
+		<hbox align="center">
+			<checkbox id="statuspanel-check" preference="statuspanel-pref" label="&statuspanel-check.label;" accesskey="&statuspanel-check.accesskey;" />
+			
+			<spacer flex="1" />
+			
+			<label control="volume-scale" accesskey="&volume-scale.accesskey;">&volume-scale.label;</label>
+			<scale id="volume-scale" preference="volume-pref" />
+		</hbox>
 	</prefpane>
 	
 	<!-- Just to get the confounded menu bar to show up in Mac OS X. -->

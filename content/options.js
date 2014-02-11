@@ -30,7 +30,8 @@ function AVIMOptionsPanel() {
 		method: "method-pref",
 		spell: "spell-pref",
 		ignoredIds: "ignoredids-pref",
-		script: "script-enabled-pref"
+		script: "script-enabled-pref",
+		volume: "volume-pref"
 	};
 	
 // $if{Debug}
@@ -259,6 +260,19 @@ function AVIMOptionsPanel() {
 		bc.setAttribute("disabled", "" + (!enabled || !scriptEnabled));
 	};
 	
+	this.initializeVolume = function () {
+		var scale = $("volume-scale");
+		if (!scale) return;
+		
+		scale.value = $(prefIds.volume).value;
+		
+		// Preview the cue. Listening for change events would result in a
+		// barrage of cues while scrubbing, so listen for mouseup instead.
+		scale.addEventListener("mouseup", function (evt) {
+			if (window.avim) avim.playCueAfterToggle(scale.value);
+		}, false);
+	};
+	
 	/**
 	 * Removes the selected IDs from the list of ignored IDs and updates the
 	 * associated preference, so that the selected IDs are no longer listed in
@@ -388,6 +402,7 @@ function AVIMOptionsPanel() {
 			this.validateRemoveButton();
 			this.validateResetButton();
 		}
+		this.initializeVolume();
 	};
 }
 if (window && !("optionsPanel" in window)) {

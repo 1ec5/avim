@@ -49,6 +49,9 @@
 <!ENTITY statuspanel-check.label "In der Add-on-Leiste anzeigen">
 <!ENTITY statuspanel-check.accesskey "S">
 
+<!ENTITY volume-scale.label "Lautstärke:">
+<!ENTITY volume-scale.accesskey "L">
+
 <!ENTITY avim-blacklist.style "width: 35em;">
 
 <!ENTITY blacklist-pane.label "Blacklist">

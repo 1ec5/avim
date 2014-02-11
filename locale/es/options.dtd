@@ -49,6 +49,9 @@
 <!ENTITY statuspanel-check.label "Mostrar en la barra de complementos">
 <!ENTITY statuspanel-check.accesskey "e">
 
+<!ENTITY volume-scale.label "Volumen:">
+<!ENTITY volume-scale.accesskey "V">
+
 <!ENTITY avim-blacklist.style "width: 35em;">
 
 <!ENTITY blacklist-pane.label "Lista negra">

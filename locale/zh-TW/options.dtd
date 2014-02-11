@@ -49,6 +49,9 @@
 <!ENTITY statuspanel-check.label "在附加元件列上顯示">
 <!ENTITY statuspanel-check.accesskey "B">
 
+<!ENTITY volume-scale.label "音量：">
+<!ENTITY volume-scale.accesskey "V">
+
 <!ENTITY avim-blacklist.style "width: 35em;">
 
 <!ENTITY blacklist-pane.label "">

@@ -49,6 +49,9 @@
 <!ENTITY statuspanel-check.label "在状态栏上显示">
 <!ENTITY statuspanel-check.accesskey "B">
 
+<!ENTITY volume-scale.label "音量：">
+<!ENTITY volume-scale.accesskey "V">
+
 <!ENTITY avim-blacklist.style "width: 35em;">
 
 <!ENTITY blacklist-pane.label "黑名单">

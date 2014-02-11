@@ -48,6 +48,9 @@
 <!ENTITY statuspanel-check.label "Exibir na Barra de Extensões">
 <!ENTITY statuspanel-check.accesskey "b">
 
+<!ENTITY volume-scale.label "Volume:">
+<!ENTITY volume-scale.accesskey "o">
+
 <!ENTITY avim-blacklist.style "width: 35em;">
 
 <!ENTITY blacklist-pane.label "Exceções">

@@ -86,15 +86,22 @@ function AVIM()	{
 			codes.push(chars[i].charCodeAt(0));
 		}
 		return codes;
-	};
+	}
 	
 	function $(id) {
 		return document.getElementById(id);
-	};
+	}
 	
 	function nan(w) {
 		return isNaN(w) || w == 'e';
-	};
+	}
+	
+	/**
+	 * Returns the given value clamped to a minimum and maximum, inclusive.
+	 */
+	function clamp(x, min, max) {
+		return Math.min(Math.max(x, min), max);
+	}
 	
 	/**
 	 * Returns the JavaScript string literal representing the given string.
@@ -112,7 +119,7 @@ function AVIM()	{
 	 *
 	 * @returns {bool}	True if VIQR or VIQR* is the current input method.
 	 */
-	var methodIsVIQR = function () {
+	function methodIsVIQR() {
 		if (AVIMConfig.method > 2) return true;
 		return AVIMConfig.method == 0 && (AVIMConfig.autoMethods.viqr ||
 										  AVIMConfig.autoMethods.viqrStar);
@@ -1047,23 +1054,27 @@ function AVIM()	{
 	 * Plays a sound to alert the user that AVIM's settings have changed, in
 	 * case all the UI is hidden.
 	 */
-	this.playCueAfterToggle = function () {
+	this.playCueAfterToggle = function (volume) {
 		var enabled = AVIMConfig.onOff;
 		if (this.onCue) this.onCue.pause();
 		if (this.offCue) this.offCue.pause();
 		
+		if (volume === undefined) volume = AVIMConfig.volume;
+		volume = clamp(volume / 100, 0, 1);
+		
 		if (enabled && !this.onCue) {
 			this.onCue = new Audio("chrome://avim/content/on.wav");
-			this.onCue.volume = 0.2;
+			this.onCue.volume = volume;
 			this.onCue.autoplay = true;
 		}
 		else if (!enabled && !this.offCue) {
 			this.offCue = new Audio("chrome://avim/content/off.wav");
-			this.offCue.volume = 0.2;
+			this.offCue.volume = volume;
 			this.offCue.autoplay = true;
 		}
 		else {
 			var cue = enabled ? this.onCue : this.offCue;
+			cue.volume = volume;
 			cue.currentTime = 0;
 			cue.play();
 		}
@@ -2619,6 +2630,10 @@ function AVIM()	{
 		if (!changedPref || changedPref == "method") {
 			prefs.setIntPref("method", AVIMConfig.method);
 		}
+		if (!changedPref || changedPref == "volume") {
+			prefs.setIntPref("volume",
+							 Math.round(clamp(AVIMConfig.volume, 0, 100)));
+		}
 		
 		// Custom string preferences
 		if (!changedPref || changedPref == "ignoredFieldIds") {
@@ -2676,6 +2691,9 @@ function AVIM()	{
 			// Advanced options
 			case "informal":
 				AVIMConfig.informal = prefs.getBoolPref("informal");
+				if (specificPref) break;
+			case "volume":
+				AVIMConfig.volume = prefs.getIntPref("volume");
 				if (specificPref) break;
 			case "passwords":
 				AVIMConfig.passwords = prefs.getBoolPref("passwords");

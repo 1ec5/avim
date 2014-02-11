@@ -49,6 +49,9 @@
 <!ENTITY statuspanel-check.label "Afficher dans la barre des modules">
 <!ENTITY statuspanel-check.accesskey "b">
 
+<!ENTITY volume-scale.label "Volume:">
+<!ENTITY volume-scale.accesskey "V">
+
 <!ENTITY avim-blacklist.style "width: 35em;">
 
 <!ENTITY blacklist-pane.label "">

@@ -49,6 +49,9 @@
 <!ENTITY statuspanel-check.label "Hiện trong Thanh Tiện ích">
 <!ENTITY statuspanel-check.accesskey "H">
 
+<!ENTITY volume-scale.label "Âm lượng:">
+<!ENTITY volume-scale.accesskey "l">
+
 <!ENTITY avim-blacklist.style "width: 35em;">
 
 <!ENTITY blacklist-pane.label "Danh sách đen">
