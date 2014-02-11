@@ -81,23 +81,6 @@
 			<radio value="false" label="&oldaccents-check.false.label;" accesskey="&oldaccents-check.false.accesskey;" observes="disabled-bc" />
 		</radiogroup>
 		
-		<!-- <groupbox>
-			<caption label="Preview" />
-			<scrollbox>
-				<grid style="background-color: -moz-Field; color: -moz-FieldText; text-align: center; overflow-x: scroll; width: 35em;">
-					<rows>
-						<row style="font-family: monospace; margin: 0.5em;">
-							<label style="background-color: yellow;">Dza.,</label><label>to^i</label><label>dda~</label><label>ho.c</label><label>ho'a</label><label>ho.c</label><label>muoi+`</label><label>na(m</label><label>nay</label><label>o+?</label><label>Washington.</label>
-						</row>
-						<row style="font-size: larger; margin: 0.5em;">
-							<label style="background-color: yellow;">Dza.,</label><label>tôi</label><label>đã</label><label>học</label><label>hóa</label><label>học</label><label>mười</label><label>năm</label><label>nay</label><label>ở</label><label>Washington.</label>
-						</row>
-					</rows>
-				</grid>
-			</scrollbox>
-		</groupbox> -->
-		<!-- <iframe style="background-color: white;" src="data:text/html,&lt;body style='text-align: center;'&gt;&lt;p style='margin-top: 1em; margin-bottom: 1em;'&gt;&lt;kbd&gt;Dza., to^i dda~ ho.c ho'a ho.c muoi+` na(m o+? Washington.&lt;/kbd&gt;&lt;/p&gt;&lt;p style='margin-top: 1em; margin-bottom: 1em;'&gt;Dza., tôi đã học hóa học mười năm ở Washington.&lt;/p&gt;&lt;/body&gt;" /> -->
-		
 		<separator class="groove" />
 		
 		<hbox id="script-box" align="center">
