@@ -10,11 +10,11 @@
 <!ENTITY description.advanced "AVIM dựa trên [gói JavaScript] cùng tên của Đặng Trần Hiếu. Nó đã được cải tiến với nhiều sáng kiến rất tiện không kiếm được trong [những phần mở rộng cạnh tranh]:">
 
 <!ENTITY description.advanced.ui "Giao diện đầy đủ có nút gọn gàng trên thanh tiện ích, các nút cho thanh công cụ, và cửa sổ tùy chọn">
-<!ENTITY description.advanced.scriptmonitor "Bộ giám sát script tự động tắt các bộ gõ của trang Web để tránh xung đột (cũng [có sẵn riêng])">
+<!ENTITY description.advanced.scriptmonitor "Bộ giám sát kịch bản tự động tắt các bộ gõ của trang Web để tránh xung đột (cũng [có sẵn riêng])">
 <!ENTITY description.advanced.compatible "Tương thích với [bất cứ mọi] trang Web và cửa sổ mà bạn sẽ mở">
 <!ENTITY description.advanced.inplace "Chỉnh sửa ngay tại chỗ, không cho phép hộp văn bản nhảy tới lui trong lúc gõ – ngay cả khi hoàn tác">
 
 <!ENTITY description.conclusion "Nói đơn giản, *AVIM chạy ngon lành*.">
 
-<!ENTITY developer.script "Phần mở rộng này hoạt động do [AVIM] ([tải xuống]), bản script của Đặng Trần Hiếu để bạn nhúng bộ gõ tiếng Việt vào trang Web của chính bạn.">
+<!ENTITY developer.script "Phần mở rộng này hoạt động do [AVIM] ([tải xuống]), kịch bản của Đặng Trần Hiếu để bạn nhúng bộ gõ tiếng Việt vào trang Web của chính bạn.">
 <!ENTITY developer.dictionary "Để nhập tiếng Việt càng thuận tiện, hãy cài đặt phần mở rộng [Từ điển tiếng Việt].">
