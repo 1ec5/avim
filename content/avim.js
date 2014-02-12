@@ -123,7 +123,18 @@ function AVIM()	{
 		if (AVIMConfig.method > 2) return true;
 		return AVIMConfig.method == 0 && (AVIMConfig.autoMethods.viqr ||
 										  AVIMConfig.autoMethods.viqrStar);
-	};
+	}
+	
+	/**
+	 * Returns the last word in the given string.
+	 *
+	 * If VIQR is the current input method, this function may return “\”.
+	 */
+	function lastWordInString(str) {
+		if (str.substr(-1) === "\\" && methodIsVIQR()) return "\\";
+		var match = wordRe.exec(str);
+		return match && match[0];
+	}
 	
 	/**
 	 * Proxy for a specialized editor to appear as an ordinary HTML text field
@@ -161,23 +172,27 @@ function AVIM()	{
 	 * 								be defined on the sandbox.
 	 */
 	function AceProxy(sandbox) {
-		if (Cu.evalInSandbox("!env.document.selection.isEmpty()", sandbox)) {
+		sandbox.$sel = Cu.evalInSandbox("env.document.selection", sandbox);
+		if (!Cu.evalInSandbox("$sel&&!!$sel.isEmpty()", sandbox)) {
 			throw "Non-empty selection";
 		}
-		var selLeadJS = "env.document.selection.selectionLead";
-		this.oldSelectionStart = {
-			row: parseInt(Cu.evalInSandbox(selLeadJS + ".row+0", sandbox)),
-			column: parseInt(Cu.evalInSandbox(selLeadJS + ".column+0", sandbox))
+		sandbox.$selLead = Cu.evalInSandbox("$sel.selectionLead||null", sandbox);
+		if (sandbox.$selLead === null) throw "No selection";
+		var selLead = {
+			row: parseInt(Cu.evalInSandbox("$selLead.row+0", sandbox)),
+			column: parseInt(Cu.evalInSandbox("$selLead.column+0", sandbox))
 		};
-		this.selectionStart = this.selectionEnd = this.oldSelectionStart.column;
 		
-		this.oldValue = Cu.evalInSandbox("env.document.getLine(" +
-										 this.oldSelectionStart.row + ")+''",
-										 sandbox);
-		this.value = this.oldValue;
+		var lineStr = Cu.evalInSandbox("env.document.getLine(" +
+											selLead.row + ")+''", sandbox);
+		var word = this.value = lastWordInString(lineStr.substr(0,selLead.column));
+		if (!word || !word.length) throw "No word";
+		var wordStart = selLead.column - word.length;
 		
-//		dump("\tselection: " + this.oldSelectionStart.row + ":" + this.oldSelectionStart.column + "\n");	// debug
-//		dump("\t<" + this.oldValue + ">");
+		this.selectionStart = this.selectionEnd = this.value.length;
+		
+//		dump("\tselection: " + selLead.row + ":" + selLead.column + "\n");	// debug
+//		dump("\t<" + word + ">");
 		
 		/**
 		 * Updates the Ace editor represented by this proxy to reflect any
@@ -186,32 +201,16 @@ function AVIM()	{
 		 * @returns {boolean}	True if anything was changed; false otherwise.
 		 */
 		this.commit = function() {
-			if (this.value == this.oldValue) return false;
+			if (this.value == word) return false;
 			
-//			dump("Replacing <" + env.document.doc.$lines[this.oldSelectionStart.row].substring(0, 10) + "> ");	// debug
+//			dump("Replacing <" + env.document.doc.$lines[selLead.row].substring(0, 10) + "> ");	// debug
 			
-			Cu.evalInSandbox("env.document.doc.removeInLine(" +
-							 this.oldSelectionStart.row + ",0," +
-							 this.oldValue.length + ")", sandbox);
-			Cu.evalInSandbox("env.document.doc.insert(" +
-							 "env.document.selection.selectionLead," +
+			// Work around <https://github.com/ajaxorg/ace/pull/1813>.
+			sandbox.$Range =
+				Cu.evalInSandbox("$sel.getRange().__proto__.constructor", sandbox);
+			Cu.evalInSandbox("env.document.replace(new $Range($selLead.row," +
+							 wordStart + ",$selLead.row,$selLead.column)," +
 							 quoteJS(this.value) + ")", sandbox);
-//			dump("with <" + env.document.doc.$lines[this.oldSelectionStart.row] + ">\n");	// debug
-			var selectionStart = this.oldSelectionStart;
-			selectionStart.column += this.value.length - this.oldValue.length;
-			try {
-				Cu.evalInSandbox("env.editor.moveCursorToPosition({row:" +
-								 selectionStart.row + ",column:" +
-								 selectionStart.column + "})", sandbox);
-			}
-			catch (exc) {
-				Cu.evalInSandbox("env.document.selection.moveCursorToPosition" +
-								 "({row:" + selectionStart.row + ",column:" +
-								 selectionStart.column + "})", sandbox);
-			}
-//			dump("selection: " + env.document.selection.selectionLead.row + ":" +
-//				 env.document.selection.selectionLead.column + "\n");			// debug
-			
 			return true;
 		};
 	};
@@ -609,17 +608,14 @@ function AVIM()	{
 		
 		var beforeString = Cu.evalInSandbox("$storage.getSubstring(0," +
 											selectionStart + ")+''", sandbox);
-		var match;
-		if (beforeString.substr(-1) === "\\" && methodIsVIQR()) match = "\\";
-		else match = wordRe.exec(beforeString);
-		this.oldValue = this.value = match && match[0];
-		if (!this.value || !this.value.length) throw "No word";
-		var wordStart = selectionStart - this.value.length;
+		var word = this.value = lastWordInString(beforeString);
+		if (!word || !word.length) throw "No word";
+		var wordStart = selectionStart - word.length;
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
 		//dump("\tselection: " + selectionStart + " back to " + wordStart + "\n");	// debug
-		//dump("\t<" + this.oldValue + ">\n");
+		//dump("\t<" + word + ">\n");
 		
 		/**
 		 * Updates the editor represented by this proxy to reflect any changes
@@ -628,9 +624,9 @@ function AVIM()	{
 		 * @returns {boolean}	True if anything was changed; false otherwise.
 		 */
 		this.commit = function() {
-			if (this.value == this.oldValue) return false;
+			if (this.value == word) return false;
 			
-			//dump(">>> Replacing <" + this.oldValue + "> with <" + this.value + ">\n");	// debug
+			//dump(">>> Replacing <" + word + "> with <" + this.value + ">\n");	// debug
 			
 			sandbox.$editor =
 				Cu.evalInSandbox("$GSK.DocumentViewController.currentController." +
