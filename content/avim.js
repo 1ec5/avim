@@ -185,7 +185,7 @@ function AVIM()	{
 		
 		var lineStr = Cu.evalInSandbox("env.document.getLine(" +
 											selLead.row + ")+''", sandbox);
-		var word = this.value = lastWordInString(lineStr.substr(0,selLead.column));
+		var word = this.value = lastWordInString(lineStr.substr(0, selLead.column));
 		if (!word || !word.length) throw "No word";
 		var wordStart = selLead.column - word.length;
 		
