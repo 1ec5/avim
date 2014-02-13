@@ -39,7 +39,7 @@ ROOT_DIRS = ["components", "defaults"]
 
 # Paths to files to be preprocessed. These files contain placeholders that
 # should be interpreted as variables.
-VAR_FILES = ["install.rdf", "chrome.manifest", "CHANGELOG", "LICENSE",
+VAR_FILES = ["install.rdf", "chrome.manifest", "LICENSE",
              path.join("content", "avim.js"),
 			 path.join("content", "options.js"),
 			 path.join("content", "options.xul")]
