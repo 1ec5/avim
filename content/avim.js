@@ -1241,7 +1241,6 @@ function AVIM()	{
 		}
 		if (!items.length) return;
 		
-		items[0].setAttribute("oncommand", "");
 		items[0].setAttribute("default", "true");
 		
 		while (popup.firstChild) popup.removeChild(popup.firstChild);
