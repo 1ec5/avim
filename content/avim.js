@@ -1235,7 +1235,7 @@ function AVIM()	{
 		
 		var items = [];
 		for (var item = mainPopup.firstChild; item; item = item.nextSibling) {
-			var clone = item.cloneNode();
+			var clone = item.cloneNode(false);
 			if (clone.id) clone.id += "-dynamic";
 			items.push(clone);
 		}
