@@ -27,8 +27,15 @@ toolbarpaletteitem[place="palette"] > #avim-tb[open="true"] {
 
 #avim-status[avim-hidden="true"],
 #avim-tb .toolbarbutton-icon,
+#avim-tb[cui-areatype="menu-panel"] .toolbarbutton-text,
 toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-text {
 	display: none;
+}
+
+#avim-tb[cui-areatype="menu-panel"] .toolbarbutton-multiline-text::before,
+toolbarpaletteitem[place="palette"] > #avim-tb :-moz-any(.toolbarbutton-text, .toolbarbutton-multiline-text)::before {
+	content: "AVIM\A";
+	white-space: pre-wrap;
 }
 
 #avim-tb .toolbarbutton-text,
@@ -42,7 +49,7 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 	animation: enabled 2s ease-in-out;
 }
 
-#avim-tb[avim-disabled="true"] .toolbarbutton-text,
+#avim-tb[avim-disabled="true"] :-moz-any(.toolbarbutton-text, .toolbarbutton-multiline-text),
 #avim-status[avim-disabled="true"] {
 	animation: disabled 2s ease-in-out;
 	text-decoration: line-through;
@@ -68,18 +75,10 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 	from {
 		color: #3366ff;
 	}
-	
-	to {
-		color: currentColor;
-	}
 }
 
 @keyframes disabled {
 	from {
 		-moz-text-decoration-color: red;
-	}
-	
-	to {
-		-moz-text-decoration-color: currentColor;
 	}
 }
