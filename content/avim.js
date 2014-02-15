@@ -1229,7 +1229,7 @@ function AVIM()	{
 	this.buildPopup = function (popup) {
 		this.updateUI();
 		
-		var mainPopupId = popup.parentElement.contextMenu;
+		var mainPopupId = popup.getAttribute("avim-popupsource");
 		var mainPopup = $(mainPopupId);
 		if (!mainPopup) return;
 		
