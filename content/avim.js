@@ -216,6 +216,7 @@ function AVIM()	{
 	};
 	AceProxy.prototype = new TextControlProxy();
 	
+// $if{Debug}
 	/**
 	 * Proxy for an Eclipse Orion editor to pose as an ordinary HTML <textarea>.
 	 * 
@@ -260,6 +261,7 @@ function AVIM()	{
 		};
 	};
 	OrionProxy.prototype = new TextControlProxy();
+// $endif{}
 	
 	/**
 	 * Proxy for a Ymacs editor to pose as an ordinary HTML <textarea>.
@@ -2179,6 +2181,7 @@ function AVIM()	{
 		return true;
 	};
 	
+// $if{Debug}
 	/**
 	 * Handles key presses in the Eclipse Orion editor. This function is
 	 * triggered as soon soon as the key goes up.
@@ -2229,6 +2232,7 @@ function AVIM()	{
 		}
 		return true;
 	};
+// $endif{}
 	
 	/**
 	 * Handles key presses in the Ymacs editor. This function is
@@ -3109,8 +3113,10 @@ function AVIM()	{
 			// ACE editor
 			if (tagName == "textarea" && this.handleAce(e)) return true;
 			
+// $if{Debug}
 			// Eclipse Orion
 			if (tagName == "div" && this.handleOrion(e)) return true;
+// $endif{}
 		}
 		catch (exc) {
 // $if{Debug}
