@@ -168,22 +168,24 @@ function AVIM()	{
 	 * Bespin/Skywriter/Ace API while posing as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context. The editor's `env` variable should
+	 * 								context. The editor's `$env` variable should
 	 * 								be defined on the sandbox.
+	 * @param rangeNum	{number}	Selection range index, for multiple
+	 * 								selection.
+	 * @param numRanges	{number}	Total number of selection ranges.
 	 */
-	function AceProxy(sandbox) {
-		sandbox.$sel = Cu.evalInSandbox("env.document.selection", sandbox);
-		if (!Cu.evalInSandbox("$sel&&!!$sel.isEmpty()", sandbox)) {
-			throw "Non-empty selection";
-		}
-		sandbox.$selLead = Cu.evalInSandbox("$sel.selectionLead||null", sandbox);
-		if (sandbox.$selLead === null) throw "No selection";
+	function AceProxy(sandbox, rangeNum, numRanges) {
+		sandbox.$cursor = Cu.evalInSandbox(numRanges > 1 ? "$sel.ranges[" +
+										   rangeNum + "].cursor||null" :
+										   "$sel.selectionLead||null", sandbox);
+		if (sandbox.$cursor === null) throw "No cursor";
+		
 		var selLead = {
-			row: parseInt(Cu.evalInSandbox("$selLead.row+0", sandbox)),
-			column: parseInt(Cu.evalInSandbox("$selLead.column+0", sandbox))
+			row: parseInt(Cu.evalInSandbox("$cursor.row+0", sandbox)),
+			column: parseInt(Cu.evalInSandbox("$cursor.column+0", sandbox))
 		};
 		
-		var lineStr = Cu.evalInSandbox("env.document.getLine(" +
+		var lineStr = Cu.evalInSandbox("$env.document.getLine(" +
 											selLead.row + ")+''", sandbox);
 		var word = this.value = lastWordInString(lineStr.substr(0, selLead.column));
 		if (!word || !word.length) throw "No word";
@@ -203,13 +205,13 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == word) return false;
 			
-//			dump("Replacing <" + env.document.doc.$lines[selLead.row].substring(0, 10) + "> ");	// debug
+//			dump("Replacing <" + $env.document.doc.$lines[selLead.row].substring(0, 10) + "> ");	// debug
 			
 			// Work around <https://github.com/ajaxorg/ace/pull/1813>.
 			sandbox.$Range =
 				Cu.evalInSandbox("$sel.getRange().__proto__.constructor", sandbox);
-			Cu.evalInSandbox("env.document.replace(new $Range($selLead.row," +
-							 wordStart + ",$selLead.row,$selLead.column)," +
+			Cu.evalInSandbox("$env.document.replace(new $Range($cursor.row," +
+							 wordStart + ",$cursor.row,$cursor.column)," +
 							 quoteJS(this.value) + ")", sandbox);
 			return true;
 		};
@@ -2152,24 +2154,28 @@ function AVIM()	{
 //		dump("---AceProxy---\n");												// debug
 		// Build a sandbox with all the toys an Ace editor could want.
 		var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
-		sandbox.elt = elt.wrappedJSObject;
-		try {
-			sandbox.env = Cu.evalInSandbox("elt.env || null", sandbox);
-			if (sandbox.env === null) return false;
+		sandbox.$elt = elt.wrappedJSObject;
+		sandbox.$env = Cu.evalInSandbox("$elt.env||null", sandbox);
+		if (sandbox.$env === null) return false;
+		
+		sandbox.$sel = Cu.evalInSandbox("$env.document.selection", sandbox);
+		if (!Cu.evalInSandbox("$sel&&!!$sel.isEmpty()", sandbox)) return false;
+		
+		var numRanges = Cu.evalInSandbox("$sel.rangeCount+0", sandbox) || 1;
+		var anyChanged = this.changed;
+		for (var i = 0; i < numRanges; i++) {
+			var proxy = new AceProxy(sandbox, i, numRanges);
+			if (!proxy) continue;
+			
+			this.sk = fcc(evt.which);
+			this.start(proxy, evt);
+			
+			if (this.changed) anyChanged = true;
+			if (proxy.commit) proxy.commit();
+			proxy = null;
+			this.changed = false;
 		}
-		catch (exc) {
-			return false;
-		}
-		
-		// Fake a native textbox.
-		var proxy = new AceProxy(sandbox);
-		
-		this.sk = fcc(evt.which);
-		this.start(proxy, evt);
-		
-		proxy.commit();
-		proxy = null;
-		sandbox = null;
+		this.changed = anyChanged;
 		
 		if (this.changed) {
 			this.changed = false;
