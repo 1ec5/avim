@@ -41,6 +41,7 @@ from datetime import date
 from StringIO import StringIO
 from jsmin import JavascriptMinify
 from cssmin import cssmin
+from xmlformatter import Formatter as XmlFormatter
 from config_build import *
 
 BLOB = None
@@ -185,14 +186,31 @@ def minify_manifest(src):
     """Returns a minified version of the given chrome manifest source."""
     return re.sub(r"[\t ]+", r"\t", minify_properties(src))
 
+def minify_colors(src):
+    """Returns the given source with any color references minified."""
+    rgb_re = r"\brgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)"
+    hex_from_m = lambda m: "#%.2x%.2x%.2x" % tuple(int(i) for i in m.groups())
+    src = re.sub(rgb_re, hex_from_m, src)
+    long_re = r"#([a-z0-9])\1([a-z0-9])\2([a-z0-9])\3(?![a-z0-9])"
+    src = re.sub(long_re, r"#\1\2\3", src, flags=re.I)
+    return src
+
 def minify_xml(file_path, src):
     """Returns a minified version of the given XML source string."""
-    src = "".join(ln.strip() for ln in src.split("\n"))
+    src = XmlFormatter(compress=True).format_string(src)
     src = re.sub(r"<!--.*?-->", "", src)
+    if file_path.lower().endswith(".svg"):
+        src = minify_colors(src)
     url = get_repo_url(file_path)
     if url:
-        msg = "<!-- Minified: see %s -->" % (url)
+        msg = "<!--Minified w/ xmlformatter: see %s-->" % (url)
         src = re.sub(r"(<\?xml\s.*?\?>)", r"\1" + msg, src)
+    return src
+
+def minify_dtd(src):
+    """Returns a minified version of the given DTD source string."""
+    src = "".join(ln.strip() for ln in src.split("\n"))
+    src = re.sub(r"<!--.*?-->", "", src)
     return src
 
 def minify_js(file_path, src):
@@ -202,7 +220,7 @@ def minify_js(file_path, src):
     JavascriptMinify().minify(in_str, out_str)
     url = get_repo_url(file_path)
     if url:
-        src = "// Minified with JSMin: see %s\n%s" % (url, out_str.getvalue())
+        src = "//Minified w/ JSMin: see %s\n%s" % (url, out_str.getvalue())
     else:
         src = out_str.getvalue()
     in_str.close()
@@ -211,11 +229,12 @@ def minify_js(file_path, src):
 
 def minify_css(file_path, src):
     """Returns a minified version of the given CSS source string."""
-    min_src = cssmin(src)
-    if src.strip() == min_src.strip(): return min_src
+    min_src = minify_colors(cssmin(src))
+    if src.strip() == min_src.strip():
+        return min_src
     url = get_repo_url(file_path)
     if url:
-        min_src = "/* Minified with cssmin: see %s */\n%s" % (url, min_src)
+        min_src = "/*Minified w/ cssmin: see %s*/\n%s" % (url, min_src)
     return min_src
 
 def l10n_main_locale_equiv(file_path):
@@ -457,7 +476,7 @@ def main():
     omit_files = [".DS_Store", "Thumbs.db", ".gitattributes", ".gitignore"]
     if CONFIG is not BuildConfig.L10N:
         omit_files.extend(L10N_FILES)
-    xml_ext_re = r".*\.(?:xml|xul|xbl|dtd|rdf|svg|mml|x?html)$"
+    xml_ext_re = r".*\.(?:xml|xul|xbl|rdf|svg|mml|x?html)$"
 
     # Remove any leftovers from previous build.
     print "Removing leftovers from previous build..."
@@ -501,6 +520,8 @@ def main():
                 src = minify_xml(f, src)
             elif f.endswith(".properties"):
                 src = minify_properties(src)
+            elif f.endswith(".dtd"):
+                src = minify_dtd(src)
             elif f.endswith(".js"):
                 src = minify_js(f, src)
             elif f.endswith(".css"):
@@ -547,6 +568,8 @@ def main():
         if BuildConfig.is_minified(CONFIG):
             if re.match(xml_ext_re, f, flags=re.I):
                 src = minify_xml(f, src)
+            elif f.endswith(".dtd"):
+                src = minify_dtd(src)
             elif f.endswith(".js"):
                 src = minify_js(f, src)
             elif f.endswith(".css"):
