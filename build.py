@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """AVIM build script
 
 This module packages AVIM into an XPInstall file, for use by Firefox and other
@@ -197,14 +198,29 @@ def minify_colors(src):
 
 def minify_xml(file_path, src):
     """Returns a minified version of the given XML source string."""
+    # xmlformatter nukes any entity references that aren’t XML character entity
+    # references. Mangle the references so xmlformatter doesn’t notice them.
+    src = re.sub(r"&([\w.-]+);", r"$entity{\1}", src)
+    
     src = XmlFormatter(compress=True).format_string(src)
     src = re.sub(r"<!--.*?-->", "", src)
+    src = re.sub(r" encoding=\"UTF-8\"\?>", "?>", src)
+    
+    # Demangle character entity references.
+    src = re.sub(r"\$entity{([\w.-]+)}", r"&\1;", src)
+    assert("$entity{" not in src)
+    
+    # xmlformatter expands all empty elements to have closing tags, but that
+    # causes problems with certain XUL tags.
+    src = re.sub(r"(?<=[\"'])></\w+>", r"/>", src)
+    src = re.sub(r"<(\w+)></\1>", r"<\1/>", src)
+    
     if file_path.lower().endswith(".svg"):
         src = minify_colors(src)
     url = get_repo_url(file_path)
     if url:
-        msg = "<!--Minified w/ xmlformatter: see %s-->" % (url)
-        src = re.sub(r"(<\?xml\s.*?\?>)", r"\1" + msg, src)
+        msg = "<!--Minified w/ xmlformatter: see %s-->\n" % url
+        src = re.sub(r"((?:<\?(?:xml|xul)\b.*?\?>\n*)+)", r"\1" + msg, src)
     return src
 
 def minify_dtd(src):
