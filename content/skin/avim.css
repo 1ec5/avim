@@ -2,23 +2,13 @@
 
 #avim-tb {
 	color: rgb(34, 34, 34);
-	list-style-image: url("chrome://avim/content/skin/tb.png");
-	-moz-image-region: rect(0, 18px, 18px, 0);
-}
-
-#avim-tb[open="true"] {
-	-moz-image-region: rect(18px, 18px, 36px, 0);
+	list-style-image: url("chrome://avim/content/skin/tb.svg");
+	background-size: 18px;
 }
 
 #avim-tb[cui-areatype="menu-panel"],
 toolbarpaletteitem[place="palette"] > #avim-tb {
-	list-style-image: url("chrome://avim/content/skin/tb@2x.png");
-	-moz-image-region: rect(0, 32px, 32px, 0);
-}
-
-#avim-tb[cui-areatype="menu-panel"][open="true"],
-toolbarpaletteitem[place="palette"] > #avim-tb[open="true"] {
-	-moz-image-region: rect(36px, 32px, 66px, 0);
+	background-size: 36px;
 }
 
 #avim-tb:not([cui-areatype="menu-panel"]) .toolbarbutton-menubutton-button {

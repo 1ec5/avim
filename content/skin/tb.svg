@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.1"
+   width="32"
+   height="32"
+   id="svg4072">
+  <defs
+     id="defs4074">
+    <linearGradient
+       id="linearGradient6338">
+      <stop
+         id="stop6340"
+         style="stop-color:#939393;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop6342"
+         style="stop-color:#848484;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="15"
+       y1="2"
+       x2="15"
+       y2="30"
+       id="linearGradient6352"
+       xlink:href="#linearGradient6338"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       color-interpolation-filters="sRGB"
+       id="filter3990">
+      <feGaussianBlur
+         result="result8"
+         stdDeviation="0.5"
+         id="feGaussianBlur3992" />
+      <feOffset
+         result="result11"
+         dy="0.5"
+         dx="0"
+         id="feOffset3994" />
+      <feComposite
+         in2="result11"
+         operator="in"
+         in="SourceGraphic"
+         result="result6"
+         id="feComposite3996" />
+      <feFlood
+         flood-color="rgb(0,0,0)"
+         flood-opacity="0.75"
+         in="result6"
+         result="result10"
+         id="feFlood3998" />
+      <feBlend
+         in2="result10"
+         mode="normal"
+         in="result6"
+         result="result12"
+         id="feBlend4000" />
+      <feComposite
+         in2="SourceGraphic"
+         operator="in"
+         result="fbSourceGraphic"
+         id="feComposite4002" />
+      <feColorMatrix
+         id="feColorMatrix3137"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         in="fbSourceGraphic"
+         result="fbSourceGraphicAlpha" />
+      <feFlood
+         in="fbSourceGraphic"
+         result="flood"
+         flood-color="rgb(255,255,255)"
+         flood-opacity="0.5"
+         id="feFlood3139" />
+      <feComposite
+         in2="fbSourceGraphic"
+         operator="in"
+         in="flood"
+         result="composite1"
+         id="feComposite3141" />
+      <feGaussianBlur
+         result="blur"
+         stdDeviation="1.5 0.01"
+         id="feGaussianBlur3143" />
+      <feOffset
+         result="offset"
+         dy="1.5"
+         dx="0"
+         id="feOffset3145" />
+      <feComposite
+         in2="offset"
+         operator="over"
+         in="fbSourceGraphic"
+         result="composite2"
+         id="feComposite3147" />
+    </filter>
+  </defs>
+  <metadata
+     id="metadata4077">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+        <dc:date>2014</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Minh Nguyen</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title />
+          </cc:Agent>
+        </dc:rights>
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/deed.vi" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-1020.3622)"
+     id="layer1"
+     style="display:inline">
+    <path
+       d="M 6,2 C 3.784,2 2,3.784 2,6 l 0,20 c 0,2.216 1.784,4 4,4 l 20,0 c 2.216,0 4,-1.784 4,-4 L 30,6 C 30,3.784 28.216,2 26,2 L 6,2 z m 4,3 10,0 c 2.77,0 5,2.23 5,5 l 0,10 c 0,2.77 -2.23,5 -5,5 L 10,25 C 7.23,25 5,22.77 5,20 L 5,10 C 5,7.23 7.23,5 10,5 z m 1,3.78125 0,4.4375 -1.375,0 0,1 1.375,0 0,4.78125 2.84375,0 c 1.968744,0 3.418612,-0.42513 4.34375,-1.25 0.929678,-0.824868 1.40624,-2.115882 1.40625,-3.875 -10e-6,-1.749993 -0.449879,-3.023429 -1.375,-3.84375 -0.925138,-0.82486 -2.401699,-1.2499898 -4.375,-1.25 l -2.84375,0 z m 1.40625,1.15625 1.65625,0 c 1.408197,9.1e-6 2.44205,0.299488 3.09375,0.9375 0.656242,0.633471 0.968741,1.632819 0.96875,3 -9e-6,1.376306 -0.312508,2.393232 -0.96875,3.03125 -0.6517,0.638022 -1.685553,0.968751 -3.09375,0.96875 l -1.65625,0 0,-3.65625 2.28125,0 0,-1 -2.28125,0 0,-3.28125 z"
+       transform="translate(0,1020.3622)"
+       id="rect4734"
+       style="fill:url(#linearGradient6352);fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;filter:url(#filter3990)" />
+  </g>
+</svg>
