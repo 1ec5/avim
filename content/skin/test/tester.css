@@ -1,4 +1,4 @@
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
 #results-tree treechildren::-moz-tree-cell(pass) {
 	background-color: #90ee90;

@@ -1,8 +1,8 @@
-@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
 #avim-tb {
 	color: rgb(34, 34, 34);
-	list-style-image: url("chrome://avim/content/skin/tb.svg");
+	list-style-image: url(chrome://avim/content/skin/tb.svg);
 	background-size: 18px;
 }
 
