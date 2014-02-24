@@ -2,11 +2,10 @@
 
 #avim-tb {
 	color: rgb(34, 34, 34);
+	list-style: url(chrome://avim/content/skin/tb.svg);
 }
 
-toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon,
-:-moz-any(#avim-tb[cui-areatype="menu-panel"], #avim-tb.overflowedItem) .toolbarbutton-icon {
-	background: url(chrome://avim/content/skin/tb.svg) center / contain;
+#avim-tb .toolbarbutton-icon {
 	filter: url(chrome://avim/content/skin/tbFilter.svg#f);
 }
 
@@ -55,13 +54,11 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 	display: none;
 }
 
-:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)
-	:-moz-any(.menu-accel, .menu-iconic-accel)::before {
+:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic) :-moz-any(.menu-accel, .menu-iconic-accel)::before {
 	content: "Ctrl Ctrl";
 }
 
-:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)[avim-accel="mac"]
-	:-moz-any(.menu-accel, .menu-iconic-accel)::before {
+:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)[avim-accel="mac"] :-moz-any(.menu-accel, .menu-iconic-accel)::before {
 	content: "\2303\2303";
 }
 
@@ -74,5 +71,17 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 @keyframes disabled {
 	from {
 		-moz-text-decoration-color: red;
+	}
+}
+
+@media (-moz-windows-classic), (-moz-windows-theme: luna-blue), (-moz-windows-theme: luna-silver), (-moz-windows-theme: luna-olive) {
+	#avim-tb {
+		list-style: url(chrome://avim/content/skin/tbWin.svg);
+	}
+}
+
+@media (-moz-windows-theme: aero), (-moz-windows-theme: aero-lite) {
+	#avim-tb {
+		list-style: url(chrome://avim/content/skin/tbAero.svg);
 	}
 }
