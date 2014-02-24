@@ -4,13 +4,10 @@
 	color: rgb(34, 34, 34);
 }
 
-#avim-tb[cui-areatype="menu-panel"],
-toolbarpaletteitem[place="palette"] > #avim-tb {
-	list-style-image: url(chrome://avim/content/skin/tb.svg);
-}
-
-#avim-tb.overflowedItem {
-	list-style-image: url(chrome://avim/content/skin/tb.svg);
+toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon,
+:-moz-any(#avim-tb[cui-areatype="menu-panel"], #avim-tb.overflowedItem) .toolbarbutton-icon {
+	background: url(chrome://avim/content/skin/tb.svg) center / contain;
+	filter: url(chrome://avim/content/skin/tbFilter.svg#f);
 }
 
 #avim-tb:not([cui-areatype="menu-panel"]) .toolbarbutton-menubutton-button {
@@ -26,7 +23,7 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-text {
 
 #avim-tb.overflowedItem .toolbarbutton-icon {
 	height: 18px;
-	width: 18px;
+	width: 18px; /* The default is a bit wider. */
 }
 
 #avim-tb[cui-areatype="menu-panel"] .toolbarbutton-multiline-text::before,
