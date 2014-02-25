@@ -73,15 +73,3 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 		-moz-text-decoration-color: red;
 	}
 }
-
-@media (-moz-windows-classic), (-moz-windows-theme: luna-blue), (-moz-windows-theme: luna-silver), (-moz-windows-theme: luna-olive) {
-	#avim-tb {
-		list-style: url(chrome://avim/content/skin/tbWin.svg);
-	}
-}
-
-@media (-moz-windows-theme: aero), (-moz-windows-theme: aero-lite) {
-	#avim-tb {
-		list-style: url(chrome://avim/content/skin/tbAero.svg);
-	}
-}
