@@ -5,10 +5,6 @@
 	list-style: url(chrome://avim/content/skin/tb.svg);
 }
 
-#avim-tb .toolbarbutton-icon {
-	filter: url(chrome://avim/content/skin/tbFilter.svg#f);
-}
-
 #avim-tb:not([cui-areatype="menu-panel"]) .toolbarbutton-menubutton-button {
 	-moz-box-orient: horizontal;
 }
