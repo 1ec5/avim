@@ -50,6 +50,7 @@
 			background-color: #f0e68c;
 		}
 		
+        table.hide-minor .typingviet,
 		table.hide-minor .vietinput,
 		table.hide-minor .chim,
 		table.hide-minor .viettyping,
@@ -72,7 +73,7 @@
 			box.checked = show;
 			document.getElementById("comparison").className = c;
             document.getElementById("comparison-wrapper").className = c;
-            document.getElementById("moz-colgroup").setAttribute("colspan", show ? "5" : "2");
+            document.getElementById("moz-colgroup").setAttribute("colspan", show ? "6" : "2");
             document.getElementById("chrome-colgroup").setAttribute("colspan", show ? "3" : "2");
 		}
 		
@@ -157,12 +158,13 @@
     <thead>
         <tr>
             <th rowspan="2"></th>
-            <th colspan="5" id="moz-colgroup">Mozilla extensions</th>
+            <th colspan="6" id="moz-colgroup">Mozilla extensions</th>
             <th colspan="3" id="chrome-colgroup">Chromium extensions</th>
         </tr>
         <tr>
             <th class="avim"><a href="https://addons.mozilla.org/en-US/firefox/addon/avim/versions/" rel="bookmark" title="Firefox Add-ons: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> for Firefox</a> 20080728.524</th>
             <th class="mudim"><a href="https://addons.mozilla.org/en-US/firefox/addon/mudim/" rel="bookmark" title="Firefox Add-ons: Mudim"><acronym title="Mudzot&rsquo;s Input Method">Mudim</acronym></a> 0.8.159</th>
+            <th class="typingviet"><a href="https://addons.mozilla.org/en-US/firefox/addon/typing-vietnamese/" rel="bookmark" title="Firefox Add-ons: Typing Vietnamese">Typing Vietnamese</a> 1.1</th>
             <th class="chim"><a href="http://xvnkb.sourceforge.net/chim/mozilla/" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM/Mozilla"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 1.0</th>
             <th class="viettyping"><a href="http://vietdev.sourceforge.net/vinamozie/mo_installer.php" rel="bookmark" title="Install Vietdev Mozilla Online Editor"><acronym title="Vietnamese Mozilla Editor">VinaMoziE</acronym></a> 2.7</th>
             <th class="vport"><a href="https://addons.mozilla.org/en-US/firefox/addon/vietnamese-portable/" rel="bookmark" title="Firefox Add-ons: Vietnamese Portable">Vietnamese Portable</a> 1.0</th>
@@ -178,6 +180,7 @@
             <td>Last released</td>
             <td class="avim"><time datetime="2014-02-26T03:00-08:00">February 26<sup>th</sup>, 2014</time></td>
             <td class="mudim"><time datetime="2010-12-06">December 6<sup>th</sup>, 2010</time></td>
+            <td class="typingviet"><time datetime="2013-05-16">May 16<sup>th</sup>, 2013</time></td>
             <td class="chim"><time datetime="2006-07-09">July 9<sup>th</sup>, 2006</time></td>
             <td class="viettyping"><time datetime="2003-06-30">June 30<sup>th</sup>, 2003</time></td>
             <td class="vport"><time datetime="2008-01-15">January 15<sup>th</sup>, 2008</time></td>
@@ -191,6 +194,7 @@
             <td>Download size</td>
             <td class="avim">69.6&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="mudim">30.7&nbsp;<abbr title="kilobytes">kB</abbr></td>
+            <td class="typingviet">9.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="chim">9.7&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="viettyping">20.7&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="vport">11.6&nbsp;<abbr title="kilobytes">kB</abbr></td>
@@ -204,6 +208,7 @@
             <td>Size after installation</td>
             <td class="avim">90.6&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="mudim">67.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
+            <td class="typingviet">9.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="chim">10.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="viettyping">62.0&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="vport">32.7&nbsp;<abbr title="kilobytes">kB</abbr></td>
@@ -217,6 +222,7 @@
             <td>Screen area</td>
             <td class="avim">0&ndash;592&nbsp;<abbr title="pixels">px</abbr><!-- 0x0 - 17x16 - 37x16 --></td>
             <td class="mudim">768&nbsp;<abbr title="pixels">px</abbr><!-- 48x16 --></td>
+            <td class="typingviet">256&nbsp;<abbr title="pixels">px</abbr><!-- 16x16 --></td>
             <td class="chim">4,246&nbsp;<abbr title="pixels">px</abbr><!-- 193x22 --></td>
             <td class="viettyping">6,924&nbsp;<abbr title="pixels">px</abbr><!-- (352+4+4)x(577/30) --></td>
             <td class="vport">?</td>
@@ -230,6 +236,7 @@
             <td>Interface languages</td>
             <td class="avim"><abbr title="German">de</abbr>, <abbr title="English">en</abbr>, <abbr title="Spanish">es</abbr>, <abbr title="Dutch">nl</abbr>, <abbr title="Portuguese">pt</abbr>, <abbr title="Vietnamese">vi</abbr><!-- <abbr title="French">fr</abbr>, <abbr title="Chinese">zh</abbr> --></td>
             <td class="mudim"><abbr title="English">en</abbr></td>
+            <td class="typingviet"><abbr title="English">en</abbr></td>
             <td class="chim"><abbr title="English">en</abbr></td>
             <td class="viettyping"><abbr title="English">en</abbr>+<abbr title="Vietnamese">vi</abbr></td>
             <td class="vport"><abbr title="English">en</abbr></td>
@@ -243,6 +250,7 @@
             <td>Price</td>
             <td class="avim">Free</td>
             <td class="mudim">Free</td>
+            <td class="typingviet">Free</td>
             <td class="chim">Free</td>
             <td class="viettyping">Free</td>
             <td class="vport">Free</td>
@@ -256,6 +264,7 @@
             <td>License</td>
             <td class="avim"><acronym title="Massachusetts Institute of Technology" class="initialism">MIT</acronym></td>
             <td class="mudim"><acronym title="General Public License">GPL</acronym> 3</td>
+            <td class="typingviet"><acronym title="Mozilla Public License">MPL</acronym> 2</td>
             <td class="chim"><acronym title="General Public License">GPL</acronym> 2</td>
             <td class="viettyping"><acronym title="General Public License">GPL</acronym></td>
             <td class="vport">(Permissive)</td>
@@ -269,6 +278,7 @@
             <td>Input engine</td>
             <td class="avim"><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20080728+</td>
             <td class="mudim"><a href="http://xvnkb.sourceforge.net/chim/" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.3</td>
+            <td class="typingviet">Custom</td>
             <td class="chim"><a href="http://xvnkb.sourceforge.net/chim/" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.2</td>
             <td class="viettyping"><a href="http://vietdev.sourceforge.net/jscript/viettyping/" rel="bookmark" title="Vietdev: Readme">Viettyping</a> 10.0</td>
             <td class="vport"><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20061001</td>
@@ -282,6 +292,7 @@
             <td>Architecture</td>
             <td class="avim">Context-sensitive</td>
             <td class="mudim">Input buffer</td>
+            <td class="typingviet">Input buffer</td>
             <td class="chim">Input buffer</td>
             <td class="viettyping">Context-sensitive</td>
             <td class="vport">Context-sensitive</td>
@@ -292,12 +303,13 @@
             <td class="vietinput">Context-sensitive</td>
         </tr>
         <tr class="cat-header">
-            <th id="stats" colspan="11">Statistics</th>
+            <th id="stats" colspan="12">Statistics</th>
         </tr>
         <tr>
             <td>Average rating</td>
             <td class="avim"><meter value="4.5" min="1" max="5" low="4" optimum="5">5/5</td>
             <td class="mudim"><meter value="5" min="1" max="5" low="4" optimum="5">5/5</td>
+            <td class="typingviet"><meter value="4" min="1" max="5" low="4" optimum="5">4/5</td>
             <td class="chim">Unlisted</td>
             <td class="viettyping">Unlisted</td>
             <td class="vport" title="Unlisted"></td>
@@ -311,6 +323,7 @@
             <td>Active users</td>
             <td class="avim">4,914</td>
             <td class="mudim">112</td>
+            <td class="typingviet">78</td>
             <td class="chim">Unlisted</td>
             <td class="viettyping">Unlisted</td>
             <td class="vport">1</td>
@@ -321,12 +334,13 @@
             <td class="vietinput">51</td>
         </tr>
         <tr class="cat-header">
-            <th id="moz-apps" colspan="11">Mozilla-based applications</th>
+            <th id="moz-apps" colspan="12">Mozilla-based applications</th>
         </tr>
         <tr>
             <td><a href="http://www.mozilla.com/en-US/firefox/" rel="bookmark" title="Mozilla: Firefox">Mozilla Firefox</a><!-- , <acronym title="GNU&rsquo;s Not Unix">GNU</acronym> IceCat, Iceweasel --></td>
             <td class="avim yes">2.0&ndash;31.0</td>
             <td class="mudim yes">1.0&ndash;30.0</td>
+            <td class="typingviet yes">5.0&ndash;30.0</td>
             <td class="chim no">1.0&ndash;2.0</td>
             <td class="viettyping no">No</td>
             <td class="vport no">1.5&ndash;2.0.0.<var>x</var></td>
@@ -340,6 +354,7 @@
             <td><a href="https://www.mozilla.org/en-US/thunderbird/" rel="bookmark" title="Mozilla Messaging: Thunderbird">Mozilla Thunderbird</a><!-- , Icedove --></td>
             <td class="avim yes">2.0&ndash;30.0</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -353,6 +368,7 @@
             <td><a href="http://www.mozilla.org/projects/calendar/sunbird/" rel="bookmark" title="mozilla.org: Sunbird">Mozilla Sunbird</a><!-- , Iceowl --></td>
             <td class="avim yes">0.4&ndash;5.0</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -366,6 +382,7 @@
             <td><a href="http://www.mozilla.com/en-US/mobile/" rel="bookmark" title="Firefox Mobile">Firefox Mobile</a> (Fennec)</td>
             <td class="avim no"><a href="https://github.com/1ec5/avim/issues/25">0.7&ndash;4.0b3</a></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -379,6 +396,7 @@
             <td><a href="http://prism.mozillalabs.com/" rel="bookmark" title="Mozilla Labs: Prism">Mozilla Labs Prism</a></td>
             <td class="avim yes">0.9&ndash;1.0.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -392,6 +410,7 @@
             <td><a href="http://www.seamonkey-project.org/" rel="bookmark" title="The SeaMonkey&reg; Project">SeaMonkey</a><!-- , Gnuzilla, Iceape --></td>
             <td class="avim yes">1.1&ndash;2.28</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">1.<var>x</var></td>
             <td class="vport no">No</td>
@@ -405,6 +424,7 @@
             <td><a href="http://www-archive.mozilla.org/products/mozilla1.x/" rel="bookmark" title="Mozilla: Mozilla Suite">Mozilla Suite</a></td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">1.<var>x</var></td>
             <td class="vport no">No</td>
@@ -418,6 +438,7 @@
             <td><a href="http://www.flock.com/" rel="bookmark" title="Flock Browser">Flock</a></td>
             <td class="avim no">1.2&ndash;2.6.<var>x</var></td>
             <td class="mudim no">0.7&ndash;2.6.<var>x</var></td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -431,6 +452,7 @@
             <td><a href="http://getsongbird.com/" rel="bookmark" title="Songbird Media Player">Songbird</a></td>
             <td class="avim yes">0.2.5&ndash;2.3.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -444,6 +466,7 @@
             <td><a href="http://getnightingale.com/" rel="bookmark" title="Nightingale">Nightingale</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -457,6 +480,7 @@
             <td><a href="http://browser.netscape.com/" rel="bookmark" title="The Netscape Archive">Netscape Navigator</a> (Netscape Browser)</td>
             <td class="avim yes">9.<var>x</var></td>
             <td class="mudim yes">8.0&ndash;9.<var>x</var></td>
+            <td class="typingviet no">No</td>
             <td class="chim buggy">8.<var>x</var></td>
             <td class="viettyping buggy">6.0&ndash;7.<var>x</var></td>
             <td class="vport yes">8.0&ndash;9.<var>x</var></td>
@@ -470,6 +494,7 @@
             <td><a href="http://en.wikipedia.org/wiki/Netscape_Messenger_9" rel="bookmark" title="Wikipedia: Netscape Messenger 9">Netscape Messenger</a> (Netscape Mail &amp; Newsgroups)</td>
             <td class="avim yes">9.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -483,6 +508,7 @@
             <td><a href="http://www.postbox-inc.com/" rel="bookmark" title="Postbox">Postbox</a></td>
             <td class="avim yes">1&ndash;2.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -496,6 +522,7 @@
             <td><a href="https://wiki.mozilla.org/Eudora_OSE" rel="bookmark" title="MozillaWiki: Eudora OSE">Eudora <acronym title="Open Source Edition" class="initialism">OSE</acronym></a> (Penelope)</td>
             <td class="avim yes">8.0&ndash;1.0.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -509,6 +536,7 @@
             <td><a href="http://www.activestate.com/komodo-ide" rel="bookmark" title="ActiveState: Komodo IDE">Komodo <acronym title="Integrated Development Environment" class="initialism">IDE</acronym></a>, <a href="http://www.activestate.com/komodo-edit" rel="bookmark" title="ActiveState: Komodo Edit">Komodo Edit</a></td>
             <td class="avim yes">4.0&ndash;8.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -522,6 +550,7 @@
             <td><a href="http://www.spicebird.com/" rel="bookmark" title="Spicebird">Spicebird</a></td>
             <td class="avim yes">0.4&ndash;0.8</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -535,6 +564,7 @@
             <td><a href="http://www.instantbird.com/" rel="bookmark" title="Instantbird">Instantbird</a></td>
             <td class="avim yes">0.1.2&ndash;1.6</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -548,6 +578,7 @@
             <td><a href="http://www.wyzo.com/" rel="bookmark" title="Wyzo">Wyzo</a></td>
             <td class="avim yes">3.<var>x</var></td>
             <td class="mudim yes">0.1&ndash;3.<var>x</var></td>
+            <td class="typingviet no">No</td>
             <td class="chim no">0.1&ndash;0.5</td>
             <td class="viettyping no">No</td>
             <td class="vport no">0.1&ndash;0.5.<var>x</var></td>
@@ -561,6 +592,7 @@
             <td><a href="http://www.celtx.com/" rel="bookmark" title="Celtx">Celtx</a></td>
             <td class="avim yes">2.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -574,6 +606,7 @@
             <td><a href="http://www.sameplace.cc/" rel="bookmark" title="SamePlace">SamePlace</a></td>
             <td class="avim buggy">0.9.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -587,6 +620,7 @@
             <td><a href="http://www.bluegriffon.org/" rel="bookmark" title="BlueGriffon.org">BlueGriffon</a></td>
             <td class="avim yes">0.1&ndash;1.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -600,6 +634,7 @@
             <td><a href="http://www.twitfactory.com/" rel="bookmark" title="TwitFactory">TwitFactory</a></td>
             <td class="avim yes">1.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -613,6 +648,7 @@
             <td><a href="http://www.evolus.vn/Pencil/" rel="bookmark" title="Evolus: Pencil Project">Pencil</a></td>
             <td class="avim yes">1.<var>x</var></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -626,6 +662,7 @@
             <td><a href="http://chatzilla.rdmsoft.com/xulrunner/" rel="bookmark" title="ChatZilla on XULRunner">ChatZilla</a></td>
             <td class="avim yes">0.9.69+</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -639,6 +676,7 @@
             <td>Nvu, KompoZer</td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -649,12 +687,13 @@
         </tr> -->
         
         <tr class="cat-header">
-            <th id="other-apps" colspan="11">Chromium-based applications</th>
+            <th id="other-apps" colspan="12">Chromium-based applications</th>
         </tr>
         <tr>
             <td><a href="http://www.google.com/chrome/" rel="bookmark" title="Google: Google Chrome">Google Chrome</a></td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -668,6 +707,7 @@
             <td><a href="http://www.opera.com/" rel="bookmark" title="Opera browser">Opera</a></td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -681,6 +721,7 @@
             <td><a href="http://torchbrowser.com/" rel="bookmark" title="Torch Web Browser">Torch</a></td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -692,12 +733,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th id="methods" colspan="11">Input methods and keyboard layouts</th>
+            <th id="methods" colspan="12">Input methods and keyboard layouts</th>
         </tr>
         <tr>
             <td>Telex input method</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -711,6 +753,7 @@
             <td><acronym class="initialism">VNI</acronym> input method</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -724,6 +767,7 @@
             <td><acronym title="VIetnamese Quoted-Readable">VIQR</acronym> input method (<kbd>+</kbd> variant)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -737,6 +781,7 @@
             <td><acronym title="VIetnamese Quoted-Readable">VIQR</acronym> input method (<kbd>*</kbd> variant)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -750,6 +795,7 @@
             <td><acronym title="Tiêu chuẩn Việt Nam">TCVN</acronym> 6064 layout</td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -763,6 +809,7 @@
             <td>Combinations</td>
             <td class="avim yes">Telex + <acronym class="initialism">VNI</acronym> + <acronym title="VIetnamese Quoted-Readable">VIQR</acronym><sup>+</sup> + <acronym title="VIetnamese Quoted-Readable">VIQR</acronym><sup>*</sup></td>
             <td class="mudim buggy">Telex + <acronym class="initialism">VNI</acronym></td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">Telex + <acronym class="initialism">VNI</acronym> + <acronym title="VIetnamese Quoted-Readable">VIQR</acronym><sup>+</sup> + <acronym title="VIetnamese Quoted-Readable">VIQR</acronym><sup>*</sup></td>
             <td class="vport buggy">Telex + <acronym class="initialism">VNI</acronym></td>
@@ -776,6 +823,7 @@
             <td>Auto-detect mode</td>
             <td class="avim no">No</td>
             <td class="mudim buggy">No <acronym title="user interface" class="initialism">UI</acronym></td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -789,6 +837,7 @@
             <td>Auto-accent mode</td>
             <td class="avim no"><a href="https://github.com/1ec5/avim/issues/19">No</a></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -802,6 +851,7 @@
             <td>Handwriting mode</td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -813,12 +863,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Input method features</th>
+            <th colspan="12">Input method features</th>
         </tr>
         <tr>
             <td>Configurable combination input method</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet">No combinations</td>
             <td class="chim">No combinations</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -832,6 +883,7 @@
             <td>Suppresses dead keys</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping buggy">Multiline text only</td>
             <td class="vport yes">Yes</td>
@@ -844,59 +896,64 @@
         <tr>
             <td>Shifts diacritics backwards (<kbd>Viet^.</kbd>)</td>
             <td class="avim yes"><samp>Việt</samp></td>
-            <td class="mudim yes"><samp>Việt</samp></td>
-            <td class="chim buggy"><samp>Viet^.</samp></td>
+            <td class="mudim buggy"><samp>Viet^.</samp> (only tones)</td>
+            <td class="typingviet buggy">Only tones</td>
+            <td class="chim yes"><samp>Việt</samp></td>
             <td class="viettyping yes"><samp>Việt</samp></td>
             <td class="vport yes"><samp>Việt</samp></td>
             <td class="myavim yes"><samp>Việt</samp></td>
-            <td class="instcode buggy"><samp>Viet^.</samp></td>
-            <td class="avim-chrome yes"><samp>Việt</samp></td>
+            <td class="instcode buggy">Only tones</td>
+            <td class="avim-chrome yes">Yes</td>
             <td class="google buggy"><samp>Viet^̣</samp> (only tones in Telex)</td>
-            <td class="vietinput yes"><samp>Việt</samp></td>
+            <td class="vietinput yes">Yes</td>
         </tr>
         <tr>
             <td>Duplicates diacritics backwards (<kbd>truong+`</kbd>)</td>
             <td class="avim yes"><samp>trường</samp></td>
             <td class="mudim yes"><samp>trường</samp></td>
+            <td class="typingviet no">No</td>
             <td class="chim no"><samp>truong+`</samp></td>
             <td class="viettyping yes"><samp>trường</samp></td>
             <td class="vport yes"><samp>trường</samp></td>
             <td class="myavim yes"><samp>trường</samp></td>
-            <td class="instcode no"><samp>truong+`</samp></td>
-            <td class="avim-chrome yes"><samp>trường</samp></td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome yes">Yes</td>
             <td class="google no"><samp>truong+̀</samp></td>
-            <td class="vietinput yes"><samp>trường</samp></td>
+            <td class="vietinput yes">Yes</td>
         </tr>
         <tr>
             <td>Shifts diacritics forwards (<kbd>to'an</kbd>)</td>
             <td class="avim yes"><samp>toán</samp></td>
             <td class="mudim yes"><samp>toán</samp></td>
+            <td class="typingviet no">No</td>
             <td class="chim no"><samp>tóan</samp></td>
             <td class="viettyping yes"><samp>toán</samp></td>
             <td class="vport yes"><samp>toán</samp></td>
             <td class="myavim yes"><samp>toán</samp></td>
-            <td class="instcode no"><samp>tóan</samp></td>
-            <td class="avim-chrome no"><samp>tóan</samp></td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome no">No</td>
             <td class="google no"><samp>tóan</samp></td>
-            <td class="vietinput no"><samp>tóan</samp></td>
+            <td class="vietinput no">No</td>
         </tr>
         <tr>
             <td>Duplicates diacritics forwards (<kbd>tru+ong</kbd>)</td>
             <td class="avim no"><samp>trưong</samp></td>
             <td class="mudim yes"><samp>trương</samp></td>
+            <td class="typingviet no">No</td>
             <td class="chim no"><samp>trưong</samp></td>
             <td class="viettyping no"><samp>trưong</samp></td>
             <td class="vport no"><samp>trưong</samp></td>
             <td class="myavim no"><samp>trưong</samp></td>
-            <td class="instcode no"><samp>trưong</samp></td>
-            <td class="avim-chrome no"><samp>trưong</samp></td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome no">No</td>
             <td class="google no"><samp>trưong</samp></td>
-            <td class="vietinput no"><samp>trưong</samp></td>
+            <td class="vietinput no">No</td>
         </tr>
         <tr>
             <td>Attaches diacritics to existing words</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">Must retype word</td>
+            <td class="typingviet">Sometimes</td>
             <td class="chim no">Must retype word</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -910,19 +967,21 @@
             <td>Overrides diacritics (<kbd>ma'`?~.</kbd>)</td>
             <td class="avim yes"><samp>mạ</samp></td>
             <td class="mudim yes"><samp>mạ</samp></td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes"><samp>mạ</samp></td>
             <td class="viettyping yes"><samp>mạ</samp></td>
             <td class="vport yes"><samp>mạ</samp></td>
             <td class="myavim yes"><samp>mạ</samp></td>
-            <td class="instcode yes"><samp>mạ</samp></td>
-            <td class="avim-chrome yes"><samp>mạ</samp></td>
+            <td class="instcode yes">Yes</td>
+            <td class="avim-chrome yes">Yes</td>
             <td class="google no"><samp>mạ́̉̃</samp></td>
-            <td class="vietinput yes"><samp>mạ</samp></td>
+            <td class="vietinput yes">Yes</td>
         </tr>
         <tr>
             <td>Deletes diacritics (<kbd>cho+?--</kbd> or <kbd>chowrzz</kbd>)</td>
             <td class="avim yes"><samp>cho</samp></td>
             <td class="mudim buggy">Telex, <acronym class="initialism">VNI</acronym> only</td>
+            <td class="typingviet no"><samp>chởzz</samp></td>
             <td class="chim buggy">Telex, <acronym class="initialism">VNI</acronym> only</td>
             <td class="viettyping buggy"><samp>chơ-</samp></td>
             <td class="vport yes"><samp>cho</samp></td>
@@ -936,6 +995,7 @@
             <td>Deletes diacritics with <span class="keystrokes"><kbd class="modifier">Shift</kbd> <kbd class="modifier">Backspace</kbd></span></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -949,6 +1009,7 @@
             <td>Escapes dead keys in <acronym title="VIetnamese Quoted-Readable">VIQR</acronym> (<kbd>Ddu'ng\.</kbd>)</td>
             <td class="avim yes"><samp>Đúng.</samp></td>
             <td class="mudim no"><samp>Đúng\.</samp></td>
+            <td class="typingviet"><acronym title="VIetnamese Quoted-Readable">VIQR</acronym> not supported</td>
             <td class="chim no"><samp>Đúng\.</samp></td>
             <td class="viettyping yes"><samp>Đúng.</samp></td>
             <td class="vport yes"><samp>Đúng.</samp></td>
@@ -962,19 +1023,21 @@
             <td>Escapes dead keys by repetition (<kbd>Sai..</kbd>)</td>
             <td class="avim yes"><samp>Sai.</samp></td>
             <td class="mudim yes"><samp>Sai.</samp></td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes"><samp>Sai.</samp></td>
             <td class="viettyping yes"><samp>Sai.</samp></td>
             <td class="vport yes"><samp>Sai.</samp></td>
             <td class="myavim yes"><samp>Sai.</samp></td>
-            <td class="instcode yes"><samp>Sai.</samp></td>
+            <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no"><samp>Saị̣</samp></td>
-            <td class="vietinput yes"><samp>Sai.</samp></td>
+            <td class="vietinput yes">Yes</td>
         </tr>
         <tr>
             <td>Cancels words with <span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span></td>
             <td class="avim no">No</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -988,6 +1051,7 @@
             <td>Ignores certain textboxes</td>
             <td class="avim yes">Yes</td>
             <td class="mudim buggy">Location Bar only</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1001,6 +1065,7 @@
             <td>Combining diacritics for abbreviations</td>
             <td class="avim yes"><samp>Ng&#x0303;</samp></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1014,6 +1079,7 @@
             <td><i lang="vi" xml:lang="vi">Đồng</i> sign (₫)</td>
             <td class="avim yes">After numbers</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1027,6 +1093,7 @@
             <td>Vietnamese next to <acronym title="Chinese, Japanese, and Korean">CJK</acronym> text</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1040,6 +1107,7 @@
             <td>Respects <a href="https://developer.mozilla.org/En/CSS/Ime-mode" rel="bookmark" title="Mozilla Developer Center: ime-mode"><code>ime-mode</code></a> <acronym title="Cascading Style Sheets">CSS</acronym> property</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1051,12 +1119,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Annoyances</th>
+            <th colspan="12">Annoyances</th>
         </tr>
         <tr>
             <td>Outputs precombined characters</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -1070,6 +1139,7 @@
             <td>Interferes with <span class="keystrokes"><kbd class="modifier">Ctrl</kbd> <kbd class="modifier">Backspace</kbd></span></td>
             <td class="avim yes">No</td>
             <td class="mudim no">Stops working</td>
+            <td class="typingviet yes">No</td>
             <td class="chim no">Stops working</td>
             <td class="viettyping no">Stops working</td>
             <td class="vport yes">No</td>
@@ -1083,6 +1153,7 @@
             <td>Scrolls caret into view</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -1096,6 +1167,7 @@
             <td>Scrolls single-line textboxes to beginning when adding diacritics</td>
             <td class="avim yes">No</td>
             <td class="mudim no">Yes</td>
+            <td class="typingviet yes">No</td>
             <td class="chim no">Yes</td>
             <td class="viettyping yes">No</td>
             <td class="vport no">Yes</td>
@@ -1109,6 +1181,7 @@
             <td>Scrolls multiline textboxes to top when adding diacritics</td>
             <td class="avim yes">No</td>
             <td class="mudim yes">No</td>
+            <td class="typingviet yes">No</td>
             <td class="chim yes">No</td>
             <td class="viettyping yes">No</td>
             <td class="vport yes">No</td>
@@ -1122,6 +1195,7 @@
             <td>Compatible with undo/redo</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -1135,6 +1209,7 @@
             <td>All text is selected when undoing</td>
             <td class="avim yes">No</td>
             <td class="mudim no">Yes</td>
+            <td class="typingviet no">Yes</td>
             <td class="chim no">Yes</td>
             <td class="viettyping no">Yes</td>
             <td class="vport no">Yes</td>
@@ -1147,6 +1222,7 @@
         <tr>
             <td>Caret jumps to the end when redoing</td>
             <td class="avim yes">No</td>
+            <td class="typingviet yes">No</td>
             <td class="mudim no">Yes</td>
             <td class="chim no">Yes</td>
             <td class="viettyping no">Yes</td>
@@ -1161,6 +1237,7 @@
             <td>Diacritics lost when redoing in rich text editor</td>
             <td class="avim yes">No</td>
             <td class="mudim no">Yes</td>
+            <td class="typingviet no">Yes</td>
             <td class="chim">Rich text editing not supported</td>
             <td class="viettyping">Rich text editing not supported</td>
             <td class="vport no">Yes</td>
@@ -1173,6 +1250,7 @@
             <td>Lag per character when editing 50&nbsp;<abbr title="kilobyte">kB</abbr> of text</td>
             <td class="avim yes">&asymp;0&nbsp;<abbr title="milliseconds">ms</abbr></td>
             <td class="mudim no">>500&nbsp;<abbr title="milliseconds">ms</abbr></td>
+            <td class="typingviet no">>500&nbsp;<abbr title="milliseconds">ms</abbr></td>
             <td class="chim no">>500&nbsp;<abbr title="milliseconds">ms</abbr></td>
             <td class="viettyping no">&asymp;250&nbsp;<abbr title="milliseconds">ms</abbr></td>
             <td class="vport no">>500&nbsp;<abbr title="milliseconds">ms</abbr></td>
@@ -1186,6 +1264,7 @@
             <td>Causes JavaScript errors</td>
             <td class="avim yes">No</td>
             <td class="mudim no">Yes</td>
+            <td class="typingviet yes">No</td>
             <td class="chim yes">No</td>
             <td class="viettyping yes">No</td>
             <td class="vport yes">No</td>
@@ -1199,6 +1278,7 @@
             <td>Undo/redo levels per letter following an accented letter</td>
             <td class="avim yes">1</td>
             <td class="mudim yes">1</td>
+            <td class="typingviet yes">1</td>
             <td class="chim yes">1</td>
             <td class="viettyping yes">1</td>
             <td class="vport no">2</td>
@@ -1212,6 +1292,7 @@
             <td>Incompatible extensions detected</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1225,6 +1306,7 @@
             <td>Must restart the application to install</td>
             <td class="avim no"><a href="https://github.com/1ec5/avim/issues/9">Yes</a></td>
             <td class="mudim no">Yes</td>
+            <td class="typingviet no">Yes</td>
             <td class="chim no">Yes</td>
             <td class="viettyping no">Yes</td>
             <td class="vport no">Yes</td>
@@ -1234,27 +1316,15 @@
             <td class="google yes">No</td>
             <td class="vietinput yes">No</td>
         </tr>
-        <tr>
-            <td>Compatible with Google.com</td>
-            <td class="avim yes">Yes</td>
-            <td class="mudim yes">Yes</td>
-            <td class="chim yes">Yes</td>
-            <td class="viettyping yes">Yes</td>
-            <td class="vport yes">Yes</td>
-            <td class="myavim yes">Yes</td>
-            <td class="instcode yes">Yes</td>
-            <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
-            <td class="vietinput no">No</td>
-        </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Spelling features</th>
+            <th colspan="12">Spelling features</th>
         </tr>
         <tr>
             <td>Spelling rules enforced</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -1268,6 +1338,7 @@
             <td>Old-style diacritic placement</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet" rowspan="3">Spelling not enforced</td>
             <td class="chim" rowspan="3">Spelling not enforced</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -1297,12 +1368,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">User interface features</th>
+            <th colspan="12">User interface features</th>
         </tr>
         <tr>
             <td>Add-on Bar button</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
@@ -1316,6 +1388,7 @@
             <td>Menu</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1329,6 +1402,7 @@
             <td>Toolbar menu</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1342,6 +1416,7 @@
             <td>Toolbar button</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1355,6 +1430,7 @@
             <td>Preferences window</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -1365,22 +1441,24 @@
             <td class="vietinput no">No</td>
         </tr>
         <tr>
-            <td>Keyboard shortcuts</td>
+            <td>Keyboard shortcuts (number of fingers required)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
+            <td class="typingviet yes">Yes (2)</td>
             <td class="chim buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="viettyping buggy">Only in textboxes</td>
             <td class="vport buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="myavim buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="instcode buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
-            <td class="avim-chrome yes">Yes</td>
-            <td class="google yes">Yes</td>
-            <td class="vietinput yes">Yes</td>
+            <td class="avim-chrome yes">Yes (1)</td>
+            <td class="google yes">Yes (2)</td>
+            <td class="vietinput yes">Yes (4)</td>
         </tr>
         <tr>
             <td>Preferences take effect throughout the application</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1394,6 +1472,7 @@
             <td>Remembers preferences across sessions</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -1407,6 +1486,7 @@
             <td>Controls can be hidden</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1420,6 +1500,7 @@
             <td>Add-on Bar button skins</td>
             <td class="avim no">No</td>
             <td class="mudim yes">Simple, Solid, Light</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1432,6 +1513,7 @@
             <td>Compatible with autocompletion in textboxes</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping buggy">Dead keys appear</td>
             <td class="vport no">No</td>
@@ -1443,12 +1525,13 @@
         </tr>
         
         <tr id="windows" class="cat-header">
-            <th colspan="11">Firefox windows and dialog boxes</th>
+            <th colspan="12">Firefox windows and dialog boxes</th>
         </tr>
         <tr>
             <td>Browser windows</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet buggy">Except toolbar</td>
             <td class="chim buggy">Except search box</td>
             <td class="viettyping" rowspan="14">Firefox not supported</td>
             <td class="vport yes">Yes</td>
@@ -1462,6 +1545,7 @@
             <td>JavaScript dialogs (<code>prompt()</code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1471,6 +1555,7 @@
             <td><acronym title="HyperText Transfer Protocol">HTTP</acronym> authentication dialogs</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1480,6 +1565,7 @@
             <td>Open Web Location dialog</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1489,6 +1575,7 @@
             <td>Library</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1498,6 +1585,7 @@
             <td>Add Bookmark panel</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1507,6 +1595,7 @@
             <td>Bookmark All Tabs dialog</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1516,6 +1605,7 @@
             <td>Bookmark Properties dialog</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1525,6 +1615,7 @@
             <td>Page Source window</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1534,6 +1625,7 @@
             <td>Downloads window</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1543,6 +1635,7 @@
             <td>Add-ons window</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1552,6 +1645,7 @@
             <td>Error Console</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1561,6 +1655,7 @@
             <td>Options dialog (Preferences window)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1570,6 +1665,7 @@
             <td>Report a Broken Web Site dialog</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1579,6 +1675,7 @@
             <td>Create Profile wizard</td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1586,12 +1683,13 @@
         </tr>
         
         <!-- <tr id="windows-flock" class="cat-header flock">
-            <th colspan="11">Flock-specific windows and dialog boxes</th>
+            <th colspan="12">Flock-specific windows and dialog boxes</th>
         </tr>
         <tr class="flock">
             <td>Blog Editor window</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet" rowspan="3">Flock not supported</td>
             <td class="chim" rowspan="3">Flock not supported</td>
             <td class="viettyping" rowspan="3">Flock not supported</td>
             <td class="vport" rowspan="3">Flock not supported</td>
@@ -1613,12 +1711,13 @@
         </tr> -->
         
         <tr id="windows-seamonkey" class="cat-header windows-seamonkey">
-            <th colspan="11">SeaMonkey windows and dialog boxes</th>
+            <th colspan="12">SeaMonkey windows and dialog boxes</th>
         </tr>
         <tr class="windows-seamonkey">
             <td>Navigator windows</td>
             <td class="avim yes">Yes</td>
             <td class="mudim" rowspan="22">SeaMonkey not supported</td>
+            <td class="typingviet" rowspan="22">SeaMonkey not supported</td>
             <td class="chim" rowspan="22">SeaMonkey not supported</td>
             <td class="viettyping buggy">Except Sidebar</td>
             <td class="vport" rowspan="22">SeaMonkey not supported</td>
@@ -1735,12 +1834,13 @@
         </tr>
         
         <tr id="windows-chrome" class="cat-header">
-            <th colspan="11">Chrome windows and dialog boxes</th>
+            <th colspan="12">Chrome windows and dialog boxes</th>
         </tr>
         <tr>
             <td>Browser windows (except address bar and find bar)</td>
             <td class="avim" rowspan="8">Chrome not supported</td>
             <td class="mudim" rowspan="8">Chrome not supported</td>
+            <td class="typingviet" rowspan="8">Chrome not supported</td>
             <td class="chim" rowspan="8">Chrome not supported</td>
             <td class="viettyping" rowspan="8">Chrome not supported</td>
             <td class="vport" rowspan="8">Chrome not supported</td>
@@ -1788,12 +1888,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Supported extensions</th>
+            <th colspan="12">Supported extensions</th>
         </tr>
         <tr>
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/16" rel="bookmark" title="Firefox Add-ons: ChatZilla">ChatZilla</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -1807,6 +1908,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/271" rel="bookmark" title="Firefox Add-ons: ColorZilla">ColorZilla</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1817,6 +1919,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/1815" rel="bookmark" title="Firefox Add-ons: Console²">Console²</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1827,6 +1930,7 @@
             <td><a href="http://deepestsender.mozdev.org/" rel="bookmark" title="mozdev.org: Deepest Sender">Deepest Sender</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1837,6 +1941,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/6622" rel="bookmark" title="Firefox Add-ons: DOM Inspector"><acronym title="Document Object Model">DOM</acronym> Inspector</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1847,6 +1952,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/3794" rel="bookmark" title="Firefox Add-ons: Facebok Toolbar">Facebook Toolbar</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping" rowspan="6">Unavailable</td>
             <td class="vport yes">Yes</td>
@@ -1857,6 +1963,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/1843" rel="bookmark" title="Firefox Add-ons: Firebug">Firebug</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1869,6 +1976,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/33" rel="bookmark" title="Firefox Add-ons: googlebar">googlebar</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1881,6 +1989,7 @@
             <td><a href="http://toolbar.google.com/" rel="bookmark" title="Google Toolbar for Firefox">Google Toolbar</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1890,6 +1999,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/3863" rel="bookmark" title="Firefox Add-ons: iMacros for Firefox">iMacros</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim buggy">Sidebar only</td>
+            <td class="typingviet no">No</td>
             <td class="chim buggy">Sidebar only</td>
             <td class="vport buggy">Sidebar only</td>
             <td class="myavim buggy">Sidebar only</td>
@@ -1902,6 +2012,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/4687" rel="bookmark" title="Firefox Add-ons: IME and DiMENSiON"><acronym title="Input Method Editor">IME</acronym> and DiMENSiON</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1914,6 +2025,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/216" rel="bookmark" title="Firefox Add-ons: JavaScript Debugger">JavaScript Debugger</a> (Venkman)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1924,6 +2036,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/824" rel="bookmark" title="Firefox Add-ons: Mozilla XForms">Mozilla XForms</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping">Unavailable</td>
             <td class="vport no">No</td>
@@ -1934,6 +2047,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/6543" rel="bookmark" title="Firefox Add-ons: Nightly Tester Tools">Nightly Tester Tools</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1944,6 +2058,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/8487" rel="bookmark" title="Firefox Add-ons: Pencil">Pencil</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping" rowspan="3">Unavailable</td>
             <td class="vport no">No</td>
@@ -1954,6 +2069,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/6665" rel="bookmark" title="Firefox Add-ons: Prism for Firefox">Prism for Firefox</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1963,6 +2079,7 @@
             <td><a href="http://pyxpcomext.mozdev.org/samples.html" rel="bookmark" title="mozdev.org: PyXPCOMExt: PyXPCOM Samples">pyshell</a> for <a href="http://pyxpcomext.mozdev.org/" rel="bookmark" title="mozdev.org: PyXPCOMExt"><acronym title="Python Cross-Platform Component Object Model Extension">PyXPCOMExt</acronym></a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -1972,6 +2089,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/1333" rel="bookmark" title="Firefox Add-ons: Quick Locale Switcher">Quick Locale Switcher</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1982,6 +2100,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/1191" rel="bookmark" title="Firefox Add-ons: ReminderFox">ReminderFox</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -1992,6 +2111,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/7263" rel="bookmark" title="Firefox Add-ons: Sage-Too">Sage-Too</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping" rowspan="2">Unavailable</td>
             <td class="vport no">No</td>
@@ -2002,6 +2122,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/427" rel="bookmark" title="Firefox Add-ons: ScrapBook">ScrapBook</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
@@ -2011,6 +2132,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/1730" rel="bookmark" title="Firefox Add-ons: ScribeFire">ScribeFire</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim buggy">Except separate window</td>
+            <td class="typingviet no">No</td>
             <td class="chim buggy">Except separate window</td>
             <td class="viettyping buggy">Except separate window</td>
             <td class="vport buggy">Except separate window</td>
@@ -2021,6 +2143,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/5817" rel="bookmark" title="Firefox Add-ons: SQLite Manager"><acronym title="Structured Query Language Lite" class="initialism">SQLite</acronym> Manager</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2031,6 +2154,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/138" rel="bookmark" title="Firefox Add-ons: StumbleUpon">StumbleUpon</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2044,30 +2168,34 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/7479" rel="bookmark" title="Firefox Add-ons: Vietnamese Dictionary">Vietnamese Dictionary</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="instcode yes">Yes</td>
-            <td class="avim-chrome" rowspan="4">Unavailable</td>
-            <td class="google" rowspan="4">Unavailable</td>
-            <td class="vietinput" rowspan="4">Unavailable</td>
+            <td class="avim-chrome" rowspan="3">Unavailable</td>
+            <td class="google" rowspan="3">Unavailable</td>
+            <td class="vietinput" rowspan="3">Unavailable</td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/8228" rel="bookmark" title="Firefox Add-ons: Vietnamese Language Pack">Vietnamese Language Pack</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim buggy">Interface in English</td>
+            <td class="typingviet buggy">Interface in English</td>
             <td class="chim buggy">Interface in English</td>
-            <td class="viettyping" rowspan="4">Unavailable</td>
+            <td class="viettyping">Unavailable</td>
             <td class="vport buggy">Interface in English</td>
             <td class="myavim buggy">Interface in English</td>
             <td class="instcode yes">Yes</td>
-        </tr>
+        </tr> -->
         <tr>
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/4238" rel="bookmark" title="Firefox Add-ons: vnDict">vnDict</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
+            <td class="viettyping" rowspan="3">Unavailable</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="instcode yes">Yes</td>
@@ -2075,6 +2203,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/8494" rel="bookmark" title="Firefox Add-ons: WebChunks">WebChunks</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -2084,6 +2213,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/60" rel="bookmark" title="Firefox Add-ons: Web Developer">Web Developer</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
@@ -2096,6 +2226,7 @@
             <td><a href="https://addons.mozilla.org/en-US/firefox/addon/62" rel="bookmark" title="Firefox Add-ons: wmlbrowser"><acronym title="Wireless Markup Language " class="initialism">wml</acronym>browser</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2109,6 +2240,7 @@
             <td><a href="http://toolbar.yahoo.com/firefox" rel="bookmark" title="Yahoo!: Yahoo! Toolbar">Yahoo! Toolbar</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping" rowspan="2">Unavailable</td>
             <td class="vport yes">Yes</td>
@@ -2119,6 +2251,7 @@
             <td><a href="http://www.yoono.com/" rel="bookmark" title="yoono">yoono</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
@@ -2128,6 +2261,7 @@
             <td><a href="http://www.zotero.org/" rel="bookmark" title="Zotero">Zotero</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2136,11 +2270,12 @@
         </tr>
         
         <tr id="web-apps" class="cat-header">
-            <th colspan="11">Web applications</th>
+            <th colspan="12">Web applications</th>
         </tr>
             <td><a href="http://www.etherpad.org/" title="Etherpad Foundation">Etherpad</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport yes">Yes</td>
@@ -2151,9 +2286,24 @@
             <td class="vietinput no">No</td>
         </tr>
         <tr>
+            <td><a href="http://www.google.com/?hl=en">Gmail</a></td>
+            <td class="avim yes">Yes</td>
+            <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
+            <td class="chim yes">Yes</td>
+            <td class="viettyping yes">Yes</td>
+            <td class="vport yes">Yes</td>
+            <td class="myavim yes">Yes</td>
+            <td class="instcode yes">Yes</td>
+            <td class="avim-chrome no">No</td>
+            <td class="google no">No</td>
+            <td class="vietinput no">No</td>
+        </tr>
+        <tr>
             <td><a href="http://drive.google.com/">Google Drive</a></td>
             <td class="avim buggy"><a href="https://github.com/1ec5/avim/issues/21">Only spreadsheets</a></td>
             <td class="mudim buggy">Only spreadsheets</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2167,6 +2317,7 @@
             <td><a href="http://www.icloud.com/">iCloud</a> (Pages, Numbers, Keynote)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2180,6 +2331,7 @@
             <td><a href="http://office.microsoft.com/en-us/web-apps/" rel="bookmark" title="Microsoft Office: Office Web Apps">Office Web Apps</a> (Word, Excel, PowerPoint, OneNote)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport yes">Yes</td>
@@ -2193,6 +2345,7 @@
             <td><a href="http://en.wikipedia.org/">Wikipedia</a> (<a href="https://en.wikipedia.org/wiki/User:Sandbox">VisualEditor</a>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2206,6 +2359,7 @@
             <td><a href="https://docs.zoho.com/">Zoho Docs</a></td>
             <td class="avim buggy"><a href="https://github.com/1ec5/avim/issues/10">Only spreadsheets</a></td>
             <td class="mudim buggy">Only spreadsheets</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2217,12 +2371,13 @@
         </tr>
         
         <tr id="textboxes" class="cat-header">
-            <th colspan="11">Plain text controls</th>
+            <th colspan="12">Plain text controls</th>
         </tr>
         <tr>
             <td><acronym title="HyperText Markup Language" class="initialism">HTML</acronym> single-line text fields (<code>&lt;input type="text"></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping buggy">Except in internal frames</td>
             <td class="vport yes">Yes</td>
@@ -2236,6 +2391,7 @@
             <td><acronym title="HyperText Markup Language" class="initialism">HTML</acronym> password fields (<code>&lt;input type="password"></code>)</td>
             <td class="avim yes">Optionally</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2249,6 +2405,7 @@
             <td><acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5 search fields (<code>&lt;input type="search"></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim" rowspan="3">Unavailable</td>
             <td class="viettyping" rowspan="3">Unavailable</td>
             <td class="vport" rowspan="3">Unavailable</td>
@@ -2262,6 +2419,7 @@
             <td><acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5 <acronym title="uniform resource locator">URL</acronym> fields (<code>&lt;input type="url"></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
             <td class="vietinput yes">Yes</td>
@@ -2270,6 +2428,7 @@
             <td><acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5 e-mail fields (<code>&lt;input type="email"></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
             <td class="vietinput yes">Yes</td>
@@ -2278,6 +2437,7 @@
             <td><acronym title="HyperText Markup Language" class="initialism">HTML</acronym> multiline text areas (<code>&lt;textarea></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping buggy">Except in internal frames</td>
             <td class="vport yes">Yes</td>
@@ -2291,6 +2451,7 @@
             <td><acronym title="HyperText Markup Language" class="initialism">HTML</acronym> index search fields (<code>&lt;isindex></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2304,6 +2465,7 @@
             <td>XForms single-line text fields (<code>&lt;input></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2317,6 +2479,7 @@
             <td>XForms password fields (<code>&lt;secret></code>)</td>
             <td class="avim yes">Optionally</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2330,6 +2493,7 @@
             <td>XForms multiline text areas (<code>&lt;textarea></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2343,6 +2507,7 @@
             <td>XForms combo boxes (<code>&lt;select1 selection="open"></code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2354,12 +2519,13 @@
         </tr> -->
         
         <tr class="cat-header">
-            <th colspan="11">Rich text controls</th>
+            <th colspan="12">Rich text controls</th>
         </tr>
         <tr>
             <td><a href="http://www.mozilla.org/editor/midasdemo/">Midas</a> (<code>designMode</code>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport yes">Yes</td>
@@ -2373,6 +2539,7 @@
             <td><code>contentEditable</code></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2384,12 +2551,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Plugins</th>
+            <th colspan="12">Plugins</th>
         </tr>
         <tr>
             <td>Adobe Flash Player</td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2403,6 +2571,7 @@
             <td>Adobe Reader</td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2416,6 +2585,7 @@
             <td>Java Embedding Plugin</td>
             <td class="avim no">No</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2429,6 +2599,7 @@
             <td>Microsoft Silverlight</td>
             <td class="avim buggy">Except managed code</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2442,6 +2613,7 @@
             <td>SciMoz (<a href="http://www.scintilla.org/" rel="bookmark" title="Scintilla and SciTE">Scintilla</a>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2453,12 +2625,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Syntax-highlighting source code editors</th>
+            <th colspan="12">Syntax-highlighting source code editors</th>
         </tr>
         <tr>
             <td><a href="http://ace.ajax.org/" rel="bookmark" title="ACE"><acronym title="Ajax.org Code Editor">Ace</acronym></a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2472,6 +2645,7 @@
             <td><a href="http://codemirror.net/" rel="bookmark">CodeMirror</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim" rowspan="4">Rich text editing not supported</td>
             <td class="viettyping" rowspan="4">Rich text editing not supported</td>
             <td class="vport yes">Yes</td>
@@ -2485,6 +2659,7 @@
             <td><a href="http://qbnz.com/highlighter/"><acronym title="Generic Syntax Highlighter">GeSHi</acronym></a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2494,6 +2669,7 @@
             <td><a href="http://www.eclipse.org/orion/" rel="bookmark">Orion</a></td>
             <td class="avim no"><a href="https://github.com/1ec5/avim/issues/40">Accents disappear</a></td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome no">No</td>
@@ -2503,6 +2679,7 @@
             <td><a href="http://en.wikipedia.org/wiki/User:Cacycle/wikEd">wikEd</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2512,6 +2689,7 @@
             <td><a href="http://www.ymacs.org/" rel="bookmark">Ymacs</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome no">No</td>
@@ -2519,7 +2697,7 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Rich text editors</th>
+            <th colspan="12">Rich text editors</th>
         </tr>
         <!-- <tr>
             <td><a href="http://280slides.com/Editor/" rel="bookmark">280 Slides</a></td>
@@ -2537,14 +2715,15 @@
             <td><a href="http://www.aloha-editor.org/">Aloha Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
-            <td class="chim" rowspan="23">Rich text editing not supported</td>
-            <td class="viettyping" rowspan="23">Rich text editing not supported</td>
+            <td class="typingviet no">No</td>
+            <td class="chim" rowspan="24">Rich text editing not supported</td>
+            <td class="viettyping" rowspan="24">Rich text editing not supported</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
-            <td class="instcode" rowspan="23">Rich text editing not supported</td>
+            <td class="instcode" rowspan="24">Rich text editing not supported</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
-            <td class="vietinput" rowspan="23">Rich text editing not supported</td>
+            <td class="vietinput" rowspan="24">Rich text editing not supported</td>
         </tr>
         <!-- <tr>
             <td><a href="http://www.ffdi.hr/inc/editor/examples/simple_example.php">AreaEdit</td>
@@ -2558,6 +2737,7 @@
             <td><a href="http://www.blueshoes.org/_bsJavascript/components/editor/examples/example3.html">BlueShoes <acronym title="What You See Is What You Get">Wysiwyg</acronym> Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2567,6 +2747,7 @@
             <td><a href="http://www.kevinroth.com/rte/demo.htm">Cross-Browser Rich Text Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2576,6 +2757,7 @@
             <td><a href="http://cutesoft.net/example/general.aspx">Cute Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2593,6 +2775,7 @@
             <td><a href="http://dojotoolkit.org/reference-guide/1.9/dijit/Editor.html">dijit/Editor</a><!-- http://demos.dojotoolkit.org/demos/mail/demo.html --> (Dojo)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome no">No</td>
@@ -2611,6 +2794,7 @@
             <td><a href="http://www.fckeditor.net/demo">FCKeditor</a>, <a href="http://ckeditor.com/ckeditor/3.0rc/_samples/enterkey.html">CKeditor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome no">No</td>
@@ -2620,6 +2804,7 @@
             <td><a href="http://www.freerichtexteditor.com/demo/"><u>Free</u>RichTextEditor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome no">No</td>
@@ -2628,6 +2813,7 @@
             <td><a href="http://closure-library.googlecode.com/svn/trunk/closure/goog/demos/editor/editor.html" hreflang="en">goog.editor</a> (Google Closure)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome no">No</td>
@@ -2637,6 +2823,7 @@
             <td><a href="http://jejacks0n.github.io/mercury/">Mercury Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome no">No</td>
@@ -2646,6 +2833,7 @@
             <td><a href="http://cheeaun.github.com/mooeditable/">MooEditable</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2655,6 +2843,7 @@
             <td><a href="http://www.movabletype.org/">Movable Type</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2664,6 +2853,7 @@
             <td><a href="http://mozile.mozdev.org/"><acronym title="MOZilla InLine Editor">Mozile</acronym></a></td>
             <td class="avim buggy">0.8 only</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome">Chrome not supported</td>
@@ -2673,6 +2863,7 @@
             <td><a href="http://nicedit.com/demos.php">NicEdit</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2682,6 +2873,7 @@
             <td><a href="http://www.openwebware.com/wysiwyg/demo.shtml">openWYSIWYG</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome">Chrome not supported</td>
@@ -2691,6 +2883,7 @@
             <td><a href="http://www.moxieforge.net/overview.php?project_id=9&amp;category_id=5"><acronym title="Puny MoxieCode Editor" class="initialism">Puny<acronym title=" Moxiecode Editor">MCE</acronym></acronym></a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2699,6 +2892,7 @@
             <td><a href="https://www.raptor-editor.com/demo">Raptor Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2724,6 +2918,7 @@
             <td><a href="http://www.chezpaul.org.uk/office/rtwedit/example.htm">RTWedit</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome">Chrome not supported</td>
@@ -2733,6 +2928,7 @@
             <td><a href="http://sourceforge.net/projects/spaw/"><acronym>SPAW</acronym> Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2742,6 +2938,7 @@
             <td><a href="http://www.tinymce.com/tryit/full.php"><acronym title="Tiny MoxieCode Editor" class="initialism">Tiny<acronym title=" Moxiecode Editor">MCE</acronym></acronym></a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome no">No</td>
@@ -2759,6 +2956,7 @@
             <td><a href="http://demo.richtexteditor.org/">Web Wiz Rich Text Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2768,6 +2966,7 @@
             <td><a href="http://www.unverse.net/wysiwyg.html">Whizzywig</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2777,6 +2976,7 @@
             <td><a href="http://www.themaninblue.com/experiment/widgEditor/">widgEditor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2786,6 +2986,7 @@
             <td><a href="http://files.wymeditor.org/wymeditor-1.0.0b2/examples/01-basic.html"><acronym title="What You Mean ">WYM</acronym>editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome no">No</td>
@@ -2803,6 +3004,7 @@
             <td><a href="http://xinha.raimundmeyer.de/x_examples/ext_example.html">Xinha</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="avim-chrome no">No</td>
             <td class="googl no">No</td>
             <td class="vport yes">Yes</td>
@@ -2812,6 +3014,7 @@
             <td><a href="http://yuilibrary.com/yui/docs/editor/editor-instance.html"><acronym title="Yahoo! User Interface Library">YUI</acronym> Rich Text Editor</a></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
@@ -2819,12 +3022,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Compatibility with in-page <acronym title="input method editor" class="initialism">IME</acronym>s</th>
+            <th colspan="12">Compatibility with in-page <acronym title="input method editor" class="initialism">IME</acronym>s</th>
         </tr>
         <tr>
             <td><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> (formerly <acronym title="HAO Input Method">HIM</acronym>)</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -2838,6 +3042,7 @@
             <td><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></td>
             <td class="avim yes">Optionally</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -2851,6 +3056,7 @@
             <td>Google Input Tools</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2864,6 +3070,7 @@
             <td>jquery.ime</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -2877,6 +3084,7 @@
             <td><acronym title="Mudzot&rsquo;s Input Method">Mudim</acronym></td>
             <td class="avim yes">Yes<!-- Should work even with extensions.avim.scriptMonitor.mudim turned off. --></td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
@@ -2890,6 +3098,7 @@
             <td>MViet</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -2903,6 +3112,7 @@
             <td><acronym title="Vietnamese IME for Web Browsers" class="initialism">VietIMEW</acronym></td>
             <td class="avim yes">Optionally</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -2916,6 +3126,7 @@
             <td>VietTyping</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -2929,6 +3140,7 @@
             <td>VietUni</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet no">No</td>
             <td class="chim yes">Yes</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -2942,6 +3154,7 @@
             <td>Vinova</td>
             <td class="avim yes">Optionally</td>
             <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2953,12 +3166,13 @@
         </tr>
         
         <tr class="cat-header">
-            <th colspan="11">Miscellaneous features</th>
+            <th colspan="12">Miscellaneous features</th>
         </tr>
         <tr>
             <td>Automatic updates</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2972,6 +3186,7 @@
             <td>Extension icon</td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
+            <td class="typingviet buggy">Only when enabled</td>
             <td class="chim buggy">Only when enabled</td>
             <td class="viettyping no">No</td>
             <td class="vport no">No</td>
@@ -2985,6 +3200,7 @@
             <td>Preferences using <kbd>about:config</kbd></td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
             <td class="chim no">No</td>
             <td class="viettyping yes">Yes</td>
             <td class="vport no">No</td>
@@ -2996,7 +3212,7 @@
         </tr>
         
         <!-- <tr class="cat-header">
-            <th colspan="11"></th>
+            <th colspan="12"></th>
         </tr>
         <tr>
             <td></td>
@@ -3010,10 +3226,10 @@
     </tbody>
     <!-- <tfoot>
         <tr class="cat-header">
-            <th colspan="11">Notes</th>
+            <th colspan="12">Notes</th>
         </tr>
         <tr>
-            <td colspan="11"></td>
+            <td colspan="12"></td>
         </tr>
     </tfoot> -->
 </table>
