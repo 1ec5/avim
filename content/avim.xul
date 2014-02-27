@@ -64,7 +64,7 @@
 		</menupopup>
 	</popupset>
 	
-	<!-- Toolbar buttons -->
+	<!-- Toolbar button -->
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="avim-tb" class="toolbarbutton-1" type="menu-button" label="&AVIM.label;" tooltip="avim-status-tooltip" autocheck="false" command="avim-enabled-cmd" observes="avim-status-bc">
 			<menupopup id="avim-tb-popup" avim-popupsource="avim-status-popup" onpopupshowing="avim.buildPopup(this);">
