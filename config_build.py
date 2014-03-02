@@ -18,7 +18,7 @@ REPO_URL = "https://github.com/1ec5/avim/blob/%(rev)s/%(path)s"
 
 # Incremented revision number, originally based on the latest Subversion
 # revision.
-REVISION = 524
+REVISION = 525
 
 # Build date.
 DATE = None
