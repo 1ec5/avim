@@ -152,7 +152,8 @@
 		<em:creator>Minh Nguyen</em:creator>
 		<em:contributor>Hieu Dang</em:contributor>
 		<em:homepageURL>http://avim.1ec5.org/en/</em:homepageURL>
-		<em:iconURL>chrome://avim/content/avim.png</em:iconURL>
+		<em:iconURL>chrome://avim/content/avim.svg</em:iconURL>
+		<em:icon64URL>chrome://avim/content/avim.svg</em:icon64URL>
 		
 		<!-- German -->
 		<em:localized>

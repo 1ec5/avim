@@ -1,16 +1,5 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
-extension[name="AVIM"] .extension-icon,
-richlistitem[name="AVIM"] .addonIcon {
-	display: none !important;
-}
-
-extension[name="AVIM"] #ExtensionIcon,
-richlistitem[name="AVIM"] #ExtensionIcon {
-	list-style-image: url(chrome://avim/skin/avim32.png);
-	display: -moz-box;
-}
-
 #avim-preferences prefpane {
-	background-image: url(chrome://avim/skin/avim45.png);
+	background-image: url(chrome://avim/content/skin/avim.svg);
 }
