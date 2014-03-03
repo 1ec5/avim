@@ -254,6 +254,10 @@ form {
   padding: 20px;
 }
 
+input[type="search"] {
+  -moz-appearance: searchfield;
+}
+
 .fine-print {
   font-size: 80%;
 }
