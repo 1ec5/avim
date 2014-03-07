@@ -2,7 +2,7 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="32" height="32">
 	<defs>
-		<style type="text/css"><![CDATA[#s1{stop-color:#939393}#s2{stop-color:#848484}@media(-moz-windows-classic),(-moz-windows-theme:luna-blue),(-moz-windows-theme:luna-silver),(-moz-windows-theme:luna-olive){#s1{stop-color:#899198}#s2{stop-color:#737b82}}@media(-moz-windows-theme:aero),(-moz-windows-theme:aero-lite){#s1{stop-color:#85919e}#s2{stop-color:#68717d}}]]></style>
+		<style type="text/css"><![CDATA[#s1{stop-color:#899199}#s2{stop-color:#7f868d}@media(-moz-mac-graphite-theme:0),(-moz-mac-graphite-theme:1){#s1{stop-color:#939393}#s2{stop-color:#848484}}@media(-moz-windows-classic),(-moz-windows-theme:luna-blue),(-moz-windows-theme:luna-silver),(-moz-windows-theme:luna-olive){#s1{stop-color:#899198}#s2{stop-color:#737b82}}@media(-moz-windows-theme:aero),(-moz-windows-theme:aero-lite){#s1{stop-color:#85919e}#s2{stop-color:#68717d}}]]></style>
 		<linearGradient x1="0" y1="2" x2="0" y2="30" gradientUnits="userSpaceOnUse" id="lg">
 			<stop id="s1" offset="0" />
 			<stop id="s2" offset="1" />
