@@ -215,8 +215,24 @@ def minify_xml(file_path, src):
     src = re.sub(r"(?<=[\"'])></\w+>", r"/>", src)
     src = re.sub(r"<(\w+)></\1>", r"<\1/>", src)
     
-    if file_path.lower().endswith(".svg"):
+    # Minify CSS in files that accept inline CSS.
+    file_ext = file_path.lower().partition(".")[-1]
+    if file_ext in ["html", "xhtml", "svg", "xul"]:
+        # Minify <style> tags.
+        style_re = r"(<style [^>]*type=['\"]text/css['\"][^>]*><!\[CDATA\[)" \
+                   r"(.+?)(\]\]></style>)"
+        minify_style = lambda m: "%s%s%s" % \
+                       (m.group(1), minify_css(None, m.group(2)), m.group(3))
+        src = re.sub(style_re, minify_style, src, flags=re.I | re.S)
+        
+        # Minify style attributes.
+        style_re = r"style=(['\"])(.+?)\1"
+        minify_style = lambda m: "style=%s%s%s" % \
+                       (m.group(1), minify_css(None, m.group(2)), m.group(1))
+        src = re.sub(style_re, minify_style, src, flags=re.I | re.S)
+    if file_ext == "svg":
         src = minify_colors(src)
+    
     url = get_repo_url(file_path)
     if url:
         msg = "<!--Minified w/ xmlformatter: see %s-->\n" % url
@@ -248,7 +264,7 @@ def minify_css(file_path, src):
     min_src = minify_colors(cssmin(src))
     if src.strip() == min_src.strip():
         return min_src
-    url = get_repo_url(file_path)
+    url = file_path and get_repo_url(file_path)
     if url:
         min_src = "/*Minified w/ cssmin: see %s*/\n%s" % (url, min_src)
     return min_src
