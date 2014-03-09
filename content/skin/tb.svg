@@ -11,8 +11,8 @@
 				stop-color: #7f868d;
 			}
 			
-			/* Mac OS X */
-			@media (-moz-mac-graphite-theme: 0), (-moz-mac-graphite-theme: 1) {
+			/* Mac OS X (except Aqua on Snow Leopard) */
+			@media (-moz-mac-graphite-theme), (-moz-mac-lion-theme) {
 				#s1 {
 					stop-color: #939393;
 				}
@@ -22,7 +22,7 @@
 			}
 			
 			/* Windows Classic & Luna */
-			@media (-moz-windows-classic), (-moz-windows-theme: luna-blue), (-moz-windows-theme: luna-silver), (-moz-windows-theme: luna-olive) {
+			@media (-moz-windows-theme) {
 				#s1 {
 					stop-color: #899198;
 				}
