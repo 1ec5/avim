@@ -9,9 +9,9 @@ AVIM is a extension for Firefox and similar applications that provides an input 
 Installation
 ------------
 
-Visit [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/).
+Visit [AVIM’s homepage](http://avim.1ec5.org/en/) for the latest version or [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/) for the Mozilla-approved version, which may be out of date.
 
-*Hãy truy cập [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/).*
+*Hãy truy cập phiên bản mới nhất tại [trang chủ của AVIM](http://avim.1ec5.org/) hoặc phiên bản trên [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/), bản này được Mozilla chấp nhận nhưng có thể lỗi thời.*
 
 Building
 --------
