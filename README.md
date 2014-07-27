@@ -2,16 +2,16 @@
 AVIM for Firefox
 ================
 
-AVIM is a extension for Firefox and similar applications that provides an input method editor for Vietnamese, based on Hiếu Đặng’s [webpage script](http://sourceforge.net/projects/rhos/) of the same name. Hiếu was the original developer of this extension; Minh Nguyễn has been the developer since 2007.
+AVIM is a extension for Firefox and similar applications that provides an input method editor for Vietnamese, based on Hiếu Đặng’s [webpage script](http://sourceforge.net/projects/rhos/) of the same name. Hiếu was the original developer of this extension; Minh Nguyễn has been the developer since 2007. (There is also an unaffiliated [Chrome extension](https://github.com/kimkha/avim-chrome) of the same name.)
 
-*AVIM là một phần mở rộng cung cấp bộ gõ tiếng Việt trong Firefox và các chương trình tương tự, dựa trên [kịch bản cùng tên](http://sourceforge.net/projects/rhos/) của Đặng Trần Hiếu. Hiếu là người đầu tiên phát triển phần mở rộng này, còn Nguyễn Xuân Minh là người phát triển phần mở rộng kể từ năm 2007.*
+*AVIM là một phần mở rộng cung cấp bộ gõ tiếng Việt trong Firefox và các chương trình tương tự, dựa trên [kịch bản cùng tên](http://sourceforge.net/projects/rhos/) của Đặng Trần Hiếu. Hiếu là người đầu tiên phát triển phần mở rộng này, còn Nguyễn Xuân Minh là người phát triển phần mở rộng kể từ năm 2007. (Một dự án không có liên quan sản xuất một [tiện ích mở rộng Chrome](https://github.com/kimkha/avim-chrome) cùng tên.)*
 
 Installation
 ------------
 
-Visit [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/).
+Visit [AVIM’s homepage](http://avim.1ec5.org/en/) for the latest version or [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/) for the Mozilla-approved version, which may be out of date.
 
-*Hãy truy cập [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/).*
+*Hãy truy cập phiên bản mới nhất tại [trang chủ của AVIM](http://avim.1ec5.org/) hoặc phiên bản trên [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/), bản này được Mozilla chấp nhận nhưng có thể lỗi thời.*
 
 Building
 --------
