@@ -1,6 +1,7 @@
 // XPCOM component to attach AVIM onto every XUL window and dialog box
 // Inspired by the userChrome.js extension by Simon Bünzli
 // <http://mozilla.zeniko.ch/userchrome.js.html>
+"use strict";
 
 const gCc = Components.classes;
 const gCi = Components.interfaces;

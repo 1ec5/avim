@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * A controller for the AVIM test suite window.
  */
