@@ -56,8 +56,6 @@ function AVIM()	{
 	};
 	const panelBroadcasterId = "avim-status-bc";
 	
-	const slightTypeRe = /application\/(?:x-silverlight.*|ag-plugin)/;
-	
 	const iCloudHostname = "www.icloud.com";
 	
 	// Local functions that don't require access to AVIM's fields.
@@ -137,6 +135,79 @@ function AVIM()	{
 	}
 	
 	/**
+	 * A wrapper around a transparent (i.e., Xray-less) Components.utils.Sandbox
+	 * that restricts property access by type.
+	 *
+	 * @param principal	{object}	The security principal, also used as the
+	 * 								prototype object.
+	 */
+	function Sandbox(principal) {
+		var sandbox = new Cu.Sandbox(principal, {
+			sandboxName: "avim",
+			sandboxPrototype: principal,
+			wantXrays: false,
+		});
+		if (!sandbox) throw "No sandbox to evaluate in.";
+		
+		/**
+		 * Evaluates a statement in the given sandbox and returns a string.
+		 */
+		this.evalString = function (text) {
+			return Cu.evalInSandbox("(" + text + ")+''", sandbox);
+		}
+		
+		/**
+		 * Evaluates a statement in the given sandbox and returns a Boolean.
+		 */
+		this.evalBoolean = function (text) {
+			return Cu.evalInSandbox("!!(" + text + ")", sandbox);
+		}
+		
+		/**
+		 * Evaluates a statement in the given sandbox and returns an integer.
+		 */
+		this.evalInt = function (text) {
+			return parseInt(Cu.evalInSandbox("(" + text + ")+0", sandbox), 0);
+		}
+		
+		///**
+		// * Evaluates a statement in the given sandbox and returns a floating
+		// * point number.
+		// */
+		//this.evalFloat = function (text) {
+		//	return parseFloat(Cu.evalInSandbox("(" + text + ")+0", sandbox));
+		//}
+		
+		/**
+		 * Evaluates a statement in the given sandbox without returning
+		 * anything.
+		 */
+		this.evalFunctionCall = function (text) {
+			Cu.evalInSandbox(text, sandbox);
+		};
+		
+		/**
+		 * Assigns the evaluated result of a single JavaScript statement to the
+		 * given property on the sandbox. The property does not become visible
+		 * to the webpage.
+		 *
+		 * @returns True if the statement evaluates to a defined value.
+		 */
+		this.createObjectAlias = function (name, text) {
+			sandbox[name] = Cu.evalInSandbox("(" + text + ")||undefined",
+												  sandbox);
+			return sandbox[name] !== undefined;
+		}
+		
+		/**
+		 * Imports a function into the sandbox with the given name.
+		 */
+		this.importFunction = function (fn, name) {
+			sandbox.importFunction(fn, name);
+		}
+	}
+	
+	/**
 	 * Proxy for a specialized editor to appear as an ordinary HTML text field
 	 * control to the rest of the AVIM codebase.
 	 */
@@ -168,25 +239,26 @@ function AVIM()	{
 	 * Bespin/Skywriter/Ace API while posing as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context. The editor's `$env` variable should
-	 * 								be defined on the sandbox.
+	 * 								context.
 	 * @param rangeNum	{number}	Selection range index, for multiple
 	 * 								selection.
 	 * @param numRanges	{number}	Total number of selection ranges.
 	 */
 	function AceProxy(sandbox, rangeNum, numRanges) {
-		sandbox.$cursor = Cu.evalInSandbox(numRanges > 1 ? "$sel.ranges[" +
-										   rangeNum + "].cursor||null" :
-										   "$sel.selectionLead||null", sandbox);
-		if (sandbox.$cursor === null) throw "No cursor";
+		if (!sandbox.createObjectAlias("$cursor",
+									   (numRanges > 1 ?
+										"$sel.ranges[" + rangeNum + "].cursor" :
+										"$sel.selectionLead"))) {
+			throw "No cursor";
+		}
 		
 		var selLead = {
-			row: parseInt(Cu.evalInSandbox("$cursor.row+0", sandbox)),
-			column: parseInt(Cu.evalInSandbox("$cursor.column+0", sandbox))
+			row: sandbox.evalInt("$cursor.row"),
+			column: sandbox.evalInt("$cursor.column"),
 		};
 		
-		var lineStr = Cu.evalInSandbox("$env.document.getLine(" +
-											selLead.row + ")+''", sandbox);
+		var lineStr = sandbox.evalString("$env.document.getLine(" +
+										 selLead.row + ")");
 		var word = this.value = lastWordInString(lineStr.substr(0, selLead.column));
 		if (!word || !word.length) throw "No word";
 		var wordStart = selLead.column - word.length;
@@ -204,15 +276,14 @@ function AVIM()	{
 		 */
 		this.commit = function() {
 			if (this.value == word) return false;
-			
 //			dump("Replacing <" + $env.document.doc.$lines[selLead.row].substring(0, 10) + "> ");	// debug
 			
 			// Work around <https://github.com/ajaxorg/ace/pull/1813>.
-			sandbox.$Range =
-				Cu.evalInSandbox("$sel.getRange().__proto__.constructor", sandbox);
-			Cu.evalInSandbox("$env.document.replace(new $Range($cursor.row," +
-							 wordStart + ",$cursor.row,$cursor.column)," +
-							 quoteJS(this.value) + ")", sandbox);
+			sandbox.createObjectAlias("$Range",
+									  "$sel.getRange().__proto__.constructor");
+			sandbox.evalFunctionCall("$env.document.replace(new $Range($cursor.row," +
+									 wordStart + ",$cursor.row,$cursor.column)," +
+									 quoteJS(this.value) + ")");
 			return true;
 		};
 	};
@@ -223,24 +294,21 @@ function AVIM()	{
 	 * Proxy for an Eclipse Orion editor to pose as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context. The window's `editor` object
-	 * 								should be defined on the sandbox.
+	 * 								context.
 	 */
 	function OrionProxy(sandbox) {
-		if (Cu.evalInSandbox("editor.getSelection().start!==" +
-							 "editor.getSelection().end", sandbox)) {
+		if (sandbox.evalBoolean("editor.getSelection().start!==" +
+								"editor.getSelection().end")) {
 			throw "Non-empty selection";
 		}
-		var offset = parseInt(Cu.evalInSandbox("editor.getCaretOffset()+0",
-											   sandbox));
-		var lineStart =
-			Cu.evalInSandbox("editor.getModel().getLineStart(" +
-							 "editor.getModel().getLineAtOffset(" + offset +
-							 ")) + 0", sandbox);
+		var offset = sandbox.evalInt("editor.getCaretOffset()");
+		var lineStart = sandbox.evalInt("editor.getModel().getLineStart(" +
+										"editor.getModel().getLineAtOffset(" +
+										offset + "))");
 		this.selectionStart = this.selectionEnd = offset - lineStart;
 		
-		this.oldValue = Cu.evalInSandbox("editor.getText(" + lineStart + "," +
-										 offset + ")+''", sandbox);
+		this.oldValue = sandbox.evalString("editor.getText(" + lineStart + "," +
+										   offset + ")");
 		this.value = this.oldValue;
 		
 		/**
@@ -252,12 +320,12 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == this.oldValue) return false;
 			
-			Cu.evalInSandbox("editor.setText(" + quoteJS(this.value) + "," +
-							 lineStart + "," + offset + ")", sandbox);
+			sandbox.evalFunctionCall("editor.setText(" + quoteJS(this.value) +
+									  "," + lineStart + "," + offset + ")");
 			offset += this.value.length - this.oldValue.length;
-			Cu.evalInSandbox("editor.redrawRange(" + lineStart + "," + offset +
-							 ")", sandbox);
-			Cu.evalInSandbox("editor.setCaretOffset(" + offset + ")", sandbox);
+			sandbox.evalFunctionCall("editor.redrawRange(" + lineStart + "," +
+									 offset + ")");
+			sandbox.evalFunctionCall("editor.setCaretOffset(" + offset + ")");
 			
 			return true;
 		};
@@ -269,28 +337,23 @@ function AVIM()	{
 	 * Proxy for a Ymacs editor to pose as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context. The window's `ymacs` object should
-	 * 								be defined on the sandbox.
+	 * 								context.
 	 */
 	function YmacsProxy(sandbox) {
-		var bufferJS = "ymacs.getActiveBuffer()";
-		if (Cu.evalInSandbox(bufferJS + ".transientMarker&&" + bufferJS +
-							 ".caretMarker.position!==" + bufferJS +
-							 ".transientMarker.position", sandbox)) {
+		sandbox.createObjectAlias("$buffer", "ymacs.getActiveBuffer()");
+		if (sandbox.evalBoolean("$buffer.transientMarker&&" +
+								"$buffer.caretMarker.position!==" +
+								"$buffer.transientMarker.position")) {
 			throw "Non-empty selection";
 		}
 		var oldSelection = {
-			row: parseInt(Cu.evalInSandbox(bufferJS +
-										   ".caretMarker.rowcol.row+0",
-										   sandbox)),
-			column: parseInt(Cu.evalInSandbox(bufferJS +
-											  ".caretMarker.rowcol.col+0",
-											  sandbox))
+			row: sandbox.evalInt("$buffer.caretMarker.rowcol.row"),
+			column: sandbox.evalInt("$buffer.caretMarker.rowcol.col"),
 		};
 		this.selectionStart = this.selectionEnd = oldSelection.column;
 		
-		this.oldValue = Cu.evalInSandbox(bufferJS + ".getLine(" +
-										 oldSelection.row + ")+''", sandbox);
+		this.oldValue = sandbox.evalString("$buffer.getLine(" +
+										   oldSelection.row + ")");
 		this.value = this.oldValue;
 		
 		/**
@@ -302,18 +365,18 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == this.oldValue) return false;
 			
-			var linePos =
-				parseInt(Cu.evalInSandbox(bufferJS + "._rowColToPosition(" +
-										  oldSelection.row + ",0)+0", sandbox));
+			var linePos = sandbox.evalInt("$buffer._rowColToPosition(" +
+										  oldSelection.row + ",0)");
 			var pos = linePos + oldSelection.column +
 				this.value.length - this.oldValue.length;
-			Cu.evalInSandbox(bufferJS + "._replaceLine(" + oldSelection.row +
-							 "," + quoteJS(this.value) + ")", sandbox);
-			Cu.evalInSandbox(bufferJS + ".redrawDirtyLines()", sandbox);
-			Cu.evalInSandbox(bufferJS + ".caretMarker.setPosition(" + pos + ")",
-							 sandbox);
-			var after = Cu.evalInSandbox(bufferJS + ".getLine(" +
-										 oldSelection.row + ")+''", sandbox);
+			sandbox.evalFunctionCall("$buffer._replaceLine(" +
+									 oldSelection.row + "," +
+									 quoteJS(this.value) + ")");
+			sandbox.evalFunctionCall("$buffer.redrawDirtyLines()");
+			sandbox.evalFunctionCall("$buffer.caretMarker.setPosition(" + pos +
+									 ")");
+			//var after = sandbox.evalString("$buffer.getLine(" +
+			//							   oldSelection.row + ")");
 			
 			return true;
 		};
@@ -588,30 +651,29 @@ function AVIM()	{
 	 * Proxy for the Pages editor to pose as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context. The window's `$GSAUI`, `$GSK`, and
-	 * 								`$GSWP` objects should be defined on the
-	 * 								sandbox.
+	 * 								context.
 	 */
 	function CacTrangProxy(sandbox) {
-		sandbox.$selection = Cu.evalInSandbox("$GSAUI.selectionController.topSelection[0]||null",
-									   sandbox);
-		if (sandbox.$selection === null) throw "No selection";
-		if (Cu.evalInSandbox("!($selection instanceof $GSWP.TextSelection)",
-							 sandbox)) {
+		if (!sandbox.createObjectAlias("$selection",
+									   "GSAUI.selectionController.topSelection[0]")) {
+			throw "No selection";
+		}
+		if (!sandbox.evalBoolean("$selection instanceof GSWP.TextSelection")) {
 			throw "Non-text selection";
 		}
-		if (Cu.evalInSandbox("$selection.isInsertionPoint()===false", sandbox)) {
+		if (!sandbox.evalBoolean("$selection.isInsertionPoint()")) {
 			throw "Non-empty selection";
 		}
 		
-		sandbox.$storage = Cu.evalInSandbox("$selection.getTextStorage()||null", sandbox);
-		if (sandbox.$storage === null) throw "No text storage";
+		if (!sandbox.createObjectAlias("$storage", "$selection.getTextStorage()")) {
+			throw "No text storage";
+		}
 		
 		var selectionStart =
-			Cu.evalInSandbox("$selection.getNormalizedRange().location+0", sandbox);
+			sandbox.evalInt("$selection.getNormalizedRange().location");
 		
-		var beforeString = Cu.evalInSandbox("$storage.getSubstring(0," +
-											selectionStart + ")+''", sandbox);
+		var beforeString = sandbox.evalString("$storage.getSubstring(0," +
+											  selectionStart + ")");
 		var word = this.value = lastWordInString(beforeString);
 		if (!word || !word.length) throw "No word";
 		var wordStart = selectionStart - word.length;
@@ -632,18 +694,17 @@ function AVIM()	{
 			
 			//dump(">>> Replacing <" + word + "> with <" + this.value + ">\n");	// debug
 			
-			sandbox.$editor =
-				Cu.evalInSandbox("$GSK.DocumentViewController.currentController." +
-								 "canvasViewController.getEditorController()." +
-								 "getMostSpecificCurrentEditor()", sandbox);
-			sandbox.$wordSelection =
-				Cu.evalInSandbox("$GSWP.TextSelection.createWithStartAndStopAndCaretAffinity(" +
-								 "$storage," + wordStart + "," + selectionStart + ",null)",
-								 sandbox);
-			sandbox.$cmd = Cu.evalInSandbox("$editor._createReplaceTextCommand(" +
-											"$wordSelection," + quoteJS(this.value) +
-											")", sandbox);
-			Cu.evalInSandbox("$editor._executeCommand($cmd)", sandbox);
+			sandbox.createObjectAlias("$editor",
+									  "GSK.DocumentViewController.currentController." +
+									  "canvasViewController.getEditorController()." +
+									  "getMostSpecificCurrentEditor()");
+			sandbox.createObjectAlias("$wordSelection",
+									   "GSWP.TextSelection.createWithStartAndStopAndCaretAffinity(" +
+									   "$storage," + wordStart + "," + selectionStart + ",null)");
+			sandbox.createObjectAlias("$cmd", "$editor._createReplaceTextCommand(" +
+									  "$wordSelection," + quoteJS(this.value) +
+									  ")");
+			sandbox.evalFunctionCall("$editor._executeCommand($cmd)");
 			
 			return true;
 		};
@@ -2153,15 +2214,17 @@ function AVIM()	{
 		
 //		dump("---AceProxy---\n");												// debug
 		// Build a sandbox with all the toys an Ace editor could want.
-		var sandbox = new Cu.Sandbox(elt.ownerDocument.location.href);
-		sandbox.$elt = elt.wrappedJSObject;
-		sandbox.$env = Cu.evalInSandbox("$elt.env||null", sandbox);
-		if (sandbox.$env === null) return false;
+		var sandbox = new Sandbox(elt.ownerDocument.defaultView);
+		// This selector assumes that only one ACE editor can be focused at a
+		// time.
+		var eltSrc = "document.querySelector('.ace_editor.ace_focus')";
+		if (!sandbox.createObjectAlias("$env", eltSrc + "&&" + eltSrc + ".env") ||
+			!sandbox.createObjectAlias("$sel", "$env.document.selection") ||
+			!sandbox.evalBoolean("$sel.isEmpty()")) {
+			return false;
+		}
 		
-		sandbox.$sel = Cu.evalInSandbox("$env.document.selection", sandbox);
-		if (!Cu.evalInSandbox("$sel&&!!$sel.isEmpty()", sandbox)) return false;
-		
-		var numRanges = Cu.evalInSandbox("$sel.rangeCount+0", sandbox) || 1;
+		var numRanges = sandbox.evalInt("$sel.rangeCount") || 1;
 		var anyChanged = this.changed;
 		for (var i = 0; i < numRanges; i++) {
 			var proxy = new AceProxy(sandbox, i, numRanges);
@@ -2205,15 +2268,11 @@ function AVIM()	{
 		var parentWin = elt.ownerDocument.defaultView.parent;
 		if (!parentWin) return false;
 		
-		var sandbox = new Cu.Sandbox(parentWin.location.href);
-		sandbox.window = parentWin.wrappedJSObject;
+		var sandbox = new Sandbox(parentWin);
 		try {
-			if (!Cu.evalInSandbox("'eclipse' in window && 'editor' in window",
-								  sandbox)) {
+			if (!sandbox.evalBoolean("'eclipse'in window&&'editor'in window")) {
 				return false;
 			}
-			sandbox.editor = Cu.evalInSandbox("window.editor", sandbox);
-			if (sandbox.editor === null) return false;
 		}
 		catch (exc) {
 			return false;
@@ -2252,15 +2311,12 @@ function AVIM()	{
 		var elt = evt.originalTarget;
 		
 		var win = elt.ownerDocument.defaultView;
-		var sandbox = new Cu.Sandbox(win.location.href);
-		sandbox.window = win.wrappedJSObject;
+		var sandbox = new Sandbox(win);
 		try {
-			if (!Cu.evalInSandbox("'YMACS_SRC_PATH' in window &&" +
-								  "'ymacs' in window", sandbox)) {
+			if (!sandbox.evalBoolean("'YMACS_SRC_PATH'in window&&" +
+									 "'ymacs'in window")) {
 				return false;
 			}
-			sandbox.ymacs = Cu.evalInSandbox("window.ymacs", sandbox);
-			if (sandbox.ymacs === null) return false;
 		}
 		catch (exc) {
 			return false;
@@ -2359,7 +2415,7 @@ function AVIM()	{
 		}
 		catch (exc) {
 // $if{Debug}
-			throw exc;
+			throw ">>> AVIM.handleSlightKeyDown -- " + exc;
 // $endif{}
 		}
 	};
@@ -2428,56 +2484,47 @@ function AVIM()	{
 		}
 		catch (exc) {
 // $if{Debug}
-			throw exc;
+			throw ">>> AVIM.handleSlightByEatingChar -- " + exc;
 // $endif{}
 		}
 	}
 	
 	/**
-	 * Attaches AVIM to the given Silverlight applet. This method should be
-	 * called on an applet whenever the containing page is shown, not just when
-	 * it is loaded, because the applet is loaded afresh even when the page is
-	 * loaded from cache.
-	 *
-	 * @param slight	{object}	The DOM node representing the Silverlight
-	 * 								applet.
-	 */
-	this.registerSlight = function(elt, sandbox) {
-		if (!elt || !slightTypeRe.test(elt.type)) return;
-//		dump("registerSlight -- " + slight.content.root + "\n");				// debug
-		sandbox.importFunction(avim.handleSlightKeyDown, "handleSlightKeyDown");
-		// Observing keyUp introduces problems with character limits.
-		Cu.evalInSandbox("elt.content && elt.content.root.addEventListener(" +
-						 "'keyDown', handleSlightKeyDown)", sandbox);
-//		dump("\t" + slight.content.root.children + "\n");						// debug
-	};
-	
-	/**
 	 * Attaches AVIM to Silverlight applets in the page targeted by the given
-	 * DOM load event.
+	 * DOM load or pageshow event.
+	 *
+	 * This method should be called on an applet whenever the containing page is
+	 * shown, not just when it is loaded, because the applet is loaded afresh
+	 * even when the page is loaded from cache.
 	 *
 	 * @param evt	{object}	The DOMContentLoaded event.
 	 */
 	this.registerSlightsOnPageLoad = function(evt) {
+		if (!document.querySelectorAll) return;
+		
 		try {
-			//var docWrapper = new XPCNativeWrapper(evt.originalTarget);
-			var sandbox = new Cu.Sandbox(evt.originalTarget.location.href);
+			var sandbox = new Sandbox(evt.originalTarget.defaultView);
+			sandbox.importFunction(avim.handleSlightKeyDown, "handleSlightKeyDown");
 			
-			var slights = evt.originalTarget.getElementsByTagName("object");
-//			dump("registerSlightsOnPageLoad -- originalTarget: " + evt.originalTarget +
-//				 "; target: " + evt.target + "\n");								// debug
-			for (var i = 0; i < slights.length; i++) {
-//				dump("\t> " + slights[i].id + "\n");								// debug
-//				avim.registerSlight(slights[i]);
-				sandbox.elt = slights[i].wrappedJSObject;
-				avim.registerSlight(slights[i], sandbox);
-			}
+			//* Always stringify this function before calling it.
+			var _registerSlights = function () {
+				var elts = document.querySelectorAll("object[type='application/x-silverlight-1']," +
+													 "object[type='application/x-silverlight-2']," +
+													 "object[type='application/ag-plugin']");
+				for (var i = 0; i < elts.length; i++) {
+					if (elts[i].content) {
+						elts[i].content.root.addEventListener("keyDown",
+															  handleSlightKeyDown);
+					}
+				}
+			};
+			sandbox.evalFunctionCall("(" + _registerSlights + ")()");
 //			doc.addEventListener("DOMNodeInserted",
 //								 avim.registerSlightsOnChange, true);
 		}
 		catch (exc) {
 // $if{Debug}
-			dump("registerSlightsOnPageLoad -- " + exc + "\n");					// debug
+			dump(">>> AVIM.registerSlightsOnPageLoad -- " + exc + "\n");					// debug
 			throw exc;
 // $endif{}
 		}
@@ -2507,17 +2554,11 @@ function AVIM()	{
 		var elt = evt.originalTarget;
 		
 		var win = elt.ownerDocument.defaultView;
-		var sandbox = new Cu.Sandbox(win.location.href);
-		sandbox.window = win.wrappedJSObject;
+		var sandbox = new Sandbox(win);
 		try {
-			if (!Cu.evalInSandbox("'GSAUI'in window&&" + "'GSF'in window",
-								  sandbox)) {
+			if (!sandbox.evalBoolean("'GSAUI'in window&&" + "'GSF'in window")) {
 				return false;
 			}
-			sandbox.$GSAUI = Cu.evalInSandbox("window.GSAUI||null", sandbox);
-			sandbox.$GSK = Cu.evalInSandbox("window.GSK||null", sandbox);
-			sandbox.$GSWP = Cu.evalInSandbox("window.GSWP||null", sandbox);
-			if (sandbox.$GSAUI === null || sandbox.$SDK === null || sandbox.$GSWP === null) return false;
 		}
 		catch (exc) {
 			return false;
@@ -2785,6 +2826,8 @@ function AVIM()	{
 		// everything is wrapped in a try...catch block, so we don't need sanity
 		// checks if the disabler can halt on error without failing to reach
 		// independent statements.
+		// Each disabler is stringified rather than imported, so they will not
+		// work if they reference the containing scope in any way.
 		
 		AVIM: function(win, marker) {
 			marker.setMethod(-1);
@@ -2937,18 +2980,16 @@ function AVIM()	{
 			// Get the disabling code.
 			var disabler = disablers[disablerName];
 			if (!disabler) return false;
-			var js = "disabler(window,window." + marker + ")";
+			var js = "(" + disabler + ")(window,window." + marker + ")";
 			
 			// Try to disable the IME in the current document.
 			var hasMarker = false;
 			try {
-				hasMarker = Cu.evalInSandbox("'" + marker + "' in window",
-											 sandbox) === true;
+				hasMarker = sandbox.evalBoolean("'" + marker + "'in window");
 			}
 			catch (exc) {}
 			if (hasMarker) {
-				sandbox.importFunction(disabler, "disabler");
-				Cu.evalInSandbox(js, sandbox);
+				sandbox.evalFunctionCall(js);
 				return true;
 			}
 			
@@ -2956,13 +2997,11 @@ function AVIM()	{
 			if (!parentSandbox) return false;
 			hasMarker = false;
 			try {
-				hasMarker = Cu.evalInSandbox("'" + marker + "' in window",
-											 parentSandbox) === true;
+				hasMarker = parentSandbox.evalBoolean("'" + marker + "'in window");
 			}
 			catch (exc) {}
 			if (hasMarker) {
-				parentSandbox.importFunction(disabler, "disabler");
-				Cu.evalInSandbox(js, parentSandbox);
+				parentSandbox.evalFunctionCall(js);
 				return true;
 			}
 			return false;
@@ -2997,8 +3036,7 @@ function AVIM()	{
 		
 		// Create a sandbox to execute the code in.
 //		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
-		var sandbox = new Cu.Sandbox(doc.location.href);
-		sandbox.window = win;
+		var sandbox = new Sandbox(doc.defaultView);
 		
 		// Some IMEs are applied to rich textareas in iframes. Create a new
 		// sandbox based on the parent document's URL.
@@ -3006,8 +3044,7 @@ function AVIM()	{
 		win = winWrapper.frameElement && winWrapper.parent.wrappedJSObject;
 		if (win !== undefined && win !== null) {
 //			dump("outer sandbox URL: " + winWrapper.parent.location.href + "\n");	// debug
-			parentSandbox = new Cu.Sandbox(winWrapper.parent.location.href);
-			parentSandbox.window = win;
+			parentSandbox = new Sandbox(doc.defaultView.parent);
 		}
 		
 		for (var marker in markers) {
