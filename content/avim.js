@@ -697,10 +697,10 @@ function AVIM()	{
 			sandbox.createObjectAlias("$editor",
 									  "GSK.DocumentViewController.currentController." +
 									  "canvasViewController.getEditorController()." +
-									  "getMostSpecificCurrentEditor()");
+									  "getMostSpecificCurrentEditorOfClass(GSD.Editor)");
 			sandbox.createObjectAlias("$wordSelection",
-									   "GSWP.TextSelection.createWithStartAndStopAndCaretAffinity(" +
-									   "$storage," + wordStart + "," + selectionStart + ",null)");
+									  "GSWP.TextSelection.createWithStartAndStopAndCaretAffinityAndLeadingEdge(" +
+									  "$storage," + wordStart + "," + selectionStart + ",null,null)");
 			sandbox.createObjectAlias("$cmd", "$editor._createReplaceTextCommand(" +
 									  "$wordSelection," + quoteJS(this.value) +
 									  ")");
@@ -1936,7 +1936,10 @@ function AVIM()	{
 	 */
 	this.updateContainer = function(outer, inner) {
 		if (!inner) return;
-		if (inner.document && inner.document.location.hostname === iCloudHostname) return; // #36
+		if (inner.ownerDocument &&
+			inner.ownerDocument.location.hostname === iCloudHostname) {
+			return; // #36
+		}
 		var inputEvent = document.createEvent("Events");
 		inputEvent.initEvent("input", true, true);
 		if (inner.dispatchEvent) inner.dispatchEvent(inputEvent);
