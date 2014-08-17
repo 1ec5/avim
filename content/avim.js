@@ -3,7 +3,7 @@
  * reflect any changes to the default preferences. Initially, this variable
  * should only contain objects whose properties will be modified later on.
  */
-var AVIMConfig = {autoMethods: {}, disabledScripts: {}};
+let AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 
 function AVIM()	{
 	const Cc = Components.classes;
@@ -60,11 +60,11 @@ function AVIM()	{
 	
 	// Local functions that don't require access to AVIM's fields.
 	
-	var fcc = String.fromCharCode;
-	var up = String.toUpperCase;
+	let fcc = String.fromCharCode;
+	let up = String.toUpperCase;
 	
 	// Include characters from major scripts that separate words with a space.
-	var wordChars =
+	let wordChars =
 		"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
 		"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
 		"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
@@ -76,11 +76,11 @@ function AVIM()	{
 		"0-9" +	// numerals
 		"₫\u0303" +	// miscellaneous Vietnamese characters
 		"’";	// word-inner punctuation not found in Vietnamese
-	var wordRe = new RegExp("[" + wordChars + "]*$");
+	let wordRe = new RegExp("[" + wordChars + "]*$");
 	
 	function codesFromChars(chars) {
-		var codes = [];
-		for (var i = 0; i < chars.length; i++) {
+		let codes = [];
+		for (let i = 0; i < chars.length; i++) {
 			codes.push(chars[i].charCodeAt(0));
 		}
 		return codes;
@@ -130,7 +130,7 @@ function AVIM()	{
 	 */
 	function lastWordInString(str) {
 		if (str.substr(-1) === "\\" && methodIsVIQR()) return "\\";
-		var match = wordRe.exec(str);
+		let match = wordRe.exec(str);
 		return match && match[0];
 	}
 	
@@ -142,7 +142,7 @@ function AVIM()	{
 	 * 								prototype object.
 	 */
 	function Sandbox(principal) {
-		var sandbox = new Cu.Sandbox(principal, {
+		let sandbox = new Cu.Sandbox(principal, {
 			sandboxName: "avim",
 			sandboxPrototype: principal,
 			wantXrays: false,
@@ -252,16 +252,16 @@ function AVIM()	{
 			throw "No cursor";
 		}
 		
-		var selLead = {
+		let selLead = {
 			row: sandbox.evalInt("$cursor.row"),
 			column: sandbox.evalInt("$cursor.column"),
 		};
 		
-		var lineStr = sandbox.evalString("$env.document.getLine(" +
+		let lineStr = sandbox.evalString("$env.document.getLine(" +
 										 selLead.row + ")");
-		var word = this.value = lastWordInString(lineStr.substr(0, selLead.column));
+		let word = this.value = lastWordInString(lineStr.substr(0, selLead.column));
 		if (!word || !word.length) throw "No word";
-		var wordStart = selLead.column - word.length;
+		let wordStart = selLead.column - word.length;
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
@@ -301,8 +301,8 @@ function AVIM()	{
 								"editor.getSelection().end")) {
 			throw "Non-empty selection";
 		}
-		var offset = sandbox.evalInt("editor.getCaretOffset()");
-		var lineStart = sandbox.evalInt("editor.getModel().getLineStart(" +
+		let offset = sandbox.evalInt("editor.getCaretOffset()");
+		let lineStart = sandbox.evalInt("editor.getModel().getLineStart(" +
 										"editor.getModel().getLineAtOffset(" +
 										offset + "))");
 		this.selectionStart = this.selectionEnd = offset - lineStart;
@@ -346,7 +346,7 @@ function AVIM()	{
 								"$buffer.transientMarker.position")) {
 			throw "Non-empty selection";
 		}
-		var oldSelection = {
+		let oldSelection = {
 			row: sandbox.evalInt("$buffer.caretMarker.rowcol.row"),
 			column: sandbox.evalInt("$buffer.caretMarker.rowcol.col"),
 		};
@@ -365,9 +365,9 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == this.oldValue) return false;
 			
-			var linePos = sandbox.evalInt("$buffer._rowColToPosition(" +
+			let linePos = sandbox.evalInt("$buffer._rowColToPosition(" +
 										  oldSelection.row + ",0)");
-			var pos = linePos + oldSelection.column +
+			let pos = linePos + oldSelection.column +
 				this.value.length - this.oldValue.length;
 			sandbox.evalFunctionCall("$buffer._replaceLine(" +
 									 oldSelection.row + "," +
@@ -375,7 +375,7 @@ function AVIM()	{
 			sandbox.evalFunctionCall("$buffer.redrawDirtyLines()");
 			sandbox.evalFunctionCall("$buffer.caretMarker.setPosition(" + pos +
 									 ")");
-			//var after = sandbox.evalString("$buffer.getLine(" +
+			//let after = sandbox.evalString("$buffer.getLine(" +
 			//							   oldSelection.row + ")");
 			
 			return true;
@@ -405,11 +405,11 @@ function AVIM()	{
 		this.commit = function() {
 //			if (this.value == this.oldValue) return;
 			
-			var tooLong = "maxLength" in this.ctl &&
+			let tooLong = "maxLength" in this.ctl &&
 				this.ctl.maxLength && this.value.length > this.ctl.maxLength;
 			if ("text" in this.ctl && !tooLong) this.ctl.text = this.value;
 //			else if ("password" in this.ctl) this.ctl.password = this.value;
-			var numExtraChars = this.value.length - this.oldValue.length;
+			let numExtraChars = this.value.length - this.oldValue.length;
 			this.ctl.selectionStart = this.selectionStart + numExtraChars;
 			this.ctl.selectionLength = this.selectionEnd - this.selectionStart;
 		};
@@ -430,7 +430,7 @@ function AVIM()	{
 	 * @see		http://msdn.microsoft.com/en-us/library/bb979636%28VS.95%29.aspx
 	 * @see		https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
 	 */
-	var virtualKeyFromSlight = function(keyCode, platformKeyCode, shiftKey) {
+	let virtualKeyFromSlight = function(keyCode, platformKeyCode, shiftKey) {
 //		dump("key code: " + keyCode + "; platform key code: " + platformKeyCode + "\n");	// debug
 		if (keyCode > 19 && keyCode < 30) {	// number row
 			if (shiftKey) return 0xff;
@@ -483,21 +483,21 @@ function AVIM()	{
 		
 		// Rectangular selection
 		if (lineNum != undefined) {
-			var caretPos = scintilla.getSelectionNCaret(0);
-			var colNum = scintilla.getColumn(caretPos);
-			var anchorPos = scintilla.getSelectionNAnchor(0);
+			let caretPos = scintilla.getSelectionNCaret(0);
+			let colNum = scintilla.getColumn(caretPos);
+			let anchorPos = scintilla.getSelectionNAnchor(0);
 			if (colNum != scintilla.getColumn(anchorPos)) return -1;
 			
-			var linePos = scintilla.positionFromLine(lineNum);
+			let linePos = scintilla.positionFromLine(lineNum);
 			caretPos = scintilla.findColumn(lineNum, colNum);
 			return scintilla.charPosAtPosition(caretPos) -
 				scintilla.charPosAtPosition(linePos);
 		}
 		
-		var caretPos = scintilla.getSelectionNCaret(selId || 0);
+		let caretPos = scintilla.getSelectionNCaret(selId || 0);
 		if (caretPos != scintilla.getSelectionNAnchor(selId || 0)) return -1;
 		lineNum = scintilla.lineFromPosition(caretPos);
-		var linePos = scintilla.positionFromLine(lineNum);
+		let linePos = scintilla.positionFromLine(lineNum);
 		return scintilla.charPosAtPosition(caretPos) -
 			scintilla.charPosAtPosition(linePos);
 	};
@@ -518,12 +518,12 @@ function AVIM()	{
 		
 		// Non-rectangular selection
 		if (lineNum == undefined) {
-			var caretPos = scintilla.getSelectionNCaret(selId || 0);
+			let caretPos = scintilla.getSelectionNCaret(selId || 0);
 			lineNum = scintilla.lineFromPosition(caretPos);
 		}
 		
-		var startPos = scintilla.positionFromLine(lineNum);
-		var endPos = scintilla.getLineEndPosition(lineNum);
+		let startPos = scintilla.positionFromLine(lineNum);
+		let endPos = scintilla.getLineEndPosition(lineNum);
 		return scintilla.getTextRange(startPos, endPos);
 	};
 	
@@ -545,7 +545,7 @@ function AVIM()	{
 //		dump("---SciMozProxy---\n");											// debug
 		
 		// Save the current selection.
-		var selectionIsRectangle = elt.selectionMode == elt.SC_SEL_RECTANGLE ||
+		let selectionIsRectangle = elt.selectionMode == elt.SC_SEL_RECTANGLE ||
 			elt.selectionMode == elt.SC_SEL_THIN;
 		if (selectionIsRectangle) {
 			this.oldSelectionStart = {
@@ -580,9 +580,9 @@ function AVIM()	{
 			elt.clearSelections();
 			
 			colChange = colChange || 0;
-			var anchor = elt.findColumn(this.oldSelectionStart.line,
+			let anchor = elt.findColumn(this.oldSelectionStart.line,
 										this.oldSelectionStart.col + colChange);
-			var caret = elt.findColumn(this.oldSelectionEnd.line,
+			let caret = elt.findColumn(this.oldSelectionEnd.line,
 									   this.oldSelectionEnd.col + colChange);
 			
 			elt.rectangularSelectionAnchor = anchor;
@@ -606,7 +606,7 @@ function AVIM()	{
 			if (!selectionIsRectangle) {
 				lineNum = elt.lineFromPosition(elt.getSelectionNStart(selId));
 			}
-			var linePos = elt.positionFromLine(lineNum);
+			let linePos = elt.positionFromLine(lineNum);
 //			dump(">>> Line " + lineNum + ", position " + linePos + "\n");		// debug
 			if (selectionIsRectangle) elt.clearSelections();
 			elt.setSelectionNStart(selId, linePos);
@@ -621,7 +621,7 @@ function AVIM()	{
 			// Reset the selection.
 			if (selectionIsRectangle) {
 				// If we're on the last line of the selection, move the caret.
-				var colChange = 0;
+				let colChange = 0;
 				if (lineNum == Math.max(this.oldSelectionStart.line,
 										this.oldSelectionEnd.line)) {
 					colChange = this.value.length - this.oldValue.length;
@@ -630,11 +630,11 @@ function AVIM()	{
 				this.reselectRectangle(colChange);
 			}
 			else {
-				var colChange = this.value.length - this.oldValue.length;
-				var startPos = elt.positionAtChar(linePos, this.selectionStart +
+				let colChange = this.value.length - this.oldValue.length;
+				let startPos = elt.positionAtChar(linePos, this.selectionStart +
 														   colChange);
 				elt.setSelectionNStart(selId, startPos);
-				var endPos = elt.positionAtChar(linePos, this.selectionEnd +
+				let endPos = elt.positionAtChar(linePos, this.selectionEnd +
 														 colChange);
 				elt.setSelectionNEnd(selId, endPos);
 //				dump(">>> After: " + elt.getSelectionNStart(selId) + "-" +
@@ -669,14 +669,14 @@ function AVIM()	{
 			throw "No text storage";
 		}
 		
-		var selectionStart =
+		let selectionStart =
 			sandbox.evalInt("$selection.getNormalizedRange().location");
 		
-		var beforeString = sandbox.evalString("$storage.getSubstring(0," +
+		let beforeString = sandbox.evalString("$storage.getSubstring(0," +
 											  selectionStart + ")");
-		var word = this.value = lastWordInString(beforeString);
+		let word = this.value = lastWordInString(beforeString);
 		if (!word || !word.length) throw "No word";
-		var wordStart = selectionStart - word.length;
+		let wordStart = selectionStart - word.length;
 		
 		this.selectionStart = this.selectionEnd = this.value.length;
 		
@@ -718,7 +718,7 @@ function AVIM()	{
 	 * @param el	{object}	The XUL or HTML element.
 	 * @returns	{object}	The associated nsIEditor instance.
 	 */
-	var getEditor = function(el) {
+	let getEditor = function(el) {
 		if (!el || el instanceof TextControlProxy) {
 			return undefined;
 		}
@@ -733,9 +733,9 @@ function AVIM()	{
 		catch (e) {}
 		try {
 			// http://osdir.com/ml/mozilla.devel.editor/2004-10/msg00017.html
-			var webNavigation = el.QueryInterface(Ci.nsIInterfaceRequestor)
+			let webNavigation = el.QueryInterface(Ci.nsIInterfaceRequestor)
 				.getInterface(Ci.nsIWebNavigation);
-			var editingSession = webNavigation
+			let editingSession = webNavigation
 				.QueryInterface(Ci.nsIInterfaceRequestor)
 				.getInterface(Ci.nsIEditingSession);
 			return editingSession.getEditorForWindow(el);
@@ -756,8 +756,8 @@ function AVIM()	{
 	 * @param len	{number}	The length of the substring to return.
 	 * @returns {string}	The textbox's string contents.
 	 */
-	var text = function(el, start, len) {
-		var val = el.value;
+	let text = function(el, start, len) {
+		let val = el.value;
 		if (start) val = val.substr(start);
 		if (len) val = val.substr(0, len);
 		return val;
@@ -776,7 +776,7 @@ function AVIM()	{
 	 * @implements Components.interfaces.nsITransaction
 	 * @implements Components.interfaces.nsISupports
 	 */
-	var SpliceTxn = function(outer, node, pos, len, repl) {
+	let SpliceTxn = function(outer, node, pos, len, repl) {
 		//* @type Element
 		this.outer = outer;
 		//* @type Text
@@ -803,7 +803,7 @@ function AVIM()	{
 		this.shiftSelection = function(numChars) {
 			if (!this.outer) return;
 			if ("caret" in this) {
-				var pos = this.caret + numChars;
+				let pos = this.caret + numChars;
 //				dump("AVIM.SpliceTxn.shiftSelection -- numChars: " + numChars + "; pos: " + pos + "\n");	// debug
 				this.outer.selectionStart = this.outer.selectionEnd = pos;
 //				return;
@@ -813,7 +813,7 @@ function AVIM()	{
 			//	goDoCommand("cmd_charNext");
 			//	goDoCommand("cmd_charNext");
 			//}
-//			var range = this.outer.getSelection().getRangeAt(0);
+//			let range = this.outer.getSelection().getRangeAt(0);
 //			range.setStart(this.node, range.startOffset + numChars);
 		};
 		
@@ -872,15 +872,15 @@ function AVIM()	{
 	this.splice = function(el, index, len, repl) {
 		// Anonymous node-based editing
 		try {
-			var editor = getEditor(el);
+			let editor = getEditor(el);
 //			dump("AVIM.splice -- editor: " + editor + "; repl: " + repl + "\n");	// debug
-			var anchorNode = editor.selection.anchorNode;
-			var absPos = el.selectionStart;
-			var relPos = editor.selection.anchorOffset;
+			let anchorNode = editor.selection.anchorNode;
+			let absPos = el.selectionStart;
+			let relPos = editor.selection.anchorOffset;
 			if (anchorNode == editor.rootElement) {
-				var pos = 0;
-				for (var i = 0; i < anchorNode.childNodes.length; i++) {
-					var child = anchorNode.childNodes[i];
+				let pos = 0;
+				for (let i = 0; i < anchorNode.childNodes.length; i++) {
+					let child = anchorNode.childNodes[i];
 					if (child.nodeType != el.TEXT_NODE) {
 						pos++;
 						continue;
@@ -892,18 +892,18 @@ function AVIM()	{
 				}
 				relPos = anchorNode.textContent.length;
 			}
-			var replPos = index + relPos - absPos;
+			let replPos = index + relPos - absPos;
 			
 			// Carry out the transaction.
-			var txn = new SpliceTxn(el, anchorNode, replPos, len, repl);
+			let txn = new SpliceTxn(el, anchorNode, replPos, len, repl);
 			editor.doTransaction(txn);
 			
 			//// Coalesce the transaction with an existing one.
 			//// Assuming transactions are batched at most one level deep.
-			//var stack = editor.transactionManager.getUndoList();
-			//var txnIndex = stack.numItems - 1;
-			//var prev = stack.getItem(txnIndex);
-			//var childStack;
+			//let stack = editor.transactionManager.getUndoList();
+			//let txnIndex = stack.numItems - 1;
+			//let prev = stack.getItem(txnIndex);
+			//let childStack;
 			//if (!prev) {
 			//	childStack = stack.getChildListForItem(txnIndex);
 			//	dump("AVIM.splice() -- childStack.numItems: " + childStack.getNumChildrenForItem(txnIndex) + "\n");	// debug
@@ -917,7 +917,7 @@ function AVIM()	{
 		catch (e) {}
 		
 		// Ordinary DOM editing
-		var val = el.value;
+		let val = el.value;
 		el.value = val.substr(0, index) + repl + val.substr(index + len);
 //		dump("splice() -- <" + val + "> -> <" + el.value + ">\n");				// debug
 		return repl.length - len;
@@ -951,7 +951,7 @@ function AVIM()	{
 	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
 	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
 	
-	var isMac = window.navigator.platform == "MacPPC" ||
+	let isMac = window.navigator.platform == "MacPPC" ||
 		window.navigator.platform == "MacIntel";
 	
 	this.prefsRegistered = false;
@@ -973,11 +973,11 @@ function AVIM()	{
 	this.ckspell = function(w, k) {
 		if (!AVIMConfig.ckSpell) return false;
 		
-		var uk = up(k);
+		let uk = up(k);
 		
 		// Đồng sign after a number: valid
-		var num = /^([0-9]+)(d?)$/.exec(w);
-		var isVni = AVIMConfig.method == 2 ||
+		let num = /^([0-9]+)(d?)$/.exec(w);
+		let isVni = AVIMConfig.method == 2 ||
 			(AVIMConfig.method == 0 && AVIMConfig.autoMethods.vni);
 		if (num) {
 			// Entering the first D: valid
@@ -988,9 +988,9 @@ function AVIM()	{
 		}
 		
 		w = this.unV(w);
-		var uw = up(w), tw = uw, uw2 = this.unV2(uw), twE;
-		var vSConsonant = "BCDĐGHKLMNPQRSTVX";
-		var vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
+		let uw = up(w), tw = uw, uw2 = this.unV2(uw), twE;
+		let vSConsonant = "BCDĐGHKLMNPQRSTVX";
+		let vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
 		if (AVIMConfig.informal) {
 			vSConsonant += "F";
 			vDConsonant += "|DZ";
@@ -1002,7 +1002,7 @@ function AVIM()	{
 		}
 		
 		// Non-Vietnamese characters: invalid
-		var nonViet = "A-EGHIK-VXYĐ";
+		let nonViet = "A-EGHIK-VXYĐ";
 		if (AVIMConfig.informal) nonViet += "FZ";
 		if (new RegExp("[^" + nonViet + "]").test(uw2)) return true;
 		
@@ -1028,21 +1028,21 @@ function AVIM()	{
 		}
 		
 		// Non-Vietnamese diphthongs and triphthongs: invalid
-		var vowRe = /A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|UU.|Y[AIOY]/;
+		let vowRe = /A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|UU.|Y[AIOY]/;
 		if (vowRe.test(uw2)) return true;
 		
 		// Remove initial consonants.
 		
 		// Initial digraphs and trigraphs: valid
-		var consRe = vDConsonant + "|[" + vSConsonant + "]";
-		var cons = new RegExp("^(?:" + consRe + ")").exec(tw);
+		let consRe = vDConsonant + "|[" + vSConsonant + "]";
+		let cons = new RegExp("^(?:" + consRe + ")").exec(tw);
 		if (cons && cons[0]) tw = tw.substr(cons[0].length);
 		twE=tw;
 		
 		// Remove final consonants.
 		
 		// Final consonants: valid
-		var endCons = /(?:[MPT]|CH?|N[GH]?)$/.exec(tw);
+		let endCons = /(?:[MPT]|CH?|N[GH]?)$/.exec(tw);
 		if (endCons && endCons[0]) {
 			tw = tw.substr(0, tw.length - endCons[0].length);
 			// NH after incompatible diphthongs and triphthongs: invalid
@@ -1116,7 +1116,7 @@ function AVIM()	{
 	 * case all the UI is hidden.
 	 */
 	this.playCueAfterToggle = function (volume) {
-		var enabled = AVIMConfig.onOff;
+		let enabled = AVIMConfig.onOff;
 		if (this.onCue) this.onCue.pause();
 		if (this.offCue) this.offCue.pause();
 		
@@ -1134,7 +1134,7 @@ function AVIM()	{
 			this.offCue.autoplay = true;
 		}
 		else {
-			var cue = enabled ? this.onCue : this.offCue;
+			let cue = enabled ? this.onCue : this.offCue;
 			cue.volume = volume;
 			cue.currentTime = 0;
 			cue.play();
@@ -1169,7 +1169,7 @@ function AVIM()	{
 	this.cycleMethod = function(distance) {
 		AVIMConfig.onOff = true;
 		
-		var method = AVIMConfig.method;
+		let method = AVIMConfig.method;
 		method += distance;
 		if (method < 0) method += broadcasterIds.methods.length;
 		method %= broadcasterIds.methods.length;
@@ -1250,35 +1250,35 @@ function AVIM()	{
 	 */
 	this.updateUI = function() {
 		// Enabled/disabled
-		var enabledBcId = $(broadcasterIds.enabled);
+		let enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
 			setCheckedState(enabledBcId, AVIMConfig.onOff);
 			$("avim-status-enabled").setAttribute("avim-accel", isMac ? "mac" : "");
 		}
 		
 		// Disable methods and options if AVIM is disabled
-		for each (var cmdId in commandIds) {
+		for each (let cmdId in commandIds) {
 			if (!$(cmdId)) continue;
 			$(cmdId).setAttribute("disabled", "" + !AVIMConfig.onOff);
 		}
 		
 		// Method
-		for each (var bcId in broadcasterIds.methods) {
+		for each (let bcId in broadcasterIds.methods) {
 			if (!$(bcId)) continue;
 			$(bcId).removeAttribute("checked");
 			$(bcId).removeAttribute("key");
 		}
-		var selBc = $(broadcasterIds.methods[AVIMConfig.method]);
+		let selBc = $(broadcasterIds.methods[AVIMConfig.method]);
 		if (selBc) setCheckedState(selBc, true);
 		
 		// Options
-		var spellBc = $(broadcasterIds.spell);
+		let spellBc = $(broadcasterIds.spell);
 		if (spellBc) setCheckedState(spellBc, AVIMConfig.ckSpell);
-		var oldBc = $(broadcasterIds.oldAccents);
+		let oldBc = $(broadcasterIds.oldAccents);
 		if (oldBc) setCheckedState(oldBc, AVIMConfig.oldAccent);
 		
 		// Status bar panel and toolbar button
-		var panelBc = $(panelBroadcasterId);
+		let panelBc = $(panelBroadcasterId);
 		if (!panelBc) return;
 		panelBc.setAttribute("label", selBc.getAttribute("label"));
 		panelBc.setAttribute("avim-inputmethod", "" + AVIMConfig.method);
@@ -1294,13 +1294,13 @@ function AVIM()	{
 	this.buildPopup = function (popup) {
 		this.updateUI();
 		
-		var mainPopupId = popup.getAttribute("avim-popupsource");
-		var mainPopup = $(mainPopupId);
+		let mainPopupId = popup.getAttribute("avim-popupsource");
+		let mainPopup = $(mainPopupId);
 		if (!mainPopup) return;
 		
-		var items = [];
-		for (var item = mainPopup.firstChild; item; item = item.nextSibling) {
-			var clone = item.cloneNode(false);
+		let items = [];
+		for (let item = mainPopup.firstChild; item; item = item.nextSibling) {
+			let clone = item.cloneNode(false);
 			if (clone.id) clone.id += "-dynamic";
 			items.push(clone);
 		}
@@ -1309,7 +1309,7 @@ function AVIM()	{
 		items[0].setAttribute("default", "true");
 		
 		while (popup.firstChild) popup.removeChild(popup.firstChild);
-		for (var i = 0; i < items.length; i++) {
+		for (let i = 0; i < items.length; i++) {
 			popup.appendChild(items[i]);
 		}
 	};
@@ -1327,7 +1327,7 @@ function AVIM()	{
 		if (obj instanceof TextControlProxy) return obj.selectionStart;
 		
 		// Anything else
-		var data = (obj.data) ? obj.data : text(obj);
+		let data = (obj.data) ? obj.data : text(obj);
 		if (!data || !data.length) return -1;
 		if (obj.data) return obj.pos;
 		if (!obj.setSelectionRange) return -1;
@@ -1343,12 +1343,12 @@ function AVIM()	{
 	 * 					position and the cursor position.
 	 */
 	this.mozGetText = function(obj) {
-		var pos = this.getCursorPosition(obj);
+		let pos = this.getCursorPosition(obj);
 		if (pos < 0) return false;
 		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
 		
-		var data = obj.data || text(obj);
-		var w = data.substring(0, pos);
+		let data = obj.data || text(obj);
+		let w = data.substring(0, pos);
 		if (w.substr(-1) == "\\" && methodIsVIQR()) return ["\\", pos];
 		w = wordRe.exec(w);
 		return [w ? w[0] : "", pos];
@@ -1360,9 +1360,9 @@ function AVIM()	{
 	 * @param key	{object}	The keydown event.
 	 */
 	this.start = function(obj, key) {
-		var method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
+		let method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
 		this.oc=obj;
-		var uniA = [];
+		let uniA = [];
 		this.D2 = "";
 		
 		if (method == 1 || (method == 0 && AVIMConfig.autoMethods.telex)) {
@@ -1378,7 +1378,7 @@ function AVIM()	{
 			uniA.push("D^^^*(".split("")); this.D2 += "D^*(";
 		}
 		
-		var w = this.mozGetText(obj);
+		let w = this.mozGetText(obj);
 //		dump(">>> start() -- w: <" + w + ">\n");								// debug
 		if (key.keyCode && key.keyCode == key.DOM_VK_BACK_SPACE && key.shiftKey) {
 			key = "";
@@ -1386,9 +1386,9 @@ function AVIM()	{
 		else key = fcc(key.which);
 		if (!w || ("sel" in obj && obj.sel)) return;
 		
-		var noNormC = this.D2.indexOf(up(key)) >= 0;
+		let noNormC = this.D2.indexOf(up(key)) >= 0;
 		
-		for (var i = 0; i < uniA.length; i++) {
+		for (let i = 0; i < uniA.length; i++) {
 			if (!dockspell) w = this.mozGetText(obj);
 			if (!w || this.changed) break;
 			this.main(w[0], key, w[1], uniA[i], noNormC);
@@ -1412,10 +1412,10 @@ function AVIM()	{
 	 * @param pos	{number}	Index of the caret.
 	 */
 	this.convertCustomChars = function(word, key, pos) {
-		var uw = up(word), uk = up(key);
+		let uw = up(word), uk = up(key);
 		
 		if (/^[0-9]+.$/.test(word)) {
-			var lastChar = word.substr(-1);
+			let lastChar = word.substr(-1);
 			if (lastChar == "đ" && uk == this.method.D) {
 				// Convert [number]đ (case-sensitive) into the đồng sign.
 				this.splice(this.oc, pos - 1, 1, "₫");
@@ -1460,16 +1460,16 @@ function AVIM()	{
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
 	this.findC = function(w, k, sf) {
-		var method = AVIMConfig.method;
+		let method = AVIMConfig.method;
 		if (methodIsVIQR() && w.substr(-1) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
-		var str = "", res, cc = "", pc = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
-		var h, uc;
-		for (var g = 0; g < sf.length; g++) {
+		let str = "", res, cc = "", pc = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
+		let h, uc;
+		for (let g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
-		var uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = ["ƯA", "ƯU"];
+		let uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = ["ƯA", "ƯU"];
 		
 		if (this.method.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
@@ -1485,7 +1485,7 @@ function AVIM()	{
 			}
 			
 			if (!res) {
-				for (var g = 1; g <= w.length; g++) {
+				for (let g = 1; g <= w.length; g++) {
 					cc = w.substr(-g, 1);
 					pc = up(w.substr(-g - 1, 1));
 					uc = up(cc);
@@ -1497,7 +1497,7 @@ function AVIM()	{
 						if ((uk == this.method.moc && this.unV(uc) == "U" && up(this.unV(w.substr(-g + 1, 1))) == "A") ||
 							(uk == this.method.trang && this.unV(uc) == "A" && this.unV(pc) == "U")) {
 							tv = 1 + (this.unV(uc) != "U");
-							var ccc = up(w.substr(-g - tv, 1));
+							let ccc = up(w.substr(-g - tv, 1));
 							if(ccc != "Q") {
 								res = g + tv - 1;
 							} else if(uk == this.method.trang) {
@@ -1527,11 +1527,11 @@ function AVIM()	{
 			}
 		}
 		
-		var tE = "", tEC;
+		let tE = "", tEC;
 		if (uk != this.method.Z && this.method.DAWEO.indexOf(uk) < 0) {
 			tE = this.retKC(uk, true);
 		}
-		if (this.method.DAWEO.indexOf(uk) < 0) for (var g = 1; g <= w.length; g++) {
+		if (this.method.DAWEO.indexOf(uk) < 0) for (let g = 1; g <= w.length; g++) {
 			cc = up(w.substr(-g, 1));
 			pc = up(w.substr(-g - 1, 1));
 			if(str.indexOf(cc) >= 0) {
@@ -1551,12 +1551,12 @@ function AVIM()	{
 				}
 			}
 			else if (uk != this.method.Z) {
-				var h = this.repSign(k).indexOf(w.charCodeAt(w.length - g));
+				let h = this.repSign(k).indexOf(w.charCodeAt(w.length - g));
 				if (h >= 0) {
 					if (this.ckspell(w, k)) return false;
 					return [g, tE.charCodeAt(h % 24)];
 				}
-				for (var h = 0; h < tE.length; h++) {
+				for (let h = 0; h < tE.length; h++) {
 					if(tE.charCodeAt(h) == w.charCodeAt(w.length - g)) {
 						return [g, skey_str[h]];
 					}
@@ -1568,12 +1568,12 @@ function AVIM()	{
 			return false;
 		}
 		if (this.method.DAWEO.indexOf(uk) < 0) {
-			for (var g = 1; g <= w.length; g++) {
+			for (let g = 1; g <= w.length; g++) {
 				if (uk != this.method.Z && s.indexOf(w.substr(-g, 1)) >= 0) {
 					return g;
 				}
 				if (tE.indexOf(w.substr(-g, 1)) >= 0) {
-					var pos = tE.indexOf(w.substr(-g, 1));
+					let pos = tE.indexOf(w.substr(-g, 1));
 					if (pos >= 0) return [g, skey_str[pos]];
 				}
 			}
@@ -1581,12 +1581,12 @@ function AVIM()	{
 		if (res) return res;
 		if (c == 1 || uk == this.method.Z) return vowA[0];
 		else if (c == 2) {
-			var upW = up(w);
+			let upW = up(w);
 			if (!AVIMConfig.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
 				return vowA[0];
 			}
 			// Count final consonants.
-			var cons = upW.match(/[BCDĐGHKLMNPQRSTVX]+$/);
+			let cons = upW.match(/[BCDĐGHKLMNPQRSTVX]+$/);
 			if (cons) {
 				// Group digraphs and trigraphs.
 				cons = cons[0]
@@ -1610,18 +1610,20 @@ function AVIM()	{
 	 */
 	this.replaceChar = function(o, pos, c) {
 //		dump("AVIM.replaceChar -- pos: " + pos + "; original: " + text(o, pos, 1) + "; repl: " + fcc(c) + "\n");	// debug
-		var bb = false;
+		let bb = false;
+		let replaceBy;
+		let wfix;
 		if(!nan(c)) {
-			var replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
+			replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
 			this.changed = true;
 		} else {
-			var replaceBy = c;
+			replaceBy = c;
 			if((up(c) == "O") && this.whit) {
 				bb=true;
 			}
 		}
 		if(!o.data) {
-			var savePos = o.selectionStart, sst = o.scrollTop, r;
+			let savePos = o.selectionStart, sst = o.scrollTop, r;
 			if (up(text(o, pos - 1, 1)) == 'U' && pos < savePos - 1 && up(text(o, pos - 2, 1)) != 'Q') {
 				if (wfix == "Ơ" || bb) {
 					r = (text(o, pos - 1, 1) == 'u') ? "ư" : "Ư";
@@ -1642,7 +1644,7 @@ function AVIM()	{
 				o.scrollTop = sst;
 			}
 		} else {
-			var r;
+			let r;
 			if ((up(o.data.substr(pos - 1, 1)) == 'U') && (pos < o.pos - 1)) {
 				if (wfix == "Ơ" || bb) {
 					r = (o.data.substr(pos - 1, 1) == 'u') ? "ư" : "Ư";
@@ -1652,14 +1654,14 @@ function AVIM()	{
 					replaceBy = (c == "o") ? "ơ" : "Ơ";
 				}
 			}
-			var doc = o.ownerDocument;
-			var winWrapper = new XPCNativeWrapper(doc.defaultView);
-			var editor = getEditor(winWrapper);
+			let doc = o.ownerDocument;
+			let winWrapper = new XPCNativeWrapper(doc.defaultView);
+			let editor = getEditor(winWrapper);
 			if (r) {
 				replaceBy = r + replaceBy;
 				pos--;
 			}
-			var txn = new SpliceTxn(winWrapper, o, pos, 1 + !!r, replaceBy);
+			let txn = new SpliceTxn(winWrapper, o, pos, 1 + !!r, replaceBy);
 			editor.doTransaction(txn);
 //			o.replaceData(pos, 1, replaceBy);
 //			if(r) o.replaceData(pos - 1, 1, r);
@@ -1672,14 +1674,14 @@ function AVIM()	{
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
 	this.tr = function(k, w, by, sf, i) {
-		var pos = this.findC(w, k, sf);
+		let pos = this.findC(w, k, sf);
 		if (!pos) return false;
 		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1]);
-		var pC = w.substr(-pos, 1);
-		for (var g = 0; g < sf.length; g++) {
-			var cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
+		let pC = w.substr(-pos, 1);
+		for (let g = 0; g < sf.length; g++) {
+			let cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
 			if (cmp == sf[g]) {
-				var c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
+				let c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
 				return this.replaceChar(this.oc, i - pos, c);
 			}
 		}
@@ -1694,8 +1696,8 @@ function AVIM()	{
 	 * 						empty string for diacritic removal.
 	 */
 	this.main = function(w, k, i, a, noNormC) {
-		var uk = up(k), got = false, t = "dDaAaAoOuUeEoO".split("");
-		var by = [], sf = [], method = AVIMConfig.method, h, g;
+		let uk = up(k), got = false, t = "dDaAaAoOuUeEoO".split("");
+		let by = [], sf = [], method = AVIMConfig.method, h, g;
 		if (method == 0) {
 			if (a[0] == "9") method = 2;
 			else if (a[4] == "+") method = 3;
@@ -1756,27 +1758,27 @@ function AVIM()	{
 	this.normC = function(w, k, i) {
 		if (k == "") k = this.method.Z;
 		if (k[0] == " ") return "";
-		var uk = up(k);
+		let uk = up(k);
 		if (alphabet.indexOf(uk) < 0 && this.D2.indexOf(uk) < 0) return w;
-		var u = this.repSign(null);
-		for(var j = 1; j <= w.length; j++) {
-			var h = u.indexOf(w.charCodeAt(w.length - j));
+		let u = this.repSign(null);
+		for(let j = 1; j <= w.length; j++) {
+			let h = u.indexOf(w.charCodeAt(w.length - j));
 			if (h < 0) continue;
 			
-			var fS = this.method.X;
+			let fS = this.method.X;
 			if (h <= 23) fS = this.method.S;
 			else if (h <= 47) fS = this.method.F;
 			else if (h <= 71) fS = this.method.J;
 			else if (h <= 95) fS = this.method.R;
 			
-			var c = skey[h % 24];
-			var sp = this.oc.selectionStart;
-			var end = this.oc.selectionEnd;
-			var pos = sp;
+			let c = skey[h % 24];
+			let sp = this.oc.selectionStart;
+			let end = this.oc.selectionEnd;
+			let pos = sp;
 			w = this.unV(w);
 			if(!this.changed) {
 				w += k;
-				var sst = this.oc.scrollTop;
+				let sst = this.oc.scrollTop;
 				pos += k.length;
 				if(!this.oc.data) {
 //					this.oc.value = this.oc.value.substr(0, sp) + k +
@@ -1798,7 +1800,7 @@ function AVIM()	{
 				this.replaceChar(this.oc, i - j, c);
 				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
 				else {
-					var ww = this.mozGetText(this.oc);
+					let ww = this.mozGetText(this.oc);
 					this.main(ww[0], fS, ww[1], [this.method.D], false);
 				}
 			}
@@ -1808,15 +1810,15 @@ function AVIM()	{
 	
 	const ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
 	this.DAWEOF = function(cc, k, g) {
-		var kA = [this.method.A, this.method.moc, this.method.trang,
+		let kA = [this.method.A, this.method.moc, this.method.trang,
 				  this.method.E, this.method.O];
-		for (var i = 0; i < kA.length; i++) {
+		for (let i = 0; i < kA.length; i++) {
 			if (k != kA[i]) continue;
 			
-			var posCC = ccA[i].indexOf(cc);
+			let posCC = ccA[i].indexOf(cc);
 			if (posCC < 0) continue;
 			
-			var repl = ccrA[i][posCC];
+			let repl = ccrA[i][posCC];
 			return repl ? [g, repl] : false;
 		}
 		return false;
@@ -1835,7 +1837,7 @@ function AVIM()	{
 	 * 			{object}	An array of character codes.
 	 */
 	this.retKC = function(k, giveChars) {
-		var chars = "";
+		let chars = "";
 		switch (k) {
 			case this.method.S: chars = "áấắéếíóốớúứýÁẤẮÉẾÍÓỐỚÚỨÝ"; break;
 			case this.method.F: chars = "àầằèềìòồờùừỳÀẦẰÈỀÌÒỒỜÙỪỲ"; break;
@@ -1853,10 +1855,10 @@ function AVIM()	{
 	 * @returns {string}	The word without tone marks.
 	 */
 	this.unV = function(w) {
-		var u = this.repSign(null);
-		var unW = "";
-		for (var a = w.length - 1; a >= 0; a--) {
-			var pos = u.indexOf(w.charCodeAt(a));
+		let u = this.repSign(null);
+		let unW = "";
+		for (let a = w.length - 1; a >= 0; a--) {
+			let pos = u.indexOf(w.charCodeAt(a));
 			if (pos >= 0) unW = skey_str[pos % 24] + unW;
 			else unW = w[a] + unW;
 		}
@@ -1870,9 +1872,9 @@ function AVIM()	{
 	 * @returns {string}	The word without diacritical marks.
 	 */
 	this.unV2 = function(w) {
-		var unW = "";
-		for (var a = w.length - 1; a >= 0; a--) {
-			var pos = skey.indexOf(w.charCodeAt(a));
+		let unW = "";
+		for (let a = w.length - 1; a >= 0; a--) {
+			let pos = skey.indexOf(w.charCodeAt(a));
 			if (pos >= 0) unW = skey2[pos] + unW;
 			else unW = w[a] + unW;
 		}
@@ -1880,8 +1882,8 @@ function AVIM()	{
 	};
 	
 	this.repSign = function(k) {
-		var u = [];
-		for (var a = 0; a < 5; a++) {
+		let u = [];
+		for (let a = 0; a < 5; a++) {
 			if (!k || this.method.SFJRX[a] != up(k)) {
 				u = u.concat(this.retKC(this.method.SFJRX[a]));
 			}
@@ -1894,7 +1896,7 @@ function AVIM()	{
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
 	this.sr = function(w, k, i) {
-		var pos = this.findC(w, k, skey_str);
+		let pos = this.findC(w, k, skey_str);
 		if (!pos) return;
 		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1]);
 		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos));
@@ -1905,8 +1907,8 @@ function AVIM()	{
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
 	this.retUni = function(w, k, pos) {
-		var uC, lC;
-		var idx = skey_str.indexOf(w.substr(-pos, 1));
+		let uC, lC;
+		let idx = skey_str.indexOf(w.substr(-pos, 1));
 		if (idx < 0) return false;
 		if (idx < 12) {
 			lC = idx; uC = idx + 12;
@@ -1914,14 +1916,14 @@ function AVIM()	{
 		else {
 			lC = idx - 12; uC = idx;
 		}
-		var t = w.substr(-pos, 1);
-		var u = this.retKC(up(k));
+		let t = w.substr(-pos, 1);
+		let u = this.retKC(up(k));
 		if (t != up(t)) return u[lC];
 		return u[uC];
 	};
 	
 	this.ifInit = function(w) {
-		var sel = w.getSelection();
+		let sel = w.getSelection();
 		this.range = sel ? sel.getRangeAt(0) : document.createRange();
 	};
 	
@@ -1940,13 +1942,13 @@ function AVIM()	{
 			inner.ownerDocument.location.hostname === iCloudHostname) {
 			return; // #36
 		}
-		var inputEvent = document.createEvent("Events");
+		let inputEvent = document.createEvent("Events");
 		inputEvent.initEvent("input", true, true);
 		if (inner.dispatchEvent) inner.dispatchEvent(inputEvent);
 		
 		// Autocomplete textboxes for Toolkit
 		if (outer && outer.form) {
-			var controller = Cc["@mozilla.org/autocomplete/controller;1"]
+			let controller = Cc["@mozilla.org/autocomplete/controller;1"]
 				.getService(Ci.nsIAutoCompleteController);
 			controller.handleEndComposition();
 		}
@@ -1957,18 +1959,18 @@ function AVIM()	{
 	 * Mozilla's Midas component).
 	 */
 	this.ifMoz = function(e) {
-		var code = e.which;
-		var doc = e.originalTarget.ownerDocument;
-		var target = doc.documentElement;
-		var cwi = new XPCNativeWrapper(doc.defaultView);
+		let code = e.which;
+		let doc = e.originalTarget.ownerDocument;
+		let target = doc.documentElement;
+		let cwi = new XPCNativeWrapper(doc.defaultView);
 		if (this.findIgnore(target)) return;
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
 		this.ifInit(cwi);
-		var node = this.range.endContainer, newPos;
+		let node = this.range.endContainer, newPos;
 		// Zoho Writer places a cursor <span> right at the caret.
 //		dump("AVIM.ifMoz -- node: " + node.localName + "#" + node.id + "\n");	// debug
 		if (node.localName == "span" && !node.id.indexOf("z-cursor-start-")) {
-			var prevNode = node.previousSibling;
+			let prevNode = node.previousSibling;
 			if (prevNode.data) {
 				this.range.setEnd(prevNode, prevNode.data.length);
 				node = this.range.endContainer;
@@ -1993,7 +1995,7 @@ function AVIM()	{
 		node.pos = node.data.length;
 		node.which = code;
 		
-		var editor = getEditor(cwi);
+		let editor = getEditor(cwi);
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
 			this.start(node, e);
@@ -2048,21 +2050,21 @@ function AVIM()	{
 	 */
 	this.findIgnore = function(el) {
 		if (!el || !el.getAttribute) return true;
-		var id = el.id || el.getAttribute("id");
+		let id = el.id || el.getAttribute("id");
 		if (id && id.toLowerCase &&
 			AVIMConfig.exclude.indexOf(id.toLowerCase()) >= 0) {
 			return true;
 		}
-		var name = el.name || el.getAttribute("name");
+		let name = el.name || el.getAttribute("name");
 		if (name && name.toLowerCase &&
 			AVIMConfig.exclude.indexOf(name.toLowerCase()) >= 0) {
 			return true;
 		}
 		
 		// Honor "ime-mode: disabled" in CSS.
-		var win = el.ownerDocument && el.ownerDocument.defaultView;
+		let win = el.ownerDocument && el.ownerDocument.defaultView;
 		if (!win || !win.getComputedStyle) return false;
-		var mode = win.getComputedStyle(el, null).getPropertyValue("ime-mode");
+		let mode = win.getComputedStyle(el, null).getPropertyValue("ime-mode");
 		return mode == "disabled";
 	}
 	
@@ -2083,10 +2085,10 @@ function AVIM()	{
 		// "e-mail" or "email" in .ignoredFieldIds).
 		const htmlTypes = ["search", "text", "textarea"];
 		
-		var el = e.originalTarget || e.target;
+		let el = e.originalTarget || e.target;
 //		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + e.which + "\n");	// debug
 		if (this.findIgnore(e.target)) return false;
-		var isHTML = htmlTypes.indexOf(el.type) >= 0 ||
+		let isHTML = htmlTypes.indexOf(el.type) >= 0 ||
 			(el.type == "password" && AVIMConfig.passwords) ||
 			(el.type == "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
 								  AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
@@ -2095,7 +2097,7 @@ function AVIM()	{
 		if (!isHTML) return false;
 		
 		this.sk = fcc(e.which);
-		var editor = getEditor(el);
+		let editor = getEditor(el);
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		try {
 			this.start(el, e);
@@ -2145,25 +2147,25 @@ function AVIM()	{
 		el.beginUndoAction();
 		try {
 			// Fake a native textbox and keypress event for each selection.
-			var firstSel = 0;
-			var numSel = el.selections;
+			let firstSel = 0;
+			let numSel = el.selections;
 			
 			// Komodo only seems to support one selection at a time, but it does
 			// support rectangular selection.
-			var selectionIsRectangle = el.selectionMode == el.SC_SEL_RECTANGLE ||
+			let selectionIsRectangle = el.selectionMode == el.SC_SEL_RECTANGLE ||
 				el.selectionMode == el.SC_SEL_THIN;
 			if (selectionIsRectangle) {
-				var startLine = el.lineFromPosition(el.rectangularSelectionAnchor);
-				var endLine = el.lineFromPosition(el.rectangularSelectionCaret);
+				let startLine = el.lineFromPosition(el.rectangularSelectionAnchor);
+				let endLine = el.lineFromPosition(el.rectangularSelectionCaret);
 				firstSel = Math.min(startLine, endLine);
 				numSel = Math.abs(endLine - startLine) + 1;
 //				dump(">>> Rectangular selection, lines " + firstSel + "-" +
 //					 (firstSel + numSel) + "\n");	// debug
 			}
 			
-			var anyChanged = this.changed;
-			var proxy;
-			for (var i = firstSel; i < firstSel + numSel; i++) {
+			let anyChanged = this.changed;
+			let proxy;
+			for (let i = firstSel; i < firstSel + numSel; i++) {
 				if (selectionIsRectangle) proxy = new SciMozProxy(el, 0, i);
 				else proxy = new SciMozProxy(el, i);
 				if (!proxy) continue;
@@ -2207,7 +2209,7 @@ function AVIM()	{
 	 */
 	this.handleAce = function(evt) {
 //		dump("AVIM.handleAce\n");												// debug
-		var elt = evt.originalTarget.parentNode;
+		let elt = evt.originalTarget.parentNode;
 		// <pre class="ace-editor">
 		if (!("classList" in elt &&
 			  elt.classList.contains("ace_editor"))) {
@@ -2217,20 +2219,20 @@ function AVIM()	{
 		
 //		dump("---AceProxy---\n");												// debug
 		// Build a sandbox with all the toys an Ace editor could want.
-		var sandbox = new Sandbox(elt.ownerDocument.defaultView);
+		let sandbox = new Sandbox(elt.ownerDocument.defaultView);
 		// This selector assumes that only one ACE editor can be focused at a
 		// time.
-		var eltSrc = "document.querySelector('.ace_editor.ace_focus')";
+		let eltSrc = "document.querySelector('.ace_editor.ace_focus')";
 		if (!sandbox.createObjectAlias("$env", eltSrc + "&&" + eltSrc + ".env") ||
 			!sandbox.createObjectAlias("$sel", "$env.document.selection") ||
 			!sandbox.evalBoolean("$sel.isEmpty()")) {
 			return false;
 		}
 		
-		var numRanges = sandbox.evalInt("$sel.rangeCount") || 1;
-		var anyChanged = this.changed;
-		for (var i = 0; i < numRanges; i++) {
-			var proxy = new AceProxy(sandbox, i, numRanges);
+		let numRanges = sandbox.evalInt("$sel.rangeCount") || 1;
+		let anyChanged = this.changed;
+		for (let i = 0; i < numRanges; i++) {
+			let proxy = new AceProxy(sandbox, i, numRanges);
 			if (!proxy) continue;
 			
 			this.sk = fcc(evt.which);
@@ -2263,15 +2265,15 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleOrion = function(evt) {
-		var elt = evt.originalTarget;
+		let elt = evt.originalTarget;
 		if (elt.id != "clientDiv") return false;
 		if (!("classList" in elt && elt.classList.contains("editorContent"))) {
 			return false;
 		}
-		var parentWin = elt.ownerDocument.defaultView.parent;
+		let parentWin = elt.ownerDocument.defaultView.parent;
 		if (!parentWin) return false;
 		
-		var sandbox = new Sandbox(parentWin);
+		let sandbox = new Sandbox(parentWin);
 		try {
 			if (!sandbox.evalBoolean("'eclipse'in window&&'editor'in window")) {
 				return false;
@@ -2282,7 +2284,7 @@ function AVIM()	{
 		}
 		
 		// Fake a native textbox.
-		var proxy = new OrionProxy(sandbox);
+		let proxy = new OrionProxy(sandbox);
 		
 		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
@@ -2311,10 +2313,10 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleYmacs = function(evt) {
-		var elt = evt.originalTarget;
+		let elt = evt.originalTarget;
 		
-		var win = elt.ownerDocument.defaultView;
-		var sandbox = new Sandbox(win);
+		let win = elt.ownerDocument.defaultView;
+		let sandbox = new Sandbox(win);
 		try {
 			if (!sandbox.evalBoolean("'YMACS_SRC_PATH'in window&&" +
 									 "'ymacs'in window")) {
@@ -2328,7 +2330,7 @@ function AVIM()	{
 //		dump("AVIM.handleYmacs\n");												// debug
 		
 		// Fake a native textbox.
-		var proxy = new YmacsProxy(sandbox);
+		let proxy = new YmacsProxy(sandbox);
 		
 		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
@@ -2362,7 +2364,7 @@ function AVIM()	{
 			AVIMConfig.exclude.indexOf(ctl.name.toLowerCase()) >= 0;
 	};
 	
-	var avim = this;
+	let avim = this;
 	
 	/**
 	 * Handles key presses in Silverlight. This function is triggered as soon as
@@ -2373,9 +2375,9 @@ function AVIM()	{
 	 */
 	this.handleSlightKeyDown = function(root, evt) {
 		try {
-			var ctl = evt.source;	// TextBox
+			let ctl = evt.source;	// TextBox
 			// TODO: Support password boxes.
-//			var isPasswordBox = "password" in ctl;
+//			let isPasswordBox = "password" in ctl;
 			if (!("text" in ctl /* || isPasswordBox */)) return;
 //			if (isPasswordBox && !AVIMConfig.passwords) return;
 			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
@@ -2388,8 +2390,8 @@ function AVIM()	{
 //				 ") down on " + ctl + " -- " + ctl.text + "\n");				// debug
 			
 			// Fake a native textbox and keypress event.
-			var ctlProxy = new SlightCtlProxy(ctl);
-			var evtProxy = new SlightEvtProxy(evt);
+			let ctlProxy = new SlightCtlProxy(ctl);
+			let evtProxy = new SlightEvtProxy(evt);
 			if (!evtProxy.charCode || evtProxy.charCode == 0xff) {
 				setTimeout(function () {
 					avim.handleSlightByEatingChar(root, evt);
@@ -2441,34 +2443,33 @@ function AVIM()	{
 				return;
 			}
 			
-			var ctl = evt.source;	// TextBox
+			let ctl = evt.source;	// TextBox
 			if (!("text" in ctl)) return;
 			if (!methodIsVIQR()) return;
 			if (isMac && evt.platformKeyCode == 0x37) return;	// Cmd on Mac
 //			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
 //				 ", ctrl: " + evt.ctrl.toString() + ") UP on " + ctl + " -- " + ctl.text + "\n");	// debug
 			
-			var selStart = ctl.selectionStart;
+			let selStart = ctl.selectionStart;
 			if (!selStart || ctl.selectionLength) return;
 			
 			// Override the event proxy's key code using the last character.
-			var text = ctl.text;
-			var lastChar = text.substr(selStart - 1, 1);
+			let text = ctl.text;
+			let lastChar = text.substr(selStart - 1, 1);
 //			dump("lastChar: " + lastChar + "\n");								// debug
-			var charCode = lastChar.charCodeAt(0);
+			let charCode = lastChar.charCodeAt(0);
 			if (charCode == 0xff) return;
 //			dump("\tUsing " + charCode + "(" + lastChar + ") instead.\n");		// debug
 			
 			// Remove the last character from the textbox and move the caret
 			// back.
-			var selStart = ctl.selectionStart;
 //			dump("Before: “" + ctl.text.replace(new RegExp("(.{" + ctl.selectionStart + "})"), "$1|") + "”\n");								// debug
 			ctl.text = text.substring(0, selStart - 1) + text.substring(selStart, text.length);
 			ctl.selectionStart = selStart - 1;
 			
 			// Fake a native textbox and keypress event.
-			var ctlProxy = new SlightCtlProxy(ctl);
-			var evtProxy = new SlightEvtProxy(evt, charCode);
+			let ctlProxy = new SlightCtlProxy(ctl);
+			let evtProxy = new SlightEvtProxy(evt, charCode);
 			
 			avim.sk = fcc(evtProxy.charCode);
 			avim.start(ctlProxy, evtProxy);
@@ -2506,15 +2507,16 @@ function AVIM()	{
 		if (!document.querySelectorAll) return;
 		
 		try {
-			var sandbox = new Sandbox(evt.originalTarget.defaultView);
+			let sandbox = new Sandbox(evt.originalTarget.defaultView);
 			sandbox.importFunction(avim.handleSlightKeyDown, "handleSlightKeyDown");
 			
 			//* Always stringify this function before calling it.
-			var _registerSlights = function () {
+			let _registerSlights = function () {
 				var elts = document.querySelectorAll("object[type='application/x-silverlight-1']," +
 													 "object[type='application/x-silverlight-2']," +
 													 "object[type='application/ag-plugin']");
-				for (var i = 0; i < elts.length; i++) {
+				var i;
+				for (i = 0; i < elts.length; i++) {
 					if (elts[i].content) {
 						elts[i].content.root.addEventListener("keyDown",
 															  handleSlightKeyDown);
@@ -2539,7 +2541,7 @@ function AVIM()	{
 	 * are loaded dynamically via JavaScript.
 	 */
 	this.registerSlights = function() {
-		var appcontent = document.getElementById("appcontent");   // browser
+		let appcontent = document.getElementById("appcontent");   // browser
 		if (!appcontent) return;
 		appcontent.addEventListener("pageshow", this.registerSlightsOnPageLoad,
 									true);
@@ -2554,10 +2556,10 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleCacTrang = function(evt) {
-		var elt = evt.originalTarget;
+		let elt = evt.originalTarget;
 		
-		var win = elt.ownerDocument.defaultView;
-		var sandbox = new Sandbox(win);
+		let win = elt.ownerDocument.defaultView;
+		let sandbox = new Sandbox(win);
 		try {
 			if (!sandbox.evalBoolean("'GSAUI'in window&&" + "'GSF'in window")) {
 				return false;
@@ -2570,7 +2572,7 @@ function AVIM()	{
 		//dump(">>> AVIM.handleCacTrang\n");												// debug
 		
 		// Fake a native textbox.
-		var proxy = new CacTrangProxy(sandbox);
+		let proxy = new CacTrangProxy(sandbox);
 		
 		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
@@ -2632,7 +2634,7 @@ function AVIM()	{
 	 */
 	this.setPrefs = function(changedPref) {
 		// Boolean preferences
-		var boolPrefs = {
+		let boolPrefs = {
 			// Basic options
 			enabled: AVIMConfig.onOff,
 			ignoreMalformed: AVIMConfig.ckSpell,
@@ -2667,7 +2669,7 @@ function AVIM()	{
 			}
 		}
 		else {
-			for (var pref in boolPrefs) {
+			for (let pref in boolPrefs) {
 				prefs.setBoolPref(pref, !!boolPrefs[pref]);
 			}
 		}
@@ -2686,7 +2688,7 @@ function AVIM()	{
 		
 		// Custom string preferences
 		if (!changedPref || changedPref == "ignoredFieldIds") {
-			var ids = Cc["@mozilla.org/supports-string;1"]
+			let ids = Cc["@mozilla.org/supports-string;1"]
 				.createInstance(Ci.nsISupportsString);
 			ids.data = AVIMConfig.exclude.join(" ").toLowerCase();
 			prefs.setComplexValue("ignoredFieldIds", Ci.nsISupportsString, ids);
@@ -2700,7 +2702,7 @@ function AVIM()	{
 	 */
 	this.getPrefs = function(changedPref) {
 //		dump("Changed pref: " + changedPref + "\n");							// debug
-		var specificPref = true;
+		let specificPref = true;
 		switch (changedPref) {
 			default:
 				// Fall through when changedPref isn't defined, which happens at
@@ -2718,7 +2720,7 @@ function AVIM()	{
 			case "method":
 				AVIMConfig.method = prefs.getIntPref("method");
 				// In case someone enters an invalid method ID in about:config
-				var method = AVIMConfig.method;
+				let method = AVIMConfig.method;
 				if (method < 0 || method >= broadcasterIds.methods.length) {
 					Cc["@mozilla.org/preferences-service;1"]
 						.getService(Ci.nsIPrefService)
@@ -2748,7 +2750,7 @@ function AVIM()	{
 				AVIMConfig.passwords = prefs.getBoolPref("passwords");
 				if (specificPref) break;
 			case "ignoredFieldIds":
-				var ids = prefs.getComplexValue("ignoredFieldIds",
+				let ids = prefs.getComplexValue("ignoredFieldIds",
 												Ci.nsISupportsString).data;
 				AVIMConfig.exclude = ids.toLowerCase().split(/\s+/);
 				if (specificPref) break;
@@ -2817,13 +2819,13 @@ function AVIM()	{
 	// A table mapping the names of disablers to the names of the preferences
 	// that determine whether the disablers are enabled. If the two names match,
 	// they can be omitted from this table. Confusing, huh?
-	var disablerAliases = {
+	let disablerAliases = {
 		HIM: "AVIM",
 		xvnkb: "CHIM"
 	};
 	
 	// Markers and disablers for embedded Vietnamese IMEs
-	var disablers = {
+	let disablers = {
 		// For each of these disablers, we don't need a sanity check for an
 		// object or member that served as a marker for the IME. Also,
 		// everything is wrapped in a try...catch block, so we don't need sanity
@@ -2920,7 +2922,7 @@ function AVIM()	{
 			if (parseInt(win.vnMethod) != 0) win.VKSetMethod(0);
 		}
 	};
-	var markers = {
+	let markers = {
 		// HIM and AVIM since at least version 1.13 (build 20050810)
 		DAWEOF: "HIM",
 		// VietTyping, various versions
@@ -2955,7 +2957,7 @@ function AVIM()	{
 		// Google (google.com.vn) and Google Virtual Keyboard API 1.0
 		google: "Google"
 	};
-	var frameMarkers = ["MVietOnOffButton", "DAWEOF"];
+	let frameMarkers = ["MVietOnOffButton", "DAWEOF"];
 	
 	/**
 	 * Given a marker and sandboxed contexts, disables the Vietnamese JavaScript
@@ -2973,7 +2975,7 @@ function AVIM()	{
 	 */
 	this.disableOther = function(marker, sandbox, parentSandbox) {
 		// Don't bother disabling the script if the preference is disabled.
-		var disablerName = markers[marker];
+		let disablerName = markers[marker];
 		if (!AVIMConfig.disabledScripts[disablerAliases[disablerName] ||
 										disablerName]) {
 			return false;
@@ -2981,12 +2983,12 @@ function AVIM()	{
 		
 		try {
 			// Get the disabling code.
-			var disabler = disablers[disablerName];
+			let disabler = disablers[disablerName];
 			if (!disabler) return false;
-			var js = "(" + disabler + ")(window,window." + marker + ")";
+			let js = "(" + disabler + ")(window,window." + marker + ")";
 			
 			// Try to disable the IME in the current document.
-			var hasMarker = false;
+			let hasMarker = false;
 			try {
 				hasMarker = sandbox.evalBoolean("'" + marker + "'in window");
 			}
@@ -3033,24 +3035,24 @@ function AVIM()	{
 		
 		// Since wrappedJSObject is only safe in Firefox 3 and above, sandbox
 		// all operations on it.
-		var winWrapper = new XPCNativeWrapper(doc.defaultView);
-		var win = winWrapper.wrappedJSObject;
+		let winWrapper = new XPCNativeWrapper(doc.defaultView);
+		let win = winWrapper.wrappedJSObject;
 		if (win === undefined || win === null || win === window) return;
 		
 		// Create a sandbox to execute the code in.
 //		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
-		var sandbox = new Sandbox(doc.defaultView);
+		let sandbox = new Sandbox(doc.defaultView);
 		
 		// Some IMEs are applied to rich textareas in iframes. Create a new
 		// sandbox based on the parent document's URL.
-		var parentSandbox;
+		let parentSandbox;
 		win = winWrapper.frameElement && winWrapper.parent.wrappedJSObject;
 		if (win !== undefined && win !== null) {
 //			dump("outer sandbox URL: " + winWrapper.parent.location.href + "\n");	// debug
 			parentSandbox = new Sandbox(doc.defaultView.parent);
 		}
 		
-		for (var marker in markers) {
+		for (let marker in markers) {
 			if (this.disableOther(marker, sandbox, parentSandbox)) return;
 		}
 		sandbox = null;
@@ -3105,7 +3107,7 @@ function AVIM()	{
 		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
 			return false;
 		}
-		var doc = e.target.ownerDocument;
+		let doc = e.target.ownerDocument;
 		if (doc.defaultView == window) doc = e.originalTarget.ownerDocument;
 		this.disableOthers(doc);
 		
@@ -3128,15 +3130,15 @@ function AVIM()	{
 			return false;
 		}
 		
-		var target = e.target;
-		var origTarget = e.originalTarget;
-		var doc = target.ownerDocument;
+		let target = e.target;
+		let origTarget = e.originalTarget;
+		let doc = target.ownerDocument;
 		if (doc.defaultView == window) doc = origTarget.ownerDocument;
 		
 		// SciMoz plugin
-		var koManager = window.ko && ko.views && ko.views.manager;
-		var koView = koManager && koManager.currentView;
-		var scintilla = koView && koView.scintilla;
+		let koManager = window.ko && ko.views && ko.views.manager;
+		let koView = koManager && koManager.currentView;
+		let scintilla = koView && koView.scintilla;
 		if (scintilla && scintilla.inputField &&
 			origTarget == scintilla.inputField.inputField) {
 			return this.handleSciMoz(e, ko.views.manager.currentView.scimoz);
@@ -3148,7 +3150,7 @@ function AVIM()	{
 		}
 		
 		// Specialized Web editors
-		var tagName = origTarget.localName.toLowerCase();
+		let tagName = origTarget.localName.toLowerCase();
 		try {
 			// Ymacs
 			// Zoho Writer: window.editor<HTMLArea>.eventHandlerFunction(evt)
@@ -3174,7 +3176,7 @@ function AVIM()	{
 		}
 		
 		// Rich text editors
-		var wysiwyg =
+		let wysiwyg =
 			(doc.designMode && doc.designMode.toLowerCase() == "on") ||
 			(target.contentEditable &&
 			 target.contentEditable.toLowerCase() == "true");
@@ -3210,7 +3212,7 @@ function AVIM()	{
 	
 	// IME and DiMENSiON extension
 	if (window && "getIMEStatus" in window) {
-		var getStatus = getIMEStatus;
+		let getStatus = getIMEStatus;
 		getIMEStatus = function() {
 			try {
 				return AVIMConfig.onOff || getStatus();
@@ -3233,13 +3235,13 @@ function AVIM()	{
 	 */
 	function installToolbarButton(toolbarId, id, afterId) {
 		if (!$(id)) {
-			var toolbar = $(toolbarId);
-			var target = $(toolbarId + "-customization-target") || toolbar;
+			let toolbar = $(toolbarId);
+			let target = $(toolbarId + "-customization-target") || toolbar;
 			
 			// If no afterId is given, then append the item to the toolbar
-			var before = null;
+			let before = null;
 			if (afterId) {
-				var elem = $(afterId);
+				let elem = $(afterId);
 				if (elem && elem.parentNode == target) {
 					before = elem.nextElementSibling;
 				}

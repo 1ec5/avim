@@ -70,25 +70,25 @@ function AVIMTester() {
 	 */
 	this.getInputSource = function() {
 		// https://developer.mozilla.org/en/XPCOM_Interface_Reference/nsIFilePicker
-		var fp = Cc["@mozilla.org/filepicker;1"]
+		let fp = Cc["@mozilla.org/filepicker;1"]
 			.createInstance(Ci.nsIFilePicker);
 		fp.init(window, "Choose Input File", Ci.nsIFilePicker.modeOpenMultiple);
 		fp.appendFilters(Ci.nsIFilePicker.filterText);
 		
-		var rv = fp.show();
+		let rv = fp.show();
 		if (rv != Ci.nsIFilePicker.returnOK &&
 			rv != Ci.nsIFilePicker.returnReplace) {
 			return "";
 		}
 		
-		var files = fp.files;
-		var src = "";
+		let files = fp.files;
+		let src = "";
 		while (files.hasMoreElements()) {
-			var file = files.getNext().QueryInterface(Ci.nsILocalFile);
+			let file = files.getNext().QueryInterface(Ci.nsILocalFile);
 			
-			var fstream = Cc["@mozilla.org/network/file-input-stream;1"]
+			let fstream = Cc["@mozilla.org/network/file-input-stream;1"]
 				.createInstance(Ci.nsIFileInputStream);
-			var cstream = Cc["@mozilla.org/intl/converter-input-stream;1"]
+			let cstream = Cc["@mozilla.org/intl/converter-input-stream;1"]
 				.createInstance(Ci.nsIConverterInputStream);
 			fstream.init(file, -1, 0, 0);
 			cstream.init(fstream, "UTF-8", 0, 0);
@@ -115,14 +115,14 @@ function AVIMTester() {
 	 * @returns {string} Name of the currently activated input method.
 	 */
 	this.getMethodName = function() {
-		var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+		let prefs = Components.classes["@mozilla.org/preferences-service;1"]
 							  .getService(Components.interfaces.nsIPrefService)
 							  .getBranch("extensions.avim.");
-		var method = prefs.getIntPref("method");
-		var methodName = methodNames[method];
+		let method = prefs.getIntPref("method");
+		let methodName = methodNames[method];
 		if (methodName != "auto") return methodName;
 		
-		var autoMethods = [prefs.getBoolPref("auto.telex"),
+		let autoMethods = [prefs.getBoolPref("auto.telex"),
 						   prefs.getBoolPref("auto.vni"),
 						   prefs.getBoolPref("auto.viqr"),
 						   prefs.getBoolPref("auto.viqrStar")];
@@ -141,18 +141,18 @@ function AVIMTester() {
 	 */
 	this.prepareWord = function(word, method) {
 		// Convert word to VIQR.
-		var viqrWord = "";
-		for (var i = 0; i < word.length; i++) {
-			var chr = word[i];
+		let viqrWord = "";
+		for (let i = 0; i < word.length; i++) {
+			let chr = word[i];
 			viqrWord += sequences[chr] || chr;
 		}
 		
 		// Separate base letters from diacritics.
-		var letters = [];
-		var accents = [];
-		var circumVowels = [];
-		for (var i = 0; i < viqrWord.length; i++) {
-			var cur = viqrWord[i];
+		let letters = [];
+		let accents = [];
+		let circumVowels = [];
+		for (let i = 0; i < viqrWord.length; i++) {
+			let cur = viqrWord[i];
 			// Special-case "d" because it can also appear by itself.
 			if (cur.toLowerCase() == "d") {
 				if (i && cur.toLowerCase() == viqrWord[i - 1].toLowerCase()) {
@@ -172,24 +172,24 @@ function AVIMTester() {
 		
 		// Convert word to given method.
 		if (method != "viqr") {
-			var transAccents = [];
-			for (var i = 0; i < accents.length; i++) {
-				var trans = methodMap[method][accents[i]];
+			let transAccents = [];
+			for (let i = 0; i < accents.length; i++) {
+				let trans = methodMap[method][accents[i]];
 				if (trans instanceof Function) trans = trans(circumVowels[i]);
 				transAccents.push(trans || accents[i]);
 			}
 			accents = transAccents;
 		}
 		
-//		for (var i = 0; i < viqrWord.length; i++) {
-//			var base = viqrWord[i];
+//		for (let i = 0; i < viqrWord.length; i++) {
+//			let base = viqrWord[i];
 //			letters += base;
 //			
 //			if ("adeiouy".indexOf(base.toLowerCase()) < 0) continue;
-//			var next;
+//			let next;
 //			while ((next = viqrWord[i + 1]) &&
 //				   "'`?~.^+(d".indexOf(next.toLowerCase()) >= 0) {
-//				var trans = methodMap[method][next];
+//				let trans = methodMap[method][next];
 //				if (trans instanceof Function) trans = trans(base);
 //				accents += trans || next;
 //				i++;
@@ -207,19 +207,19 @@ function AVIMTester() {
 	 * @param keys	{string}	The keystrokes to press.
 	 */
 	this.testWord = function(word, keys) {
-		var inputTextBox = document.getElementById(inputTextBoxId);
+		let inputTextBox = document.getElementById(inputTextBoxId);
 		
-		for (var i = 0; i < keys.length; i++) {
-			var e = document.createEvent("KeyEvents");
+		for (let i = 0; i < keys.length; i++) {
+			let e = document.createEvent("KeyEvents");
 			e.initKeyEvent("keypress", true, true, null, false, false, false,
 						   false, 0, keys.charCodeAt(i));
 			inputTextBox.dispatchEvent(e);
 		}
 		
-		var tree = document.getElementById(resultsTreeId);
-		var doesMatch = inputTextBox.value == word;
+		let tree = document.getElementById(resultsTreeId);
+		let doesMatch = inputTextBox.value == word;
 		this.results.push([word, keys, inputTextBox.value, doesMatch]);
-		var numResults = this.results.length;
+		let numResults = this.results.length;
 		tree.treeBoxObject.rowCountChanged(numResults - 1, 1);
 		tree.treeBoxObject.scrollByPages(1);
 		
@@ -231,28 +231,28 @@ function AVIMTester() {
 	 * Runs the test suite.
 	 */
 	this.runTests = function() {
-		var inputTextBox = document.getElementById(inputTextBoxId);
+		let inputTextBox = document.getElementById(inputTextBoxId);
 		inputTextBox.focus();
 		
-		var tree = document.getElementById(resultsTreeId);
-		var numRemoved = this.results.length;
+		let tree = document.getElementById(resultsTreeId);
+		let numRemoved = this.results.length;
 		this.results = [];
 		tree.treeBoxObject.rowCountChanged(0, -numRemoved);
 		
-		var progressBar = document.getElementById(progressBarId);
+		let progressBar = document.getElementById(progressBarId);
 		progressBar.value = 0;
 		progressBar.mode = "determined";
 		
-		var src = this.getInputSource();
-		var words = src.split(/\s+/);
+		let src = this.getInputSource();
+		let words = src.split(/\s+/);
 		
-		var method = this.getMethodName();
-//		var moveBackCheck = document.getElementById(moveBackCheckId);
-//		var moveBack = moveBackCheck.checked;
+		let method = this.getMethodName();
+//		let moveBackCheck = document.getElementById(moveBackCheckId);
+//		let moveBack = moveBackCheck.checked;
 		
-		for (var i = 0; i < words.length; i++) {
+		for (let i = 0; i < words.length; i++) {
 			if (!words[i]) continue;
-			var keys = this.prepareWord(words[i], method);
+			let keys = this.prepareWord(words[i], method);
 			this.testWord(words[i], keys);
 			progressBar.value = i / words.length;
 		}
@@ -265,18 +265,18 @@ function AVIMTester() {
 	 * Initializes the results tree.
 	 */
 	this.initResultTree = function() {
-		var controller = this;
+		let controller = this;
 		const iface = Components.interfaces.nsIAtomService;
-		var atomService = Components.classes["@mozilla.org/atom-service;1"]
+		let atomService = Components.classes["@mozilla.org/atom-service;1"]
 									.getService(iface);
-		var view = {
+		let view = {
 			rowCount: function () {
 				return controller.results.length;
 			},
 			getCellText: function (row, column) {
-				var rowData = controller.results[row];
+				let rowData = controller.results[row];
 				if (!rowData) return null;
-				var cellData = rowData[column.index];
+				let cellData = rowData[column.index];
 				if (column.index == 3) return cellData ? "Passed" : "Failed";
 				return rowData[column.index];
 			},
@@ -301,12 +301,12 @@ function AVIMTester() {
 			getRowProperties: function (row, props) {},
 			getCellProperties: function (row, col, props) {
 				if (col.index != 3) return;
-				var propName = controller.results[row][3] ? "pass" : "fail";
+				let propName = controller.results[row][3] ? "pass" : "fail";
 				props.AppendElement(atomService.getAtom(propName));
 			},
 			getColumnProperties: function (colId, col, props) {}
 		};
-		var tree = document.getElementById(resultsTreeId);
+		let tree = document.getElementById(resultsTreeId);
 		tree.view = view;
 	};
 	
@@ -314,7 +314,7 @@ function AVIMTester() {
 	 * Attachs AVIM to the hidden textbox.
 	 */
 	this.attachKeyPressHandler = function() {
-		var inputTextBox = document.getElementById(inputTextBoxId);
+		let inputTextBox = document.getElementById(inputTextBoxId);
 		if (!inputTextBox) return;
 		inputTextBox.addEventListener("keypress", avim.onKeyPress, true);
 	};

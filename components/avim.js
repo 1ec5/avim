@@ -70,7 +70,7 @@ AVIM.prototype.QueryInterface = function(iid) {
  * @returns {string}	URL of the overlay to apply.
  */
 AVIM.getOverlayUrl = function (windowUrl) {
-//	var id =
+//	let id =
 //		gCc["@mozilla.org/xre/app-info;1"].getService(gCi.nsIXULAppInfo).ID;
 	
 	switch (windowUrl) {
@@ -103,23 +103,23 @@ AVIM.getOverlayUrl = function (windowUrl) {
  * @param window	{object}	the window onto which AVIM should be attached.
  */
 AVIM.prototype.onWindowOpen = function (window) {
-	var xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
+	let xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
 	// List any chrome: URLs special-cased in chrome.manifest.
-	var manifestUrls = [
+	let manifestUrls = [
 		"chrome://browser/content/browser.xul",
 		"chrome://browser/content/preferences/preferences.xul",
 		"chrome://messenger/content/preferences/preferences.xul"
 	];
-	var handleEvent = function (event) {
-		var doc = event.originalTarget;
+	let handleEvent = function (event) {
+		let doc = event.originalTarget;
 //		dump("onWindowOpen: " + doc.location + "\n");						// debug
 		if (doc.location && doc.location.protocol == "chrome:" &&
 			doc.contentType && xulTypes.indexOf(doc.contentType) >= 0 &&
 			manifestUrls.indexOf(doc.location.href) < 0) {
 			// Attaching an observer to loadOverlay() crashes Mozilla 1.8.x.
-			var xulVersion = gCc["@mozilla.org/xre/app-info;1"]
+			let xulVersion = gCc["@mozilla.org/xre/app-info;1"]
 				.getService(gCi.nsIXULAppInfo).platformVersion;
-			var overlayObserver = null;
+			let overlayObserver = null;
 			if (parseFloat(xulVersion) >= 1.9) {
 				overlayObserver = new AVIMOverlayObserver(window);
 			}
@@ -146,7 +146,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
 	if (xreSvc.inSafeMode) return;
 	
 	// Songbird's chrome.manifest functionality works just fine.
-	//var id =
+	//let id =
 	//	gCc["@mozilla.org/xre/app-info;1"].getService(gCi.nsIXULAppInfo).ID;
 	//if (id == "songbird@songbirdnest.com") return;
 	
@@ -176,7 +176,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
  *
  * Factory class for creating an instance of the AVIM XPCOM component.
  */
-var AVIMFactory = {
+let AVIMFactory = {
 	createInstance: function(outer, iid) {
 		if (outer) throw Components.results.NS_ERROR_NO_AGGREGATION;
 		return new AVIM().QueryInterface(iid);
@@ -190,14 +190,14 @@ var AVIMFactory = {
  * 
  * @base nsIModule
  */
-var AVIMModule = {
+let AVIMModule = {
 	registerSelf: function(compMgr, fileSpec, loc, type) {
 		compMgr = compMgr.QueryInterface(gCi.nsIComponentRegistrar);
 		compMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID,
 										fileSpec, loc, type);
 		
 		// Register the module for app-startup notifications.
-		var catMgr = gCc["@mozilla.org/categorymanager;1"]
+		let catMgr = gCc["@mozilla.org/categorymanager;1"]
 			.getService(gCi.nsICategoryManager);
 		try {
 			catMgr.addCategoryEntry("app-startup", CLASS_NAME,
@@ -214,7 +214,7 @@ var AVIMModule = {
 		compMgr.unregisterFactoryLocation(CLASS_ID, loc);
 		
 		// Unregister the module from app-startup notifications.
-		var catMgr = gCc["@mozilla.org/categorymanager;1"]
+		let catMgr = gCc["@mozilla.org/categorymanager;1"]
 			.getService(gCi.nsICategoryManager);
 		try {
 			catMgr.addCategoryEntry("app-startup", CLASS_NAME, true);
