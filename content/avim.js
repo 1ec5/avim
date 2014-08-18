@@ -687,16 +687,10 @@ function AVIM()	{
 			return frameDoc.querySelectorAll(overlaySelector).length;
 		};
 		
-		const tablePropsItemPath =
-			"//div[@role='menuitem' and contains(div, 'Table properties')]";
-		const tablePropsItem = frameDoc.evaluate(tablePropsItemPath, frameDoc,
-												 null, XPathResult.ANY_TYPE,
-												 null).iterateNext();
-// $if{Debug}
-		if (!tablePropsItem) {
-			dump("KixProxy -- Can't find menu item Table | Table properties.");
-		}
-// $endif{}
+		const tablePropsSel = "[role='menuitem'][aria-disabled='false'] " +
+			"[aria-label^='Table properties']";
+		const altTextSel = "[role='menuitem'][aria-disabled='false'] " +
+			"[aria-label^='Alt text']";
 		
 		/**
 		 * Returns whether the caret is currently in a table.
@@ -708,8 +702,14 @@ function AVIM()	{
 		 * 						otherwise.
 		 */
 		this.isInTable = function() {
-			return tablePropsItem &&
-				tablePropsItem.getAttribute("aria-disabled") == "false";
+			return frameDoc.querySelector(tablePropsSel);
+		};
+		
+		/**
+		 * Returns whether a resizable (i.e., non-text) object is selected.
+		 */
+		this.isObjectSelected = function () {
+			return frameDoc.querySelector(altTextSel);
 		};
 		
 		//const btnIds = {
@@ -843,7 +843,7 @@ function AVIM()	{
 		 */
 		this.trimLeftSelection = function() {
 			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0,
-								  KeyEvent.shiftKey);
+								  Event.SHIFT_MASK);
 		};
 		
 		/**
@@ -890,11 +890,11 @@ function AVIM()	{
 		let wasInTable = this.isInTable();
 //		if (wasInTable) dump("KixProxy -- Caret in table.\n");					// debug
 		this.selectPrecedingWord(wasInTable);
-		if (!wasInTable && this.isInTable()) {
+		if ((!wasInTable && this.isInTable()) || this.isObjectSelected()) {
 			// The selection now lies in the table, so the caret was right after
 			// the table.
 			this.trimLeftSelection();
-			throw "Right after table.";
+			throw "Right after table or resizable object.";
 		}
 		if (this.hasSelection() > 1) {
 //			dump("KixProxy -- More than one line selected.\n");					// debug
