@@ -2538,8 +2538,8 @@ function AVIM()	{
 //		dump("AVIM.handleAce\n");												// debug
 		let elt = evt.originalTarget.parentNode;
 		// <pre class="ace-editor">
-		if (!("classList" in elt &&
-			  elt.classList.contains("ace_editor"))) {
+		if (!("classList" in elt && elt.classList.contains("ace_editor")) ||
+			!document.querySelector) {
 			return false;
 		}
 		if (this.findIgnore(evt.target)) return false;
