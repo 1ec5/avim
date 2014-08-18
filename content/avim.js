@@ -59,6 +59,7 @@ function AVIM()	{
 	const panelBroadcasterId = "avim-status-bc";
 	
 	const iCloudHostname = "www.icloud.com";
+	const GDocsHostname = "docs.google.com";
 	
 	// Local functions that don't require access to AVIM's fields.
 	
@@ -649,6 +650,329 @@ function AVIM()	{
 	};
 	SciMozProxy.prototype = new TextControlProxy();
 	
+	/*
+	 * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param evt	{object}	The keyPress event.
+	 */
+	function KixProxy(evt) {
+		if (evt.keyCode == evt.DOM_VK_BACK_SPACE && !evt.shiftKey) {
+			throw "Backspace.";
+		}
+		
+		let doc = evt.originalTarget.ownerDocument;
+		if (!doc || !doc.body) throw "No document body to copy from.";
+		
+		let winUtils = QueryInterface(Ci.nsIInterfaceRequestor)
+			.getInterface(Ci.nsIDOMWindowUtils);
+		if (!winUtils || !("sendKeyEvent" in winUtils &&
+						   "sendCompositionEvent" in winUtils &&
+						   "sendContentCommandEvent" in winUtils)) {
+			// Parts of the API are only available starting in Gecko 1.9 or 2.0.
+			throw "Can't issue native events."
+		}
+		
+		let frame = doc.defaultView.frameElement;
+		if (!frame) throw "Not in iframe.";
+		let frameDoc = frame.ownerDocument;
+		
+		const overlayClass = "kix-selection-overlay" + (isMac ? "-mac" : "");
+		const presItemType = "http://schema.org/CreativeWork/PresentationObject";
+		
+		/**
+		 * Returns whether text is currently selected in the editor, as
+		 * indicated by the presence of a selection rectangle overlay.
+		 *
+		 * Currently, Kix doesn't seem to display the selection rectangle when
+		 * only spaces have been selected, but does when any object is selected.
+		 */
+		this.hasSelection = function() {
+			let sel = frameDoc.getElementsByClassName(overlayClass);
+			return sel.length;
+		};
+		
+		const tablePropsItemPath =
+			"//div[@role='menuitem' and contains(div, 'Table properties')]";
+		const tablePropsItem = frameDoc.evaluate(tablePropsItemPath, frameDoc,
+												 null, XPathResult.ANY_TYPE,
+												 null).iterateNext();
+// $if{Debug}
+		if (!tablePropsItem) {
+			dump("KixProxy -- Can't find menu item Table | Table properties.");
+		}
+// $endif{}
+		
+		/**
+		 * Returns whether the caret is currently in a table.
+		 *
+		 * The caret is in a table if the Table | Table Properties menu item is
+		 * enabled.
+		 *
+		 * @returns {boolean}	True if the caret is in a table; false
+		 * 						otherwise.
+		 */
+		this.isInTable = function() {
+			return tablePropsItem &&
+				tablePropsItem.getAttribute("aria-disabled") == "false";
+		};
+		
+		//const btnIds = {
+		//	bold: "boldButton", italic: "italicButton",
+		//	underline: "underlineButton"
+		//};
+		//
+		///**
+		// * Returns the formatting styles that apply at the current selection.
+		// *
+		// * @returns {object}	Boolean attributes mapped to whether they apply.
+		// */
+		//this.getFormatting = function() {
+		//	let fmt = {};
+		//	for (let attr in btnIds) {
+		//		let btn = frameDoc.getElementById(btnIds[attr]);
+		//		fmt[attr] = btn && btn.getAttribute("aria-pressed") == "true";
+		//	}
+		//	dump("KixProxy.getFormatting -- bold: " + fmt.bold + "\n");			// debug
+		//	return fmt;
+		//};
+		//
+		///**
+		// * Applies the given formatting styles to the text at the current
+		// * selection.
+		// *
+		// * @param fmt	{object}	Boolean attributes mapped to whether they
+		// * 							apply.
+		// */
+		//this.applyFormatting = function(fmt) {
+		//	let curFmt = this.getFormatting();
+		//	for (let attr in fmt) {
+		//		let btn = frameDoc.getElementById(btnIds[attr]);
+		//		if (fmt[attr] == curFmt[attr]) continue;
+		//		
+		//		// Click the button to toggle it.
+		//		dump("KixProxy.applyFormatting -- toggling " + attr + "\n");	// debug
+		//		let clickEvt = document.createEvent("MouseEvents");
+		//		clickEvt.initMouseEvent("click", true, true, null, 0, 0, 0, 0,
+		//								0, false, false, false, false, 0, null);
+		//		btn.dispatchEvent(clickEvt);
+		//	}
+		//};
+		
+		/**
+		 * Generates a key event that selects the previous word or optionally to
+		 * to beginning of the line.
+		 *
+		 * Mozilla observes the following platform-specific bindings for
+		 * cmd_selectWordPrevious:
+		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	VK_LEFT	control,shift
+		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	VK_LEFT	alt,shift
+		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	VK_LEFT	control,shift
+		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	VK_LEFT	control,shift
+		 * and for cmd_selectBeginLine:
+		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	VK_HOME	shift
+		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	VK_LEFT	accel,shift
+		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	VK_HOME	shift
+		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	VK_HOME	shift
+		 *
+		 * @param toLineStart	{boolean}	True to extend the selection to the
+		 * 									start of the line; false otherwise.
+		 */
+		this.selectPrecedingWord = function(toLineStart) {
+//			dump("KixProxy.selectPrecedingWord()\n");							// debug
+			let key = (isMac || !toLineStart) ?
+				KeyEvent.DOM_VK_LEFT : KeyEvent.DOM_VK_HOME;
+			let modifiers = (isMac || toLineStart) ?
+				Event.SHIFT_MASK : (Event.CONTROL_MASK | Event.SHIFT_MASK);
+			if (isMac) {
+				modifiers |= toLineStart ? Event.META_MASK : Event.ALT_MASK;
+			}
+			winUtils.sendKeyEvent("keypress", key, 0, modifiers);
+		};
+		
+		const board = Cc["@mozilla.org/widget/clipboard;1"]
+			.getService(Ci.nsIClipboard);
+		
+		/**
+		 * Returns the contents of the clipboard.
+		 */
+		this.getClipboardData = function () {
+			if (!board.hasDataMatchingFlavors(["text/unicode"], 1,
+											  board.kGlobalClipboard)) {
+				return false;
+			}
+			let xfer = Cc["@mozilla.org/widget/transferable;1"]
+				.createInstance(Ci.nsITransferable);
+			// TODO: Use the text/html flavor to retain formatting.
+			xfer.addDataFlavor("text/unicode");
+			board.getData(xfer, board.kGlobalClipboard);
+			return xfer;
+		};
+		
+		/**
+		 * Returns the text contents of the clipboard.
+		 */
+		this.getClipboardText = function() {
+			let xfer = this.getClipboardData();
+			if (!xfer) return "";
+			
+			// https://developer.mozilla.org/en/Using_the_Clipboard
+			let str = new Object(), len = new Object();
+			try {
+				xfer.getTransferData("text/unicode", str, len);
+			}
+			catch (exc) {
+				// At the beginning of a new line (but not the beginning of the
+				// document), the previous line break has been selected.
+				return "\n";
+			}
+			str = str && str.value.QueryInterface(Ci.nsISupportsString);
+			// text/unicode is apparently stored as UTF-16.
+			str = str && str.data.substring(0, len.value / 2);
+			// BOM can occur at the beginning of the document.
+			return str != "\ufeff" && str;
+		};
+		
+		/**
+		 * Generates a right-arrow key event that returns the selection to where
+		 * it was before KixProxy started modifying it.
+		 */
+		this.revertSelection = function() {
+//			dump("KixProxy.revertSelection()\n");								// debug
+			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
+		};
+		
+		/**
+		 * Copies and retrieves the selected text. Callers are responsible for
+		 * reverting the clipboard contents.
+		 *
+		 * @throws {string}	when there was no selection, or the selection was
+		 * 					nothing but spaces, in which case the selection is
+		 * 					reverted.
+		 */
+		this.getSelectedText = function(isInTable) {
+			// Clear the clipboard.
+			board.setData(Cc["@mozilla.org/widget/transferable;1"]
+							.createInstance(Ci.nsITransferable),
+						  null, board.kGlobalClipboard);
+			
+			// Copy the word.
+			winUtils.sendContentCommandEvent("copy");
+			
+			// Retrieve the text from the clipboard.
+			let value = this.getClipboardText();
+			if (!value) {
+				// Objects may not be copied as text, but they may be selected.
+				if (this.hasSelection()) this.revertSelection();
+				return "";
+			}
+			// Probably the beginning of a line (or the line has just spaces).
+			if (!value.trim()) {
+				this.revertSelection();
+				return "";
+			}
+			return value;
+		};
+		
+		// Abort if there is a selection. The selection rectangle is an overlay
+		// element that can be identified by its (platform-specific) class.
+		let sel = frameDoc.getElementsByClassName("kix-selection-overlay");
+		if (!sel.length) {
+			sel = frameDoc.getElementsByClassName("kix-selection-overlay-mac");
+		}
+		if (sel.length) throw "Non-empty selection.";
+		
+		//// Remember any simple inline styles (B/I/U) that might've been toggled
+		//// just before the keypress event.
+		//let oldFmt = this.getFormatting();
+		
+		// Select the previous word.
+		let wasInTable = this.isInTable();
+//		if (wasInTable) dump("KixProxy -- Caret in table.\n");					// debug
+		this.selectPrecedingWord(wasInTable);
+		if (!wasInTable && this.isInTable()) {
+			// The selection now lies in the table, so the caret was right after
+			// the table.
+			this.revertSelection();
+			throw "Right after table.";
+		}
+		if (this.hasSelection() > 1) {
+//			dump("KixProxy -- More than one line selected.\n");					// debug
+			// A horizontal line may have been included in the selection, or the
+			// word spans more than one line.
+			this.revertSelection();
+			// There will only be one word in this selection.
+			this.selectPrecedingWord(true);
+		}
+		
+		// Get the selected text.
+		let value = this.getSelectedText();
+		if (wasInTable) {
+//			dump("KixProxy -- Reselecting text in table.\n");					// debug
+			// Unselect the text, unless the cell and selection are empty.
+			if (value) this.revertSelection();
+			// Reselect the text, this time just the preceding word.
+			this.selectPrecedingWord(false);
+			value = this.getSelectedText();
+		}
+		if (!value) throw "No text.";
+//		dump("KixProxy -- value: <" + value + ">\n");							// debug
+		
+		this.value = this.oldValue = value;
+		this.selectionStart = this.selectionEnd = this.value.length;
+		
+		/**
+		 * Updates the Kix editor represented by this proxy to reflect any
+		 * changes made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+//			dump("KixProxy.commit -- value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
+			if (this.value == this.oldValue) {
+				if (this.value) {
+					//// When begining a new word, bring back any simple inline
+					//// formatting that was toggled just before entering it.
+					//if (this.oldValue.search(/\s$/) > 0) {
+					//	dump("Beginning a new word\n");									// debug
+					//	this.selectPrecedingWord();
+					//	this.applyFormatting(oldFmt);
+					//	this.revertSelection();
+					//}
+					//else this.revertSelection();
+					this.revertSelection();
+				}
+				return false;
+			}
+			
+			let xfer = Cc["@mozilla.org/widget/transferable;1"]
+				.createInstance(Ci.nsITransferable);
+			// TODO: Use the text/html flavor to retain formatting.
+			xfer.addDataFlavor("text/unicode");
+			var cStr = Cc["@mozilla.org/supports-string;1"]
+				.createInstance(Ci.nsISupportsString);
+			cStr.data = this.value;
+			xfer.setTransferData("text/unicode", cStr, this.value.length * 2);
+			
+			// Paste the updated string into the editor.
+			// In Kix 3790525131, which sends events to
+			// "docs-texteventtarget-iframe", wrapping the paste operation in a
+			// composition prevents the selection from flashing.
+			// In Kix 3491395419, "kix-clipboard-iframe" inserts a newline after
+			// the composition ends, breaking editing.
+			//let compose =
+			//	!frame.classList.contains("kix-clipboard-iframe") &&
+			//	frame.ownerDocument.body.getAttribute("itemtype") != presItemType;
+			//if (compose) winUtils.sendCompositionEvent("compositionstart", "", "");
+			setTimeout(function () {
+				winUtils.sendContentCommandEvent("pasteTransferable", xfer);
+			}, 0);
+			//if (compose) winUtils.sendCompositionEvent("compositionend", "", "");
+			
+			return true;
+		};
+	};
+	KixProxy.prototype = new TextControlProxy();
+	
 	/**
 	 * Proxy for the Pages editor to pose as an ordinary HTML <textarea>.
 	 * 
@@ -712,327 +1036,6 @@ function AVIM()	{
 		};
 	};
 	CacTrangProxy.prototype = new TextControlProxy();
-	
-	/*
-	 * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
-	 * 
-	 * @param evt	{object}	The keyPress event.
-	 */
-	function KixProxy(evt) {
-		if (evt.keyCode == evt.DOM_VK_BACK_SPACE && !evt.shiftKey) {
-			throw "Backspace.";
-		}
-		
-		var doc = evt.originalTarget.ownerDocument;
-		if (!doc || !doc.body) throw "No document body to copy from.";
-		
-		var winUtils = QueryInterface(Ci.nsIInterfaceRequestor)
-			.getInterface(Ci.nsIDOMWindowUtils);
-		if (!winUtils || !("sendKeyEvent" in winUtils &&
-						   "sendCompositionEvent" in winUtils &&
-						   "sendContentCommandEvent" in winUtils)) {
-			// Parts of the API are only available starting in Gecko 1.9 or 2.0.
-			throw "Can't issue native events."
-		}
-		
-		var frame = doc.defaultView.frameElement;
-		if (!frame) throw "Not in iframe.";
-		var frameDoc = frame.ownerDocument;
-		
-		const overlayClass = "kix-selection-overlay" + (isMac ? "-mac" : "");
-		const presItemType = "http://schema.org/CreativeWork/PresentationObject";
-		
-		/**
-		 * Returns whether text is currently selected in the editor, as
-		 * indicated by the presence of a selection rectangle overlay.
-		 *
-		 * Currently, Kix doesn't seem to display the selection rectangle when
-		 * only spaces have been selected, but does when any object is selected.
-		 */
-		this.hasSelection = function() {
-			var sel = frameDoc.getElementsByClassName(overlayClass);
-			return sel.length;
-		};
-		
-		const tablePropsItemPath =
-			"//div[@role='menuitem' and contains(div, 'Table properties')]";
-		const tablePropsItem = frameDoc.evaluate(tablePropsItemPath, frameDoc,
-												 null, XPathResult.ANY_TYPE,
-												 null).iterateNext();
-// $if{Debug}
-		if (!tablePropsItem) {
-			dump("KixProxy -- Can't find menu item Table | Table properties.");
-		}
-// $endif{}
-		
-		/**
-		 * Returns whether the caret is currently in a table.
-		 *
-		 * The caret is in a table if the Table | Table Properties menu item is
-		 * enabled.
-		 *
-		 * @returns {boolean}	True if the caret is in a table; false
-		 * 						otherwise.
-		 */
-		this.isInTable = function() {
-			return tablePropsItem &&
-				tablePropsItem.getAttribute("aria-disabled") == "false";
-		};
-		
-		//const btnIds = {
-		//	bold: "boldButton", italic: "italicButton",
-		//	underline: "underlineButton"
-		//};
-		//
-		///**
-		// * Returns the formatting styles that apply at the current selection.
-		// *
-		// * @returns {object}	Boolean attributes mapped to whether they apply.
-		// */
-		//this.getFormatting = function() {
-		//	var fmt = {};
-		//	for (var attr in btnIds) {
-		//		var btn = frameDoc.getElementById(btnIds[attr]);
-		//		fmt[attr] = btn && btn.getAttribute("aria-pressed") == "true";
-		//	}
-		//	dump("KixProxy.getFormatting -- bold: " + fmt.bold + "\n");			// debug
-		//	return fmt;
-		//};
-		//
-		///**
-		// * Applies the given formatting styles to the text at the current
-		// * selection.
-		// *
-		// * @param fmt	{object}	Boolean attributes mapped to whether they
-		// * 							apply.
-		// */
-		//this.applyFormatting = function(fmt) {
-		//	var curFmt = this.getFormatting();
-		//	for (var attr in fmt) {
-		//		var btn = frameDoc.getElementById(btnIds[attr]);
-		//		if (fmt[attr] == curFmt[attr]) continue;
-		//		
-		//		// Click the button to toggle it.
-		//		dump("KixProxy.applyFormatting -- toggling " + attr + "\n");	// debug
-		//		var clickEvt = document.createEvent("MouseEvents");
-		//		clickEvt.initMouseEvent("click", true, true, null, 0, 0, 0, 0,
-		//								0, false, false, false, false, 0, null);
-		//		btn.dispatchEvent(clickEvt);
-		//	}
-		//};
-		
-		/**
-		 * Generates a key event that selects the previous word or optionally to
-		 * to beginning of the line.
-		 *
-		 * Mozilla observes the following platform-specific bindings for
-		 * cmd_selectWordPrevious:
-		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	VK_LEFT	control,shift
-		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	VK_LEFT	alt,shift
-		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	VK_LEFT	control,shift
-		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	VK_LEFT	control,shift
-		 * and for cmd_selectBeginLine:
-		 * 	/content/xbl/builtin/unix/platformHTMLBindings.xml	VK_HOME	shift
-		 * 	/content/xbl/builtin/mac/platformHTMLBindings.xml	VK_LEFT	accel,shift
-		 * 	/content/xbl/builtin/emacs/platformHTMLBindings.xml	VK_HOME	shift
-		 * 	/content/xbl/builtin/win/platformHTMLBindings.xml	VK_HOME	shift
-		 *
-		 * @param toLineStart	{boolean}	True to extend the selection to the
-		 * 									start of the line; false otherwise.
-		 */
-		this.selectPrecedingWord = function(toLineStart) {
-//			dump("KixProxy.selectPrecedingWord()\n");							// debug
-			var key = (isMac || !toLineStart) ?
-				KeyEvent.DOM_VK_LEFT : KeyEvent.DOM_VK_HOME;
-			var modifiers = (isMac || toLineStart) ?
-				Event.SHIFT_MASK : (Event.CONTROL_MASK | Event.SHIFT_MASK);
-			if (isMac) {
-				modifiers |= toLineStart ? Event.META_MASK : Event.ALT_MASK;
-			}
-			winUtils.sendKeyEvent("keypress", key, 0, modifiers);
-		};
-		
-		const board = Cc["@mozilla.org/widget/clipboard;1"]
-			.getService(Ci.nsIClipboard);
-		
-		/**
-		 * Returns the text contents of the clipboard.
-		 */
-		this.getClipboardText = function() {
-			// Retrieve the text from the clipboard.
-			// https://developer.mozilla.org/en/Using_the_Clipboard
-			if (!board.hasDataMatchingFlavors(["text/unicode"], 1,
-											  board.kGlobalClipboard)) {
-				return "";
-			}
-			var xfer = Cc["@mozilla.org/widget/transferable;1"]
-				.createInstance(Ci.nsITransferable);
-			// TODO: Use the text/html flavor to retain formatting.
-			xfer.addDataFlavor("text/unicode");
-			board.getData(xfer, board.kGlobalClipboard);
-			var str = new Object(), len = new Object();
-			try {
-				xfer.getTransferData("text/unicode", str, len);
-			}
-			catch (exc) {
-				// At the beginning of a new line (but not the beginning of the
-				// document), the previous line break has been selected.
-				return "\n";
-			}
-			str = str && str.value.QueryInterface(Ci.nsISupportsString);
-			// text/unicode is apparently stored as UTF-16.
-			str = str && str.data.substring(0, len.value / 2);
-			// BOM can occur at the beginning of the document.
-			return str != "\ufeff" && str;
-		};
-		
-		/**
-		 * Generates a right-arrow key event that returns the selection to where
-		 * it was before KixProxy started modifying it.
-		 */
-		this.revertSelection = function() {
-//			dump("KixProxy.revertSelection()\n");								// debug
-			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
-		};
-		
-		/**
-		 * Copies and retrieves the selected text. Callers are responsible for
-		 * reverting the clipboard contents.
-		 *
-		 * @throws {string}	when there was no selection, or the selection was
-		 * 					nothing but spaces, in which case the selection is
-		 * 					reverted.
-		 */
-		this.getSelectedText = function(isInTable) {
-			// Clear the clipboard.
-			board.setData(Cc["@mozilla.org/widget/transferable;1"]
-							.createInstance(Ci.nsITransferable),
-						  null, board.kGlobalClipboard);
-			
-			// Copy the word.
-			winUtils.sendContentCommandEvent("copy");
-			
-			// Retrieve the text from the clipboard.
-			var value = this.getClipboardText();
-			if (!value) {
-				// Objects may not be copied as text, but they may be selected.
-				if (this.hasSelection()) this.revertSelection();
-				return "";
-			}
-			// Probably the beginning of a line (or the line has just spaces).
-			if (!value.trim()) {
-				this.revertSelection();
-				return "";
-			}
-			return value;
-		};
-		
-		// Abort if there is a selection. The selection rectangle is an overlay
-		// element that can be identified by its (platform-specific) class.
-		var sel = frameDoc.getElementsByClassName("kix-selection-overlay");
-		if (!sel.length) {
-			sel = frameDoc.getElementsByClassName("kix-selection-overlay-mac");
-		}
-		if (sel.length) throw "Non-empty selection.";
-		
-		//// Remember any simple inline styles (B/I/U) that might've been toggled
-		//// just before the keypress event.
-		//var oldFmt = this.getFormatting();
-		
-		// Select the previous word.
-		var wasInTable = this.isInTable();
-//		if (wasInTable) dump("KixProxy -- Caret in table.\n");					// debug
-		this.selectPrecedingWord(wasInTable);
-		if (!wasInTable && this.isInTable()) {
-			// The selection now lies in the table, so the caret was right after
-			// the table.
-			this.revertSelection();
-			throw "Right after table.";
-		}
-		if (this.hasSelection() > 1) {
-//			dump("KixProxy -- More than one line selected.\n");					// debug
-			// A horizontal line may have been included in the selection, or the
-			// word spans more than one line.
-			this.revertSelection();
-			// There will only be one word in this selection.
-			this.selectPrecedingWord(true);
-		}
-		
-		// Get the selected text.
-		var value = this.getSelectedText();
-		if (wasInTable) {
-//			dump("KixProxy -- Reselecting text in table.\n");					// debug
-			// Unselect the text, unless the cell and selection are empty.
-			if (value) this.revertSelection();
-			// Reselect the text, this time just the preceding word.
-			this.selectPrecedingWord(false);
-			value = this.getSelectedText();
-		}
-		if (!value) throw "No text.";
-//		dump("KixProxy -- value: <" + value + ">\n");							// debug
-		
-		this.value = this.oldValue = value;
-		this.selectionStart = this.selectionEnd = this.value.length;
-		
-		/**
-		 * Updates the Kix editor represented by this proxy to reflect any
-		 * changes made to the proxy.
-		 * 
-		 * @returns {boolean}	True if anything was changed; false otherwise.
-		 */
-		this.commit = function() {
-//			dump("KixProxy.commit -- value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
-			if (this.value == this.oldValue) {
-				if (this.value) {
-					//// When begining a new word, bring back any simple inline
-					//// formatting that was toggled just before entering it.
-					//if (this.oldValue.search(/\s$/) > 0) {
-					//	dump("Beginning a new word\n");									// debug
-					//	this.selectPrecedingWord();
-					//	this.applyFormatting(oldFmt);
-					//	this.revertSelection();
-					//}
-					//else this.revertSelection();
-					this.revertSelection();
-				}
-				return false;
-			}
-			
-			// Copy the updated string back to the clipboard.
-			const boardHelper = Cc["@mozilla.org/widget/clipboardhelper;1"]
-				.getService(Ci.nsIClipboardHelper);
-			boardHelper.copyString(this.value);
-			
-			//{
-			//	xfer = Cc["@mozilla.org/widget/transferable;1"]
-			//		.createInstance(Ci.nsITransferable);
-			//	xfer.addDataFlavor("text/unicode");
-			//	board.getData(xfer, board.kGlobalClipboard);
-			//	str = new Object(), len = new Object();
-			//	xfer.getTransferData("text/unicode", str, len);
-			//	if (str && len) {
-			//		str = str.value.QueryInterface(Ci.nsISupportsString);
-			//		dump("About to paste: <" + str.data.substring(0, len.value / 2) + ">\n");	// debug
-			//	}
-			//}
-			
-			// Paste the updated string into the editor.
-			// In Kix 3790525131, which sends events to
-			// "docs-texteventtarget-iframe", wrapping the paste operation in a
-			// composition prevents the selection from flashing.
-			// In Kix 3491395419, "kix-clipboard-iframe" inserts a newline after
-			// the composition ends, breaking editing.
-			var compose =
-				!frame.classList.contains("kix-clipboard-iframe") &&
-				frame.ownerDocument.body.getAttribute("itemtype") != presItemType;
-			if (compose) winUtils.sendCompositionEvent("compositionstart", "", "");
-			winUtils.sendContentCommandEvent("paste");
-			if (compose) winUtils.sendCompositionEvent("compositionend", "", "");
-			
-			return true;
-		};
-	};
-	KixProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
@@ -2262,7 +2265,8 @@ function AVIM()	{
 	this.updateContainer = function(outer, inner) {
 		if (!inner) return;
 		if (inner.ownerDocument &&
-			inner.ownerDocument.location.hostname === iCloudHostname) {
+			(inner.ownerDocument.location.hostname === iCloudHostname ||
+			 inner.ownerDocument.location.hostname === GDocsHostname)) {
 			return; // #36
 		}
 		let inputEvent = document.createEvent("Events");
@@ -2879,13 +2883,11 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleKix = function(evt) {
-		var elt = evt.originalTarget;
-		if (elt.baseURI.indexOf("https://docs.google.com/") != 0) return false;
-		var frame = elt.ownerDocument.defaultView.frameElement;
+		let elt = evt.originalTarget;
+		let frame = elt.ownerDocument.defaultView.frameElement;
 		if (!frame || !("classList" in frame) ||
 			!(frame.classList.contains("docs-texteventtarget-iframe") ||
-			  frame.classList.contains("kix-clipboard-iframe")) ||
-			frame.ownerDocument.location.host != "docs.google.com") {
+			  frame.classList.contains("kix-clipboard-iframe"))) {
 			return false;
 		}
 		
@@ -2897,9 +2899,9 @@ function AVIM()	{
 		// to avoid dropping any clipboard data.
 		const board = Cc["@mozilla.org/widget/clipboard;1"]
 			.getService(Ci.nsIClipboard);
-		var xfer = Cc["@mozilla.org/widget/transferable;1"]
+		let xfer = Cc["@mozilla.org/widget/transferable;1"]
 			.createInstance(Ci.nsITransferable);
-		var flavors = [
+		let flavors = [
 			// /widget/public/nsITransferable.idl
 			"text/plain",				// kTextMime
 			"text/unicode",				// kUnicodeMime
@@ -2922,12 +2924,12 @@ function AVIM()	{
 			// /widget/src/xpwidgets/nsClipboardPrivacyHandler.cpp
 			"application/x-moz-private-browsing"	// NS_MOZ_DATA_FROM_PRIVATEBROWSING
 		];
-		for (var i = 0; i < flavors.length; i++) xfer.addDataFlavor(flavors[i]);
+		for (let i = 0; i < flavors.length; i++) xfer.addDataFlavor(flavors[i]);
 		board.getData(xfer, board.kGlobalClipboard);
 		
 		try {
 			// Fake a native textbox.
-			var proxy = new KixProxy(evt);
+			let proxy = new KixProxy(evt);
 			
 			this.sk = fcc(evt.which);
 			this.start(proxy, evt);
@@ -2943,9 +2945,9 @@ function AVIM()	{
 			board.setData(xfer, null, board.kGlobalClipboard);
 			
 			// Clear the clipboard.
-			//var xfer = Cc["@mozilla.org/widget/transferable;1"]
+			//let xfer = Cc["@mozilla.org/widget/transferable;1"]
 			//	.createInstance(Ci.nsITransferable);
-			//var board = Cc["@mozilla.org/widget/clipboard;1"]
+			//let board = Cc["@mozilla.org/widget/clipboard;1"]
 			//	.getService(Ci.nsIClipboard);
 			//board.setData(xfer, null, board.kGlobalClipboard);
 			//board.emptyClipboard(board.kGlobalClipboard);
@@ -3562,13 +3564,20 @@ function AVIM()	{
 			return this.handleCacTrang(e);
 		}
 		
+		// Google Kix
+		if (doc.defaultView.parent &&
+			doc.defaultView.parent.location.hostname === GDocsHostname &&
+			origTarget.isContentEditable) {
+			return this.handleKix(e);
+		}
+		
 		// Specialized Web editors
 		let tagName = origTarget.localName.toLowerCase();
 		try {
-			// Google Kix, Ymacs
+			// Ymacs
 			// Zoho Writer: window.editor<HTMLArea>.eventHandlerFunction(evt)
 			if ((tagName == "html" || tagName == "body") &&
-				(this.handleKix(e) || this.handleYmacs(e))) {
+				this.handleYmacs(e)) {
 				return true;
 			}
 			
