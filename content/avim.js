@@ -676,19 +676,15 @@ function AVIM()	{
 		if (!frame) throw "Not in iframe.";
 		let frameDoc = frame.ownerDocument;
 		
-		const overlayClass = "kix-selection-overlay" + (isMac ? "-mac" : "");
+		const overlaySelector = ".kix-selection-overlay,.sketchy-text-selection-overlay";
 		const presItemType = "http://schema.org/CreativeWork/PresentationObject";
 		
 		/**
 		 * Returns whether text is currently selected in the editor, as
 		 * indicated by the presence of a selection rectangle overlay.
-		 *
-		 * Currently, Kix doesn't seem to display the selection rectangle when
-		 * only spaces have been selected, but does when any object is selected.
 		 */
 		this.hasSelection = function() {
-			let sel = frameDoc.getElementsByClassName(overlayClass);
-			return sel.length;
+			return frameDoc.querySelectorAll(overlaySelector).length;
 		};
 		
 		const tablePropsItemPath =
@@ -875,11 +871,7 @@ function AVIM()	{
 		
 		// Abort if there is a selection. The selection rectangle is an overlay
 		// element that can be identified by its (platform-specific) class.
-		let sel = frameDoc.getElementsByClassName("kix-selection-overlay");
-		if (!sel.length) {
-			sel = frameDoc.getElementsByClassName("kix-selection-overlay-mac");
-		}
-		if (sel.length) throw "Non-empty selection.";
+		if (this.hasSelection()) throw "Non-empty selection.";
 		
 		//// Remember any simple inline styles (B/I/U) that might've been toggled
 		//// just before the keypress event.
@@ -2887,7 +2879,8 @@ function AVIM()	{
 		let frame = elt.ownerDocument.defaultView.frameElement;
 		if (!frame || !("classList" in frame) ||
 			!(frame.classList.contains("docs-texteventtarget-iframe") ||
-			  frame.classList.contains("kix-clipboard-iframe"))) {
+			  frame.classList.contains("kix-clipboard-iframe")) ||
+			!document.querySelector) {
 			return false;
 		}
 		
