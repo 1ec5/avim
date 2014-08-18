@@ -3565,7 +3565,7 @@ function AVIM()	{
 		}
 		
 		// Google Kix
-		if (doc.defaultView.parent &&
+		if (doc.defaultView.frameElement && doc.defaultView.parent &&
 			doc.defaultView.parent.location.hostname === GDocsHostname &&
 			origTarget.isContentEditable) {
 			return this.handleKix(e);
