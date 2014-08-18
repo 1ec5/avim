@@ -712,48 +712,6 @@ function AVIM()	{
 			return frameDoc.querySelector(altTextSel);
 		};
 		
-		//const btnIds = {
-		//	bold: "boldButton", italic: "italicButton",
-		//	underline: "underlineButton"
-		//};
-		//
-		///**
-		// * Returns the formatting styles that apply at the current selection.
-		// *
-		// * @returns {object}	Boolean attributes mapped to whether they apply.
-		// */
-		//this.getFormatting = function() {
-		//	let fmt = {};
-		//	for (let attr in btnIds) {
-		//		let btn = frameDoc.getElementById(btnIds[attr]);
-		//		fmt[attr] = btn && btn.getAttribute("aria-pressed") == "true";
-		//	}
-		//	dump("KixProxy.getFormatting -- bold: " + fmt.bold + "\n");			// debug
-		//	return fmt;
-		//};
-		//
-		///**
-		// * Applies the given formatting styles to the text at the current
-		// * selection.
-		// *
-		// * @param fmt	{object}	Boolean attributes mapped to whether they
-		// * 							apply.
-		// */
-		//this.applyFormatting = function(fmt) {
-		//	let curFmt = this.getFormatting();
-		//	for (let attr in fmt) {
-		//		let btn = frameDoc.getElementById(btnIds[attr]);
-		//		if (fmt[attr] == curFmt[attr]) continue;
-		//		
-		//		// Click the button to toggle it.
-		//		dump("KixProxy.applyFormatting -- toggling " + attr + "\n");	// debug
-		//		let clickEvt = document.createEvent("MouseEvents");
-		//		clickEvt.initMouseEvent("click", true, true, null, 0, 0, 0, 0,
-		//								0, false, false, false, false, 0, null);
-		//		btn.dispatchEvent(clickEvt);
-		//	}
-		//};
-		
 		/**
 		 * Generates a key event that selects the previous word or optionally to
 		 * to beginning of the line.
@@ -882,10 +840,6 @@ function AVIM()	{
 		// element that can be identified by its (platform-specific) class.
 		if (this.hasSelection()) throw "Non-empty selection.";
 		
-		//// Remember any simple inline styles (B/I/U) that might've been toggled
-		//// just before the keypress event.
-		//let oldFmt = this.getFormatting();
-		
 		// Select the previous word.
 		let wasInTable = this.isInTable();
 //		if (wasInTable) dump("KixProxy -- Caret in table.\n");					// debug
@@ -930,18 +884,7 @@ function AVIM()	{
 		this.commit = function() {
 //			dump("KixProxy.commit -- value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
 			if (this.value == this.oldValue) {
-				if (this.value) {
-					//// When begining a new word, bring back any simple inline
-					//// formatting that was toggled just before entering it.
-					//if (this.oldValue.search(/\s$/) > 0) {
-					//	dump("Beginning a new word\n");									// debug
-					//	this.selectPrecedingWord();
-					//	this.applyFormatting(oldFmt);
-					//	this.revertSelection();
-					//}
-					//else this.revertSelection();
-					this.revertSelection();
-				}
+				if (this.value) this.revertSelection();
 				return false;
 			}
 			
