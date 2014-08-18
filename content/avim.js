@@ -838,6 +838,15 @@ function AVIM()	{
 		};
 		
 		/**
+		 * Generates a shift-right-arrow key event that removes the leftmost
+		 * character from the selection.
+		 */
+		this.trimLeftSelection = function() {
+			winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0,
+								  KeyEvent.shiftKey);
+		};
+		
+		/**
 		 * Copies and retrieves the selected text. Callers are responsible for
 		 * reverting the clipboard contents.
 		 *
@@ -884,7 +893,7 @@ function AVIM()	{
 		if (!wasInTable && this.isInTable()) {
 			// The selection now lies in the table, so the caret was right after
 			// the table.
-			this.revertSelection();
+			this.trimLeftSelection();
 			throw "Right after table.";
 		}
 		if (this.hasSelection() > 1) {
