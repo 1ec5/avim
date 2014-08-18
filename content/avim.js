@@ -3267,24 +3267,30 @@ function AVIM()	{
 			var kb = win.document.getElementsByClassName("vk-t-btn-o")[0];
 			if (kb) {
 				kb.click();
-//				return;
 			}
 			
-			//// Get the selected item in the keyboard menu. If no item is
-			//// selected, there is nothing to disable.
-			//var toggle = win.document.getElementById("inputToolsToggleButton");
-			//if (!toggle || toggle.getAttribute("aria-pressed") !== "true") return;
-			//
-			//// Deselect the menu item.
-			//var evt = win.document.createEvent("MouseEvents");
-			//evt.initMouseEvent("mouseup", true /* canBubble */,
-			//				   true /* cancelable */, win, 0 /* detail */,
-			//				   0 /* screenX */, 0 /* screenY */,
-			//				   0 /* clientX */, 0 /* clientY */,
-			//				   false /* ctrlKey */, false /* altKey */,
-			//				   false /* shiftKey */, false /* metaKey */,
-			//				   0 /* button */, null /* relatedTarget */);
-			//toggle.dispatchEvent(evt);
+			// Deselect the Input tools button in the Google Docs toolbar.
+			var toggle = win.document.getElementById("inputToolsToggleButton");
+			if (toggle && toggle.getAttribute("aria-pressed") === "true") {
+				var downEvt = win.document.createEvent("MouseEvents");
+				downEvt.initMouseEvent("mousedown", true /* canBubble */,
+									   true /* cancelable */, win, 0 /* detail */,
+									   0 /* screenX */, 0 /* screenY */,
+									   0 /* clientX */, 0 /* clientY */,
+									   false /* ctrlKey */, false /* altKey */,
+									   false /* shiftKey */, false /* metaKey */,
+									   0 /* button */, null /* relatedTarget */);
+				toggle.dispatchEvent(downEvt);
+				var upEvt = win.document.createEvent("MouseEvents");
+				upEvt.initMouseEvent("mouseup", true /* canBubble */,
+									 true /* cancelable */, win, 0 /* detail */,
+									 0 /* screenX */, 0 /* screenY */,
+									 0 /* clientX */, 0 /* clientY */,
+									 false /* ctrlKey */, false /* altKey */,
+									 false /* shiftKey */, false /* metaKey */,
+									 0 /* button */, null /* relatedTarget */);
+				toggle.dispatchEvent(upEvt);
+			}
 		},
 		CHIM: function(win, marker) {
 			if (win.parseInt(marker.method)) marker.SetMethod(0);
