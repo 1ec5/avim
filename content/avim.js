@@ -898,10 +898,10 @@ function AVIM()	{
 		
 		// Get the selected text.
 		let value = this.getSelectedText();
-		if (wasInTable) {
-//			dump("KixProxy -- Reselecting text in table.\n");					// debug
+		if (wasInTable && value) {
+			dump("KixProxy -- Reselecting text in table.\n");					// debug
 			// Unselect the text, unless the cell and selection are empty.
-			if (value) this.revertSelection();
+			this.revertSelection();
 			// Reselect the text, this time just the preceding word.
 			this.selectPrecedingWord(false);
 			value = this.getSelectedText();
