@@ -57,6 +57,7 @@ overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/conte
 overlay	chrome://browser/content/preferences/preferences.xul	chrome://avim/content/moz18Overlay.xul		appversion<3.0a1pre
 # Add-ons window
 overlay	chrome://mozapps/content/extensions/extensions.xul		chrome://avim/content/addonsOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+overlay	about:addons											chrome://avim/content/addonsOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
 
 ### Thunderbird ################################################################
 

@@ -8,12 +8,12 @@ function MudimMonitor() {
 	// GUID of the Mudim extension
 	const MUDIM_ID = "mudim@svol.ru";
 	
-	const prefs = mCc["@mozilla.org/preferences-service;1"]
-		.getService(mCi.nsIPrefService);
-	const prefIds = {
-		avimEnabled: "extensions.avim.enabled",
-		mudimMethod: "chimmudim.settings.method"
-	};
+	const avimPrefs = mCc["@mozilla.org/preferences-service;1"]
+		.getService(mCi.nsIPrefService).getBranch("extensions.avim.");
+	const mudimPrefs = mCc["@mozilla.org/preferences-service;1"]
+		.getService(mCi.nsIPrefService).getBranch("chimmudim.");
+	const avimEnabledId = "enabled";
+	const mudimMethodId = "settings.method";
 	
 	const stringBundleId = "avim-bundle";
 	const noteValue = "mudim-note";
@@ -23,7 +23,7 @@ function MudimMonitor() {
 	// Mudim itself
 	let thisMonitor = this;
 	if (window.Application) {
-		if (Application.extensions.get) {
+		if (Application.extensions && Application.extensions.get) {
 			this.mudim = Application.extensions.get(MUDIM_ID);
 		}
 		else if (Application.getExtensions) {
@@ -43,9 +43,10 @@ function MudimMonitor() {
 	 * enabled.
 	 */
 	this.registerPrefs = function() {
-		prefs.QueryInterface(mCi.nsIPrefBranch2);
-		prefs.addObserver(prefIds.avimEnabled, this, false);
-		prefs.addObserver(prefIds.mudimMethod, this, false);
+		avimPrefs.QueryInterface(mCi.nsIPrefBranch2);
+		mudimPrefs.QueryInterface(mCi.nsIPrefBranch2);
+		avimPrefs.addObserver(avimEnabledId, this, false);
+		mudimPrefs.addObserver(mudimMethodId, this, false);
 		this.getPrefs();
 	};
 	
@@ -54,8 +55,8 @@ function MudimMonitor() {
 	 */
 	this.unregisterPrefs = function() {
 		this.setPrefs();
-		prefs.removeObserver(prefIds.avimEnabled, this);
-		prefs.removeObserver(prefIds.mudimMethod, this);
+		avimPrefs.removeObserver(avimEnabledId, this);
+		mudimPrefs.removeObserver(mudimMethodId, this);
 	};
 	
 	/**
@@ -65,8 +66,8 @@ function MudimMonitor() {
 	 * 						otherwise.
 	 */
 	this.conflicts = function() {
-		return prefs.getBoolPref(prefIds.avimEnabled) && this.mudim &&
-			this.mudim.enabled && prefs.getIntPref(prefIds.mudimMethod) != 0;
+		return avimPrefs.getBoolPref(avimEnabledId) && this.mudim &&
+			this.mudim.enabled && mudimPrefs.getIntPref(mudimMethodId);
 	};
 	
 	/**
@@ -92,15 +93,26 @@ function MudimMonitor() {
 		}
 	};
 	
+	function getNotificationBox() {
+		if ($(notificationBoxId)) return $(notificationBoxId);
+		
+		let browserWin = mCc["@mozilla.org/appshell/window-mediator;1"]
+			.getService(mCi.nsIWindowMediator)
+			.getMostRecentWindow("navigator:browser");
+		return browserWin && browserWin.gBrowser &&
+			browserWin.gBrowser.getNotificationBox();
+	}
+	
 	/**
 	 * Displays a notification that Mudim is enabled.
 	 */
 	this.displayWarning = function() {
-		let noteBox = $(notificationBoxId);
+		let noteBox = getNotificationBox();
 		if (!noteBox || noteBox.getNotificationWithValue(noteValue)) return;
 		
 		let stringBundle = $(stringBundleId);
 		if (!stringBundle) return;
+		
 		let noteLabel = stringBundle.getString("mudim-note.label");
 		let noteBtns = [{
 			accessKey: stringBundle.getString("mudim-button.accesskey"),
@@ -108,8 +120,9 @@ function MudimMonitor() {
 			label: stringBundle.getString("mudim-button.label"),
 			popup: null
 		}];
-		noteBox.appendNotification(noteLabel, noteValue,
-								   URI_NOTIFICATION_ICON_WARNING,
+		let icon = "URI_NOTIFICATION_ICON_WARNING" in window &&
+			URI_NOTIFICATION_ICON_WARNING;
+		noteBox.appendNotification(noteLabel, noteValue, icon,
 								   noteBox.PRIORITY_WARNING_MEDIUM,
 								   noteBtns);
 	};
@@ -118,7 +131,7 @@ function MudimMonitor() {
 	 * Hides the notification that Mudim is enabled.
 	 */
 	this.hideWarning = function() {
-		let noteBox = $(notificationBoxId);
+		let noteBox = getNotificationBox();
 		if (!noteBox) return;
 		let note = noteBox.getNotificationWithValue(noteValue);
 		if (note) noteBox.removeNotification(note);
@@ -149,9 +162,10 @@ function MudimMonitor() {
 	};
 }
 
-if (window && !("mudimMonitor" in window)) {
-	window.mudimMonitor = new MudimMonitor();
-	addEventListener("load", function () {
-		mudimMonitor.registerPrefs();
-	}, false);
-}
+let mudimMonitor = new MudimMonitor();
+addEventListener("load", function () {
+	mudimMonitor.registerPrefs();
+}, false);
+addEventListener("unload", function () {
+	mudimMonitor.unregisterPrefs();
+}, false);
