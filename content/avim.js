@@ -152,25 +152,27 @@ function AVIM()	{
 		});
 		if (!sandbox) throw "No sandbox to evaluate in.";
 		
+		let evalInBox = Cu.evalInSandbox;
+		
 		/**
 		 * Evaluates a statement in the given sandbox and returns a string.
 		 */
 		this.evalString = function (text) {
-			return Cu.evalInSandbox("(" + text + ")+''", sandbox);
+			return evalInBox("(" + text + ")+''", sandbox);
 		}
 		
 		/**
 		 * Evaluates a statement in the given sandbox and returns a Boolean.
 		 */
 		this.evalBoolean = function (text) {
-			return Cu.evalInSandbox("!!(" + text + ")", sandbox);
+			return evalInBox("!!(" + text + ")", sandbox);
 		}
 		
 		/**
 		 * Evaluates a statement in the given sandbox and returns an integer.
 		 */
 		this.evalInt = function (text) {
-			return parseInt(Cu.evalInSandbox("(" + text + ")+0", sandbox), 0);
+			return parseInt(evalInBox("(" + text + ")+0", sandbox), 0);
 		}
 		
 		///**
@@ -178,7 +180,7 @@ function AVIM()	{
 		// * point number.
 		// */
 		//this.evalFloat = function (text) {
-		//	return parseFloat(Cu.evalInSandbox("(" + text + ")+0", sandbox));
+		//	return parseFloat(evalInBox("(" + text + ")+0", sandbox));
 		//}
 		
 		/**
@@ -186,7 +188,7 @@ function AVIM()	{
 		 * anything.
 		 */
 		this.evalFunctionCall = function (text) {
-			Cu.evalInSandbox(text, sandbox);
+			evalInBox(text, sandbox);
 		};
 		
 		/**
@@ -197,8 +199,7 @@ function AVIM()	{
 		 * @returns True if the statement evaluates to a defined value.
 		 */
 		this.createObjectAlias = function (name, text) {
-			sandbox[name] = Cu.evalInSandbox("(" + text + ")||undefined",
-												  sandbox);
+			sandbox[name] = evalInBox("(" + text + ")||undefined", sandbox);
 			return sandbox[name] !== undefined;
 		}
 		
