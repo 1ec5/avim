@@ -48,7 +48,7 @@ function AVIMOptionsPanel() {
 	
 	const stringBundleId = "bundle";
 	
-	var $ = function (id) {
+	let $ = function (id) {
 		return document.getElementById(id);
 	};
 	
@@ -57,8 +57,8 @@ function AVIMOptionsPanel() {
 	 * textbox contains text.
 	 */
 	this.validateIgnoreButton = function() {
-		var ignoreButton = $(ignoreButtonId);
-		var ignoreTextBox = $(ignoreTextBoxId);
+		let ignoreButton = $(ignoreButtonId);
+		let ignoreTextBox = $(ignoreTextBoxId);
 		if (ignoreButton && ignoreTextBox) {
 			ignoreButton.disabled = !ignoreTextBox.value;
 		}
@@ -70,13 +70,13 @@ function AVIMOptionsPanel() {
 	 * listed in the preference too.
 	 */
 	this.ignoreIdsInTextBox = function() {
-		var ignoreTextBox = $(ignoreTextBoxId);
-		var idList = $(idListId);
+		let ignoreTextBox = $(ignoreTextBoxId);
+		let idList = $(idListId);
 		if (!ignoreTextBox || !idList) return;
 		
-		var ids = ignoreTextBox.value.split(ignoredIdsDelimiter);
-		for (var i = 0; i < ids.length; i++) {
-			var dupes = idList.getElementsByAttribute("value", ids[i]);
+		let ids = ignoreTextBox.value.split(ignoredIdsDelimiter);
+		for (let i = 0; i < ids.length; i++) {
+			let dupes = idList.getElementsByAttribute("value", ids[i]);
 			if (ids[i] && !dupes.length) idList.appendItem(ids[i], ids[i]);
 		}
 		ignoreTextBox.value = "";
@@ -87,7 +87,7 @@ function AVIMOptionsPanel() {
 	 * Command controller for the list of ignored IDs that allows the list to
 	 * behave more like a textbox to the user.
 	 */
-	var idListController = {
+	let idListController = {
 		supportsCommand: function(cmd) {
 			return /* cmd == "cmd_delete" || */ cmd == "cmd_selectAll";
 		},
@@ -121,7 +121,7 @@ function AVIMOptionsPanel() {
 	 * Attach a command controller to the ignored IDs list.
 	 */
 	this.attachIdListController = function() {
-		var idList = $(idListId);
+		let idList = $(idListId);
 		if (!idList) return;
 		idList.controllers.appendController(idListController);
 	};
@@ -135,7 +135,7 @@ function AVIMOptionsPanel() {
 	 * 						keypress event should be canceled); true otherwise.
 	 */
 	this.onTextBoxKeyPress = function(keyEvent) {
-		var keyCode = keyEvent.keyCode;
+		let keyCode = keyEvent.keyCode;
 //		dump("AVIMOptionsPanel.onTextBoxKeyPress -- keyCode: " + keyCode + "\n");	// debug
 		switch (keyCode) {
 			case 13:
@@ -154,8 +154,8 @@ function AVIMOptionsPanel() {
 	 */
 	this.validateRemoveButton = function() {
 		if (!$(paneIds.blacklist)) return false;
-		var removeButton = $(removeButtonId);
-		var idList = $(idListId);
+		let removeButton = $(removeButtonId);
+		let idList = $(idListId);
 		if (!removeButton || !idList) return false;
 		return !(removeButton.disabled = !idList.selectedCount);
 	};
@@ -167,9 +167,9 @@ function AVIMOptionsPanel() {
 	 * @returns {array} the normalized array.
 	 */
 	this.normalizeArray = function(oldArray, lower) {
-		var newArray = [];
-		for (var i = 0; i < oldArray.length; i++) {
-			var elem = oldArray[i];
+		let newArray = [];
+		for (let i = 0; i < oldArray.length; i++) {
+			let elem = oldArray[i];
 			if (!elem) continue;
 			if (lower) elem = elem.toLowerCase();
 			if (newArray.indexOf(elem) < 0) newArray.push(elem);
@@ -183,19 +183,19 @@ function AVIMOptionsPanel() {
 	 * preferences.
 	 */
 	this.updateIgnoredIds = function(ids) {
-		var idList = $(idListId);
-		var pref = $(prefIds.ignoredIds);
+		let idList = $(idListId);
+		let pref = $(prefIds.ignoredIds);
 		if (!idList || !pref) return undefined;
 		if (ids == undefined)
 			ids = pref.value;
 		
 		// Clear the list.
-		var numRows = idList.getRowCount();
-		for (var i = numRows - 1; i >= 0; i--) idList.removeItemAt(i);
+		let numRows = idList.getRowCount();
+		for (let i = numRows - 1; i >= 0; i--) idList.removeItemAt(i);
 		
 		ids = ids.split(ignoredIdsDelimiter);
 		ids = this.normalizeArray(ids, true);
-		for (var i = 0; i < ids.length; i++) idList.appendItem(ids[i], ids[i]);
+		for (let i = 0; i < ids.length; i++) idList.appendItem(ids[i], ids[i]);
 		
 		this.validateRemoveButton();
 		this.validateResetButton();
@@ -206,7 +206,7 @@ function AVIMOptionsPanel() {
 	 * Enables or disables Input Editing panel preferences.
 	 */
 	this.validateForEnabled = function() {
-		var bc = $(broadcasterIds.disabled);
+		let bc = $(broadcasterIds.disabled);
 		if (!bc) return;
 		bc.setAttribute("disabled", "" + !$(prefIds.enabled).value);
 		
@@ -221,12 +221,12 @@ function AVIMOptionsPanel() {
 	 * is enabled; otherwise, it is disabled.
 	 */
 	this.validateCustomMethod = function() {
-		var bc = $(broadcasterIds.customMethod);
-		var pref = $(prefIds.method);
+		let bc = $(broadcasterIds.customMethod);
+		let pref = $(prefIds.method);
 		if (!bc || !pref) return;
 		
-		var enabled = $(prefIds.enabled).value;
-		var auto = pref.value == 0;
+		let enabled = $(prefIds.enabled).value;
+		let auto = pref.value == 0;
 		bc.setAttribute("disabled", "" + (!enabled || !auto));
 	};
 	
@@ -236,12 +236,12 @@ function AVIMOptionsPanel() {
 	 * disabled.
 	 */
 	this.validateForSpellingEnforced = function() {
-		var bc = $(broadcasterIds.spellOptions);
-		var pref = $(prefIds.spell);
+		let bc = $(broadcasterIds.spellOptions);
+		let pref = $(prefIds.spell);
 		if (!bc || !pref) return;
 		
-		var enabled = $(prefIds.enabled).value;
-		var enforced = pref.value;
+		let enabled = $(prefIds.enabled).value;
+		let enforced = pref.value;
 		bc.setAttribute("disabled", "" + (!enabled || !enforced));
 	};
 	
@@ -251,17 +251,17 @@ function AVIMOptionsPanel() {
 	 * disabled.
 	 */
 	this.validateForScriptMonitor = function() {
-		var bc = $(broadcasterIds.scriptOptions);
-		var pref = $(prefIds.script);
+		let bc = $(broadcasterIds.scriptOptions);
+		let pref = $(prefIds.script);
 		if (!bc || !pref) return;
 		
-		var enabled = $(prefIds.enabled).value;
-		var scriptEnabled = pref.value;
+		let enabled = $(prefIds.enabled).value;
+		let scriptEnabled = pref.value;
 		bc.setAttribute("disabled", "" + (!enabled || !scriptEnabled));
 	};
 	
 	this.initializeVolume = function () {
-		var scale = $("volume-scale");
+		let scale = $("volume-scale");
 		if (!scale) return;
 		
 		scale.value = $(prefIds.volume).value;
@@ -279,11 +279,11 @@ function AVIMOptionsPanel() {
 	 * the preference, either.
 	 */
 	this.removeSelectedIds = function() {
-		var idList = $(idListId);
+		let idList = $(idListId);
 		if (!idList || !idList.selectedCount) return;
-		var firstSelIdx = idList.selectedIndex;
-		var selItems = idList.selectedItems;
-		for (var i = selItems.length - 1; i >= 0; i--) {
+		let firstSelIdx = idList.selectedIndex;
+		let selItems = idList.selectedItems;
+		for (let i = selItems.length - 1; i >= 0; i--) {
 			idList.removeChild(selItems[i]);
 			delete selItems[i];
 		}
@@ -300,7 +300,7 @@ function AVIMOptionsPanel() {
 	 * @param keyEvent	{object}	An onKeyPress DOM event.
 	 */
 	this.onIdListKeyPress = function(keyEvent) {
-		var keyCode = keyEvent.keyCode;
+		let keyCode = keyEvent.keyCode;
 //		dump("AVIMOptionsPanel.onIdListKeyPress -- keyCode: " + keyCode + "\n");	// debug
 		switch (keyCode) {
 			case 8: case 46:
@@ -315,11 +315,11 @@ function AVIMOptionsPanel() {
 	 * @returns {string}	a list of ignored IDs.
 	 */
 	this.stringFromIgnoredIds = function() {
-		var idList = $(idListId);
+		let idList = $(idListId);
 		if (!idList) return "";
-		var ignoredIds = [];
-		for (var i = 0; i < idList.getRowCount(); i++) {
-			var row = idList.getItemAtIndex(i);
+		let ignoredIds = [];
+		for (let i = 0; i < idList.getRowCount(); i++) {
+			let row = idList.getItemAtIndex(i);
 			ignoredIds.push(row.value);
 		}
 		return this.normalizeArray(ignoredIds, true).join(" ");
@@ -330,8 +330,8 @@ function AVIMOptionsPanel() {
 	 * current ignored ID list is equivalent to the default list.
 	 */
 	this.validateResetButton = function() {
-		var pref = $(prefIds.ignoredIds);
-		var button = $(resetButtonId);
+		let pref = $(prefIds.ignoredIds);
+		let button = $(resetButtonId);
 		if (!pref || !button) return;
 		
 		button.disabled = pref.defaultValue == pref.value;
@@ -343,7 +343,7 @@ function AVIMOptionsPanel() {
 	this.resetIgnoredIds = function() {
 		if (!$(paneIds.blacklist) || !$(idListId)) return;
 		
-		var pref = $(prefIds.ignoredIds);
+		let pref = $(prefIds.ignoredIds);
 		if (!pref || pref.defaultValue == pref.value) return;
 		
 		this.updateIgnoredIds(pref.defaultValue);
@@ -376,9 +376,9 @@ function AVIMOptionsPanel() {
 	 * Opens the help topic for the current preferences pane in a new window.
 	 */
 	this.openPrefsHelp = function() {
-		var stringBundle = $(stringBundleId);
+		let stringBundle = $(stringBundleId);
 		if (!stringBundle) return;
-		var url = stringBundle.getString("avim-preferences.helpurl");
+		let url = stringBundle.getString("avim-preferences.helpurl");
 		if (url) window.open(url);
 	};
 	

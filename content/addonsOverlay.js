@@ -21,7 +21,7 @@ function MudimMonitor() {
 	const notificationBoxId = "addonsMsg";
 	
 	// Mudim itself
-	var thisMonitor = this;
+	let thisMonitor = this;
 	if (window.Application) {
 		if (Application.extensions.get) {
 			this.mudim = Application.extensions.get(MUDIM_ID);
@@ -34,7 +34,7 @@ function MudimMonitor() {
 		}
 	}
 	
-	var $ = function (id) {
+	let $ = function (id) {
 		return document.getElementById(id);
 	};
 	
@@ -80,11 +80,11 @@ function MudimMonitor() {
 	 * @param desc	{string}	the button's description.
 	 */
 	this.disableMudim = function(note, desc) {
-		var mediator = mCc["@mozilla.org/appshell/window-mediator;1"]
+		let mediator = mCc["@mozilla.org/appshell/window-mediator;1"]
 			.getService(mCi.nsIWindowMediator);
-		var enumerator = mediator.getEnumerator("navigator:browser");
+		let enumerator = mediator.getEnumerator("navigator:browser");
 		while (enumerator.hasMoreElements()) {
-			var win = enumerator.getNext();
+			let win = enumerator.getNext();
 			try {
 				if (parseInt(win.Mudim.method) != 0) win.CHIM.Toggle();
 			}
@@ -96,13 +96,13 @@ function MudimMonitor() {
 	 * Displays a notification that Mudim is enabled.
 	 */
 	this.displayWarning = function() {
-		var noteBox = $(notificationBoxId);
+		let noteBox = $(notificationBoxId);
 		if (!noteBox || noteBox.getNotificationWithValue(noteValue)) return;
 		
-		var stringBundle = $(stringBundleId);
+		let stringBundle = $(stringBundleId);
 		if (!stringBundle) return;
-		var noteLabel = stringBundle.getString("mudim-note.label");
-		var noteBtns = [{
+		let noteLabel = stringBundle.getString("mudim-note.label");
+		let noteBtns = [{
 			accessKey: stringBundle.getString("mudim-button.accesskey"),
 			callback: this.disableMudim,
 			label: stringBundle.getString("mudim-button.label"),
@@ -118,9 +118,9 @@ function MudimMonitor() {
 	 * Hides the notification that Mudim is enabled.
 	 */
 	this.hideWarning = function() {
-		var noteBox = $(notificationBoxId);
+		let noteBox = $(notificationBoxId);
 		if (!noteBox) return;
-		var note = noteBox.getNotificationWithValue(noteValue);
+		let note = noteBox.getNotificationWithValue(noteValue);
 		if (note) noteBox.removeNotification(note);
 	};
 	
