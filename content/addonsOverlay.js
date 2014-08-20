@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * A class that detects when Mudim is installed and enabled.
  */
