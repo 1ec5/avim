@@ -1,19 +1,20 @@
 "use strict";
 
+(function () {
 /**
  * A class that detects when Mudim is installed and enabled.
  */
 function MudimMonitor() {
-	const mCc = Components.classes;
-	const mCi = Components.interfaces;
+	const Cc = Components.classes;
+	const Ci = Components.interfaces;
 	
 	// GUID of the Mudim extension
 	const MUDIM_ID = "mudim@svol.ru";
 	
-	const avimPrefs = mCc["@mozilla.org/preferences-service;1"]
-		.getService(mCi.nsIPrefService).getBranch("extensions.avim.");
-	const mudimPrefs = mCc["@mozilla.org/preferences-service;1"]
-		.getService(mCi.nsIPrefService).getBranch("chimmudim.");
+	const avimPrefs = Cc["@mozilla.org/preferences-service;1"]
+		.getService(Ci.nsIPrefService).getBranch("extensions.avim.");
+	const mudimPrefs = Cc["@mozilla.org/preferences-service;1"]
+		.getService(Ci.nsIPrefService).getBranch("chimmudim.");
 	const avimEnabledId = "enabled";
 	const mudimMethodId = "settings.method";
 	
@@ -45,8 +46,8 @@ function MudimMonitor() {
 	 * enabled.
 	 */
 	this.registerPrefs = function() {
-		avimPrefs.QueryInterface(mCi.nsIPrefBranch2);
-		mudimPrefs.QueryInterface(mCi.nsIPrefBranch2);
+		avimPrefs.QueryInterface(Ci.nsIPrefBranch2);
+		mudimPrefs.QueryInterface(Ci.nsIPrefBranch2);
 		avimPrefs.addObserver(avimEnabledId, this, false);
 		mudimPrefs.addObserver(mudimMethodId, this, false);
 		this.getPrefs();
@@ -83,8 +84,8 @@ function MudimMonitor() {
 	 * @param desc	{string}	the button's description.
 	 */
 	this.disableMudim = function(note, desc) {
-		let mediator = mCc["@mozilla.org/appshell/window-mediator;1"]
-			.getService(mCi.nsIWindowMediator);
+		let mediator = Cc["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Ci.nsIWindowMediator);
 		let enumerator = mediator.getEnumerator("navigator:browser");
 		while (enumerator.hasMoreElements()) {
 			let win = enumerator.getNext();
@@ -98,8 +99,8 @@ function MudimMonitor() {
 	function getNotificationBox() {
 		if ($(notificationBoxId)) return $(notificationBoxId);
 		
-		let browserWin = mCc["@mozilla.org/appshell/window-mediator;1"]
-			.getService(mCi.nsIWindowMediator)
+		let browserWin = Cc["@mozilla.org/appshell/window-mediator;1"]
+			.getService(Ci.nsIWindowMediator)
 			.getMostRecentWindow("navigator:browser");
 		return browserWin && browserWin.gBrowser &&
 			browserWin.gBrowser.getNotificationBox();
@@ -171,3 +172,4 @@ addEventListener("load", function () {
 addEventListener("unload", function () {
 	mudimMonitor.unregisterPrefs();
 }, false);
+})();

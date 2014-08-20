@@ -10,8 +10,8 @@ function AVIMOptionsPanel() {
 	const DEBUG = true;
 // $endif{}
 	
-	const oCc = Components.classes;
-	const oCi = Components.interfaces;
+	const Cc = Components.classes;
+	const Ci = Components.interfaces;
 	
 	const broadcasterIds = {
 		disabled: "disabled-bc",

@@ -3639,23 +3639,23 @@ function AVIM()	{
 	}
 };
 
-if (window && !("avim" in window) && !window.frameElement) {
-	window.avim = new AVIM();
-	addEventListener("load", function() {
-		if (!avim) return;
+(function () {
+	let avim = new AVIM();
+	if (!avim) return;
+	addEventListener("load", function(evt) {
+		evt.target.defaultView.avim = avim;
 		avim.registerPrefs();
 		avim.updateUI();
 		avim.registerSlights();
 		avim.doFirstRun();
 	}, false);
-	addEventListener("unload", function() {
-		if (avim) avim.unregisterPrefs();
-		avim = null;
+	addEventListener("unload", function(evt) {
+		avim.unregisterPrefs();
 	}, false);
-	addEventListener("keydown", function(e) {
-		if (avim) avim.onKeyDown(e);
+	addEventListener("keydown", function(evt) {
+		avim.onKeyDown(evt);
 	}, true);
-	addEventListener("keypress", function(e) {
-		if (avim) avim.onKeyPress(e);
+	addEventListener("keypress", function(evt) {
+		avim.onKeyPress(evt);
 	}, true);
-}
+})();
