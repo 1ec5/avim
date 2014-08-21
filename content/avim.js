@@ -14,33 +14,6 @@ function AVIM()	{
 	
 	const PREF_VERSION = 1;
 	
-	this.methods = {
-		telex: {
-			DAWEO: "DAWEO", SFJRX: "SFJRX", FRX: "FRX",
-			S: "S", F: "F", J: "J", R: "R", X: "X", Z: "Z", D: "D",
-			them: "AOEW", moc: "W", trang: "W",
-			A: "A", E: "E", O: "O"
-		},
-		vni: {
-			DAWEO: "6789", SFJRX: "12534", FRX: "234",
-			S: "1", F: "2", J: "5", R: "3", X: "4", Z: "0", D: "9",
-			them: "678", moc: "7", trang: "8",
-			AEO: "6", A: "6", E: "6", O: "6"
-		},
-		viqr: {
-			DAWEO: "^+(D", SFJRX: "'`.?~", FRX: "`?~",
-			S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
-			them: "^+(", moc: "+", trang: "(",
-			AEO: "^", A: "^", E: "^", O: "^"
-		},
-		viqrStar: {
-			DAWEO: "^*(D", SFJRX: "'`.?~", FRX: "`?~",
-			S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
-			them: "^*(", moc: "*", trang: "(",
-			AEO: "^", A: "^", E: "^", O: "^"
-		}
-	};
-	
 	// IDs of user interface elements
 	const commandIds = {
 		method: "avim-method-cmd",
@@ -81,20 +54,8 @@ function AVIM()	{
 		"’";	// word-inner punctuation not found in Vietnamese
 	let wordRe = new RegExp("[" + wordChars + "]*$");
 	
-	function codesFromChars(chars) {
-		let codes = [];
-		for (let i = 0; i < chars.length; i++) {
-			codes.push(chars[i].charCodeAt(0));
-		}
-		return codes;
-	}
-	
 	function $(id) {
 		return document.getElementById(id);
-	}
-	
-	function nan(w) {
-		return isNaN(w) || w == 'e';
 	}
 	
 	/**
@@ -1194,174 +1155,10 @@ function AVIM()	{
 		return repl.length - len;
 	};
 	
-	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ";
-	const skey_str = "aâăeêioôơuưyAÂĂEÊIOÔƠUƯY".split("");
-	const skey2 = "aaaeeiooouuyAAAEEIOOOUUY".split('');
-	const skey = codesFromChars(skey_str);
-	const db1 = codesFromChars(["đ", "Đ"]);
-	const ds1 = ['d','D'];
-	const os1 = "oOơƠóÓòÒọỌỏỎõÕớỚờỜợỢởỞỡỠ".split("");
-	const ob1 = "ôÔôÔốỐồỒộỘổỔỗỖốỐồỒộỘổỔỗỖ".split("");
-	const mocs1 = "oOôÔuUóÓòÒọỌỏỎõÕúÚùÙụỤủỦũŨốỐồỒộỘổỔỗỖ".split("");
-	const mocb1 = "ơƠơƠưƯớỚờỜợỢởỞỡỠứỨừỪựỰửỬữỮớỚờỜợỢởỞỡỠ".split("");
-	const trangs1 = "aAâÂáÁàÀạẠảẢãÃấẤầẦậẬẩẨẫẪ".split("");
-	const trangb1 = "ăĂăĂắẮằẰặẶẳẲẵẴắẮằẰặẶẳẲẵẴ".split("");
-	const as1 = "aAăĂáÁàÀạẠảẢãÃắẮằẰặẶẳẲẵẴếẾềỀệỆểỂễỄ".split("");
-	const ab1 = "âÂâÂấẤầẦậẬẩẨẫẪấẤầẦậẬẩẨẫẪéÉèÈẹẸẻẺẽẼ".split("");
-	const es1 = "eEéÉèÈẹẸẻẺẽẼ".split("");
-	const eb1 = "êÊếẾềỀệỆểỂễỄ".split("");
-	const english = "ĐÂĂƠƯÊÔ";
-	const lowen = "đâăơưêô";
-	const arA = "áàảãạaÁÀẢÃẠA".split('');
-	const mocrA = "óòỏõọoúùủũụuÓÒỎÕỌOÚÙỦŨỤU".split('');
-	const erA = "éèẻẽẹeÉÈẺẼẸE".split('');
-	const orA = "óòỏõọoÓÒỎÕỌO".split('');
-	const aA = "ấầẩẫậâẤẦẨẪẬÂ".split('');
-	const oA = "ốồổỗộôỐỒỔỖỘÔ".split('');
-	const mocA = "ớờởỡợơứừửữựưỚỜỞỠỢƠỨỪỬỮỰƯ".split('');
-	const trangA = "ắằẳẵặăẮẰẲẴẶĂ".split('');
-	const eA = "ếềểễệêẾỀỂỄỆÊ".split('');
-	
 	let isMac = window.navigator.platform == "MacPPC" ||
 		window.navigator.platform == "MacIntel";
 	
 	this.prefsRegistered = false;
-	this.attached = [];
-	this.changed = false;
-	this.specialChange = false;
-	this.kl = 0;
-	this.range = null;
-	this.whit = false;
-	
-	/**
-	 * Returns whether the given word, taking into account the given dead key,
-	 * is a malformed Vietnamese word.
-	 *
-	 * @param w	{string}	The word to check.
-	 * @param k	{string}	The dead key applied to the word.
-	 * @returns {boolean}	True if the word is malformed; false otherwise.
-	 */
-	this.ckspell = function(w, k) {
-		if (!AVIMConfig.ckSpell) return false;
-		
-		let uk = up(k);
-		
-		// Đồng sign after a number: valid
-		let num = /^([0-9]+)(d?)$/.exec(w);
-		let isVni = AVIMConfig.method == 2 ||
-			(AVIMConfig.method == 0 && AVIMConfig.autoMethods.vni);
-		if (num) {
-			// Entering the first D: valid
-			if (!num[2] && uk == "D") return false;
-			
-			// Entering the second D: valid
-			if (num[2] && uk == this.method.D) return false;
-		}
-		
-		w = this.unV(w);
-		let uw = up(w), tw = uw, uw2 = this.unV2(uw), twE;
-		let vSConsonant = "BCDĐGHKLMNPQRSTVX";
-		let vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
-		if (AVIMConfig.informal) {
-			vSConsonant += "F";
-			vDConsonant += "|DZ";
-		}
-		
-		// NG~: valid
-		if (uw == "NG" && uk == this.method.X && AVIMConfig.informal) {
-			return false;
-		}
-		
-		// Non-Vietnamese characters: invalid
-		let nonViet = "A-EGHIK-VXYĐ";
-		if (AVIMConfig.informal) nonViet += "FZ";
-		if (new RegExp("[^" + nonViet + "]").test(uw2)) return true;
-		
-		// Final consonants with ` ? ~ tones: invalid
-		if (this.method.FRX.indexOf(uk) >= 0 && /[CPT]$|CH$/.test(uw)) {
-			return true;
-		}
-		
-		// Initial non-Vietnamese consonants: invalid
-		if (AVIMConfig.informal) {
-			if (/^Z|[^D]Z/.test(uw)) return true;
-		}
-		else if (uw.indexOf("F") >= 0 || uw.indexOf("Z") >= 0) return true;
-		
-		// Incompatible vowels following certain consonants, partly thanks to
-		// Mudim issue #16: invalid
-		if (/^(?:C[IEY]|CUY|CO[AE]|G[EY]|NG[IEY]|NGH[AOUY]|Q[^U]|QU[^AEIOY])/
-			.test(uw2)) { // CHY|K[AOU]|P[^H]|TRY|[NRX]Y|[NPT]HY
-			return true;
-		}
-		if (uw2 == "QU" && (this.method.DAWEO || this.method.SFJRX)) {
-			return true;
-		}
-		
-		// Non-Vietnamese diphthongs and triphthongs: invalid
-		let vowRe = /A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|UU.|Y[AIOY]/;
-		if (vowRe.test(uw2)) return true;
-		
-		// Remove initial consonants.
-		
-		// Initial digraphs and trigraphs: valid
-		let consRe = vDConsonant + "|[" + vSConsonant + "]";
-		let cons = new RegExp("^(?:" + consRe + ")").exec(tw);
-		if (cons && cons[0]) tw = tw.substr(cons[0].length);
-		twE=tw;
-		
-		// Remove final consonants.
-		
-		// Final consonants: valid
-		let endCons = /(?:[MPT]|CH?|N[GH]?)$/.exec(tw);
-		if (endCons && endCons[0]) {
-			tw = tw.substr(0, tw.length - endCons[0].length);
-			// NH after incompatible diphthongs and triphthongs: invalid
-			if (endCons[0] == "NH") {
-				if (/^(?:[ĂÂÔƠ]|I[EÊ]|O[ĂEÊ]?|[UƯ][AOƠ]?|UY[EÊ])$/.test(tw)) {
-					return true;
-				}
-				if (uk == this.method.trang && (tw == "A" || tw == "OA")) {
-					return true;
-				}
-			}
-			// Disallow DCD etc., but allow words beginning in GI.
-			if (!tw && cons && cons[0] != "GI") return true;
-		}
-		
-		// Extraneous consonants: invalid
-		if (tw && new RegExp(consRe).test(tw)) return true;
-		
-		uw2 = this.unV2(tw);
-		if (uw2 == "IAO") return true;
-		
-		// Invalid standalone diphthongs and triphthongs: invalid
-		if (tw != twE && /A[IOUY]|IA|IEU|UU|UO[UI]/.test(uw2)) return true;
-		
-		if (tw != uw && uw2 == "YEU") return true;
-		if (uk == this.method.AEO && /Ư[AEOƠ]$/.test(tw)) return true;	// ưô
-		
-		if (this.method.them.indexOf(uk) >= 0 && !/^.UYE/.test(uw2) &&
-			uk != "E") {
-			if (/A[IO]|EO|IA|O[EO]/.test(uw2)) return true;
-			
-			if (uk == this.method.trang) {
-				if (this.method.trang != "W" && uw2 == "UA") return true;
-			}
-			else if (uw2 == "OA") return true;
-			
-			if (uk == this.method.moc && /^(?:[EI]U|UE|UYE?)$/.test(uw2)) {
-				return true;
-			}
-			if (uk == this.method.moc || uk == this.method.trang) {
-				if (uw2 == "AU" || uw2 == "AY") return true;
-			}
-		}
-		this.tw5 = tw;
-		
-		// Catch-all for words with too many interior letters
-		return uw2.length > 3;
-	};
 	
 	/**
 	 * Enables or disables AVIM and updates the stored preferences.
@@ -1625,574 +1422,6 @@ function AVIM()	{
 		return [w ? w[0] : "", pos];
 	};
 	
-	/**
-	 * @param obj	{object}	The DOM element representing the current
-	 * 							textbox.
-	 * @param key	{object}	The keydown event.
-	 */
-	this.start = function(obj, key) {
-		let method = AVIMConfig.method, dockspell = AVIMConfig.ckSpell;
-		this.oc=obj;
-		let uniA = [];
-		this.D2 = "";
-		
-		if (method == 1 || (method == 0 && AVIMConfig.autoMethods.telex)) {
-			uniA.push("DAEOWW".split("")); this.D2 += "DAWEO";
-		}
-		if (method == 2 || (method == 0 && AVIMConfig.autoMethods.vni)) {
-			uniA.push("966678".split("")); this.D2 += "6789";
-		}
-		if (method == 3 || (method == 0 && AVIMConfig.autoMethods.viqr)) {
-			uniA.push("D^^^+(".split("")); this.D2 += "D^+(";
-		}
-		if (method == 4 || (method == 0 && AVIMConfig.autoMethods.viqrStar)) {
-			uniA.push("D^^^*(".split("")); this.D2 += "D^*(";
-		}
-		
-		let w = this.mozGetText(obj);
-//		dump(">>> start() -- w: <" + w + ">\n");								// debug
-		if (key.keyCode && key.keyCode == key.DOM_VK_BACK_SPACE && key.shiftKey) {
-			key = "";
-		}
-		else key = fcc(key.which);
-		if (!w || ("sel" in obj && obj.sel)) return;
-		
-		let noNormC = this.D2.indexOf(up(key)) >= 0;
-		
-		for (let i = 0; i < uniA.length; i++) {
-			if (!dockspell) w = this.mozGetText(obj);
-			if (!w || this.changed) break;
-			this.main(w[0], key, w[1], uniA[i], noNormC);
-			w = this.mozGetText(obj);
-			if (w) this.convertCustomChars(w[0], key, w[1]);
-		}
-		
-		if (this.D2.indexOf(up(key)) >= 0) {
-			w = this.mozGetText(obj);
-			if (w) this.normC(w[0], key, w[1]);
-		}
-	};
-	
-	/**
-	 * Performs simple substitutions that were not originally part of AVIM's
-	 * feature set.
-	 *
-	 * @param word	{string}	The part of the word up to the caret.
-	 * @param key	{string}	A single-character string representing the
-	 * 							pressed key.
-	 * @param pos	{number}	Index of the caret.
-	 */
-	this.convertCustomChars = function(word, key, pos) {
-		let uw = up(word), uk = up(key);
-		
-		if (/^[0-9]+.$/.test(word)) {
-			let lastChar = word.substr(-1);
-			if (lastChar == "đ" && uk == this.method.D) {
-				// Convert [number]đ (case-sensitive) into the đồng sign.
-				this.splice(this.oc, pos - 1, 1, "₫");
-				this.changed = true;
-			}
-			else if (lastChar == "₫" && uk == this.method.D) {
-				// On repeat, pull the underline out from under the Đ.
-				this.splice(this.oc, pos - 1, 1, "d" + key);
-				this.changed = true;
-			}
-			else if (lastChar == "₫" && uk == this.method.Z) {
-				// On remove, revert to a D.
-				this.splice(this.oc, pos - 1, 1, "d");
-				this.changed = true;
-			}
-			return;
-		}
-		
-		if (AVIMConfig.informal || !AVIMConfig.ckSpell) {
-			if (uw == "NG" && uk == this.method.X) {
-				// Convert NG to use a combining diacritic.
-				this.splice(this.oc, pos, 0, "\u0303");
-				this.changed = true;
-			}
-			else if (uw == "NG\u0303" && uk == this.method.X) {
-				// On repeat, pull the tilde out.
-				this.splice(this.oc, pos - 1, 1, key);
-				this.changed = true;
-			}
-			else if (uw == "NG\u0303" && uk == this.method.Z) {
-				// On remove, revert to a G.
-				this.splice(this.oc, pos - 1, 1, "");
-				this.changed = true;
-			}
-		}
-	};
-	
-	const DAWEOFA = up(aA.join() + eA.join() + mocA.join() + trangA.join() +
-					   oA.join() + english);
-	/**
-	 * @param w	{string}	The word ending at the cursor position.
-	 * @param k	{string}	The character equivalent of the pressed key.
-	 */
-	this.findC = function(w, k, sf) {
-		let method = AVIMConfig.method;
-		if (methodIsVIQR() && w.substr(-1) == "\\") {
-			return [1, k.charCodeAt(0)];
-		}
-		let str = "", res, cc = "", pc = "", vowA = [], s = "ÂĂÊÔƠƯêâăơôư", c = 0, dn = false, uw = up(w), tv, g;
-		let h, uc;
-		for (let g = 0; g < sf.length; g++) {
-			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
-		}
-		let uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = ["ƯA", "ƯU"];
-		
-		if (this.method.DAWEO.indexOf(uk) >= 0) {
-			// Horned diphthongs and triphthongs
-			if (uk == this.method.moc) {
-				if (w2.indexOf("UU") >= 0 && this.tw5 && this.tw5 != dont[1]) {
-					if (w2.substr(-2) != "UU") return false;
-					res = 2;
-				}
-				else if (w2.indexOf("UOU") >= 0) {
-					if (w2.substr(-3) != "UOU") return false;
-					res = 2;
-				}
-			}
-			
-			if (!res) {
-				for (let g = 1; g <= w.length; g++) {
-					cc = w.substr(-g, 1);
-					pc = up(w.substr(-g - 1, 1));
-					uc = up(cc);
-					if (this.tw5 && this.tw5 == this.unV(pc + uc) &&
-						dont.indexOf(this.tw5) >= 0) {
-						continue;
-					}
-					if (str.indexOf(uc) >= 0) {
-						if ((uk == this.method.moc && this.unV(uc) == "U" && up(this.unV(w.substr(-g + 1, 1))) == "A") ||
-							(uk == this.method.trang && this.unV(uc) == "A" && this.unV(pc) == "U")) {
-							tv = 1 + (this.unV(uc) != "U");
-							let ccc = up(w.substr(-g - tv, 1));
-							if(ccc != "Q") {
-								res = g + tv - 1;
-							} else if(uk == this.method.trang) {
-								res = g;
-							} else if(this.method.moc != this.method.trang) {
-								return false;
-							}
-						} else {
-							res = g;
-						}
-						if(!this.whit || (uw.indexOf("Ư") < 0) || (uw.indexOf("W") < 0)) {
-							break;
-						}
-					} else if(DAWEOFA.indexOf(uc) >= 0) {
-						if(uk == this.method.D) {
-							if(cc == "đ") {
-								res = [g, 'd'];
-							} else if(cc == "Đ") {
-								res = [g, 'D'];
-							}
-						} else {
-							res = this.DAWEOF(cc, uk, g);
-						}
-						if(res) break;
-					}
-				}
-			}
-		}
-		
-		let tE = "", tEC;
-		if (uk != this.method.Z && this.method.DAWEO.indexOf(uk) < 0) {
-			tE = this.retKC(uk, true);
-		}
-		if (this.method.DAWEO.indexOf(uk) < 0) for (let g = 1; g <= w.length; g++) {
-			cc = up(w.substr(-g, 1));
-			pc = up(w.substr(-g - 1, 1));
-			if(str.indexOf(cc) >= 0) {
-				if(cc == 'U') {
-					if(pc != 'Q') {
-						c++;
-						vowA.push(g);
-					}
-				} else if(cc == 'I') {
-					if((pc != 'G') || (c <= 0)) {
-						c++;
-						vowA.push(g);
-					}
-				} else {
-					c++;
-					vowA.push(g);
-				}
-			}
-			else if (uk != this.method.Z) {
-				let h = this.repSign(k).indexOf(w.charCodeAt(w.length - g));
-				if (h >= 0) {
-					if (this.ckspell(w, k)) return false;
-					return [g, tE.charCodeAt(h % 24)];
-				}
-				for (let h = 0; h < tE.length; h++) {
-					if(tE.charCodeAt(h) == w.charCodeAt(w.length - g)) {
-						return [g, skey_str[h]];
-					}
-				}
-			}
-		}
-		if (uk != this.method.Z && typeof(res) != 'object' &&
-			this.ckspell(w, k)) {
-			return false;
-		}
-		if (this.method.DAWEO.indexOf(uk) < 0) {
-			for (let g = 1; g <= w.length; g++) {
-				if (uk != this.method.Z && s.indexOf(w.substr(-g, 1)) >= 0) {
-					return g;
-				}
-				if (tE.indexOf(w.substr(-g, 1)) >= 0) {
-					let pos = tE.indexOf(w.substr(-g, 1));
-					if (pos >= 0) return [g, skey_str[pos]];
-				}
-			}
-		}
-		if (res) return res;
-		if (c == 1 || uk == this.method.Z) return vowA[0];
-		else if (c == 2) {
-			let upW = up(w);
-			if (!AVIMConfig.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
-				return vowA[0];
-			}
-			// Count final consonants.
-			let cons = upW.match(/[BCDĐGHKLMNPQRSTVX]+$/);
-			if (cons) {
-				// Group digraphs and trigraphs.
-				cons = cons[0]
-					   .match(/NGH?|[CGKNPT]H|GI|QU|TR|[BCDĐGHKLMNPQRSTVX]/g);
-				if (cons && cons.length < 3) return vowA[0];
-			}
-			return vowA[1];
-		}
-		else if (c == 3) return vowA[1];
-		return false;
-	};
-	
-	/**
-	 * Replaces the character or characters at the given position with the given
-	 * replacement character code.
-	 * 
-	 * @param o		{object}	The DOM element representing the current
-	 * 							textbox.
-	 * @param pos	{string}	The position to start replacing from.
-	 * @param c		{number}	The codepoint of the character to replace with.
-	 */
-	this.replaceChar = function(o, pos, c) {
-//		dump("AVIM.replaceChar -- pos: " + pos + "; original: " + text(o, pos, 1) + "; repl: " + fcc(c) + "\n");	// debug
-		let bb = false;
-		let replaceBy;
-		let wfix;
-		if(!nan(c)) {
-			replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
-			this.changed = true;
-		} else {
-			replaceBy = c;
-			if((up(c) == "O") && this.whit) {
-				bb=true;
-			}
-		}
-		if(!o.data) {
-			let savePos = o.selectionStart, sst = o.scrollTop, r;
-			if (up(text(o, pos - 1, 1)) == 'U' && pos < savePos - 1 && up(text(o, pos - 2, 1)) != 'Q') {
-				if (wfix == "Ơ" || bb) {
-					r = (text(o, pos - 1, 1) == 'u') ? "ư" : "Ư";
-				}
-				if (bb) {
-					this.changed = true;
-					replaceBy = (c == "o") ? "ơ" : "Ơ";
-				}
-			}
-			if (r) {
-				replaceBy = r + replaceBy;
-				pos--;
-			}
-			this.splice(o, pos, 1 + !!r, replaceBy);
-			// Native editors only
-			if (!(o instanceof TextControlProxy)) {
-				o.setSelectionRange(savePos, savePos);
-				o.scrollTop = sst;
-			}
-		} else {
-			let r;
-			if ((up(o.data.substr(pos - 1, 1)) == 'U') && (pos < o.pos - 1)) {
-				if (wfix == "Ơ" || bb) {
-					r = (o.data.substr(pos - 1, 1) == 'u') ? "ư" : "Ư";
-				}
-				if (bb) {
-					this.changed = true;
-					replaceBy = (c == "o") ? "ơ" : "Ơ";
-				}
-			}
-			let doc = o.ownerDocument;
-			let winWrapper = new XPCNativeWrapper(doc.defaultView);
-			let editor = getEditor(winWrapper);
-			if (r) {
-				replaceBy = r + replaceBy;
-				pos--;
-			}
-			let txn = new SpliceTxn(winWrapper, o, pos, 1 + !!r, replaceBy);
-			editor.doTransaction(txn);
-//			o.replaceData(pos, 1, replaceBy);
-//			if(r) o.replaceData(pos - 1, 1, r);
-		}
-		this.whit = false;
-	};
-	
-	/**
-	 * @param w	{string}	The word ending at the cursor position.
-	 * @param k	{string}	The character equivalent of the pressed key.
-	 */
-	this.tr = function(k, w, by, sf, i) {
-		let pos = this.findC(w, k, sf);
-		if (!pos) return false;
-		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1]);
-		let pC = w.substr(-pos, 1);
-		for (let g = 0; g < sf.length; g++) {
-			let cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
-			if (cmp == sf[g]) {
-				let c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
-				return this.replaceChar(this.oc, i - pos, c);
-			}
-		}
-		return false;
-	};
-	
-	const bya = [db1, ab1, eb1, ob1, mocb1, trangb1];
-	const sfa = [ds1, as1, es1, os1, mocs1, trangs1];
-	/**
-	 * @param w	{string}	The word ending at the cursor position.
-	 * @param k	{string}	The character equivalent of the pressed key, or the
-	 * 						empty string for diacritic removal.
-	 */
-	this.main = function(w, k, i, a, noNormC) {
-		let uk = up(k), got = false, t = "dDaAaAoOuUeEoO".split("");
-		let by = [], sf = [], method = AVIMConfig.method, h, g;
-		if (method == 0) {
-			if (a[0] == "9") method = 2;
-			else if (a[4] == "+") method = 3;
-			else if (a[4] == "*") method = 4;
-			else if (a[0] == "D") method = 1;
-		}
-		switch (method) {
-			case 1: this.method = this.methods.telex; break;
-			case 2: this.method = this.methods.vni; break;
-			case 3: this.method = this.methods.viqr; break;
-			case 4: this.method = this.methods.viqrStar; // break;
-		}
-		
-		// Diacritic removal
-		if (k == "") {
-			k = this.method.Z;
-			uk = up(k);
-		}
-		
-		if (this.method.SFJRX.indexOf(uk) >= 0) {
-			this.sr(w,k,i);
-			got=true;
-		}
-		else if (uk == this.method.Z) {
-			sf = this.repSign(null);
-			for(h = 0; h < english.length; h++) {
-				sf.push(lowen.charCodeAt(h), english.charCodeAt(h));
-			}
-			by = skey.concat(skey, skey, skey, skey, t);
-			got = true;
-		}
-		else for (h = 0; h < a.length; h++) {
-			if (a[h] == uk) {
-				got = true;
-				by = by.concat(bya[h]);
-				sf = sf.concat(sfa[h]);
-			}
-		}
-		if (uk == this.method.moc) this.whit = true;
-		if (got) return this.DAWEOZ(k, w, by, sf, i, uk);
-		if (noNormC) return "";
-		return this.normC(w, k, i);
-	};
-	
-	this.DAWEOZ = function(k, w, by, sf, i, uk) {
-		if (this.method.DAWEO.indexOf(uk) < 0 &&
-			this.method.Z.indexOf(uk) < 0) {
-			return false;
-		}
-		return this.tr(k, w, by, sf, i);
-	};
-	
-	/**
-	 * @param w	{string}	The word ending at the cursor position.
-	 * @param k	{string}	The character equivalent of the pressed key, or the
-	 * 						empty string for diacritic removal.
-	 */
-	this.normC = function(w, k, i) {
-		if (k == "") k = this.method.Z;
-		if (k[0] == " ") return "";
-		let uk = up(k);
-		if (alphabet.indexOf(uk) < 0 && this.D2.indexOf(uk) < 0) return w;
-		let u = this.repSign(null);
-		for(let j = 1; j <= w.length; j++) {
-			let h = u.indexOf(w.charCodeAt(w.length - j));
-			if (h < 0) continue;
-			
-			let fS = this.method.X;
-			if (h <= 23) fS = this.method.S;
-			else if (h <= 47) fS = this.method.F;
-			else if (h <= 71) fS = this.method.J;
-			else if (h <= 95) fS = this.method.R;
-			
-			let c = skey[h % 24];
-			let sp = this.oc.selectionStart;
-			let end = this.oc.selectionEnd;
-			let pos = sp;
-			w = this.unV(w);
-			if(!this.changed) {
-				w += k;
-				let sst = this.oc.scrollTop;
-				pos += k.length;
-				if(!this.oc.data) {
-//					this.oc.value = this.oc.value.substr(0, sp) + k +
-//						this.oc.value.substr(this.oc.selectionEnd);
-					this.splice(this.oc, sp, end - sp, k);
-					this.changed = true;
-					this.oc.scrollTop = sst;
-				} else {
-					this.oc.insertData(this.oc.pos, k);
-					this.range.setEnd(this.oc, ++this.oc.pos);
-					this.specialChange = true;
-				}
-			}
-			
-			// Anything else
-			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
-			
-			if(!this.ckspell(w, fS)) {
-				this.replaceChar(this.oc, i - j, c);
-				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
-				else {
-					let ww = this.mozGetText(this.oc);
-					this.main(ww[0], fS, ww[1], [this.method.D], false);
-				}
-			}
-		}
-		return "";
-	};
-	
-	const ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
-	this.DAWEOF = function(cc, k, g) {
-		let kA = [this.method.A, this.method.moc, this.method.trang,
-				  this.method.E, this.method.O];
-		for (let i = 0; i < kA.length; i++) {
-			if (k != kA[i]) continue;
-			
-			let posCC = ccA[i].indexOf(cc);
-			if (posCC < 0) continue;
-			
-			let repl = ccrA[i][posCC];
-			return repl ? [g, repl] : false;
-		}
-		return false;
-	};
-	
-	/**
-	 * Returns an array of characters corresponding to the following characters
-	 * with the given dead key applied:
-	 * 	a â ă e ê i o ô ơ u ư y A Â Ă E Ê I O Ô Ơ U Ư Y
-	 *
-	 * @param k			{string}	The dead key to apply to each character.
-	 * @param giveChars	{string}	True if the characters themselves should be
-	 * 								returned; false if they should be converted
-	 * 								to character codes.
-	 * @returns {string}	A string of accented characters.
-	 * 			{object}	An array of character codes.
-	 */
-	this.retKC = function(k, giveChars) {
-		let chars = "";
-		switch (k) {
-			case this.method.S: chars = "áấắéếíóốớúứýÁẤẮÉẾÍÓỐỚÚỨÝ"; break;
-			case this.method.F: chars = "àầằèềìòồờùừỳÀẦẰÈỀÌÒỒỜÙỪỲ"; break;
-			case this.method.J: chars = "ạậặẹệịọộợụựỵẠẬẶẸỆỊỌỘỢỤỰỴ"; break;
-			case this.method.R: chars = "ảẩẳẻểỉỏổởủửỷẢẨẲẺỂỈỎỔỞỦỬỶ"; break;
-			case this.method.X: chars = "ãẫẵẽễĩõỗỡũữỹÃẪẴẼỄĨÕỖỠŨỮỸ";
-		}
-		return giveChars ? chars : codesFromChars(chars);
-	};
-	
-	/**
-	 * Returns the given word with tone marks removed.
-	 *
-	 * @param w	{string}	The word with tone marks.
-	 * @returns {string}	The word without tone marks.
-	 */
-	this.unV = function(w) {
-		let u = this.repSign(null);
-		let unW = "";
-		for (let a = w.length - 1; a >= 0; a--) {
-			let pos = u.indexOf(w.charCodeAt(a));
-			if (pos >= 0) unW = skey_str[pos % 24] + unW;
-			else unW = w[a] + unW;
-		}
-		return unW;
-	};
-	
-	/**
-	 * Returns the given word with all diacritical marks removed.
-	 *
-	 * @param w	{string}	The word with diacritical marks.
-	 * @returns {string}	The word without diacritical marks.
-	 */
-	this.unV2 = function(w) {
-		let unW = "";
-		for (let a = w.length - 1; a >= 0; a--) {
-			let pos = skey.indexOf(w.charCodeAt(a));
-			if (pos >= 0) unW = skey2[pos] + unW;
-			else unW = w[a] + unW;
-		}
-		return unW;
-	};
-	
-	this.repSign = function(k) {
-		let u = [];
-		for (let a = 0; a < 5; a++) {
-			if (!k || this.method.SFJRX[a] != up(k)) {
-				u = u.concat(this.retKC(this.method.SFJRX[a]));
-			}
-		}
-		return u;
-	};
-	
-	/**
-	 * @param w	{string}	The word ending at the cursor position.
-	 * @param k	{string}	The character equivalent of the pressed key.
-	 */
-	this.sr = function(w, k, i) {
-		let pos = this.findC(w, k, skey_str);
-		if (!pos) return;
-		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1]);
-		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos));
-	};
-	
-	/**
-	 * @param w	{string}	The word ending at the cursor position.
-	 * @param k	{string}	The character equivalent of the pressed key.
-	 */
-	this.retUni = function(w, k, pos) {
-		let uC, lC;
-		let idx = skey_str.indexOf(w.substr(-pos, 1));
-		if (idx < 0) return false;
-		if (idx < 12) {
-			lC = idx; uC = idx + 12;
-		}
-		else {
-			lC = idx - 12; uC = idx;
-		}
-		let t = w.substr(-pos, 1);
-		let u = this.retKC(up(k));
-		if (t != up(t)) return u[lC];
-		return u[uC];
-	};
-	
 	this.ifInit = function(w) {
 		let sel = w.getSelection();
 		this.range = sel ? sel.getRangeAt(0) : document.createRange();
@@ -2249,7 +1478,6 @@ function AVIM()	{
 			}
 		}
 		if (e.keyCode == e.DOM_VK_BACK_SPACE && this.range.toString()) return;
-		this.sk = fcc(code);
 		this.saveStr = "";
 		if (!this.range.startOffset || node.data == undefined) return;
 		node.sel = false;
@@ -2368,11 +1596,31 @@ function AVIM()	{
 									AVIMConfig.exclude.indexOf("e-mail") < 0));
 		if (!isHTML) return false;
 		
-		this.sk = fcc(e.which);
 		let editor = getEditor(el);
 		if (editor && editor.beginTransaction) editor.beginTransaction();
+		let result = {};
 		try {
-			this.start(el, e);
+			let xformer = Cc["@1ec5.org/avim/transformer;1"].getService()
+				.wrappedJSObject;
+			let wordAndPos = this.mozGetText(el);
+			if (!wordAndPos || el.selectionStart != el.selectionEnd) return false;
+			result = xformer.applyKey(wordAndPos[0], {
+				method: AVIMConfig.method,
+				ckSpell: AVIMConfig.ckSpell,
+				autoMethods: AVIMConfig.autoMethods,
+				informal: AVIMConfig.informal,
+				oldAccent: AVIMConfig.oldAccent,
+				keyCode: e.keyCode,
+				which: e.which,
+				shiftKey: e.shiftKey,
+				isBackspace: e.keyCode == e.DOM_VK_BACK_SPACE,
+				hasSelection: false,//"sel" in el && el.sel,
+			});
+			dump(">>> handleKeyPress -- value: " + result.value + "\n");					// debug
+			if (result.value != wordAndPos[0]) {
+				this.splice(el, el.selectionStart - wordAndPos[0].length,
+							wordAndPos[0].length, result.value);
+			}
 		}
 		catch (exc) {
 			throw exc;
@@ -2382,8 +1630,7 @@ function AVIM()	{
 			// start() will render Firefox inoperable.
 			if (editor && editor.endTransaction) editor.endTransaction();
 		}
-		if (this.changed) {
-			this.changed=false;
+		if (result.changed) {
 			e.preventDefault();
 			this.updateContainer(e.originalTarget, el);
 			// A bit of a hack to prevent single-line textboxes from scrolling
@@ -2442,7 +1689,6 @@ function AVIM()	{
 				else proxy = new SciMozProxy(el, i);
 				if (!proxy) continue;
 				
-				this.sk = fcc(e.which);
 				this.start(proxy, e);
 				
 				if (this.changed) anyChanged = true;
@@ -2507,7 +1753,6 @@ function AVIM()	{
 			let proxy = new AceProxy(sandbox, i, numRanges);
 			if (!proxy) continue;
 			
-			this.sk = fcc(evt.which);
 			this.start(proxy, evt);
 			
 			if (this.changed) anyChanged = true;
@@ -2558,7 +1803,6 @@ function AVIM()	{
 		// Fake a native textbox.
 		let proxy = new OrionProxy(sandbox);
 		
-		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
 		
 		proxy.commit();
@@ -2604,7 +1848,6 @@ function AVIM()	{
 		// Fake a native textbox.
 		let proxy = new YmacsProxy(sandbox);
 		
-		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
 		
 		proxy.commit();
@@ -2671,7 +1914,6 @@ function AVIM()	{
 				return;
 			}
 			
-			avim.sk = fcc(evtProxy.charCode);
 			avim.start(ctlProxy, evtProxy);
 			
 			if (avim.changed) {
@@ -2743,7 +1985,6 @@ function AVIM()	{
 			let ctlProxy = new SlightCtlProxy(ctl);
 			let evtProxy = new SlightEvtProxy(evt, charCode);
 			
-			avim.sk = fcc(evtProxy.charCode);
 			avim.start(ctlProxy, evtProxy);
 			
 			ctlProxy.commit();
@@ -2877,7 +2118,6 @@ function AVIM()	{
 			// Fake a native textbox.
 			let proxy = new KixProxy(evt);
 			
-			this.sk = fcc(evt.which);
 			this.start(proxy, evt);
 			
 			proxy.commit();
@@ -2935,7 +2175,6 @@ function AVIM()	{
 		// Fake a native textbox.
 		let proxy = new CacTrangProxy(sandbox);
 		
-		this.sk = fcc(evt.which);
 		this.start(proxy, evt);
 		
 		proxy.commit();
