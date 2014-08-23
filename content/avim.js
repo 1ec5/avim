@@ -1616,7 +1616,6 @@ function AVIM()	{
 				isBackspace: e.keyCode == e.DOM_VK_BACK_SPACE,
 				hasSelection: false,//"sel" in el && el.sel,
 			});
-			dump(">>> handleKeyPress -- value: " + result.value + "\n");					// debug
 			if (result.value != wordAndPos[0]) {
 				this.splice(el, el.selectionStart - wordAndPos[0].length,
 							wordAndPos[0].length, result.value);

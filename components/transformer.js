@@ -155,7 +155,6 @@ function Transformation(startValue, context) {
 	this.splice = function(el, index, len, repl) {
 		let val = el.value;
 		el.value = val.substr(0, index) + repl + val.substr(index + len);
-		dump("splice() -- <" + val + "> -> <" + el.value + ">\n");				// debug
 		return repl.length - len;
 	};
 	
@@ -344,7 +343,7 @@ function Transformation(startValue, context) {
 		}
 		
 		let w = this.mozGetText(obj);
-		dump(">>> start() -- w: <" + w + ">\n");								// debug
+		//dump(">>> start() -- w: <" + w + ">\n");								// debug
 		let key = "";
 		if (!context.keyCode || !context.isBackspace || !context.shiftKey) {
 			key = fcc(context.which);
@@ -574,7 +573,7 @@ function Transformation(startValue, context) {
 	 * @param c		{number}	The codepoint of the character to replace with.
 	 */
 	this.replaceChar = function(o, pos, c) {
-		dump("AVIM.replaceChar -- pos: " + pos + "; original: " + text(o, pos, 1) + "; repl: " + fcc(c) + "\n");	// debug
+		//dump("AVIM.replaceChar -- pos: " + pos + "; original: " + text(o, pos, 1) + "; repl: " + fcc(c) + "\n");	// debug
 		let bb = false;
 		let replaceBy;
 		let wfix;
@@ -759,7 +758,6 @@ function Transformation(startValue, context) {
 			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
 			
 			if(!this.ckspell(w, fS)) {
-				dump(">>> normC() -- <" + w + ">\n");			// debug
 				this.replaceChar(this.oc, i - j, c);
 				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
 				else {
@@ -910,7 +908,7 @@ AVIMTransformerService.prototype = {
 			xform.start();
 		} catch(exc) {
 // $if{Debug}
-			dump(">>> AVIMTransformerService: " + exc + "\n");					// debug
+			Cu.reportError(exc);
 // $endif{}
 		}
 		return {
