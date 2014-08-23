@@ -13,6 +13,10 @@ function Transformation(startValue, context) {
 	this.context = context;
 	this.startValue = this.value = startValue;
 	this.selectionStart = this.selectionEnd = this.value.length;
+	this.setSelectionRange = function (start, end) {
+		this.selectionStart = start;
+		this.selectionEnd = end;
+	};
 	
 	function nan(w) {
 		return isNaN(w) || w == 'e';
