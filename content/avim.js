@@ -978,25 +978,8 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Returns the string contents of the given textbox, optionally starting and
-	 * ending with the given range. If no range is given, the entire string
-	 * contents are returned.
-	 *
-	 * @param el	{object}	The textbox's DOM node.
-	 * @param start	{number}	The return value's starting index within the
-	 *							entire content string.
-	 * @param len	{number}	The length of the substring to return.
-	 * @returns {string}	The textbox's string contents.
-	 */
-	let text = function(el, start, len) {
-		let val = el.value;
-		if (start) val = val.substr(start);
-		if (len) val = val.substr(0, len);
-		return val;
-	};
-	
-	/**
-	 * Transaction that replaces a particular substring in a text node. Based on
+	 * Transaction that replaces a particular substring in a text node, keeping
+	 * the caret at the end of the modified word for user convenience. Based on
 	 * <http://weblogs.mozillazine.org/weirdal/archives/txMgr_transition.txt>.
 	 *
 	 * @param outer	{object}	A DOM node able to modify the selection range.
@@ -1009,22 +992,16 @@ function AVIM()	{
 	 * @implements Components.interfaces.nsISupports
 	 */
 	let SpliceTxn = function(outer, node, pos, len, repl) {
-		//* @type Element
-		this.outer = outer;
-		//* @type Text
-		this.node = node;
-		//* @type Number
-		this.pos = pos;
-		//* @type Number
-		this.len = len;
-		//* @type String
-		this.repl = repl;
-		
 		//* @type Boolean
 		this.isTransient = false;
 		
-		if (outer && "selectionStart" in outer) {
-			this.caret = outer.selectionStart;
+		if (outer) {
+			if ("selectionStart" in outer) this.selectionStart = outer.selectionStart;
+			else if ("getSelection" in outer) {
+				let sel = outer.getSelection();
+				let range = sel && sel.getRangeAt(0);
+				if (range.startOffset) this.startOffset = range.startOffset;
+			}
 		}
 		
 		/**
@@ -1033,29 +1010,29 @@ function AVIM()	{
 		 * @param numChars	{number}	The number of characters to shift.
 		 */
 		this.shiftSelection = function(numChars) {
-			if (!this.outer) return;
-			if ("caret" in this) {
-				let pos = this.caret + numChars;
-//				dump("AVIM.SpliceTxn.shiftSelection -- numChars: " + numChars + "; pos: " + pos + "\n");	// debug
-				this.outer.selectionStart = this.outer.selectionEnd = pos;
-//				return;
+			if (!outer) return;
+			if ("selectionStart" in this) {
+				let pos = this.selectionStart + numChars;
+				outer.selectionStart = outer.selectionEnd = pos;
 			}
-			//else if (window.goDoCommand) {
-			//	// No idea why this works!
-			//	goDoCommand("cmd_charNext");
-			//	goDoCommand("cmd_charNext");
-			//}
-//			let range = this.outer.getSelection().getRangeAt(0);
-//			range.setStart(this.node, range.startOffset + numChars);
+			else if ("startOffset" in this) {
+				let sel = outer.getSelection();
+				sel.removeAllRanges();
+				let range = outer.createRange();
+				let pos = this.startOffset + numChars;
+				range.setStart(node, pos);
+				range.setEnd(node, pos);
+				sel.addRange(range);
+			}
 		};
 		
 		/**
 		 * Replaces a substring in the text node with the given substitution.
 		 */
 		this.doTransaction = this.redoTransaction = function() {
-			this.orig = this.node.substringData(this.pos, this.len);
-			this.node.replaceData(this.pos, this.len, this.repl);
-			this.shiftSelection(this.repl.length - this.len);
+			this.orig = node.substringData(pos, len);
+			node.replaceData(pos, len, repl);
+			this.shiftSelection(repl.length - len);
 		};
 		
 		/**
@@ -1063,7 +1040,7 @@ function AVIM()	{
 		 * string.
 		 */
 		this.undoTransaction = function() {
-			this.node.replaceData(this.pos, this.repl.length, this.orig);
+			node.replaceData(pos, repl.length, this.orig);
 			this.shiftSelection(0);
 		};
 		
@@ -1383,51 +1360,6 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Returns the current position of the cursor in the given textbox.
-	 *
-	 * @param obj	{object}	The DOM element representing the current
-	 * 							textbox.
-	 * @returns {number}	The current cursor position, or -1 if the cursor
-	 * 						cannot be found.
-	 */
-	this.getCursorPosition = function(obj) {
-		// Specialized control
-		if (obj instanceof TextControlProxy) return obj.selectionStart;
-		
-		// Anything else
-		let data = (obj.data) ? obj.data : text(obj);
-		if (!data || !data.length) return -1;
-		if (obj.data) return obj.pos;
-		if (!obj.setSelectionRange) return -1;
-		return obj.selectionStart;
-	}
-	
-	/**
-	 * Retrieves the relevant state from the given textbox.
-	 * 
-	 * @param obj		{object}	The DOM element representing the current
-	 * 								textbox.
-	 * @returns {array}	A tuple containing the word ending at the cursor
-	 * 					position and the cursor position.
-	 */
-	this.mozGetText = function(obj) {
-		let pos = this.getCursorPosition(obj);
-		if (pos < 0) return false;
-		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
-		
-		let data = obj.data || text(obj);
-		let w = data.substring(0, pos);
-		if (w.substr(-1) == "\\" && methodIsVIQR()) return ["\\", pos];
-		w = wordRe.exec(w);
-		return [w ? w[0] : "", pos];
-	};
-	
-	this.ifInit = function(w) {
-		let sel = w.getSelection();
-		this.range = sel ? sel.getRangeAt(0) : document.createRange();
-	};
-	
-	/**
 	 * Fires a fake onInput event from the given element. If preventDefault() is
 	 * called on the onKeyPress event, most textboxes will not respond
 	 * appropriately to AVIM's changes (autocomplete, in-page find, `oninput`
@@ -1455,6 +1387,8 @@ function AVIM()	{
 		}
 	};
 	
+	let xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
+	
 	/**
 	 * Handles key presses for WYSIWYG HTML documents (editable through
 	 * Mozilla's Midas component).
@@ -1466,48 +1400,42 @@ function AVIM()	{
 		let cwi = new XPCNativeWrapper(doc.defaultView);
 		if (this.findIgnore(target)) return;
 		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
-		this.ifInit(cwi);
-		let node = this.range.endContainer, newPos;
+		let sel = cwi.getSelection();
+		let range = sel ? sel.getRangeAt(0) : doc.createRange();
+		let node = range.endContainer, newPos;
 		// Zoho Writer places a cursor <span> right at the caret.
 //		dump("AVIM.ifMoz -- node: " + node.localName + "#" + node.id + "\n");	// debug
 		if (node.localName == "span" && !node.id.indexOf("z-cursor-start-")) {
 			let prevNode = node.previousSibling;
 			if (prevNode.data) {
-				this.range.setEnd(prevNode, prevNode.data.length);
-				node = this.range.endContainer;
+				range.setEnd(prevNode, prevNode.data.length);
+				node = range.endContainer;
 			}
 		}
-		if (e.keyCode == e.DOM_VK_BACK_SPACE && this.range.toString()) return;
-		this.saveStr = "";
-		if (!this.range.startOffset || node.data == undefined) return;
-		node.sel = false;
-		if(node.data) {
-			this.saveStr = node.data.substr(this.range.endOffset);
-			if(this.range.startOffset != this.range.endOffset) {
-				node.sel=true;
-			}
-			node.deleteData(this.range.startOffset, node.data.length);
-		}
-		this.range.setEnd(node, this.range.endOffset);
-		this.range.setStart(node, 0);
-		if(!node.data) return;
-		node.value = node.data;
-		node.pos = node.data.length;
-		node.which = code;
+		if (!range.startOffset || !range.collapsed || !node.data) return;
 		
 		let editor = getEditor(cwi);
 		if (editor && editor.beginTransaction) editor.beginTransaction();
+		let result = {};
 		try {
-			this.start(node, e);
-			node.insertData(node.data.length, this.saveStr);
-			newPos = node.data.length - this.saveStr.length + this.kl;
-			this.range.setEnd(node, newPos);
-			this.range.setStart(node, newPos);
-			this.kl = 0;
-			if(this.specialChange) {
-				this.specialChange = false;
-				this.changed = false;
-				node.deleteData(node.pos - 1, 1);
+			let word = lastWordInString(node.substringData(0, range.startOffset));
+			if (word) {
+				result = xformer.applyKey(word, {
+					method: AVIMConfig.method,
+					ckSpell: AVIMConfig.ckSpell,
+					autoMethods: AVIMConfig.autoMethods,
+					informal: AVIMConfig.informal,
+					oldAccent: AVIMConfig.oldAccent,
+					keyCode: e.keyCode,
+					which: e.which,
+					shiftKey: e.shiftKey,
+				});
+			}
+			if ("value" in result && result.value != word) {
+				let txn = new SpliceTxn(doc, node,
+										range.startOffset - word.length,
+										word.length, result.value);
+				editor.doTransaction(txn);
 			}
 		}
 		catch (exc) {
@@ -1518,8 +1446,7 @@ function AVIM()	{
 			// start() will render the application inoperable.
 			if (editor && editor.endTransaction) editor.endTransaction();
 		}
-		if (this.changed) {
-			this.changed = false;
+		if (result.changed) {
 			e.stopPropagation();
 			e.preventDefault();
 			this.updateContainer(null, target);
@@ -1594,30 +1521,28 @@ function AVIM()	{
 								  AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
 			(el.type == "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
 									AVIMConfig.exclude.indexOf("e-mail") < 0));
-		if (!isHTML) return false;
+		if (!isHTML || el.selectionStart != el.selectionEnd) return false;
 		
 		let editor = getEditor(el);
 		if (editor && editor.beginTransaction) editor.beginTransaction();
 		let result = {};
 		try {
-			let xformer = Cc["@1ec5.org/avim/transformer;1"].getService()
-				.wrappedJSObject;
-			let wordAndPos = this.mozGetText(el);
-			if (!wordAndPos || el.selectionStart != el.selectionEnd) return false;
-			result = xformer.applyKey(wordAndPos[0], {
-				method: AVIMConfig.method,
-				ckSpell: AVIMConfig.ckSpell,
-				autoMethods: AVIMConfig.autoMethods,
-				informal: AVIMConfig.informal,
-				oldAccent: AVIMConfig.oldAccent,
-				keyCode: e.keyCode,
-				which: e.which,
-				shiftKey: e.shiftKey,
-				hasSelection: false,//"sel" in el && el.sel,
-			});
-			if (result.value && result.value != wordAndPos[0]) {
-				this.splice(el, el.selectionStart - wordAndPos[0].length,
-							wordAndPos[0].length, result.value);
+			let word = lastWordInString(el.value.substr(0, el.selectionStart));
+			if (word) {
+				result = xformer.applyKey(word, {
+					method: AVIMConfig.method,
+					ckSpell: AVIMConfig.ckSpell,
+					autoMethods: AVIMConfig.autoMethods,
+					informal: AVIMConfig.informal,
+					oldAccent: AVIMConfig.oldAccent,
+					keyCode: e.keyCode,
+					which: e.which,
+					shiftKey: e.shiftKey,
+				});
+			}
+			if ("value" in result && result.value != word) {
+				this.splice(el, el.selectionStart - word.length, word.length,
+							result.value);
 			}
 		}
 		catch (exc) {
@@ -1631,9 +1556,9 @@ function AVIM()	{
 		if (result.changed) {
 			e.preventDefault();
 			this.updateContainer(e.originalTarget, el);
-			// A bit of a hack to prevent single-line textboxes from scrolling
-			// to the beginning of the line.
-			if (window.goDoCommand && el.type != "textarea") {
+			// A bit of a hack to prevent textboxes from scrolling to the
+			// beginning.
+			if ("goDoCommand" in window) {
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}

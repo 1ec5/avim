@@ -344,6 +344,7 @@ function Transformation(startValue, context) {
 		}
 		
 		let w = this.mozGetText(obj);
+		if (!w) return;
 		//dump(">>> start() -- w: <" + w + ">\n");								// debug
 		let key = "";
 		const backspace = Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
@@ -351,7 +352,6 @@ function Transformation(startValue, context) {
 			!context.shiftKey) {
 			key = fcc(context.which);
 		}
-		if (!w || context.hasSelection) return;
 		
 		let noNormC = this.D2.indexOf(up(key)) >= 0;
 		
