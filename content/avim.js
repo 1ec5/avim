@@ -1587,7 +1587,7 @@ function AVIM()	{
 		
 		let el = e.originalTarget || e.target;
 //		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + e.which + "\n");	// debug
-		if (this.findIgnore(e.target)) return false;
+		if (this.findIgnore(e.target) || !el.type) return false;
 		let isHTML = htmlTypes.indexOf(el.type) >= 0 ||
 			(el.type == "password" && AVIMConfig.passwords) ||
 			(el.type == "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
@@ -1613,10 +1613,9 @@ function AVIM()	{
 				keyCode: e.keyCode,
 				which: e.which,
 				shiftKey: e.shiftKey,
-				isBackspace: e.keyCode == e.DOM_VK_BACK_SPACE,
 				hasSelection: false,//"sel" in el && el.sel,
 			});
-			if (result.value != wordAndPos[0]) {
+			if (result.value && result.value != wordAndPos[0]) {
 				this.splice(el, el.selectionStart - wordAndPos[0].length,
 							wordAndPos[0].length, result.value);
 			}

@@ -2,6 +2,7 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
+const Cu = Components.utils;
 
 // { 0x4A373444, 0x8A2A, 0x4641, \
 // 		{ 0xAD, 0xD5, 0x89, 0x7A, 0x88, 0xD0, 0x51, 0x85 }
@@ -345,7 +346,9 @@ function Transformation(startValue, context) {
 		let w = this.mozGetText(obj);
 		//dump(">>> start() -- w: <" + w + ">\n");								// debug
 		let key = "";
-		if (!context.keyCode || !context.isBackspace || !context.shiftKey) {
+		const backspace = Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
+		if (!context.keyCode || context.keyCode != backspace ||
+			!context.shiftKey) {
 			key = fcc(context.which);
 		}
 		if (!w || context.hasSelection) return;
@@ -906,15 +909,16 @@ AVIMTransformerService.prototype = {
 		let xform = new Transformation(prefix, context);
 		try {
 			xform.start();
+			return {
+				value: xform.value,
+				changed: xform.changed,
+			};
 		} catch(exc) {
 // $if{Debug}
 			Cu.reportError(exc);
+			return {};
 // $endif{}
 		}
-		return {
-			value: xform.value,
-			changed: xform.changed,
-		};
 	},
 }
 
