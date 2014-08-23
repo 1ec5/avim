@@ -2386,9 +2386,9 @@ function AVIM()	{
 			this.changed=false;
 			e.preventDefault();
 			this.updateContainer(e.originalTarget, el);
-			// A bit of a hack to prevent single-line textboxes from scrolling
-			// to the beginning of the line.
-			if (window.goDoCommand && el.type != "textarea") {
+			// A bit of a hack to prevent textboxes from scrolling to the
+			// beginning.
+			if (window.goDoCommand) {
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}
