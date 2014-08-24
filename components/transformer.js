@@ -11,19 +11,14 @@ const CLASS_NAME = "AVIM text transformer service";
 const CONTRACT_ID = "@1ec5.org/avim/transformer;1";
 
 function Transformation(startValue, context) {
-	this.context = context;
-	this.startValue = this.value = startValue;
-	this.selectionStart = this.selectionEnd = this.value.length;
-	this.setSelectionRange = function (start, end) {
-		this.selectionStart = start;
-		this.selectionEnd = end;
-	};
+	this.value = startValue;
+	let startLength = this.value.length;
 	
 	function nan(w) {
 		return isNaN(w) || w == 'e';
 	}
 	
-	let codesFromChars = function (chars) {
+	function codesFromChars(chars) {
 		let codes = [];
 		for (let i = 0; i < chars.length; i++) {
 			codes.push(chars[i].charCodeAt(0));
@@ -122,53 +117,20 @@ function Transformation(startValue, context) {
 	this.whit = false;
 	
 	/**
-	 * Returns the string contents of the given textbox, optionally starting and
-	 * ending with the given range. If no range is given, the entire string
-	 * contents are returned.
-	 *
-	 * @param el	{object}	The textbox's DOM node.
-	 * @param start	{number}	The return value's starting index within the
-	 *							entire content string.
-	 * @param len	{number}	The length of the substring to return.
-	 * @returns {string}	The textbox's string contents.
-	 */
-	let text = function(el, start, len) {
-		let val = el.value;
-		if (start) val = val.substr(start);
-		if (len) val = val.substr(0, len);
-		return val;
-	};
-	
-	/**
-	 * Replaces the substring inside the given textbox, starting at an index and
+	 * Replaces the substring inside the current text, starting at an index and
 	 * spanning the given number of characters, with the given string.
 	 *
-	 * @param el	{object}	The textbox's DOM node.
 	 * @param index	{number}	The index at which to begin replacing.
 	 * @param len	{number}	The number of characters to replace.
 	 * @param repl	{string}	The string to insert.
 	 * @returns {number}	The distance to the right that the end of the word
 	 * 						has shifted.
 	 */
-	this.splice = function(el, index, len, repl) {
-		let val = el.value;
-		el.value = val.substr(0, index) + repl + val.substr(index + len);
+	this.splice = function(index, len, repl) {
+		let val = this.value;
+		this.value = val.substr(0, index) + repl + val.substr(index + len);
 		return repl.length - len;
 	};
-	
-	/**
-	 * Returns the current position of the cursor in the given textbox.
-	 *
-	 * @param obj	{object}	The DOM element representing the current
-	 * 							textbox.
-	 * @returns {number}	The current cursor position, or -1 if the cursor
-	 * 						cannot be found.
-	 */
-	this.getCursorPosition = function(obj) {
-		let data = text(obj);
-		if (!data || !data.length) return -1;
-		return obj.selectionStart;
-	}
 	
 	/**
 	 * Returns whether the given word, taking into account the given dead key,
@@ -196,7 +158,7 @@ function Transformation(startValue, context) {
 		}
 		
 		w = this.unV(w);
-		let uw = up(w), tw = uw, uw2 = this.unV2(uw), twE;
+		let uw = up(w), tw = uw, uw2 = unV2(uw), twE;
 		let vSConsonant = "BCD\u0110GHKLMNPQRSTVX";
 		let vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
 		if (context.informal) {
@@ -269,7 +231,7 @@ function Transformation(startValue, context) {
 		// Extraneous consonants: invalid
 		if (tw && new RegExp(consRe).test(tw)) return true;
 		
-		uw2 = this.unV2(tw);
+		uw2 = unV2(tw);
 		if (uw2 == "IAO") return true;
 		
 		// Invalid standalone diphthongs and triphthongs: invalid
@@ -301,29 +263,22 @@ function Transformation(startValue, context) {
 	};
 	
 	/**
-	 * Retrieves the relevant state from the given textbox.
+	 * Retrieves the current text contents and cursor position.
 	 * 
-	 * @param obj		{object}	The DOM element representing the current
-	 * 								textbox.
 	 * @returns {array}	A tuple containing the word ending at the cursor
 	 * 					position and the cursor position.
 	 */
-	this.mozGetText = function(obj) {
-		let pos = this.getCursorPosition(obj);
+	this.mozGetText = function() {
+		let pos = startLength;
 		if (pos < 0) return false;
-		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
 		
-		let data = text(obj);
-		let w = data.substring(0, pos);
+		let w = this.value.substring(0, pos);
 		if (w.substr(-1) == "\\" && methodIsVIQR()) return ["\\", pos];
 		return [w, pos];
 	};
 	
 	this.start = function() {
-		// TODO: Transformation is referencing itself -- leak!
-		let obj = this;															// debug
 		let method = context.method, dockspell = context.ckSpell;
-		this.oc=obj;
 		let uniA = [];
 		this.D2 = "";
 		
@@ -340,7 +295,7 @@ function Transformation(startValue, context) {
 			uniA.push("D^^^*(".split("")); this.D2 += "D^*(";
 		}
 		
-		let w = this.mozGetText(obj);
+		let w = this.mozGetText();
 		if (!w) return;
 		//dump(">>> start() -- w: <" + w + ">\n");								// debug
 		let key = "";
@@ -353,15 +308,15 @@ function Transformation(startValue, context) {
 		let noNormC = this.D2.indexOf(up(key)) >= 0;
 		
 		for (let i = 0; i < uniA.length; i++) {
-			if (!dockspell) w = this.mozGetText(obj);
+			if (!dockspell) w = this.mozGetText();
 			if (!w || this.changed) break;
 			this.main(w[0], key, w[1], uniA[i], noNormC);
-			w = this.mozGetText(obj);
+			w = this.mozGetText();
 			if (w) this.convertCustomChars(w[0], key, w[1]);
 		}
 		
 		if (this.D2.indexOf(up(key)) >= 0) {
-			w = this.mozGetText(obj);
+			w = this.mozGetText();
 			if (w) this.normC(w[0], key, w[1]);
 		}
 	};
@@ -382,17 +337,17 @@ function Transformation(startValue, context) {
 			let lastChar = word.substr(-1);
 			if (lastChar == "\u0111" /* đ */ && uk == this.method.D) {
 				// Convert [number]đ (case-sensitive) into the đồng sign.
-				this.splice(this.oc, pos - 1, 1, "\u20ab");	// ₫
+				this.splice(pos - 1, 1, "\u20ab");	// ₫
 				this.changed = true;
 			}
 			else if (lastChar == "\u20ab" /* ₫ */ && uk == this.method.D) {
 				// On repeat, pull the underline out from under the Đ.
-				this.splice(this.oc, pos - 1, 1, "d" + key);
+				this.splice(pos - 1, 1, "d" + key);
 				this.changed = true;
 			}
 			else if (lastChar == "\u20ab" /* ₫ */ && uk == this.method.Z) {
 				// On remove, revert to a D.
-				this.splice(this.oc, pos - 1, 1, "d");
+				this.splice(pos - 1, 1, "d");
 				this.changed = true;
 			}
 			return;
@@ -401,17 +356,17 @@ function Transformation(startValue, context) {
 		if (context.informal || !context.ckSpell) {
 			if (uw == "NG" && uk == this.method.X) {
 				// Convert NG to use a combining diacritic.
-				this.splice(this.oc, pos, 0, "\u0303");
+				this.splice(pos, 0, "\u0303");
 				this.changed = true;
 			}
 			else if (uw == "NG\u0303" && uk == this.method.X) {
 				// On repeat, pull the tilde out.
-				this.splice(this.oc, pos - 1, 1, key);
+				this.splice(pos - 1, 1, key);
 				this.changed = true;
 			}
 			else if (uw == "NG\u0303" && uk == this.method.Z) {
 				// On remove, revert to a G.
-				this.splice(this.oc, pos - 1, 1, "");
+				this.splice(pos - 1, 1, "");
 				this.changed = true;
 			}
 		}
@@ -433,7 +388,7 @@ function Transformation(startValue, context) {
 		for (let g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
-		let uk = up(k), w2 = up(this.unV2(this.unV(w))), dont = ["\u01afA" /* ƯA */, "\u01afU" /* ƯU */];
+		let uk = up(k), w2 = up(unV2(this.unV(w))), dont = ["\u01afA" /* ƯA */, "\u01afU" /* ƯU */];
 		
 		if (this.method.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
@@ -567,13 +522,12 @@ function Transformation(startValue, context) {
 	 * Replaces the character or characters at the given position with the given
 	 * replacement character code.
 	 * 
-	 * @param o		{object}	The DOM element representing the current
-	 * 							textbox.
 	 * @param pos	{string}	The position to start replacing from.
 	 * @param c		{number}	The codepoint of the character to replace with.
 	 */
-	this.replaceChar = function(o, pos, c) {
-		//dump("AVIM.replaceChar -- pos: " + pos + "; original: " + text(o, pos, 1) + "; repl: " + fcc(c) + "\n");	// debug
+	this.replaceChar = function(pos, c) {
+		let val = this.value;
+		//dump("AVIM.replaceChar -- pos: " + pos + "; original: " + val[pos] + "; repl: " + fcc(c) + "\n");	// debug
 		let bb = false;
 		let replaceBy;
 		let wfix;
@@ -586,10 +540,10 @@ function Transformation(startValue, context) {
 				bb=true;
 			}
 		}
-		let savePos = o.selectionStart, sst = o.scrollTop, r;
-		if (up(text(o, pos - 1, 1)) == 'U' && pos < savePos - 1 && up(text(o, pos - 2, 1)) != 'Q') {
+		let r;
+		if (up(val.substr(pos - 1, 1)) == 'U' && pos < startLength - 1 && up(val.substr(pos - 2, 1)) != 'Q') {
 			if (wfix == "\u01a0" /* Ơ */ || bb) {
-				r = (text(o, pos - 1, 1) == 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
+				r = (val.substr(pos - 1, 1) == 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
 			}
 			if (bb) {
 				this.changed = true;
@@ -600,9 +554,7 @@ function Transformation(startValue, context) {
 			replaceBy = r + replaceBy;
 			pos--;
 		}
-		this.splice(o, pos, 1 + !!r, replaceBy);
-		o.setSelectionRange(savePos, savePos);
-		o.scrollTop = sst;
+		this.splice(pos, 1 + !!r, replaceBy);
 		this.whit = false;
 	};
 	
@@ -613,13 +565,13 @@ function Transformation(startValue, context) {
 	this.tr = function(k, w, by, sf, i) {
 		let pos = this.findC(w, k, sf);
 		if (!pos) return false;
-		if (pos[1]) return this.replaceChar(this.oc, i - pos[0], pos[1]);
+		if (pos[1]) return this.replaceChar(i - pos[0], pos[1]);
 		let pC = w.substr(-pos, 1);
 		for (let g = 0; g < sf.length; g++) {
 			let cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
 			if (cmp == sf[g]) {
 				let c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
-				return this.replaceChar(this.oc, i - pos, c);
+				return this.replaceChar(i - pos, c);
 			}
 		}
 		return false;
@@ -637,16 +589,17 @@ function Transformation(startValue, context) {
 		let by = [], sf = [], method = context.method, h, g;
 		if (method == 0) {
 			if (a[0] == "9") method = 2;
-			else if (a[4] == "+") method = 3;
-			else if (a[4] == "*") method = 4;
+			else if (a.length > 3 && a[4] == "+") method = 3;
+			else if (a.length > 3 && a[4] == "*") method = 4;
 			else if (a[0] == "D") method = 1;
 		}
-		switch (method) {
-			case 1: this.method = methods.telex; break;
-			case 2: this.method = methods.vni; break;
-			case 3: this.method = methods.viqr; break;
-			case 4: this.method = methods.viqrStar; // break;
-		}
+		this.method = [
+			null,
+			methods.telex,
+			methods.vni,
+			methods.viqr,
+			methods.viqrStar,
+		][method];
 		
 		// Diacritic removal
 		if (k == "") {
@@ -709,26 +662,21 @@ function Transformation(startValue, context) {
 			else if (h <= 95) fS = this.method.R;
 			
 			let c = skey[h % 24];
-			let sp = this.oc.selectionStart;
-			let end = this.oc.selectionEnd;
+			let sp = startLength;
+			let end = startLength;
 			let pos = sp;
 			w = this.unV(w);
 			if(!this.changed) {
 				w += k;
-				let sst = this.oc.scrollTop;
 				pos += k.length;
-//				this.oc.value = this.oc.value.substr(0, sp) + k +
-//					this.oc.value.substr(this.oc.selectionEnd);
-				this.splice(this.oc, sp, end - sp, k);
+//				this.value = this.value.substr(0, sp) + k +
+//					this.value.substr(startLength);
+				this.splice(sp, end - sp, k);
 				this.changed = true;
-				this.oc.scrollTop = sst;
 			}
 			
-			// Anything else
-			else this.oc.setSelectionRange(pos, pos);
-			
 			if(!this.ckspell(w, fS)) {
-				this.replaceChar(this.oc, i - j, c);
+				this.replaceChar(i - j, c);
 				this.main(w, fS, pos, [this.method.D], false);
 			}
 		}
@@ -798,7 +746,7 @@ function Transformation(startValue, context) {
 	 * @param w	{string}	The word with diacritical marks.
 	 * @returns {string}	The word without diacritical marks.
 	 */
-	this.unV2 = function(w) {
+	function unV2(w) {
 		let unW = "";
 		for (let a = w.length - 1; a >= 0; a--) {
 			let pos = skey.indexOf(w.charCodeAt(a));
@@ -825,8 +773,8 @@ function Transformation(startValue, context) {
 	this.sr = function(w, k, i) {
 		let pos = this.findC(w, k, skey_str);
 		if (!pos) return;
-		if (pos[1]) this.replaceChar(this.oc, i - pos[0], pos[1]);
-		else this.replaceChar(this.oc, i - pos, this.retUni(w, k, pos));
+		if (pos[1]) this.replaceChar(i - pos[0], pos[1]);
+		else this.replaceChar(i - pos, this.retUni(w, k, pos));
 	};
 	
 	/**
@@ -869,18 +817,26 @@ AVIMTransformerService.prototype = {
 	},
 	
 	applyKey: function (prefix, context) {
+		let result = {};
+		if (!prefix) return result;
+		
 		let xform = new Transformation(prefix, context);
 		try {
 			xform.start();
-			return {
+			result = {
 				value: xform.value,
 				changed: xform.changed,
 			};
-		} catch(exc) {
+		}
+		catch(exc) {
 // $if{Debug}
 			Cu.reportError(exc);
-			return {};
+			result = {};
 // $endif{}
+		}
+		finally {
+			xform = null;
+			return result;
 		}
 	},
 }
