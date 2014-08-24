@@ -316,7 +316,7 @@ function Transformation(startValue, context) {
 		if (pos < 0) return false;
 		if (obj.selectionStart != obj.selectionEnd) return ["", pos];
 		
-		let data = obj.data || text(obj);
+		let data = text(obj);
 		let w = data.substring(0, pos);
 		if (w.substr(-1) == "\\" && methodIsVIQR()) return ["\\", pos];
 		return [w, pos];
@@ -589,47 +589,23 @@ function Transformation(startValue, context) {
 				bb=true;
 			}
 		}
-		if(!o.data) {
-			let savePos = o.selectionStart, sst = o.scrollTop, r;
-			if (up(text(o, pos - 1, 1)) == 'U' && pos < savePos - 1 && up(text(o, pos - 2, 1)) != 'Q') {
-				if (wfix == "\u01a0" /* Ơ */ || bb) {
-					r = (text(o, pos - 1, 1) == 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
-				}
-				if (bb) {
-					this.changed = true;
-					replaceBy = (c == "o") ? "\u01a1" /* ơ */ : "\u01a0" /* Ơ */;
-				}
+		let savePos = o.selectionStart, sst = o.scrollTop, r;
+		if (up(text(o, pos - 1, 1)) == 'U' && pos < savePos - 1 && up(text(o, pos - 2, 1)) != 'Q') {
+			if (wfix == "\u01a0" /* Ơ */ || bb) {
+				r = (text(o, pos - 1, 1) == 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
 			}
-			if (r) {
-				replaceBy = r + replaceBy;
-				pos--;
+			if (bb) {
+				this.changed = true;
+				replaceBy = (c == "o") ? "\u01a1" /* ơ */ : "\u01a0" /* Ơ */;
 			}
-			this.splice(o, pos, 1 + !!r, replaceBy);
-			o.setSelectionRange(savePos, savePos);
-			o.scrollTop = sst;
-		} else {
-			let r;
-			if ((up(o.data.substr(pos - 1, 1)) == 'U') && (pos < o.pos - 1)) {
-				if (wfix == "\u01a0" /* Ơ */ || bb) {
-					r = (o.data.substr(pos - 1, 1) == 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
-				}
-				if (bb) {
-					this.changed = true;
-					replaceBy = (c == "o") ? "\u01a1" /* ơ */ : "\u01a0" /* Ơ */;
-				}
-			}
-			let doc = o.ownerDocument;
-			let winWrapper = new XPCNativeWrapper(doc.defaultView);
-			let editor = getEditor(winWrapper);
-			if (r) {
-				replaceBy = r + replaceBy;
-				pos--;
-			}
-			let txn = new SpliceTxn(winWrapper, o, pos, 1 + !!r, replaceBy);
-			editor.doTransaction(txn);
-//			o.replaceData(pos, 1, replaceBy);
-//			if(r) o.replaceData(pos - 1, 1, r);
 		}
+		if (r) {
+			replaceBy = r + replaceBy;
+			pos--;
+		}
+		this.splice(o, pos, 1 + !!r, replaceBy);
+		o.setSelectionRange(savePos, savePos);
+		o.scrollTop = sst;
 		this.whit = false;
 	};
 	
@@ -744,29 +720,19 @@ function Transformation(startValue, context) {
 				w += k;
 				let sst = this.oc.scrollTop;
 				pos += k.length;
-				if(!this.oc.data) {
-//					this.oc.value = this.oc.value.substr(0, sp) + k +
-//						this.oc.value.substr(this.oc.selectionEnd);
-					this.splice(this.oc, sp, end - sp, k);
-					this.changed = true;
-					this.oc.scrollTop = sst;
-				} else {
-					this.oc.insertData(this.oc.pos, k);
-					this.range.setEnd(this.oc, ++this.oc.pos);
-					this.specialChange = true;
-				}
+//				this.oc.value = this.oc.value.substr(0, sp) + k +
+//					this.oc.value.substr(this.oc.selectionEnd);
+				this.splice(this.oc, sp, end - sp, k);
+				this.changed = true;
+				this.oc.scrollTop = sst;
 			}
 			
 			// Anything else
-			else if(!this.oc.data) this.oc.setSelectionRange(pos, pos);
+			else this.oc.setSelectionRange(pos, pos);
 			
 			if(!this.ckspell(w, fS)) {
 				this.replaceChar(this.oc, i - j, c);
-				if(!this.oc.data) this.main(w, fS, pos, [this.method.D], false);
-				else {
-					let ww = this.mozGetText(this.oc);
-					this.main(ww[0], fS, ww[1], [this.method.D], false);
-				}
+				this.main(w, fS, pos, [this.method.D], false);
 			}
 		}
 		return "";
