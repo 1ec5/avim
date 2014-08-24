@@ -44,11 +44,11 @@ function Transformation(startValue, context) {
 	}
 	
 	function lowerUpper(chars) {
-		return (chars.toLowerCase() + chars.toUpperCase());
+		return chars.toLowerCase() + chars.toUpperCase();
 	}
 	
 	function upperLower(chars) {
-		return (chars.toUpperCase() + chars.toLowerCase());
+		return chars.toUpperCase() + chars.toLowerCase();
 	}
 	
 	function intersperseLowerUpper(chars) {
@@ -119,9 +119,6 @@ function Transformation(startValue, context) {
 	let up = String.toUpperCase;
 	
 	this.changed = false;
-	this.specialChange = false;
-	this.kl = 0;
-	this.range = null;
 	this.whit = false;
 	
 	/**
