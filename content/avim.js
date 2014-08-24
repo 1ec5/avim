@@ -839,7 +839,7 @@ function AVIM()	{
 		// Get the selected text.
 		let value = this.getSelectedText();
 		if (wasInTable && value) {
-			dump("KixProxy -- Reselecting text in table.\n");					// debug
+			//dump("KixProxy -- Reselecting text in table.\n");					// debug
 			// Unselect the text, unless the cell and selection are empty.
 			this.revertSelection();
 			// Reselect the text, this time just the preceding word.
@@ -1406,8 +1406,8 @@ function AVIM()	{
 	function applyKey(word, evt) {
 		return xformer.applyKey(word, {
 			method: AVIMConfig.method,
-			ckSpell: AVIMConfig.ckSpell,
 			autoMethods: AVIMConfig.autoMethods,
+			ckSpell: AVIMConfig.ckSpell,
 			informal: AVIMConfig.informal,
 			oldAccent: AVIMConfig.oldAccent,
 			keyCode: evt.keyCode,
