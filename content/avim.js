@@ -363,24 +363,30 @@ function AVIM()	{
 	function SlightCtlProxy(ctl) {
 		this.ctl = ctl;
 		this.type = ctl.getHost().type;
-		if ("text" in ctl) this.value = this.oldValue = ctl.text;
-//		else if ("password" in ctl) this.value = ctl.password;
-		else throw "Not a TextBox control";
+		if (!("text" in ctl)) throw "Not a TextBox control";
+//		if ("password" in ctl) this.value = ctl.password;
 		this.selectionStart = this.oldSelectionStart = ctl.selectionStart;
 		this.selectionEnd = ctl.selectionStart + ctl.selectionLength;
+		this.oldValue = ctl.text;
+		let word = lastWordInString(this.oldValue.substr(0, this.selectionStart));
+		this.value = word;
 		
 		/**
 		 * Updates the Silverlight control represented by this proxy to reflect
 		 * any changes made to the proxy.
 		 */
 		this.commit = function() {
-//			if (this.value == this.oldValue) return;
+//			if (this.value == word) return;
 			
-			let tooLong = "maxLength" in this.ctl &&
-				this.ctl.maxLength && this.value.length > this.ctl.maxLength;
-			if ("text" in this.ctl && !tooLong) this.ctl.text = this.value;
+			let numExtraChars = this.value.length - word.length;
+			let tooLong = "maxLength" in this.ctl && this.ctl.maxLength &&
+				this.oldValue.length + numExtraChars > this.ctl.maxLength;
+			if ("text" in this.ctl && !tooLong) {
+				let wordStart = this.selectionStart - word.length;
+				this.ctl.text = this.oldValue.substr(0, wordStart) +
+					this.value + this.oldValue.substr(this.selectionStart);
+			}
 //			else if ("password" in this.ctl) this.ctl.password = this.value;
-			let numExtraChars = this.value.length - this.oldValue.length;
 			this.ctl.selectionStart = this.selectionStart + numExtraChars;
 			this.ctl.selectionLength = this.selectionEnd - this.selectionStart;
 		};
@@ -1839,10 +1845,9 @@ function AVIM()	{
 				return;
 			}
 			
-			avim.start(ctlProxy, evtProxy);
-			
-			if (avim.changed) {
-				avim.changed = false;
+			let result = ctlProxy.value && applyKey(ctlProxy.value, evtProxy);
+			if (result && result.changed && result.value) {
+				ctlProxy.value = result.value;
 				evt.handled = true;
 				setTimeout(function () {
 					ctlProxy.commit();
@@ -1910,12 +1915,14 @@ function AVIM()	{
 			let ctlProxy = new SlightCtlProxy(ctl);
 			let evtProxy = new SlightEvtProxy(evt, charCode);
 			
-			avim.start(ctlProxy, evtProxy);
+			let result = ctlProxy.value && applyKey(ctlProxy.value, evtProxy);
+			if (result && result.changed && result.value) {
+				ctlProxy.value = result.value;
+			}
 			
 			ctlProxy.commit();
 			ctlProxy = null;
 			evtProxy = null;
-			avim.changed = false;
 			evt.handled = true;
 //			dump("After -- text: \"" + text + "\"; ctl.text: \"" + ctl.text + "\"\n");	// debug
 			if (text == ctl.text + lastChar) {
