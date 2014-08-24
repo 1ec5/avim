@@ -1721,7 +1721,9 @@ function AVIM()	{
 		// Fake a native textbox.
 		let proxy = new OrionProxy(sandbox);
 		
-		this.start(proxy, evt);
+		let word = lastWordInString(proxy.value);
+		let result = word && applyKey(word, evt);
+		if (result && result.changed && result.value) proxy.value = result.value;
 		
 		proxy.commit();
 		proxy = null;
