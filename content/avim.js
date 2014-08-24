@@ -1012,8 +1012,8 @@ function AVIM()	{
 		
 		if (outer) {
 			if ("selectionStart" in outer) this.selectionStart = outer.selectionStart;
-			else if ("getSelection" in outer) {
-				let sel = outer.getSelection();
+			else if ("defaultView" in outer && "getSelection" in outer.defaultView) {
+				let sel = outer.defaultView.getSelection();
 				let range = sel && sel.getRangeAt(0);
 				if (range.startOffset) this.startOffset = range.startOffset;
 			}
@@ -1031,7 +1031,7 @@ function AVIM()	{
 				outer.selectionStart = outer.selectionEnd = pos;
 			}
 			else if ("startOffset" in this) {
-				let sel = outer.getSelection();
+				let sel = outer.defaultView.getSelection();
 				sel.removeAllRanges();
 				let range = outer.createRange();
 				let pos = this.startOffset + numChars;
@@ -2685,21 +2685,22 @@ function AVIM()	{
 			return this.handleSciMoz(e, ko.views.manager.currentView.scimoz);
 		}
 		
-		// iCloud Pages
-		if (doc.location.hostname === iCloudHostname && origTarget.isContentEditable) {
-			return this.handleCacTrang(e);
-		}
-		
-		// Google Kix
-		if (doc.defaultView.frameElement && doc.defaultView.parent &&
-			doc.defaultView.parent.location.hostname === GDocsHostname &&
-			origTarget.isContentEditable) {
-			return this.handleKix(e);
-		}
-		
 		// Specialized Web editors
 		let tagName = origTarget.localName.toLowerCase();
 		try {
+			// iCloud Pages
+			if (doc.location.hostname === iCloudHostname &&
+				origTarget.isContentEditable) {
+				return this.handleCacTrang(e);
+			}
+			
+			// Google Kix
+			if (doc.defaultView.frameElement && doc.defaultView.parent &&
+				doc.defaultView.parent.location.hostname === GDocsHostname &&
+				origTarget.isContentEditable) {
+				return this.handleKix(e);
+			}
+			
 			// Ymacs
 			// Zoho Writer: window.editor<HTMLArea>.eventHandlerFunction(evt)
 			if ((tagName == "html" || tagName == "body") &&
@@ -2814,22 +2815,27 @@ function AVIM()	{
 };
 
 (function () {
+	if ("avim" in window || window.frameElement) return;
+	
 	let avim = new AVIM();
 	if (!avim) return;
 	addEventListener("load", function(evt) {
+		if ("avim" in evt.target.defaultView) return;
+		
 		evt.target.defaultView.avim = avim;
 		avim.registerPrefs();
 		avim.updateUI();
 		avim.registerSlights();
 		avim.doFirstRun();
+		
+		addEventListener("unload", function(evt) {
+			avim.unregisterPrefs();
+		}, false);
+		addEventListener("keydown", function(evt) {
+			avim.onKeyDown(evt);
+		}, true);
+		addEventListener("keypress", function(evt) {
+			avim.onKeyPress(evt);
+		}, true);
 	}, false);
-	addEventListener("unload", function(evt) {
-		avim.unregisterPrefs();
-	}, false);
-	addEventListener("keydown", function(evt) {
-		avim.onKeyDown(evt);
-	}, true);
-	addEventListener("keypress", function(evt) {
-		avim.onKeyPress(evt);
-	}, true);
 })();
