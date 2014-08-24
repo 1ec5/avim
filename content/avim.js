@@ -318,9 +318,10 @@ function AVIM()	{
 		};
 		this.selectionStart = this.selectionEnd = oldSelection.column;
 		
-		this.oldValue = sandbox.evalString("$buffer.getLine(" +
+		this.oldLine = sandbox.evalString("$buffer.getLine(" +
 										   oldSelection.row + ")");
-		this.value = this.oldValue;
+		let word = lastWordInString(this.oldLine.substr(0, oldSelection.column));
+		this.value = word;
 		
 		/**
 		 * Updates the Ymacs editor represented by this proxy to reflect any
@@ -329,15 +330,19 @@ function AVIM()	{
 		 * @returns {boolean}	True if anything was changed; false otherwise.
 		 */
 		this.commit = function() {
-			if (this.value == this.oldValue) return false;
+			if (word == this.value) {
+				return false;
+			}
 			
 			let linePos = sandbox.evalInt("$buffer._rowColToPosition(" +
 										  oldSelection.row + ",0)");
-			let pos = linePos + oldSelection.column +
-				this.value.length - this.oldValue.length;
+			let line = this.oldLine.substr(0, oldSelection.column - word.length) +
+				this.value + this.oldLine.substr(oldSelection.column);
+			let pos = linePos + oldSelection.column + line.length -
+				this.oldLine.length;
 			sandbox.evalFunctionCall("$buffer._replaceLine(" +
-									 oldSelection.row + "," +
-									 quoteJS(this.value) + ")");
+									 oldSelection.row + "," + quoteJS(line) +
+									 ")");
 			sandbox.evalFunctionCall("$buffer.redrawDirtyLines()");
 			sandbox.evalFunctionCall("$buffer.caretMarker.setPosition(" + pos +
 									 ")");
@@ -1662,13 +1667,12 @@ function AVIM()	{
 		}
 		
 		let numRanges = sandbox.evalInt("$sel.rangeCount") || 1;
-		let anyChanged = this.changed;
+		let anyChanged = false;
 		for (let i = 0; i < numRanges; i++) {
 			let proxy = new AceProxy(sandbox, i, numRanges);
 			if (!proxy) continue;
 			
-			let word = lastWordInString(proxy.value);
-			let result = word && applyKey(word, evt);
+			let result = proxy.value && applyKey(proxy.value, evt);
 			
 			if (result && result.changed && result.value) {
 				proxy.value = result.value;
@@ -1676,12 +1680,9 @@ function AVIM()	{
 			}
 			if (proxy.commit) proxy.commit();
 			proxy = null;
-			this.changed = false;
 		}
-		this.changed = anyChanged;
 		
-		if (this.changed) {
-			this.changed = false;
+		if (anyChanged) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
@@ -1721,16 +1722,14 @@ function AVIM()	{
 		// Fake a native textbox.
 		let proxy = new OrionProxy(sandbox);
 		
-		let word = lastWordInString(proxy.value);
-		let result = word && applyKey(word, evt);
+		let result = proxy.value && applyKey(proxy.value, evt);
 		if (result && result.changed && result.value) proxy.value = result.value;
 		
 		proxy.commit();
 		proxy = null;
 		sandbox = null;
 		
-		if (this.changed) {
-			this.changed = false;
+		if (result && result.changed) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
@@ -1768,14 +1767,14 @@ function AVIM()	{
 		// Fake a native textbox.
 		let proxy = new YmacsProxy(sandbox);
 		
-		this.start(proxy, evt);
+		let result = proxy.value && applyKey(proxy.value, evt);
+		if (result && result.changed && result.value) proxy.value = result.value;
 		
 		proxy.commit();
 		proxy = null;
 		sandbox = null;
 		
-		if (this.changed) {
-			this.changed = false;
+		if (result && result.changed) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
