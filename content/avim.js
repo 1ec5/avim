@@ -93,6 +93,7 @@ function AVIM()	{
 	 * If VIQR is the current input method, this function may return “\”.
 	 */
 	function lastWordInString(str) {
+		if (!str) return "";
 		if (str.substr(-1) === "\\" && methodIsVIQR()) return "\\";
 		let match = wordRe.exec(str);
 		return match && match[0];
@@ -1387,7 +1388,19 @@ function AVIM()	{
 		}
 	};
 	
-	let xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
+	const xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
+	function applyKey(word, evt) {
+		return xformer.applyKey(word, {
+			method: AVIMConfig.method,
+			ckSpell: AVIMConfig.ckSpell,
+			autoMethods: AVIMConfig.autoMethods,
+			informal: AVIMConfig.informal,
+			oldAccent: AVIMConfig.oldAccent,
+			keyCode: evt.keyCode,
+			which: evt.which,
+			shiftKey: evt.shiftKey,
+		});
+	}
 	
 	/**
 	 * Handles key presses for WYSIWYG HTML documents (editable through
@@ -1419,18 +1432,7 @@ function AVIM()	{
 		let result = {};
 		try {
 			let word = lastWordInString(node.substringData(0, range.startOffset));
-			if (word) {
-				result = xformer.applyKey(word, {
-					method: AVIMConfig.method,
-					ckSpell: AVIMConfig.ckSpell,
-					autoMethods: AVIMConfig.autoMethods,
-					informal: AVIMConfig.informal,
-					oldAccent: AVIMConfig.oldAccent,
-					keyCode: e.keyCode,
-					which: e.which,
-					shiftKey: e.shiftKey,
-				});
-			}
+			if (word) result = applyKey(word, e);
 			if ("value" in result && result.value != word) {
 				let txn = new SpliceTxn(doc, node,
 										range.startOffset - word.length,
@@ -1528,18 +1530,7 @@ function AVIM()	{
 		let result = {};
 		try {
 			let word = lastWordInString(el.value.substr(0, el.selectionStart));
-			if (word) {
-				result = xformer.applyKey(word, {
-					method: AVIMConfig.method,
-					ckSpell: AVIMConfig.ckSpell,
-					autoMethods: AVIMConfig.autoMethods,
-					informal: AVIMConfig.informal,
-					oldAccent: AVIMConfig.oldAccent,
-					keyCode: e.keyCode,
-					which: e.which,
-					shiftKey: e.shiftKey,
-				});
-			}
+			if (word) result = applyKey(word, e);
 			if ("value" in result && result.value != word) {
 				this.splice(el, el.selectionStart - word.length, word.length,
 							result.value);
@@ -1676,9 +1667,13 @@ function AVIM()	{
 			let proxy = new AceProxy(sandbox, i, numRanges);
 			if (!proxy) continue;
 			
-			this.start(proxy, evt);
+			let word = lastWordInString(proxy.value);
+			let result = word && applyKey(word, evt);
 			
-			if (this.changed) anyChanged = true;
+			if (result && result.changed && result.value) {
+				proxy.value = result.value;
+				anyChanged = true;
+			}
 			if (proxy.commit) proxy.commit();
 			proxy = null;
 			this.changed = false;
