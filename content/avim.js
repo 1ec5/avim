@@ -2039,11 +2039,15 @@ function AVIM()	{
 		for (let i = 0; i < flavors.length; i++) xfer.addDataFlavor(flavors[i]);
 		board.getData(xfer, board.kGlobalClipboard);
 		
+		let result = {};
 		try {
 			// Fake a native textbox.
 			let proxy = new KixProxy(evt);
 			
-			this.start(proxy, evt);
+			result = proxy.value && applyKey(proxy.value, evt);
+			if (result && result.changed && result.value) {
+				proxy.value = result.value;
+			}
 			
 			proxy.commit();
 			proxy = null;
@@ -2064,8 +2068,7 @@ function AVIM()	{
 			//board.emptyClipboard(board.kGlobalClipboard);
 		}
 		
-		if (this.changed) {
-			this.changed = false;
+		if (result && result.changed) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
@@ -2100,14 +2103,14 @@ function AVIM()	{
 		// Fake a native textbox.
 		let proxy = new CacTrangProxy(sandbox);
 		
-		this.start(proxy, evt);
+		let result = proxy.value && applyKey(proxy.value, evt);
+		if (result && result.changed && result.value) proxy.value = result.value;
 		
 		proxy.commit();
 		proxy = null;
 		sandbox = null;
 		
-		if (this.changed) {
-			this.changed = false;
+		if (result && result.changed) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
