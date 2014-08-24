@@ -582,15 +582,17 @@ function AVIM()	{
 			let linePos = elt.positionFromLine(lineNum);
 //			dump(">>> Line " + lineNum + ", position " + linePos + "\n");		// debug
 			if (selectionIsRectangle) elt.clearSelections();
-			elt.setSelectionNStart(selId, linePos);
-			elt.setSelectionNEnd(selId, elt.getLineEndPosition(lineNum));
+			let startPos = elt.positionAtChar(linePos,
+											  this.selectionStart - word.length);
+			elt.setSelectionNStart(selId, startPos);
+			let endPos = elt.positionAtChar(linePos, this.selectionStart);
+			elt.setSelectionNEnd(selId, endPos);
 //			dump(">>> Selected " + elt.selectionStart + "-" + elt.selectionEnd + "\n");	// debug
 			
 			// Replace the line's contents.
 //			dump(">>> Replacing '" + elt.selText + "' with '" + this.value + "'.\n");	// debug
 			// TODO: This will trample on any other selections.
-			elt.replaceSel(this.oldLine.substr(0, this.selectionStart - word.length) +
-						   this.value + this.oldLine.substr(this.selectionEnd));
+			elt.replaceSel(this.value);
 			
 			// Reset the selection.
 			if (selectionIsRectangle) {
@@ -605,12 +607,10 @@ function AVIM()	{
 			}
 			else {
 				let colChange = this.value.length - word.length;
-				let startPos = elt.positionAtChar(linePos, this.selectionStart +
+				let caretPos = elt.positionAtChar(linePos, this.selectionStart +
 														   colChange);
-				elt.setSelectionNStart(selId, startPos);
-				let endPos = elt.positionAtChar(linePos, this.selectionEnd +
-														 colChange);
-				elt.setSelectionNEnd(selId, endPos);
+				elt.setSelectionNStart(selId, caretPos);
+				elt.setSelectionNEnd(selId, caretPos);
 //				dump(">>> After: " + elt.getSelectionNStart(selId) + "-" +
 //					 elt.getSelectionNEnd(selId) + "\n");							// debug
 			}
