@@ -660,7 +660,7 @@ function Transformation(startValue, context) {
 	 * 						empty string for diacritic removal.
 	 */
 	this.main = function(w, k, i, a, noNormC) {
-		let uk = up(k), got = false, t = lowerUpper("daaoueo").split("");
+		let uk = up(k), got = false, t = intersperseLowerUpper("daaoueo");
 		let by = [], sf = [], method = context.method, h, g;
 		if (method == 0) {
 			if (a[0] == "9") method = 2;
