@@ -1,120 +1,165 @@
 "use strict";
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
+const Cc = Components.classes,
+	  Ci = Components.interfaces,
+	  Cu = Components.utils;
 
 // { 0x4A373444, 0x8A2A, 0x4641, \
 // 		{ 0xAD, 0xD5, 0x89, 0x7A, 0x88, 0xD0, 0x51, 0x85 }
-const CLASS_ID = Components.ID("{4A373444-8A2A-4641-ADD5-897A88D05185}");
-const CLASS_NAME = "AVIM text transformer service";
-const CONTRACT_ID = "@1ec5.org/avim/transformer;1";
+const CLASS_ID = Components.ID("{4A373444-8A2A-4641-ADD5-897A88D05185}"),
+	  CLASS_NAME = "AVIM text transformer service",
+	  CONTRACT_ID = "@1ec5.org/avim/transformer;1";
+
+let Transformation = (function () {
+
+// Some shortcuts for brevity.
+const fcc = String.fromCharCode,
+	  up = String.toUpperCase;
+
+function nan(w) {
+	return isNaN(w) || w == 'e';
+}
+
+function codesFromChars(chars) {
+	let codes = [];
+	for (let i = 0; i < chars.length; i++) {
+		codes.push(chars[i].charCodeAt(0));
+	}
+	return codes;
+}
+
+function lowerUpper(chars) {
+	return chars.toLowerCase() + chars.toUpperCase();
+}
+
+function upperLower(chars) {
+	return chars.toUpperCase() + chars.toLowerCase();
+}
+
+function intersperseLowerUpper(chars) {
+	let arr = [];
+	for (let i = 0; i < chars.length; i++) {
+		arr.push(chars[i].toLowerCase(), chars[i].toUpperCase());
+	}
+	return arr;
+}
+
+const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ",
+	  skey_str = lowerUpper("a\u00e2\u0103e\u00eaio\u00f4\u01a1u\u01b0y").split(""),	// aâăeêioôơuưy
+	  skey2 = lowerUpper("aaaeeiooouuy").split(""),
+	  skey = codesFromChars(skey_str),
+	  db1 = [0x0111 /* "đ" */, 0x0110 /* "Đ" */],
+	  ds1 = ['d','D'],
+	  os1 = intersperseLowerUpper("o\u01a1\u00f3\u00f2\u1ecd\u1ecf\u00f5\u1edb\u1edd\u1ee3\u1edf\u1ee1"),	// oơóòọỏõớờợởỡ
+	  ob1 = intersperseLowerUpper("\u00f4\u00f4\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7"),	// ôôốồộổỗốồộổỗ
+	  mocs1 = intersperseLowerUpper("o\u00f4u\u00f3\u00f2\u1ecd\u1ecf\u00f5\u00fa\u00f9\u1ee5\u1ee7\u0169\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7"),	// oôuóòọỏõúùụủũốồộổỗ
+	  mocb1 = intersperseLowerUpper("\u01a1\u01a1\u01b0\u1edb\u1edd\u1ee3\u1edf\u1ee1\u1ee9\u1eeb\u1ef1\u1eed\u1eef\u1edb\u1edd\u1ee3\u1edf\u1ee1"),	// ơơướờợởỡứừựửữớờợởỡ
+	  trangs1 = intersperseLowerUpper("a\u00e2\u00e1\u00e0\u1ea1\u1ea3\u00e3\u1ea5\u1ea7\u1ead\u1ea9\u1eab"),	// aâáàạảãấầậẩẫ
+	  trangb1 = intersperseLowerUpper("\u0103\u0103\u1eaf\u1eb1\u1eb7\u1eb3\u1eb5\u1eaf\u1eb1\u1eb7\u1eb3\u1eb5"),	// ăăắằặẳẵắằặẳẵ
+	  as1 = intersperseLowerUpper("a\u0103\u00e1\u00e0\u1ea1\u1ea3\u00e3\u1eaf\u1eb1\u1eb7\u1eb3\u1eb5\u1ebf\u1ec1\u1ec7\u1ec3\u1ec5"),	// aăáàạảãắằặẳẵếềệểễ
+	  ab1 = intersperseLowerUpper("\u00e2\u00e2\u1ea5\u1ea7\u1ead\u1ea9\u1eab\u1ea5\u1ea7\u1ead\u1ea9\u1eab\u00e9\u00e8\u1eb9\u1ebb\u1ebd"),	// ââấầậẩẫấầậẩẫéèẹẻẽ
+	  es1 = intersperseLowerUpper("e\u00e9\u00e8\u1eb9\u1ebb\u1ebd"),	// eéèẹẻẽ
+	  eb1 = intersperseLowerUpper("\u00ea\u1ebf\u1ec1\u1ec7\u1ec3\u1ec5"),	// êếềệểễ
+	  english = "\u0110\u00c2\u0102\u01a0\u01af\u00ca\u00d4",	// ĐÂĂƠƯÊÔ
+	  lowen = english.toLowerCase(),
+	  arA = lowerUpper("\u00e1\u00e0\u1ea3\u00e3\u1ea1a").split(""),	// áàảãạa
+	  mocrA = lowerUpper("\u00f3\u00f2\u1ecf\u00f5\u1ecdo\u00fa\u00f9\u1ee7\u0169\u1ee5u").split(""),	// óòỏõọoúùủũụu
+	  erA = lowerUpper("\u00e9\u00e8\u1ebb\u1ebd\u1eb9e").split(""),	// éèẻẽẹe
+	  orA = lowerUpper("\u00f3\u00f2\u1ecf\u00f5\u1ecdo").split(""),	// óòỏõọo
+	  aA = lowerUpper("\u1ea5\u1ea7\u1ea9\u1eab\u1ead\u00e2").split(""),	// ấầẩẫậâ
+	  oA = lowerUpper("\u1ed1\u1ed3\u1ed5\u1ed7\u1ed9\u00f4").split(""),	// ốồổỗộô
+	  mocA = lowerUpper("\u1edb\u1edd\u1edf\u1ee1\u1ee3\u01a1\u1ee9\u1eeb\u1eed\u1eef\u1ef1\u01b0").split(""),	// ớờởỡợơứừửữựư
+	  trangA = lowerUpper("\u1eaf\u1eb1\u1eb3\u1eb5\u1eb7\u0103").split(""),	// ắằẳẵặă
+	  eA = lowerUpper("\u1ebf\u1ec1\u1ec3\u1ec5\u1ec7\u00ea").split("");	// ếềểễệê
+
+const DAWEOFA = up(aA.join() + eA.join() + mocA.join() + trangA.join() +
+				   oA.join() + english);
+
+const bya = [db1, ab1, eb1, ob1, mocb1, trangb1],
+	  sfa = [ds1, as1, es1, os1, mocs1, trangs1];
+
+const ccA = [aA, mocA, trangA, eA, oA],
+	  ccrA = [arA, mocrA, arA, erA, orA];
+
+const methods = {
+	telex: {
+		DAWEO: "DAWEO", SFJRX: "SFJRX", FRX: "FRX",
+		S: "S", F: "F", J: "J", R: "R", X: "X", Z: "Z", D: "D",
+		them: "AOEW", moc: "W", trang: "W",
+		A: "A", E: "E", O: "O"
+	},
+	vni: {
+		DAWEO: "6789", SFJRX: "12534", FRX: "234",
+		S: "1", F: "2", J: "5", R: "3", X: "4", Z: "0", D: "9",
+		them: "678", moc: "7", trang: "8",
+		AEO: "6", A: "6", E: "6", O: "6"
+	},
+	viqr: {
+		DAWEO: "^+(D", SFJRX: "'`.?~", FRX: "`?~",
+		S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
+		them: "^+(", moc: "+", trang: "(",
+		AEO: "^", A: "^", E: "^", O: "^"
+	},
+	viqrStar: {
+		DAWEO: "^*(D", SFJRX: "'`.?~", FRX: "`?~",
+		S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
+		them: "^*(", moc: "*", trang: "(",
+		AEO: "^", A: "^", E: "^", O: "^"
+	},
+};
+
+/**
+ * Returns the given word with all diacritical marks removed.
+ *
+ * @param w	{string}	The word with diacritical marks.
+ * @returns {string}	The word without diacritical marks.
+ */
+function unV2(w) {
+	let unW = "";
+	for (let a = w.length - 1; a >= 0; a--) {
+		let pos = skey.indexOf(w.charCodeAt(a));
+		if (pos >= 0) unW = skey2[pos] + unW;
+		else unW = w[a] + unW;
+	}
+	return unW;
+};
 
 function Transformation(startValue, context) {
 	this.value = startValue;
-	let startLength = this.value.length;
+	this.startLength = this.value.length;
 	
-	function nan(w) {
-		return isNaN(w) || w == 'e';
-	}
+	this.changed = false;
+	this.whit = false;
 	
-	function codesFromChars(chars) {
-		let codes = [];
-		for (let i = 0; i < chars.length; i++) {
-			codes.push(chars[i].charCodeAt(0));
-		}
-		return codes;
-	}
-	
+	this.context = {
+		method: context.method,
+		autoMethods: {
+			telex: context.autoMethods.telex,
+			vni: context.autoMethods.vni,
+			viqr: context.autoMethods.viqr,
+			viqrStar: context.autoMethods.viqrStar,
+		},
+		ckSpell: context.ckSpell,
+		informal: context.informal,
+		oldAccent: context.oldAccent,
+		keyCode: context.keyCode,
+		which: context.which,
+		shiftKey: context.shiftKey,
+	};
+}
+
+Transformation.prototype = {
 	/**
 	 * Returns whether VIQR or VIQR* is the current input method, taking into
 	 * account whether they are enabled for Auto.
 	 *
 	 * @returns {bool}	True if VIQR or VIQR* is the current input method.
 	 */
-	function methodIsVIQR() {
-		if (context.method > 2) return true;
-		return context.method == 0 && (context.autoMethods.viqr ||
-									   context.autoMethods.viqrStar);
-	}
-	
-	function lowerUpper(chars) {
-		return chars.toLowerCase() + chars.toUpperCase();
-	}
-	
-	function upperLower(chars) {
-		return chars.toUpperCase() + chars.toLowerCase();
-	}
-	
-	function intersperseLowerUpper(chars) {
-		let arr = [];
-		for (let i = 0; i < chars.length; i++) {
-			arr.push(chars[i].toLowerCase(), chars[i].toUpperCase());
-		}
-		return arr;
-	}
-	
-	const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ";
-	const skey_str = lowerUpper("a\u00e2\u0103e\u00eaio\u00f4\u01a1u\u01b0y").split("");	// aâăeêioôơuưy
-	const skey2 = lowerUpper("aaaeeiooouuy").split("");
-	const skey = codesFromChars(skey_str);
-	const db1 = [0x0111 /* "đ" */, 0x0110 /* "Đ" */];
-	const ds1 = ['d','D'];
-	const os1 = intersperseLowerUpper("o\u01a1\u00f3\u00f2\u1ecd\u1ecf\u00f5\u1edb\u1edd\u1ee3\u1edf\u1ee1");	// oơóòọỏõớờợởỡ
-	const ob1 = intersperseLowerUpper("\u00f4\u00f4\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7");	// ôôốồộổỗốồộổỗ
-	const mocs1 = intersperseLowerUpper("o\u00f4u\u00f3\u00f2\u1ecd\u1ecf\u00f5\u00fa\u00f9\u1ee5\u1ee7\u0169\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7");	// oôuóòọỏõúùụủũốồộổỗ
-	const mocb1 = intersperseLowerUpper("\u01a1\u01a1\u01b0\u1edb\u1edd\u1ee3\u1edf\u1ee1\u1ee9\u1eeb\u1ef1\u1eed\u1eef\u1edb\u1edd\u1ee3\u1edf\u1ee1");	// ơơướờợởỡứừựửữớờợởỡ
-	const trangs1 = intersperseLowerUpper("a\u00e2\u00e1\u00e0\u1ea1\u1ea3\u00e3\u1ea5\u1ea7\u1ead\u1ea9\u1eab");	// aâáàạảãấầậẩẫ
-	const trangb1 = intersperseLowerUpper("\u0103\u0103\u1eaf\u1eb1\u1eb7\u1eb3\u1eb5\u1eaf\u1eb1\u1eb7\u1eb3\u1eb5");	// ăăắằặẳẵắằặẳẵ
-	const as1 = intersperseLowerUpper("a\u0103\u00e1\u00e0\u1ea1\u1ea3\u00e3\u1eaf\u1eb1\u1eb7\u1eb3\u1eb5\u1ebf\u1ec1\u1ec7\u1ec3\u1ec5");	// aăáàạảãắằặẳẵếềệểễ
-	const ab1 = intersperseLowerUpper("\u00e2\u00e2\u1ea5\u1ea7\u1ead\u1ea9\u1eab\u1ea5\u1ea7\u1ead\u1ea9\u1eab\u00e9\u00e8\u1eb9\u1ebb\u1ebd");	// ââấầậẩẫấầậẩẫéèẹẻẽ
-	const es1 = intersperseLowerUpper("e\u00e9\u00e8\u1eb9\u1ebb\u1ebd");	// eéèẹẻẽ
-	const eb1 = intersperseLowerUpper("\u00ea\u1ebf\u1ec1\u1ec7\u1ec3\u1ec5");	// êếềệểễ
-	const english = "\u0110\u00c2\u0102\u01a0\u01af\u00ca\u00d4";	// ĐÂĂƠƯÊÔ
-	const lowen = english.toLowerCase();
-	const arA = lowerUpper("\u00e1\u00e0\u1ea3\u00e3\u1ea1a").split("");	// áàảãạa
-	const mocrA = lowerUpper("\u00f3\u00f2\u1ecf\u00f5\u1ecdo\u00fa\u00f9\u1ee7\u0169\u1ee5u").split("");	// óòỏõọoúùủũụu
-	const erA = lowerUpper("\u00e9\u00e8\u1ebb\u1ebd\u1eb9e").split("");	// éèẻẽẹe
-	const orA = lowerUpper("\u00f3\u00f2\u1ecf\u00f5\u1ecdo").split("");	// óòỏõọo
-	const aA = lowerUpper("\u1ea5\u1ea7\u1ea9\u1eab\u1ead\u00e2").split("");	// ấầẩẫậâ
-	const oA = lowerUpper("\u1ed1\u1ed3\u1ed5\u1ed7\u1ed9\u00f4").split("");	// ốồổỗộô
-	const mocA = lowerUpper("\u1edb\u1edd\u1edf\u1ee1\u1ee3\u01a1\u1ee9\u1eeb\u1eed\u1eef\u1ef1\u01b0").split("");	// ớờởỡợơứừửữựư
-	const trangA = lowerUpper("\u1eaf\u1eb1\u1eb3\u1eb5\u1eb7\u0103").split("");	// ắằẳẵặă
-	const eA = lowerUpper("\u1ebf\u1ec1\u1ec3\u1ec5\u1ec7\u00ea").split("");	// ếềểễệê
-	
-	const methods = {
-		telex: {
-			DAWEO: "DAWEO", SFJRX: "SFJRX", FRX: "FRX",
-			S: "S", F: "F", J: "J", R: "R", X: "X", Z: "Z", D: "D",
-			them: "AOEW", moc: "W", trang: "W",
-			A: "A", E: "E", O: "O"
-		},
-		vni: {
-			DAWEO: "6789", SFJRX: "12534", FRX: "234",
-			S: "1", F: "2", J: "5", R: "3", X: "4", Z: "0", D: "9",
-			them: "678", moc: "7", trang: "8",
-			AEO: "6", A: "6", E: "6", O: "6"
-		},
-		viqr: {
-			DAWEO: "^+(D", SFJRX: "'`.?~", FRX: "`?~",
-			S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
-			them: "^+(", moc: "+", trang: "(",
-			AEO: "^", A: "^", E: "^", O: "^"
-		},
-		viqrStar: {
-			DAWEO: "^*(D", SFJRX: "'`.?~", FRX: "`?~",
-			S: "'", F: "`", J: ".", R: "?", X: "~", Z: "-", D: "D",
-			them: "^*(", moc: "*", trang: "(",
-			AEO: "^", A: "^", E: "^", O: "^"
-		}
-	};
-	
-	// Some shortcuts for brevity.
-	let fcc = String.fromCharCode;
-	let up = String.toUpperCase;
-	
-	this.changed = false;
-	this.whit = false;
+	methodIsVIQR: function () {
+		if (this.context.method > 2) return true;
+		return this.context.method == 0 && (this.context.autoMethods.viqr ||
+											this.context.autoMethods.viqrStar);
+	},
 	
 	/**
 	 * Replaces the substring inside the current text, starting at an index and
@@ -126,11 +171,11 @@ function Transformation(startValue, context) {
 	 * @returns {number}	The distance to the right that the end of the word
 	 * 						has shifted.
 	 */
-	this.splice = function(index, len, repl) {
+	splice: function (index, len, repl) {
 		let val = this.value;
 		this.value = val.substr(0, index) + repl + val.substr(index + len);
 		return repl.length - len;
-	};
+	},
 	
 	/**
 	 * Returns whether the given word, taking into account the given dead key,
@@ -140,15 +185,15 @@ function Transformation(startValue, context) {
 	 * @param k	{string}	The dead key applied to the word.
 	 * @returns {boolean}	True if the word is malformed; false otherwise.
 	 */
-	this.ckspell = function(w, k) {
-		if (!context.ckSpell) return false;
+	ckspell: function (w, k) {
+		if (!this.context.ckSpell) return false;
 		
 		let uk = up(k);
 		
 		// Đồng sign after a number: valid
 		let num = /^([0-9]+)(d?)$/.exec(w);
-		let isVni = context.method == 2 ||
-			(context.method == 0 && context.autoMethods.vni);
+		let isVni = this.context.method == 2 ||
+			(this.context.method == 0 && this.context.autoMethods.vni);
 		if (num) {
 			// Entering the first D: valid
 			if (!num[2] && uk == "D") return false;
@@ -161,19 +206,19 @@ function Transformation(startValue, context) {
 		let uw = up(w), tw = uw, uw2 = unV2(uw), twE;
 		let vSConsonant = "BCD\u0110GHKLMNPQRSTVX";
 		let vDConsonant = "[CKNP]H|G[HI]|NGH?|QU|T[HR]";
-		if (context.informal) {
+		if (this.context.informal) {
 			vSConsonant += "F";
 			vDConsonant += "|DZ";
 		}
 		
 		// NG~: valid
-		if (uw == "NG" && uk == this.method.X && context.informal) {
+		if (uw == "NG" && uk == this.method.X && this.context.informal) {
 			return false;
 		}
 		
 		// Non-Vietnamese characters: invalid
 		let nonViet = "A-EGHIK-VXY\u0110";
-		if (context.informal) nonViet += "FZ";
+		if (this.context.informal) nonViet += "FZ";
 		if (new RegExp("[^" + nonViet + "]").test(uw2)) return true;
 		
 		// Final consonants with ` ? ~ tones: invalid
@@ -182,7 +227,7 @@ function Transformation(startValue, context) {
 		}
 		
 		// Initial non-Vietnamese consonants: invalid
-		if (context.informal) {
+		if (this.context.informal) {
 			if (/^Z|[^D]Z/.test(uw)) return true;
 		}
 		else if (uw.indexOf("F") >= 0 || uw.indexOf("Z") >= 0) return true;
@@ -260,7 +305,7 @@ function Transformation(startValue, context) {
 		
 		// Catch-all for words with too many interior letters
 		return uw2.length > 3;
-	};
+	},
 	
 	/**
 	 * Retrieves the current text contents and cursor position.
@@ -268,30 +313,30 @@ function Transformation(startValue, context) {
 	 * @returns {array}	A tuple containing the word ending at the cursor
 	 * 					position and the cursor position.
 	 */
-	this.mozGetText = function() {
-		let pos = startLength;
+	mozGetText: function () {
+		let pos = this.startLength;
 		if (pos < 0) return false;
 		
 		let w = this.value.substring(0, pos);
-		if (w.substr(-1) == "\\" && methodIsVIQR()) return ["\\", pos];
+		if (w.substr(-1) == "\\" && this.methodIsVIQR()) return ["\\", pos];
 		return [w, pos];
-	};
+	},
 	
-	this.start = function() {
-		let method = context.method, dockspell = context.ckSpell;
+	start: function () {
+		let method = this.context.method, dockspell = this.context.ckSpell;
 		let uniA = [];
 		this.D2 = "";
 		
-		if (method == 1 || (method == 0 && context.autoMethods.telex)) {
+		if (method == 1 || (method == 0 && this.context.autoMethods.telex)) {
 			uniA.push("DAEOWW".split("")); this.D2 += "DAWEO";
 		}
-		if (method == 2 || (method == 0 && context.autoMethods.vni)) {
+		if (method == 2 || (method == 0 && this.context.autoMethods.vni)) {
 			uniA.push("966678".split("")); this.D2 += "6789";
 		}
-		if (method == 3 || (method == 0 && context.autoMethods.viqr)) {
+		if (method == 3 || (method == 0 && this.context.autoMethods.viqr)) {
 			uniA.push("D^^^+(".split("")); this.D2 += "D^+(";
 		}
-		if (method == 4 || (method == 0 && context.autoMethods.viqrStar)) {
+		if (method == 4 || (method == 0 && this.context.autoMethods.viqrStar)) {
 			uniA.push("D^^^*(".split("")); this.D2 += "D^*(";
 		}
 		
@@ -300,9 +345,9 @@ function Transformation(startValue, context) {
 		//dump(">>> start() -- w: <" + w + ">\n");								// debug
 		let key = "";
 		const backspace = Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
-		if (!context.keyCode || context.keyCode != backspace ||
-			!context.shiftKey) {
-			key = fcc(context.which);
+		if (!this.context.keyCode || this.context.keyCode != backspace ||
+			!this.context.shiftKey) {
+			key = fcc(this.context.which);
 		}
 		
 		let noNormC = this.D2.indexOf(up(key)) >= 0;
@@ -319,7 +364,7 @@ function Transformation(startValue, context) {
 			w = this.mozGetText();
 			if (w) this.normC(w[0], key, w[1]);
 		}
-	};
+	},
 	
 	/**
 	 * Performs simple substitutions that were not originally part of AVIM's
@@ -330,7 +375,7 @@ function Transformation(startValue, context) {
 	 * 							pressed key.
 	 * @param pos	{number}	Index of the caret.
 	 */
-	this.convertCustomChars = function(word, key, pos) {
+	convertCustomChars: function (word, key, pos) {
 		let uw = up(word), uk = up(key);
 		
 		if (/^[0-9]+.$/.test(word)) {
@@ -353,7 +398,7 @@ function Transformation(startValue, context) {
 			return;
 		}
 		
-		if (context.informal || !context.ckSpell) {
+		if (this.context.informal || !this.context.ckSpell) {
 			if (uw == "NG" && uk == this.method.X) {
 				// Convert NG to use a combining diacritic.
 				this.splice(pos, 0, "\u0303");
@@ -370,17 +415,15 @@ function Transformation(startValue, context) {
 				this.changed = true;
 			}
 		}
-	};
+	},
 	
-	const DAWEOFA = up(aA.join() + eA.join() + mocA.join() + trangA.join() +
-					   oA.join() + english);
 	/**
 	 * @param w	{string}	The word ending at the cursor position.
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
-	this.findC = function(w, k, sf) {
-		let method = context.method;
-		if (methodIsVIQR() && w.substr(-1) == "\\") {
+	findC: function (w, k, sf) {
+		let method = this.context.method;
+		if (this.methodIsVIQR() && w.substr(-1) == "\\") {
 			return [1, k.charCodeAt(0)];
 		}
 		let str = "", res, cc = "", pc = "", vowA = [], s = upperLower("\u00c2\u0102\u00ca\u00d4\u01a0\u01af"), c = 0, dn = false, uw = up(w), tv, g;	// ÂĂÊÔƠƯ
@@ -501,7 +544,7 @@ function Transformation(startValue, context) {
 		if (c == 1 || uk == this.method.Z) return vowA[0];
 		else if (c == 2) {
 			let upW = up(w);
-			if (!context.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
+			if (!this.context.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
 				return vowA[0];
 			}
 			// Count final consonants.
@@ -516,7 +559,7 @@ function Transformation(startValue, context) {
 		}
 		else if (c == 3) return vowA[1];
 		return false;
-	};
+	},
 	
 	/**
 	 * Replaces the character or characters at the given position with the given
@@ -525,7 +568,7 @@ function Transformation(startValue, context) {
 	 * @param pos	{string}	The position to start replacing from.
 	 * @param c		{number}	The codepoint of the character to replace with.
 	 */
-	this.replaceChar = function(pos, c) {
+	replaceChar: function (pos, c) {
 		let val = this.value;
 		//dump("AVIM.replaceChar -- pos: " + pos + "; original: " + val[pos] + "; repl: " + fcc(c) + "\n");	// debug
 		let bb = false;
@@ -541,7 +584,7 @@ function Transformation(startValue, context) {
 			}
 		}
 		let r;
-		if (up(val.substr(pos - 1, 1)) == 'U' && pos < startLength - 1 && up(val.substr(pos - 2, 1)) != 'Q') {
+		if (up(val.substr(pos - 1, 1)) == 'U' && pos < this.startLength - 1 && up(val.substr(pos - 2, 1)) != 'Q') {
 			if (wfix == "\u01a0" /* Ơ */ || bb) {
 				r = (val.substr(pos - 1, 1) == 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
 			}
@@ -556,13 +599,13 @@ function Transformation(startValue, context) {
 		}
 		this.splice(pos, 1 + !!r, replaceBy);
 		this.whit = false;
-	};
+	},
 	
 	/**
 	 * @param w	{string}	The word ending at the cursor position.
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
-	this.tr = function(k, w, by, sf, i) {
+	tr: function (k, w, by, sf, i) {
 		let pos = this.findC(w, k, sf);
 		if (!pos) return false;
 		if (pos[1]) return this.replaceChar(i - pos[0], pos[1]);
@@ -575,18 +618,16 @@ function Transformation(startValue, context) {
 			}
 		}
 		return false;
-	};
+	},
 	
-	const bya = [db1, ab1, eb1, ob1, mocb1, trangb1];
-	const sfa = [ds1, as1, es1, os1, mocs1, trangs1];
 	/**
 	 * @param w	{string}	The word ending at the cursor position.
 	 * @param k	{string}	The character equivalent of the pressed key, or the
 	 * 						empty string for diacritic removal.
 	 */
-	this.main = function(w, k, i, a, noNormC) {
+	main: function (w, k, i, a, noNormC) {
 		let uk = up(k), got = false, t = intersperseLowerUpper("daaoueo");
-		let by = [], sf = [], method = context.method, h, g;
+		let by = [], sf = [], method = this.context.method, h, g;
 		if (method == 0) {
 			if (a[0] == "9") method = 2;
 			else if (a.length > 3 && a[4] == "+") method = 3;
@@ -630,22 +671,22 @@ function Transformation(startValue, context) {
 		if (got) return this.DAWEOZ(k, w, by, sf, i, uk);
 		if (noNormC) return "";
 		return this.normC(w, k, i);
-	};
+	},
 	
-	this.DAWEOZ = function(k, w, by, sf, i, uk) {
+	DAWEOZ: function (k, w, by, sf, i, uk) {
 		if (this.method.DAWEO.indexOf(uk) < 0 &&
 			this.method.Z.indexOf(uk) < 0) {
 			return false;
 		}
 		return this.tr(k, w, by, sf, i);
-	};
+	},
 	
 	/**
 	 * @param w	{string}	The word ending at the cursor position.
 	 * @param k	{string}	The character equivalent of the pressed key, or the
 	 * 						empty string for diacritic removal.
 	 */
-	this.normC = function(w, k, i) {
+	normC: function (w, k, i) {
 		if (k == "") k = this.method.Z;
 		if (k[0] == " ") return "";
 		let uk = up(k);
@@ -662,15 +703,15 @@ function Transformation(startValue, context) {
 			else if (h <= 95) fS = this.method.R;
 			
 			let c = skey[h % 24];
-			let sp = startLength;
-			let end = startLength;
+			let sp = this.startLength;
+			let end = this.startLength;
 			let pos = sp;
 			w = this.unV(w);
 			if(!this.changed) {
 				w += k;
 				pos += k.length;
 //				this.value = this.value.substr(0, sp) + k +
-//					this.value.substr(startLength);
+//					this.value.substr(this.startLength);
 				this.splice(sp, end - sp, k);
 				this.changed = true;
 			}
@@ -681,10 +722,9 @@ function Transformation(startValue, context) {
 			}
 		}
 		return "";
-	};
+	},
 	
-	const ccA = [aA, mocA, trangA, eA, oA], ccrA = [arA, mocrA, arA, erA, orA];
-	this.DAWEOF = function(cc, k, g) {
+	DAWEOF: function (cc, k, g) {
 		let kA = [this.method.A, this.method.moc, this.method.trang,
 				  this.method.E, this.method.O];
 		for (let i = 0; i < kA.length; i++) {
@@ -697,7 +737,7 @@ function Transformation(startValue, context) {
 			return repl ? [g, repl] : false;
 		}
 		return false;
-	};
+	},
 	
 	/**
 	 * Returns an array of characters corresponding to the following characters
@@ -711,7 +751,7 @@ function Transformation(startValue, context) {
 	 * @returns {string}	A string of accented characters.
 	 * 			{object}	An array of character codes.
 	 */
-	this.retKC = function(k, giveChars) {
+	retKC: function (k, giveChars) {
 		let chars = "";
 		switch (k) {
 			case this.method.S: chars = lowerUpper("\u00e1\u1ea5\u1eaf\u00e9\u1ebf\u00ed\u00f3\u1ed1\u1edb\u00fa\u1ee9\u00fd"); break;	// áấắéếíóốớúứý
@@ -721,7 +761,7 @@ function Transformation(startValue, context) {
 			case this.method.X: chars = lowerUpper("\u00e3\u1eab\u1eb5\u1ebd\u1ec5\u0129\u00f5\u1ed7\u1ee1\u0169\u1eef\u1ef9");	// ãẫẵẽễĩõỗỡũữỹ
 		}
 		return giveChars ? chars : codesFromChars(chars);
-	};
+	},
 	
 	/**
 	 * Returns the given word with tone marks removed.
@@ -729,7 +769,7 @@ function Transformation(startValue, context) {
 	 * @param w	{string}	The word with tone marks.
 	 * @returns {string}	The word without tone marks.
 	 */
-	this.unV = function(w) {
+	unV: function (w) {
 		let u = this.repSign(null);
 		let unW = "";
 		for (let a = w.length - 1; a >= 0; a--) {
@@ -738,25 +778,9 @@ function Transformation(startValue, context) {
 			else unW = w[a] + unW;
 		}
 		return unW;
-	};
+	},
 	
-	/**
-	 * Returns the given word with all diacritical marks removed.
-	 *
-	 * @param w	{string}	The word with diacritical marks.
-	 * @returns {string}	The word without diacritical marks.
-	 */
-	function unV2(w) {
-		let unW = "";
-		for (let a = w.length - 1; a >= 0; a--) {
-			let pos = skey.indexOf(w.charCodeAt(a));
-			if (pos >= 0) unW = skey2[pos] + unW;
-			else unW = w[a] + unW;
-		}
-		return unW;
-	};
-	
-	this.repSign = function(k) {
+	repSign: function (k) {
 		let u = [];
 		for (let a = 0; a < 5; a++) {
 			if (!k || this.method.SFJRX[a] != up(k)) {
@@ -764,24 +788,24 @@ function Transformation(startValue, context) {
 			}
 		}
 		return u;
-	};
+	},
 	
 	/**
 	 * @param w	{string}	The word ending at the cursor position.
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
-	this.sr = function(w, k, i) {
+	sr: function (w, k, i) {
 		let pos = this.findC(w, k, skey_str);
 		if (!pos) return;
 		if (pos[1]) this.replaceChar(i - pos[0], pos[1]);
 		else this.replaceChar(i - pos, this.retUni(w, k, pos));
-	};
+	},
 	
 	/**
 	 * @param w	{string}	The word ending at the cursor position.
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
-	this.retUni = function(w, k, pos) {
+	retUni: function (w, k, pos) {
 		let uC, lC;
 		let idx = skey_str.indexOf(w.substr(-pos, 1));
 		if (idx < 0) return false;
@@ -795,8 +819,12 @@ function Transformation(startValue, context) {
 		let u = this.retKC(up(k));
 		if (t != up(t)) return u[lC];
 		return u[uC];
-	};
-}
+	},
+};
+
+return Transformation;
+
+})();
 
 /**
  * @class AVIMTransformerService
