@@ -55,7 +55,7 @@
 		table.hide-minor .chim,
 		table.hide-minor .viettyping,
 		table/* .hide-minor */ .vport,
-		table.hide-minor .myavim,
+		table/* .hide-minor */ .myavim,
 		table/* .hide-minor */ .instcode,
 		table .prism,
 		table.hide-minor .windows-seamonkey {
@@ -73,7 +73,7 @@
 			box.checked = show;
 			document.getElementById("comparison").className = c;
             document.getElementById("comparison-wrapper").className = c;
-            document.getElementById("moz-colgroup").setAttribute("colspan", show ? "6" : "2");
+            document.getElementById("moz-colgroup").setAttribute("colspan", show ? "5" : "2");
             document.getElementById("chrome-colgroup").setAttribute("colspan", show ? "3" : "2");
 		}
 		
