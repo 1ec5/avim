@@ -537,7 +537,9 @@ function AVIM()	{
 		this.selectionEnd = this.selectionStart;
 //		dump("\tselectionStart: " + this.selectionStart + "\n");				// debug
 		if (this.selectionStart < 0) return;
-		this.value = this.oldValue = sciMozGetLine(elt, selId, lineNum);
+		this.oldLine = sciMozGetLine(elt, selId, lineNum)
+		let word = lastWordInString(this.oldLine.substr(0, this.selectionStart));
+		this.value = word;
 //		dump("\t<" + this.value + ">\n");										// debug
 		
 		/**
@@ -571,7 +573,7 @@ function AVIM()	{
 		 * @returns {boolean}	True if the text changed.
 		 */
 		this.commit = function() {
-			if (this.value == this.oldValue) return false;
+			if (this.value == word) return false;
 			
 			// Select the entire line, up to the cursor.
 			if (!selectionIsRectangle) {
@@ -587,7 +589,8 @@ function AVIM()	{
 			// Replace the line's contents.
 //			dump(">>> Replacing '" + elt.selText + "' with '" + this.value + "'.\n");	// debug
 			// TODO: This will trample on any other selections.
-			elt.replaceSel(this.value);
+			elt.replaceSel(this.oldLine.substr(0, this.selectionStart - word.length) +
+						   this.value + this.oldLine.substr(this.selectionEnd));
 			
 			// Reset the selection.
 			if (selectionIsRectangle) {
@@ -595,13 +598,13 @@ function AVIM()	{
 				let colChange = 0;
 				if (lineNum == Math.max(this.oldSelectionStart.line,
 										this.oldSelectionEnd.line)) {
-					colChange = this.value.length - this.oldValue.length;
+					colChange = this.value.length - word.length;
 				}
 				
 				this.reselectRectangle(colChange);
 			}
 			else {
-				let colChange = this.value.length - this.oldValue.length;
+				let colChange = this.value.length - word.length;
 				let startPos = elt.positionAtChar(linePos, this.selectionStart +
 														   colChange);
 				elt.setSelectionNStart(selId, startPos);
@@ -1608,9 +1611,12 @@ function AVIM()	{
 				else proxy = new SciMozProxy(el, i);
 				if (!proxy) continue;
 				
-				this.start(proxy, e);
+				let result = proxy.value && applyKey(proxy.value, e);
 				
-				if (this.changed) anyChanged = true;
+				if (result && result.changed && result.value) {
+					proxy.value = result.value;
+					anyChanged = true;
+				}
 				if (proxy.commit) proxy.commit();
 				proxy = null;
 				this.changed = false;
