@@ -1874,6 +1874,10 @@ function AVIM()	{
 	this.registerSlightsOnPageLoad = function(evt) {
 		if (!document.querySelectorAll) return;
 		
+		const mimeTypes = ["application/x-silverlight-1",
+						   "application/x-silverlight-2",
+						   "application/ag-plugin"];
+		
 		try {
 			let sandbox = new Sandbox(evt.originalTarget.defaultView);
 			sandbox.importFunction(slightFindIgnore, "slightFindIgnore");
@@ -1886,10 +1890,8 @@ function AVIM()	{
 									  "(" + avim_slight_eatChar + ")");
 			
 			//* Always stringify this function before calling it.
-			let _registerSlights = function () {
-				var elts = document.querySelectorAll("object[type='application/x-silverlight-1']," +
-													 "object[type='application/x-silverlight-2']," +
-													 "object[type='application/ag-plugin']");
+			let _registerSlights = function (type) {
+				var elts = document.querySelectorAll("object[type='" + type + "']");
 				var i;
 				for (i = 0; i < elts.length; i++) {
 					if (elts[i].content) {
@@ -1898,7 +1900,12 @@ function AVIM()	{
 					}
 				}
 			};
-			sandbox.evalFunctionCall("(" + _registerSlights + ")()");
+			for (let i = 0; i < mimeTypes.length; i++) {
+				if (mimeTypes[i] in navigator.mimeTypes) {
+					sandbox.evalFunctionCall("(" + _registerSlights + ")('" +
+											 mimeTypes[i] + "')");
+				}
+			}
 //			doc.addEventListener("DOMNodeInserted",
 //								 avim.registerSlightsOnChange, true);
 		}
