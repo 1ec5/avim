@@ -1523,7 +1523,6 @@ function AVIM()	{
 //					 (firstSel + numSel) + "\n");	// debug
 			}
 			
-			let anyChanged = this.changed;
 			let proxy;
 			for (let i = firstSel; i < firstSel + numSel; i++) {
 				if (selectionIsRectangle) proxy = new SciMozProxy(el, 0, i);
