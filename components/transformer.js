@@ -128,9 +128,6 @@ function Transformation(startValue, context) {
 	this.value = startValue;
 	this.startLength = this.value.length;
 	
-	this.changed = false;
-	this.whit = false;
-	
 	this.context = {
 		method: context.method,
 		autoMethods: {
@@ -149,6 +146,9 @@ function Transformation(startValue, context) {
 }
 
 Transformation.prototype = {
+	changed: false,
+	whit: false,
+	
 	/**
 	 * Returns whether VIQR or VIQR* is the current input method, taking into
 	 * account whether they are enabled for Auto.
