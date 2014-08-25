@@ -57,7 +57,6 @@ function MudimMonitor() {
 	 * Unregisters the preferences observer as the window is being closed.
 	 */
 	this.unregisterPrefs = function() {
-		this.setPrefs();
 		avimPrefs.removeObserver(avimEnabledId, this);
 		mudimPrefs.removeObserver(mudimMethodId, this);
 	};
@@ -166,10 +165,12 @@ function MudimMonitor() {
 }
 
 let mudimMonitor = new MudimMonitor();
-addEventListener("load", function () {
+addEventListener("load", function load() {
+	removeEventListener("load", load, false);
 	mudimMonitor.registerPrefs();
 }, false);
-addEventListener("unload", function () {
+addEventListener("unload", function unload() {
+	removeEventListener("unload", unload, false);
 	mudimMonitor.unregisterPrefs();
 }, false);
 })();

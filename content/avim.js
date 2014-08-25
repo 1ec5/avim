@@ -2756,7 +2756,8 @@ function AVIM()	{
 	
 	let avim = new AVIM();
 	if (!avim) return;
-	addEventListener("load", function(evt) {
+	addEventListener("load", function load(evt) {
+		removeEventListener("load", load, false);
 		if ("avim" in evt.target.defaultView) return;
 		
 		evt.target.defaultView.avim = avim;
@@ -2765,14 +2766,15 @@ function AVIM()	{
 		avim.registerSlights();
 		avim.doFirstRun();
 		
-		addEventListener("unload", function(evt) {
-			avim.unregisterPrefs();
-		}, false);
-		addEventListener("keydown", function(evt) {
+		addEventListener("keydown", function (evt) {
 			avim.onKeyDown(evt);
 		}, true);
-		addEventListener("keypress", function(evt) {
+		addEventListener("keypress", function (evt) {
 			avim.onKeyPress(evt);
 		}, true);
+		addEventListener("unload", function unload(evt) {
+			removeEventListener("unload", unload, false);
+			avim.unregisterPrefs();
+		}, false);
 	}, false);
 })();
