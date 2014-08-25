@@ -355,94 +355,6 @@ function AVIM()	{
 	YmacsProxy.prototype = new TextControlProxy();
 	
 	/**
-	 * Proxy for a Silverlight input control, to reduce back-and-forth between
-	 * JavaScript and Silverlight. This object supports TextBox controls only.
-	 *
-	 * @param ctl	{object}	The XAML control represented by the proxy.
-	 */
-	function SlightCtlProxy(ctl) {
-		this.ctl = ctl;
-		this.type = ctl.getHost().type;
-		if (!("text" in ctl)) throw "Not a TextBox control";
-//		if ("password" in ctl) this.value = ctl.password;
-		this.selectionStart = this.oldSelectionStart = ctl.selectionStart;
-		this.selectionEnd = ctl.selectionStart + ctl.selectionLength;
-		this.oldValue = ctl.text;
-		let word = lastWordInString(this.oldValue.substr(0, this.selectionStart));
-		this.value = word;
-		
-		/**
-		 * Updates the Silverlight control represented by this proxy to reflect
-		 * any changes made to the proxy.
-		 */
-		this.commit = function() {
-//			if (this.value == word) return;
-			
-			let numExtraChars = this.value.length - word.length;
-			let tooLong = "maxLength" in this.ctl && this.ctl.maxLength &&
-				this.oldValue.length + numExtraChars > this.ctl.maxLength;
-			if ("text" in this.ctl && !tooLong) {
-				let wordStart = this.selectionStart - word.length;
-				this.ctl.text = this.oldValue.substr(0, wordStart) +
-					this.value + this.oldValue.substr(this.selectionStart);
-			}
-//			else if ("password" in this.ctl) this.ctl.password = this.value;
-			this.ctl.selectionStart = this.selectionStart + numExtraChars;
-			this.ctl.selectionLength = this.selectionEnd - this.selectionStart;
-		};
-	};
-	SlightCtlProxy.prototype = new TextControlProxy();
-	
-	/**
-	 * Returns the Gecko-compatible virtual key code for the given Silverlight
-	 * virtual key code.
-	 *
-	 * @param	keyCode			{number}	Silverlight virtual key code.
-	 * @param	platformKeyCode	{number}	Platform key code.
-	 * @param	shiftKey		{boolean}	True if the Shift key is held down;
-	 * 										false otherwise.
-	 * @returns	A Gecko-compatible virtual key code, or 0xff (255) if no virtual
-	 * 			key is applicable.
-	 *
-	 * @see		http://msdn.microsoft.com/en-us/library/bb979636%28VS.95%29.aspx
-	 * @see		https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
-	 */
-	let virtualKeyFromSlight = function(keyCode, platformKeyCode, shiftKey) {
-//		dump("key code: " + keyCode + "; platform key code: " + platformKeyCode + "\n");	// debug
-		if (keyCode > 19 && keyCode < 30) {	// number row
-			if (shiftKey) return 0xff;
-			else keyCode += 28;
-		}
-		else if (keyCode > 29 && keyCode < 56) {	// alphabetic
-			keyCode += 35;
-			if (!shiftKey) keyCode += 32;
-		}
-//		if (keyCode == 0xff && platformKeyCode == 39) {	// '
-//			keyCode = platformKeyCode;
-//		}
-		return keyCode;
-	};
-	
-	/**
-	 * Proxy for a Silverlight KeyboardEventArgs object posing as a DOM Event
-	 * object.
-	 *
-	 * @param evt		{object}	The Silverlight keydown event.
-	 * @param charCode	{number}	A virtual key code from the plugin host.
-	 */
-	function SlightEvtProxy(evt, charCode) {
-		this.evt = evt;
-		this.target = evt.source;
-		this.shiftKey = evt.shift;
-		this.ctrlKey = evt.ctrl;
-		this.charCode = charCode ||
-			virtualKeyFromSlight(evt.key, evt.platformKeyCode, evt.shift);
-		this.which = this.charCode;
-//		dump("SlightEvtProxy -- " + this.which + " = '" + fcc(this.which) + "'\n");			// debug
-	};
-	SlightEvtProxy.prototype = new TextEventProxy();
-	
-	/**
 	 * Returns the current position of the cursor in the given SciMoz plugin
 	 * object.
 	 *
@@ -1798,76 +1710,112 @@ function AVIM()	{
 	// Silverlight applets
 	
 	/**
-	 * Returns whether AVIM should ignore the given element.
+	 * Returns whether AVIM should ignore the element with the given name.
 	 *
-	 * @param ctl	{object}	The XAML TextBox element.
+	 * @param name	{object}	The XAML TextBox element’s name.
 	 * @returns {boolean}	True if the element should be ignored; false
 	 * 						otherwise.
 	 */
-	this.slightFindIgnore = function(ctl) {
-		if (!("name" in ctl)) return false;
-		return ctl.name && ctl.name.toLowerCase &&
-			AVIMConfig.exclude.indexOf(ctl.name.toLowerCase()) >= 0;
-	};
+	function slightFindIgnore(name) {
+		return name.toLowerCase &&
+			AVIMConfig.exclude.indexOf(name.toLowerCase()) >= 0;
+	}
 	
-	let avim = this;
+	/**
+	 * Returns the Gecko-compatible virtual key code for the given Silverlight
+	 * virtual key code.
+	 *
+	 * @param	keyCode			{number}	Silverlight virtual key code.
+	 * @param	platformKeyCode	{number}	Platform key code.
+	 * @param	shiftKey		{boolean}	True if the Shift key is held down;
+	 * 										false otherwise.
+	 * @returns	A Gecko-compatible virtual key code, or 0xff (255) if no virtual
+	 * 			key is applicable.
+	 *
+	 * @see		http://msdn.microsoft.com/en-us/library/bb979636%28VS.95%29.aspx
+	 * @see		https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+	 */
+	function virtualKeyFromSlight(keyCode, platformKeyCode, shiftKey) {
+//		dump("key code: " + keyCode + "; platform key code: " + platformKeyCode + "\n");	// debug
+		if (keyCode > 19 && keyCode < 30) {	// number row
+			if (shiftKey) return 0xff;
+			else keyCode += 28;
+		}
+		else if (keyCode > 29 && keyCode < 56) {	// alphabetic
+			keyCode += 35;
+			if (!shiftKey) keyCode += 32;
+		}
+//		if (keyCode == 0xff && platformKeyCode == 39) {	// '
+//			keyCode = platformKeyCode;
+//		}
+		return keyCode;
+	}
+	
+	function slightApplyKey(word, evtProxy) {
+		let result = applyKey(word, evtProxy);
+		return result && result.value;
+	}
 	
 	/**
 	 * Handles key presses in Silverlight. This function is triggered as soon as
 	 * the key goes down.
 	 *
-	 * @param root	{object}	The root XAML element in the Silverlight applet.
-	 * @param evt	{object}	The keyDown event.
+	 * This function is stringified and imported into a sandbox, so the let
+	 * keyword and other JavaScript 1.7 goodies are unavailable.
+	 *
+	 * @param sender	{object}	The object that invoked the event.
+	 * @param evt		{object}	The keyDown event.
 	 */
-	this.handleSlightKeyDown = function(root, evt) {
+	function avim_slight_onKeyDown(sender, evt) {
 		try {
-			let ctl = evt.source;	// TextBox
-			// TODO: Support password boxes.
-//			let isPasswordBox = "password" in ctl;
-			if (!("text" in ctl /* || isPasswordBox */)) return;
-//			if (isPasswordBox && !AVIMConfig.passwords) return;
-			if (!("isEnabled" in ctl && ctl.isEnabled)) return;
-			if (!("isReadOnly" in ctl && !ctl.isReadOnly)
-				/* && !isPasswordBox */) {
+			var ctl = evt.source;
+			var text = ctl.text;
+			if (!text || !ctl.isEnabled || ctl.isReadOnly || evt.ctrl ||
+				ctl.selectionLength || slightFindIgnore(ctl.name)) {
 				return;
 			}
-			if (evt.ctrl || avim.slightFindIgnore(ctl)) return;
-//			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
-//				 ") down on " + ctl + " -- " + ctl.text + "\n");				// debug
+			var selStart = ctl.selectionStart;
+			var word = lastWordInString(text.substr(0, selStart));
 			
-			// Fake a native textbox and keypress event.
-			let ctlProxy = new SlightCtlProxy(ctl);
-			let evtProxy = new SlightEvtProxy(evt);
+			var evtProxy = {
+				charCode: virtualKeyFromSlight(evt.key, evt.platformKeyCode,
+											  evt.shift),
+				platformKeyCode: evt.platformKeyCode,
+				shiftKey: evt.shift,
+			};
+			evtProxy.which = evtProxy.charCode;
+			
 			if (!evtProxy.charCode || evtProxy.charCode == 0xff) {
 				setTimeout(function () {
-					avim.handleSlightByEatingChar(root, evt);
+					avim_slight_eatChar(ctl, evtProxy);
 				}, 0);
 				return;
 			}
 			
-			let result = ctlProxy.value && applyKey(ctlProxy.value, evtProxy);
-			if (result && result.changed && result.value) {
-				ctlProxy.value = result.value;
-				evt.handled = true;
-				setTimeout(function () {
-					ctlProxy.commit();
-					
-					ctlProxy = null;
-					evtProxy = null;
-				}, 0);
+			var newWord = word && slightApplyKey(word, evtProxy);
+			if (newWord && newWord != word) {
+				var numExtraChars = newWord.length - word.length;
+				var tooLong = ctl.maxLength &&
+					text.length + numExtraChars > ctl.maxLength;
+				if (!tooLong) {
+					evt.handled = true;
+					// Silverlight 2 no longer respects KeyboardEventArgs.Handled,
+					// so override the control contents asynchronously.
+					setTimeout(function () {
+						var wordStart = selStart - word.length;
+						ctl.text = text.substr(0, wordStart) + newWord +
+							text.substr(selStart);
+						ctl.selectionStart = selStart + numExtraChars;
+						ctl.selectionLength = 0;
+					}, 0);
+				}
 			}
-			else {
-				ctlProxy.commit();
-				ctlProxy = null;
-				evtProxy = null;
-			}
-		}
-		catch (exc) {
+		} catch(exc) {
 // $if{Debug}
-			throw ">>> AVIM.handleSlightKeyDown -- " + exc;
+			throw ">>> avim_slight_onKeyDown -- " + exc;
 // $endif{}
 		}
-	};
+	}
 	
 	/**
 	 * Handles miscellaneous key presses in Silverlight. This function is
@@ -1875,65 +1823,40 @@ function AVIM()	{
 	 * not correspond to a virtual key. In that case, it uses the character
 	 * immediately preceding the caret.
 	 *
-	 * @param root	{object}	The root XAML element in the Silverlight applet.
-	 * @param evt	{object}	The keyUp event.
+	 * This function is stringified and imported into a sandbox, so the let
+	 * keyword and other JavaScript 1.7 goodies are unavailable.
+	 *
+	 * @param ctl		{object}	A <TextBox> XAML element.
+	 * @param evtProxy	{object}	An object imitating a keyUp event.
 	 */
-	this.handleSlightByEatingChar = function(root, evt) {
+	function avim_slight_eatChar(ctl, evtProxy) {
 		try {
-			// Already handled by handleSlightKeyDown().
-			if (!("key" in evt) ||
-				0xff != virtualKeyFromSlight(evt.key, evt.platformKeyCode,
-											 evt.shift)) {
-				return;
-			}
-			
-			let ctl = evt.source;	// TextBox
-			if (!("text" in ctl)) return;
-			if (!methodIsVIQR()) return;
-			if (isMac && evt.platformKeyCode == 0x37) return;	// Cmd on Mac
-//			dump(root + ": Key " + evt.key + " (platform " + evt.platformKeyCode +
-//				 ", ctrl: " + evt.ctrl.toString() + ") UP on " + ctl + " -- " + ctl.text + "\n");	// debug
-			
-			let selStart = ctl.selectionStart;
+			var selStart = ctl.selectionStart;
 			if (!selStart || ctl.selectionLength) return;
 			
 			// Override the event proxy's key code using the last character.
-			let text = ctl.text;
-			let lastChar = text.substr(selStart - 1, 1);
-//			dump("lastChar: " + lastChar + "\n");								// debug
-			let charCode = lastChar.charCodeAt(0);
-			if (charCode == 0xff) return;
-//			dump("\tUsing " + charCode + "(" + lastChar + ") instead.\n");		// debug
+			var text = ctl.text;
+			evtProxy.which = evtProxy.charCode = text.charCodeAt(selStart - 1);
+			if (evtProxy.charCode == 0xff) return;
 			
-			// Remove the last character from the textbox and move the caret
-			// back.
-//			dump("Before: “" + ctl.text.replace(new RegExp("(.{" + ctl.selectionStart + "})"), "$1|") + "”\n");								// debug
-			ctl.text = text.substring(0, selStart - 1) + text.substring(selStart, text.length);
-			ctl.selectionStart = selStart - 1;
-			
-			// Fake a native textbox and keypress event.
-			let ctlProxy = new SlightCtlProxy(ctl);
-			let evtProxy = new SlightEvtProxy(evt, charCode);
-			
-			let result = ctlProxy.value && applyKey(ctlProxy.value, evtProxy);
-			if (result && result.changed && result.value) {
-				ctlProxy.value = result.value;
+			// Exclude the last character from the word.
+			var word = lastWordInString(text.substr(0, selStart - 1));
+			var newWord = word && slightApplyKey(word, evtProxy);
+			if (newWord && newWord != word) {
+				var numExtraChars = newWord.length - word.length;
+				var tooLong = ctl.maxLength &&
+					text.length - 1 + numExtraChars > ctl.maxLength;
+				if (!tooLong) {
+					var wordStart = selStart - 1 - word.length;
+					ctl.text = text.substr(0, wordStart) + newWord +
+						text.substr(selStart);
+					ctl.selectionStart = selStart - 1 + numExtraChars;
+					ctl.selectionLength = 0;
+				}
 			}
-			
-			ctlProxy.commit();
-			ctlProxy = null;
-			evtProxy = null;
-			evt.handled = true;
-//			dump("After -- text: \"" + text + "\"; ctl.text: \"" + ctl.text + "\"\n");	// debug
-			if (text == ctl.text + lastChar) {
-				// Nothing changed, so revert the textbox contents.
-				ctl.text = text;
-				ctl.selectionStart = selStart;
-			}
-		}
-		catch (exc) {
+		} catch(exc) {
 // $if{Debug}
-			throw ">>> AVIM.handleSlightByEatingChar -- " + exc;
+			throw ">>> avim_slight_eatChar -- " + exc;
 // $endif{}
 		}
 	}
@@ -1953,7 +1876,14 @@ function AVIM()	{
 		
 		try {
 			let sandbox = new Sandbox(evt.originalTarget.defaultView);
-			sandbox.importFunction(avim.handleSlightKeyDown, "handleSlightKeyDown");
+			sandbox.importFunction(slightFindIgnore, "slightFindIgnore");
+			sandbox.importFunction(lastWordInString, "lastWordInString");
+			sandbox.importFunction(virtualKeyFromSlight, "virtualKeyFromSlight");
+			sandbox.importFunction(slightApplyKey, "slightApplyKey");
+			sandbox.createObjectAlias("avim_slight_onKeyDown",
+									  "(" + avim_slight_onKeyDown + ")");
+			sandbox.createObjectAlias("avim_slight_eatChar",
+									  "(" + avim_slight_eatChar + ")");
 			
 			//* Always stringify this function before calling it.
 			let _registerSlights = function () {
@@ -1964,7 +1894,7 @@ function AVIM()	{
 				for (i = 0; i < elts.length; i++) {
 					if (elts[i].content) {
 						elts[i].content.root.addEventListener("keyDown",
-															  handleSlightKeyDown);
+															  avim_slight_onKeyDown);
 					}
 				}
 			};
