@@ -1862,24 +1862,22 @@ function AVIM()	{
 	}
 	
 	/**
-	 * Attaches AVIM to Silverlight applets in the page targeted by the given
-	 * DOM load or pageshow event.
+	 * Attaches AVIM to the given Silverlight applet.
 	 *
-	 * This method should be called on an applet whenever the containing page is
-	 * shown, not just when it is loaded, because the applet is loaded afresh
-	 * even when the page is loaded from cache.
-	 *
-	 * @param evt	{object}	The DOMContentLoaded event.
+	 * @param plugin	{object}	An <object> element.
 	 */
-	this.registerSlightsOnPageLoad = function(evt) {
-		if (!document.querySelectorAll) return;
+	function registerSlight(plugin) {
+		//* This method is stringified, so no JavaScript 1.7.
+		let _registerSlight = function () {
+			var plugin = document.querySelector("object[data-avim-registering]");
+			var content = plugin && plugin.content;
+			if (!content) return;
+			content.root.addEventListener("keyDown", avim_slight_onKeyDown);
+		};
 		
-		const mimeTypes = ["application/x-silverlight-1",
-						   "application/x-silverlight-2",
-						   "application/ag-plugin"];
-		
+		plugin.setAttribute("data-avim-registering", "true");
 		try {
-			let sandbox = new Sandbox(evt.originalTarget.defaultView);
+			let sandbox = new Sandbox(plugin.ownerDocument.defaultView);
 			sandbox.importFunction(slightFindIgnore, "slightFindIgnore");
 			sandbox.importFunction(lastWordInString, "lastWordInString");
 			sandbox.importFunction(virtualKeyFromSlight, "virtualKeyFromSlight");
@@ -1889,44 +1887,37 @@ function AVIM()	{
 			sandbox.createObjectAlias("avim_slight_eatChar",
 									  "(" + avim_slight_eatChar + ")");
 			
-			//* Always stringify this function before calling it.
-			let _registerSlights = function (type) {
-				var elts = document.querySelectorAll("object[type='" + type + "']");
-				var i;
-				for (i = 0; i < elts.length; i++) {
-					if (elts[i].content) {
-						elts[i].content.root.addEventListener("keyDown",
-															  avim_slight_onKeyDown);
-					}
-				}
-			};
-			for (let i = 0; i < mimeTypes.length; i++) {
-				if (mimeTypes[i] in navigator.mimeTypes) {
-					sandbox.evalFunctionCall("(" + _registerSlights + ")('" +
-											 mimeTypes[i] + "')");
-				}
-			}
-//			doc.addEventListener("DOMNodeInserted",
-//								 avim.registerSlightsOnChange, true);
+			sandbox.evalFunctionCall("(" + _registerSlight + ")()");
 		}
 		catch (exc) {
 // $if{Debug}
-			dump(">>> AVIM.registerSlightsOnPageLoad -- " + exc + "\n");					// debug
+			dump(">>> registerSlight -- " + exc + "\n");
 			throw exc;
 // $endif{}
 		}
-	};
+		plugin.removeAttribute("data-avim-registering");
+	}
 	
 	/**
-	 * Attaches AVIM to Silverlight applets whenever their containers load. This
-	 * method currently attaches only when the pages load, not when the applets
-	 * are loaded dynamically via JavaScript.
+	 * Attaches AVIM to Silverlight applets whenever their containers load.
 	 */
 	this.registerSlights = function() {
-		let appcontent = document.getElementById("appcontent");   // browser
-		if (!appcontent) return;
-		appcontent.addEventListener("pageshow", this.registerSlightsOnPageLoad,
-									true);
+		let appcontent = $("appcontent");   // browser
+		if (!appcontent || !document.querySelectorAll) return;
+		
+		const slightMimeTypes = ["application/x-silverlight-1",
+								 "application/x-silverlight-2",
+								 "application/ag-plugin"];
+		
+		// This is the same event that gPluginHandler listens for to show and
+		// hide Click-to-Play.
+		appcontent.addEventListener("PluginInstantiated", function (evt) {
+			let plugin = evt.originalTarget;
+			if (plugin instanceof Ci.nsIObjectLoadingContent &&
+				slightMimeTypes.indexOf(plugin.actualType) >= 0) {
+				registerSlight(plugin);
+			}
+		}, true);
 	};
 	
 	/**
