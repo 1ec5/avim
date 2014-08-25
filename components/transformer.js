@@ -541,7 +541,7 @@ Transformation.prototype = {
 			}
 		}
 		if (res) return res;
-		if (c == 1 || uk == this.method.Z) return vowA[0];
+		if (c == 1 || uk == this.method.Z) return vowA.length && vowA[0];
 		else if (c == 2) {
 			let upW = up(w);
 			if (!this.context.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
@@ -859,7 +859,6 @@ AVIMTransformerService.prototype = {
 		catch(exc) {
 // $if{Debug}
 			Cu.reportError(exc);
-			result = {};
 // $endif{}
 		}
 		finally {

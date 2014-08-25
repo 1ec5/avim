@@ -275,6 +275,8 @@ function AVIM()	{
 		
 		this.oldValue = sandbox.evalString("editor.getText(" + lineStart + "," +
 										   offset + ")");
+		// TODO: applyKey() can only handle one word at a time, but this will
+		// send it the entire line.
 		this.value = this.oldValue;
 		
 		/**
@@ -330,9 +332,7 @@ function AVIM()	{
 		 * @returns {boolean}	True if anything was changed; false otherwise.
 		 */
 		this.commit = function() {
-			if (word == this.value) {
-				return false;
-			}
+			if (word == this.value) return false;
 			
 			let linePos = sandbox.evalInt("$buffer._rowColToPosition(" +
 										  oldSelection.row + ",0)");
@@ -493,7 +493,7 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == word) return false;
 			
-			// Select the entire line, up to the cursor.
+			// Select the word up to the cursor.
 			if (!selectionIsRectangle) {
 				lineNum = elt.lineFromPosition(elt.getSelectionNStart(selId));
 			}
@@ -507,7 +507,7 @@ function AVIM()	{
 			elt.setSelectionNEnd(selId, endPos);
 //			dump(">>> Selected " + elt.selectionStart + "-" + elt.selectionEnd + "\n");	// debug
 			
-			// Replace the line's contents.
+			// Replace the selected word.
 //			dump(">>> Replacing '" + elt.selText + "' with '" + this.value + "'.\n");	// debug
 			// TODO: This will trample on any other selections.
 			elt.replaceSel(this.value);
@@ -1503,6 +1503,7 @@ function AVIM()	{
 //		el.setSelectionNStart(0, 8);											// debug
 //		dump(">>> scimoz.getSelectionNStart: " + el.selections ? el.getSelectionNStart(0) : "" + "\n");					// debug
 		
+		let anyChanged = false;
 		el.beginUndoAction();
 		try {
 			// Fake a native textbox and keypress event for each selection.
@@ -1537,9 +1538,7 @@ function AVIM()	{
 				}
 				if (proxy.commit) proxy.commit();
 				proxy = null;
-				this.changed = false;
 			}
-			this.changed = anyChanged;
 		}
 		catch (exc) {
 // $if{Debug}
@@ -1550,8 +1549,7 @@ function AVIM()	{
 			el.endUndoAction();
 		}
 		
-		if (this.changed) {
-			this.changed = false;
+		if (anyChanged) {
 			e.handled = true;
 			e.stopPropagation();
 			this.updateContainer(el, el);
