@@ -49,6 +49,7 @@ VAR_NAMES = ["options.dtd"]
 
 # Paths to directories that should be omitted from a release build.
 DEBUG_DIRS = [path.join("originals"),
+			  path.join("tests"),
 			  path.join("content", "test"),
 			  path.join("content", "skin", "test"), path.join("skin", "test"),
 			  # Unmaintained localizations

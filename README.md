@@ -36,6 +36,16 @@ python build.py
 
 *Hai gói cài đặt được, `avim.xpi` và `avim-PHIÊN_BẢN.xpi`, sẽ nằm trong thư mục đó. Script xây dựng có vài tùy chọn, chẳng hạn để sản xuất một phiên bản soát lỗi có bộ phận đo thử.*
 
+Tests
+-----
+
+The test harness requires [SpiderMonkey](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey), the command line interface to the JavaScript engine in Firefox:
+
+1. [Download SpiderMonkey](ftp://ftp.mozilla.org/pub/mozilla.org/js/) 24 or later.
+1. Follow the instructions in the INSTALL file to build SpiderMonkey, then run `make install` to install ịt.
+1. Go to the tests/ directory in your checkout of this project.
+1. Run `js24 -b -s test.js`.
+
 Translations
 ------------
 
