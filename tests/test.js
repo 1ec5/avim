@@ -25,6 +25,7 @@ load("../components/transformer.js");
 let xformer = new AVIMTransformerService();
 
 function applyKey(word, keyChar, prefs) {
+	//print("Applying " + keyChar + " to " + word);								// debug
 	let result = xformer.applyKey(word, {
 		method: prefs.method,
 		autoMethods: {
@@ -42,6 +43,11 @@ function applyKey(word, keyChar, prefs) {
 	return result && result.value;
 }
 
+function okApplyKey(prefs, word, keyChar, expected) {
+	assert.equal(applyKey(word, keyChar, prefs), expected,
+				 "Applying " + keyChar + " to " + word);
+}
+
 let prefs = {
 	method: 3 /* VIQR */,
 	ckSpell: true,
@@ -49,24 +55,25 @@ let prefs = {
 	oldAccent: true,
 };
 
-assert.equal(applyKey("bo", "^", prefs), "bô");
-assert.equal(applyKey("bô", ".", prefs), "bộ");
-assert.equal(applyKey("gõ", "-", prefs), "go");
+okApplyKey(prefs, "bo", "^", "bô");
+okApplyKey(prefs, "bô", ".", "bộ");
+okApplyKey(prefs, "gõ", "-", "go");
 
-assert.equal(applyKey("dt", "d", prefs), "dtd");	// d44df2bae6c2
-assert.equal(applyKey("zi", "`", prefs), "zi`");	// cdf616a8ce81
-assert.equal(applyKey("qi", "'", prefs), "qi'");	// Mudim #16
-assert.equal(applyKey("ka", "'", prefs), "ká");	// Mudim #16, 7459b5d33ee8, 91e3cca3ebdb
-assert.equal(applyKey("ko", "'", prefs), "kó");	// Mudim #16, 7459b5d33ee8, 91e3cca3ebdb
-assert.equal(applyKey("ku", "'", prefs), "kú");	// Mudim #16, 7459b5d33ee8, 91e3cca3ebdb
-assert.equal(applyKey("XOA", "'", prefs), "XÓA");	// 91e3cca3ebdb
-assert.equal(applyKey("gin", "`", prefs), "gìn");	// 91e3cca3ebdb, c927d74748fa
-assert.equal(applyKey("ô", "^", prefs), "o^");	// 441e8cf7aacd
-assert.equal(applyKey("Ng", "~", prefs), "Ng~");	// ce59e67eadca
+okApplyKey(prefs, "dt", "d", "dtd");	// d44df2bae6c2
+okApplyKey(prefs, "zi", "`", "zi`");	// cdf616a8ce81
+okApplyKey(prefs, "qi", "'", "qi'");	// Mudim #16
+okApplyKey(prefs, "ka", "'", "ká");	// Mudim #16, 7459b5d33ee8, 91e3cca3ebdb
+okApplyKey(prefs, "ko", "'", "kó");	// Mudim #16, 7459b5d33ee8, 91e3cca3ebdb
+okApplyKey(prefs, "ku", "'", "kú");	// Mudim #16, 7459b5d33ee8, 91e3cca3ebdb
+okApplyKey(prefs, "XOA", "'", "XÓA");	// 91e3cca3ebdb
+okApplyKey(prefs, "gin", "`", "gìn");	// 91e3cca3ebdb, c927d74748fa
+okApplyKey(prefs, "ô", "^", "o^");	// 441e8cf7aacd
+okApplyKey(prefs, "Ng", "~", "Ng~");	// ce59e67eadca
 
-assert.equal(applyKey("trắng", "(", prefs), "tráng(");
-//assert.equal(applyKey("bế", "^", prefs), "bé^");	// #13
-//assert.equal(applyKey("kilômet", "'", prefs), "kilômét");	// #14
+okApplyKey(prefs, "trắng", "(", "tráng(");
+//okApplyKey(prefs, "bế", "^", "bé^");	// #13
+okApplyKey(prefs, "bố", "^", "bó^");	// #13
+//okApplyKey(prefs, "kilômet", "'", "kilômét");	// #14
 
 prefs = {
 	method: 3 /* VIQR */,
@@ -75,9 +82,18 @@ prefs = {
 	oldAccent: true,
 };
 
-assert.equal(applyKey("Ng", "~", prefs), "Ng̃");
-assert.equal(applyKey("ng", "~", prefs), "ng̃");	// ce59e67eadca
-//assert.equal(applyKey("Ng̃", "u", prefs), "Ngũ");	// #12
+okApplyKey(prefs, "Ng", "~", "Ng̃");
+okApplyKey(prefs, "ng", "~", "ng̃");	// ce59e67eadca
+//okApplyKey(prefs, "Ng̃", "u", "Ngũ");	// #12
+
+let prefs = {
+	method: 1 /* Telex */,
+	ckSpell: true,
+	informal: false,
+	oldAccent: true,
+};
+
+okApplyKey(prefs, "bế", "e", "bée");	// #13
 
 let status = assert.errors.length ? 1 : 0;
 assert.flush();
