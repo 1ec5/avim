@@ -21,9 +21,8 @@ let assert = {
 	errors: [],
 	flush: function () {
 		let rate = Math.round((assert.claims - assert.errors.length) /
-							  assert.claims * 100);
-		print("--------------------------------------------------------------" +
-			  "------------------")
+							  assert.claims * 1000) / 10;
+		print("-".repeat(80));
 		print(assert.errors.length + " error" +
 			  (assert.errors.length == 1 ? "" : "s") + " (" + rate +
 			  "% passing)");
