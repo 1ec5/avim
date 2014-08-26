@@ -6,8 +6,8 @@ const USAGE = "js24 -b -s corpus.js /path/to/corpus.txt";
 load("assert.js");
 load("transformer.js");
 
+const screenWidth = 80;
 let prefs = {
-	method: 3 /* VIQR */,
 	ckSpell: true,
 	informal: false,
 	oldAccent: true,
@@ -57,10 +57,9 @@ const methodMap = {
 };
 
 function progressBar(pct) {
-	const width = 80;
-	let length = Math.round(pct * (width - 2));
+	let length = Math.round(pct * (screenWidth - 2));
 	let bar = length ? "=".repeat(length - 1) + ">" : "";
-	return "[" + bar + " ".repeat(width - 2 - length) + "]";
+	return "[" + bar + " ".repeat(screenWidth - 2 - length) + "]";
 }
 
 /**
@@ -99,7 +98,14 @@ function prepareWord(word, method) {
 			accents.push(cur);
 			circumVowels.push((i && cur == "^") ? viqrWord[i - 1] : null);
 		}
-		else letters.push(cur);
+		else {
+			if (method == "telex" && letters.length &&
+				letters[letters.length - 1].toLowerCase() == cur.toLowerCase() &&
+				"aeo".indexOf(cur.toLowerCase()) >= 0) {
+				letters.push(cur);
+			}
+			letters.push(cur);
+		}
 	}
 	
 	// Convert word to given method.
@@ -140,13 +146,19 @@ if (!words.length) {
 	quit();
 }
 
-for (let i = 0; i < words.length; i++) {
-	if (i % Math.round(words.length / 80) == 0) {
-		putstr("\r" + progressBar(i / words.length));
+let finishedTests = 0;
+let totalTests = (methodNames.length - 1) * words.length;
+for (let i = 1; i < methodNames.length; i++) {
+	prefs.method = i;
+	for (let j = 0; j < words.length; j++) {
+		if (!(++finishedTests % Math.round(totalTests / screenWidth))) {
+			putstr("\r" + progressBar(finishedTests / totalTests));
+		}
+		let word = words[j];
+		if (!word) continue;
+		let keys = prepareWord(word, methodNames[prefs.method]);
+		assert.equal(applyKeys(keys), word, keys);
 	}
-	if (!words[i]) continue;
-	let keys = prepareWord(words[i], methodNames[prefs.method]);
-	assert.equal(applyKeys(keys), words[i], keys);
 }
 putstr("\r");
 
