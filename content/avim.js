@@ -1531,9 +1531,9 @@ function AVIM()	{
 				
 				let result = proxy.value && applyKey(proxy.value, e);
 				
-				if (result && result.changed && result.value) {
-					proxy.value = result.value;
-					anyChanged = true;
+				if (result) {
+					if (result.value) proxy.value = result.value;
+					if (result.changed) anyChanged = true;
 				}
 				if (proxy.commit) proxy.commit();
 				proxy = null;
@@ -1595,9 +1595,9 @@ function AVIM()	{
 			
 			let result = proxy.value && applyKey(proxy.value, evt);
 			
-			if (result && result.changed && result.value) {
-				proxy.value = result.value;
-				anyChanged = true;
+			if (result) {
+				if (result.value) proxy.value = result.value;
+				if (result.changed) anyChanged = true;
 			}
 			if (proxy.commit) proxy.commit();
 			proxy = null;
@@ -1644,7 +1644,7 @@ function AVIM()	{
 		let proxy = new OrionProxy(sandbox);
 		
 		let result = proxy.value && applyKey(proxy.value, evt);
-		if (result && result.changed && result.value) proxy.value = result.value;
+		if (result && result.value) proxy.value = result.value;
 		
 		proxy.commit();
 		proxy = null;
@@ -1689,7 +1689,7 @@ function AVIM()	{
 		let proxy = new YmacsProxy(sandbox);
 		
 		let result = proxy.value && applyKey(proxy.value, evt);
-		if (result && result.changed && result.value) proxy.value = result.value;
+		if (result && result.value) proxy.value = result.value;
 		
 		proxy.commit();
 		proxy = null;
@@ -1977,9 +1977,7 @@ function AVIM()	{
 			let proxy = new KixProxy(evt);
 			
 			result = proxy.value && applyKey(proxy.value, evt);
-			if (result && result.changed && result.value) {
-				proxy.value = result.value;
-			}
+			if (result && result.value) proxy.value = result.value;
 			
 			proxy.commit();
 			proxy = null;
@@ -2036,7 +2034,7 @@ function AVIM()	{
 		let proxy = new CacTrangProxy(sandbox);
 		
 		let result = proxy.value && applyKey(proxy.value, evt);
-		if (result && result.changed && result.value) proxy.value = result.value;
+		if (result && result.value) proxy.value = result.value;
 		
 		proxy.commit();
 		proxy = null;
