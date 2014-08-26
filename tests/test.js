@@ -34,7 +34,7 @@ okApplyKey(prefs, "ô", "^", "o^");	// 441e8cf7aacd
 okApplyKey(prefs, "Ng", "~", "Ng~");	// ce59e67eadca
 
 okApplyKey(prefs, "trắng", "(", "tráng(");
-//okApplyKey(prefs, "bế", "^", "bé^");	// #13
+okApplyKey(prefs, "bế", "^", "bé^");	// #13
 okApplyKey(prefs, "bố", "^", "bó^");	// #13
 //okApplyKey(prefs, "kilômet", "'", "kilômét");	// #14
 
