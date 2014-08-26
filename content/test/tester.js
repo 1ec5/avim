@@ -300,13 +300,14 @@ function AVIMTester() {
 			getImageSrc: function (row, col) {
 				return null;
 			},
-			getRowProperties: function (row, props) {},
+			getRowProperties: function (row) {},
 			getCellProperties: function (row, col, props) {
-				if (col.index != 3) return;
+				if (col.index != 3) return undefined;
 				let propName = controller.results[row][3] ? "pass" : "fail";
-				props.AppendElement(atomService.getAtom(propName));
+				if (props) props.AppendElement(atomService.getAtom(propName));
+				return propName;
 			},
-			getColumnProperties: function (colId, col, props) {}
+			getColumnProperties: function (colId, col) {}
 		};
 		let tree = document.getElementById(resultsTreeId);
 		tree.view = view;
