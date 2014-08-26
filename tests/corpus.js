@@ -1,8 +1,7 @@
 "use strict";
 
-/*
- * Usage: js24 -b -s corpus.js /path/to/corpus.txt
- */
+const DESCRIPTION = "Test AVIM against a wordlist";
+const USAGE = "js24 -b -s corpus.js /path/to/corpus.txt";
 
 load("assert.js");
 load("transformer.js");
@@ -132,8 +131,14 @@ function applyKeys(keys) {
 	return word;
 }
 
-let src = read(scriptArgs[0]);
-let words = src.split(/\s+/);
+let src = scriptArgs.length && ["-?", "--help"].indexOf(scriptArgs[0]) < 0 &&
+	read(scriptArgs[0]);
+let words = src && src.split(/\s+/);
+if (!words.length) {
+	print(DESCRIPTION);
+	print("Usage: " + USAGE);
+	quit();
+}
 
 for (let i = 0; i < words.length; i++) {
 	if (i % Math.round(words.length / 80) == 0) {

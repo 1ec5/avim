@@ -1,5 +1,13 @@
 "use strict";
 
+const DESCRIPTION = "Run AVIM string manipulation tests";
+const USAGE = "js24 -b -s test.js";
+if (scriptArgs.length && ["-?", "--help"].indexOf(scriptArgs[0]) >= 0) {
+	print(DESCRIPTION);
+	print("Usage: " + USAGE);
+	quit();
+}
+
 load("assert.js");
 load("transformer.js");
 
