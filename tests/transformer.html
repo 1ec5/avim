@@ -76,9 +76,9 @@
         addEventListener("load", function (evt) {
             let btn = document.getElementById("input");
             btn.addEventListener("click", function (evt) {
-                okApplyKey(document.getElementById("word").value,
-                           document.getElementById("key").value);
-                assert.flush();
+                let result = applyKey(document.getElementById("word").value,
+                                      document.getElementById("key").value);
+                console.log(result);
             }, false);
         }, false);
     </script>
@@ -116,6 +116,8 @@
         <input id="key" type="text" width="1" maxlength="1" />
         <button id="input" type="submit">Input</button>
     </p>
+    
+    <ul id="results"></ul>
 </div>
 
 </body>
