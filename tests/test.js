@@ -37,6 +37,7 @@ okApplyKey(prefs, "trắng", "(", "tráng(");
 okApplyKey(prefs, "bế", "^", "bé^");	// #13
 okApplyKey(prefs, "bố", "^", "bó^");	// #13
 //okApplyKey(prefs, "kilômet", "'", "kilômét");	// #14
+okApplyKey(prefs, "cúu", "+", "cứu");	// #70
 
 prefs = {
 	method: 3 /* VIQR */,

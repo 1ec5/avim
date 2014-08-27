@@ -148,6 +148,7 @@ function Transformation(startValue, context) {
 Transformation.prototype = {
 	changed: false,
 	whit: false,
+	tw5: false,
 	
 	/**
 	 * Returns whether VIQR or VIQR* is the current input method, taking into
@@ -436,7 +437,7 @@ Transformation.prototype = {
 		if (this.method.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
 			if (uk == this.method.moc) {
-				if (w2.indexOf("UU") >= 0 && this.tw5 && this.tw5 != dont[1]) {
+				if (w2.indexOf("UU") >= 0 && this.tw5 != dont[1]) {
 					if (w2.substr(-2) != "UU") return false;
 					res = 2;
 				}
@@ -451,7 +452,7 @@ Transformation.prototype = {
 					cc = w.substr(-g, 1);
 					pc = up(w.substr(-g - 1, 1));
 					uc = up(cc);
-					if (this.tw5 && this.tw5 == this.unV(pc + uc) &&
+					if (this.tw5 == this.unV(pc + uc) &&
 						dont.indexOf(this.tw5) >= 0) {
 						continue;
 					}
