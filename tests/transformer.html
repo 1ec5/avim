@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>AVIMTransformerService</title>
+    
+    <meta charset="UTF-8" />
+    <script type="text/javascript;version=1.7">
+        "use strict";
+        
+        window.load = function (url) {
+            document.write();
+            
+            let script = document.createElement("script");
+            script.setAttribute("type", "text/javascript;version=1.7");
+            script.setAttribute("src", url);
+            document.head.appendChild(script);
+        };
+        window.print = function () {
+            console.log.apply(console, arguments);
+        };
+        
+        // Global objects required by transformer.js
+        window.Components = {
+            classes: null,
+            interfaces: {
+                nsIDOMKeyEvent: {
+                    DOM_VK_BACK_SPACE: KeyEvent.DOM_VK_BACK_SPACE,
+                },
+            },
+            utils: {
+                reportError: function (exc) {
+                    print(exc);
+                    print(exc.stack);
+                },
+            },
+            ID: function () {},
+        };
+    </script>
+    <script type="text/javascript;version=1.7" src="assert.js"></script>
+    <script type="text/javascript;version=1.7" src="../components/transformer.js"></script>
+    <script type="text/javascript;version=1.7">
+        let xformer = new AVIMTransformerService();
+        
+        function applyKey(word, keyChar) {
+            let prefs = {
+                method: document.getElementById("method").value,
+                ckSpell: document.getElementById("ckSpell").checked,
+                informal: document.getElementById("informal").checked,
+                oldAccent: true,
+            };
+            
+            //print("Applying " + keyChar + " to " + word);						// debug
+            let result = xformer.applyKey(word, {
+                method: prefs.method,
+                autoMethods: {
+                    telex: prefs.autoMethods && prefs.autoMethods.telex,
+                    vni: prefs.autoMethods && prefs.autoMethods.vni,
+                    viqr: prefs.autoMethods && prefs.autoMethods.viqr,
+                    viqrStar: prefs.autoMethods && prefs.autoMethods.viqrStar,
+                },
+                ckSpell: prefs.ckSpell,
+                informal: prefs.informal,
+                oldAccent: prefs.oldAccent,
+                which: keyChar.charCodeAt(0),
+            });
+            if (result && !result.changed && result.value) result.value += keyChar;
+            return result && result.value;
+        }
+        
+        function okApplyKey(word, keyChar, expected) {
+            assert.equal(applyKey(word, keyChar), expected,
+                         "Applying " + keyChar + " to " + word);
+        }
+        
+        addEventListener("load", function (evt) {
+            let btn = document.getElementById("input");
+            btn.addEventListener("click", function (evt) {
+                okApplyKey(document.getElementById("word").value,
+                           document.getElementById("key").value);
+                assert.flush();
+            }, false);
+        }, false);
+    </script>
+</head>
+
+<body>
+
+<h1>AVIMTransformerService</h1>
+
+<div>
+    <p>
+        <label for="method">Method:</label>
+        <select id="method">
+            <option value="1">Telex</option>
+            <option value="2">VNI</option>
+            <option value="3" selected>VIQR</option>
+            <option value="4">VIQR*</option>
+        </select>
+    </p>
+    <p>
+        <input id="ckSpell" type="checkbox" checked />
+        <label for="ckSpell">Check spelling</label>
+        <br />
+        <input id="informal" type="checkbox" />
+        <label for="informal">Allow informal spellings</label>
+        <br />
+        <input id="oldAccent" type="checkbox" checked />
+        <label for="oldAccent">Old-style tone marks</label>
+    </p>
+    
+    <hr />
+    
+    <p>
+        <input id="word" type="text" />
+        <input id="key" type="text" width="1" maxlength="1" />
+        <button id="input" type="submit">Input</button>
+    </p>
+</div>
+
+</body>
+</html>
