@@ -34,13 +34,8 @@ function AVIM()	{
 	const iCloudHostname = "www.icloud.com";
 	const GDocsHostname = "docs.google.com";
 	
-	// Local functions that don't require access to AVIM's fields.
-	
-	let fcc = String.fromCharCode;
-	let up = String.toUpperCase;
-	
 	// Include characters from major scripts that separate words with a space.
-	let wordChars =
+	const wordChars =
 		"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
 		"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
 		"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
@@ -52,11 +47,9 @@ function AVIM()	{
 		"0-9" +	// numerals
 		"₫\u0303" +	// miscellaneous Vietnamese characters
 		"’";	// word-inner punctuation not found in Vietnamese
-	let wordRe = new RegExp("[" + wordChars + "]*$");
+	const wordRe = new RegExp("[" + wordChars + "]*$");
 	
-	function $(id) {
-		return document.getElementById(id);
-	}
+	const $ = document.getElementById.bind(document);
 	
 	/**
 	 * Returns the given value clamped to a minimum and maximum, inclusive.
@@ -188,17 +181,6 @@ function AVIM()	{
 		this.selectionStart = start;
 		this.selectionEnd = end;
 	};
-	
-	/**
-	 * Proxy for an external toolkit's key events to appear as ordinary DOM key
-	 * events to the rest of the AVIM codebase.
-	 */
-	function TextEventProxy() {}
-	
-	/**
-	 * Proxy for a DOM Range object.
-	 */
-	function SelectionRangeProxy() {}
 	
 	/**
 	 * Proxy for an Ace editor, to encapsulate the oft-renamed
@@ -1005,7 +987,7 @@ function AVIM()	{
 	 * @returns {number}	The distance to the right that the end of the word
 	 * 						has shifted.
 	 */
-	this.splice = function(el, index, len, repl) {
+	function splice(el, index, len, repl) {
 		// Anonymous node-based editing
 		try {
 			let editor = getEditor(el);
@@ -1295,7 +1277,7 @@ function AVIM()	{
 	 * @param outer	{object}	A DOM node representing the textbox element.
 	 * @param inner	{object}	A DOM node representing the anonymous element.
 	 */
-	this.updateContainer = function(outer, inner) {
+	function updateContainer(outer, inner) {
 		if (!inner) return;
 		if (inner.ownerDocument &&
 			(inner.ownerDocument.location.hostname === iCloudHostname ||
@@ -1337,8 +1319,8 @@ function AVIM()	{
 		let doc = e.originalTarget.ownerDocument;
 		let target = doc.documentElement;
 		let cwi = new XPCNativeWrapper(doc.defaultView);
-		if (this.findIgnore(target)) return;
-		if (cwi.frameElement && this.findIgnore(cwi.frameElement)) return;
+		if (findIgnore(target)) return;
+		if (cwi.frameElement && findIgnore(cwi.frameElement)) return;
 		let sel = cwi.getSelection();
 		let range = sel ? sel.getRangeAt(0) : doc.createRange();
 		let node = range.endContainer, newPos;
@@ -1377,7 +1359,7 @@ function AVIM()	{
 		if (result.changed) {
 			e.stopPropagation();
 			e.preventDefault();
-			this.updateContainer(null, target);
+			updateContainer(null, target);
 		}
 	};
 	
@@ -1388,7 +1370,7 @@ function AVIM()	{
 	 * @returns {boolean}	True if AVIM is to ignore the keypress; false
 	 * 						otherwise.
 	 */
-	this.checkCode = function(code) {
+	function checkCode(code) {
 		return !AVIMConfig.onOff ||
 			(code < 45 && code != KeyEvent.DOM_VK_BACK_SPACE && code != 42 &&
 			 /* code != KeyEvent.DOM_VK_SPACE && */ code != 39 && code != 40 &&
@@ -1403,7 +1385,7 @@ function AVIM()	{
 	 * @returns {boolean}	True if the element should be ignored; false
 	 * 						otherwise.
 	 */
-	this.findIgnore = function(el) {
+	function findIgnore(el) {
 		if (!el || !el.getAttribute) return true;
 		let id = el.id || el.getAttribute("id");
 		if (id && id.toLowerCase &&
@@ -1442,7 +1424,7 @@ function AVIM()	{
 		
 		let el = e.originalTarget || e.target;
 //		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + e.which + "\n");	// debug
-		if (this.findIgnore(e.target) || !el.type) return false;
+		if (findIgnore(e.target) || !el.type) return false;
 		let isHTML = htmlTypes.indexOf(el.type) >= 0 ||
 			(el.type == "password" && AVIMConfig.passwords) ||
 			(el.type == "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
@@ -1458,8 +1440,8 @@ function AVIM()	{
 			let word = lastWordInString(el.value.substr(0, el.selectionStart));
 			if (word) result = applyKey(word, e);
 			if ("value" in result && result.value != word) {
-				this.splice(el, el.selectionStart - word.length, word.length,
-							result.value);
+				splice(el, el.selectionStart - word.length, word.length,
+					   result.value);
 			}
 		}
 		catch (exc) {
@@ -1472,7 +1454,7 @@ function AVIM()	{
 		}
 		if (result.changed) {
 			e.preventDefault();
-			this.updateContainer(e.originalTarget, el);
+			updateContainer(e.originalTarget, el);
 			// A bit of a hack to prevent textboxes from scrolling to the
 			// beginning.
 			if ("goDoCommand" in window) {
@@ -1498,7 +1480,7 @@ function AVIM()	{
 	this.handleSciMoz = function(e, el) {
 		if (!el) el = e.originalTarget;
 //		dump("AVIM.handleSciMoz -- target: " + el + "; type: " + el.type + "; code: " + e.which + "\n");	// debug
-		if (this.findIgnore(e.target)) return false;
+		if (findIgnore(e.target)) return false;
 //		dump("xul:scintilla:\n" + [prop for (prop in el)] + "\n");				// debug
 //		el.setSelectionNStart(0, 8);											// debug
 //		dump(">>> scimoz.getSelectionNStart: " + el.selections ? el.getSelectionNStart(0) : "" + "\n");					// debug
@@ -1551,7 +1533,7 @@ function AVIM()	{
 		if (anyChanged) {
 			e.handled = true;
 			e.stopPropagation();
-			this.updateContainer(el, el);
+			updateContainer(el, el);
 			return false;
 		}
 		return true;
@@ -1573,7 +1555,7 @@ function AVIM()	{
 			!document.querySelector) {
 			return false;
 		}
-		if (this.findIgnore(evt.target)) return false;
+		if (findIgnore(evt.target)) return false;
 		
 //		dump("---AceProxy---\n");												// debug
 		// Build a sandbox with all the toys an Ace editor could want.
@@ -1607,7 +1589,7 @@ function AVIM()	{
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
-			this.updateContainer(elt, elt);
+			updateContainer(elt, elt);
 		}
 		return true;
 	};
@@ -1654,7 +1636,7 @@ function AVIM()	{
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
-			this.updateContainer(elt, elt);
+			updateContainer(elt, elt);
 		}
 		return true;
 	};
@@ -1699,7 +1681,7 @@ function AVIM()	{
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
-			this.updateContainer(elt, elt);
+			updateContainer(elt, elt);
 		}
 		return true;
 	};
@@ -2558,7 +2540,7 @@ function AVIM()	{
 	 * @param e {object}	The generated event.
 	 */
 	this.onKeyDown = function (e) {
-		//dump("AVIM.onKeyDown -- code: " + fcc(e.which) + " #" + e.which +
+		//dump("AVIM.onKeyDown -- code: " + String.fromCharCode(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
 		if (e.which == e.DOM_VK_CONTROL && e.ctrlKey && !e.metaKey &&
@@ -2568,7 +2550,7 @@ function AVIM()	{
 		}
 		this.stopListeningForCtrl();
 		
-		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
+		if (e.ctrlKey || e.metaKey || e.altKey || checkCode(e.which)) {
 			return false;
 		}
 		let doc = e.target.ownerDocument;
@@ -2586,11 +2568,11 @@ function AVIM()	{
 	 * 						keypress.
 	 */
 	this.onKeyPress = function(e) {
-		//dump("AVIM.onKeyPress -- code: " + fcc(e.which) + " #" + e.which +
+		//dump("AVIM.onKeyPress -- code: " + String.fromCharCode(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
 		this.stopListeningForCtrl();
-		if (e.ctrlKey || e.metaKey || e.altKey || this.checkCode(e.which)) {
+		if (e.ctrlKey || e.metaKey || e.altKey || checkCode(e.which)) {
 			return false;
 		}
 		
@@ -2665,7 +2647,7 @@ function AVIM()	{
 	 * @param e {object}	The generated event.
 	 */
 	this.onKeyUp = function (e) {
-		//dump("AVIM.onKeyUp -- code: " + fcc(e.which) + " #" + e.which +
+		//dump("AVIM.onKeyUp -- code: " + String.fromCharCode(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
 		if (avim && avim.isWaitingForCtrlKeyUp) {
