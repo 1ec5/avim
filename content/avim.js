@@ -862,9 +862,7 @@ function AVIM()	{
 	 * @returns	{object}	The associated nsIEditor instance.
 	 */
 	let getEditor = function(el) {
-		if (!el || el instanceof TextControlProxy) {
-			return undefined;
-		}
+		if (!el) return undefined;
 		if (el.editor) return el.editor;
 		try {
 			return el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
@@ -908,10 +906,9 @@ function AVIM()	{
 		
 		if (outer) {
 			if ("selectionStart" in outer) this.selectionStart = outer.selectionStart;
-			else if ("defaultView" in outer && "getSelection" in outer.defaultView) {
-				let sel = outer.defaultView.getSelection();
-				let range = sel && sel.getRangeAt(0);
-				if (range.startOffset) this.startOffset = range.startOffset;
+			else if ("getSelection" in outer) {
+				let sel = outer.getSelection();
+				this.startOffset = sel && sel.anchorOffset;
 			}
 		}
 		
@@ -927,13 +924,8 @@ function AVIM()	{
 				outer.selectionStart = outer.selectionEnd = pos;
 			}
 			else if ("startOffset" in this) {
-				let sel = outer.defaultView.getSelection();
-				sel.removeAllRanges();
-				let range = outer.createRange();
-				let pos = this.startOffset + numChars;
-				range.setStart(node, pos);
-				range.setEnd(node, pos);
-				sel.addRange(range);
+				let sel = outer.getSelection();
+				sel.collapse(node, this.startOffset + numChars);
 			}
 		};
 		
@@ -1323,29 +1315,26 @@ function AVIM()	{
 		let cwi = new XPCNativeWrapper(doc.defaultView);
 		if (findIgnore(target)) return;
 		if (cwi.frameElement && findIgnore(cwi.frameElement)) return;
-		let sel = cwi.getSelection();
-		let range = sel ? sel.getRangeAt(0) : doc.createRange();
-		let node = range.endContainer, newPos;
-		// Zoho Writer places a cursor <span> right at the caret.
-//		dump("AVIM.ifMoz -- node: " + node.localName + "#" + node.id + "\n");	// debug
-		if (node.localName == "span" && !node.id.indexOf("z-cursor-start-")) {
-			let prevNode = node.previousSibling;
-			if (prevNode.data) {
-				range.setEnd(prevNode, prevNode.data.length);
-				node = range.endContainer;
-			}
-		}
-		if (!range.startOffset || !range.collapsed || !node.data) return;
-		
 		let editor = getEditor(cwi);
-		if (editor && editor.beginTransaction) editor.beginTransaction();
+		let sel = editor && editor.selection;
+		if (!sel || sel.rangeCount != 1 || !sel.isCollapsed) return;
+		let node = sel.anchorNode;
+		// Clicking the end of the line takes the selection out of any text node
+		// into the document at large. (#69) When an element is selected,
+		// anchorOffset is the number of child nodes preceding the selection.
+		if (node == editor.rootElement && sel.anchorOffset) {
+			node = node.childNodes[sel.anchorOffset - 1];
+			if (node.data) sel.collapse(node, node.data.length);
+		}
+		if (!sel.anchorOffset || !node.data) return;
+		
+		if (editor.beginTransaction) editor.beginTransaction();
 		let result = {};
 		try {
-			let word = lastWordInString(node.substringData(0, range.startOffset));
+			let word = lastWordInString(node.substringData(0, sel.anchorOffset));
 			if (word) result = applyKey(word, e);
 			if ("value" in result && result.value != word) {
-				let txn = new SpliceTxn(doc, node,
-										range.startOffset - word.length,
+				let txn = new SpliceTxn(cwi, node, sel.anchorOffset - word.length,
 										word.length, result.value);
 				editor.doTransaction(txn);
 			}
@@ -1356,7 +1345,7 @@ function AVIM()	{
 		finally {
 			// If we don't put this line in a finally clause, an error in
 			// start() will render the application inoperable.
-			if (editor && editor.endTransaction) editor.endTransaction();
+			if (editor.endTransaction) editor.endTransaction();
 		}
 		if (result.changed) {
 			e.stopPropagation();
