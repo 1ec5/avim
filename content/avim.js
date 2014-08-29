@@ -49,7 +49,9 @@ function AVIM()	{
 		"’";	// word-inner punctuation not found in Vietnamese
 	const wordRe = new RegExp("[" + wordChars + "]*$");
 	
-	const $ = document.getElementById.bind(document);
+	const $ = function (id) {
+		return document.getElementById(id);
+	};
 	
 	/**
 	 * Returns the given value clamped to a minimum and maximum, inclusive.
