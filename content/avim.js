@@ -907,13 +907,9 @@ function AVIM()	{
 		//* @type Boolean
 		this.isTransient = false;
 		
-		if (outer) {
-			if ("selectionStart" in outer) this.selectionStart = outer.selectionStart;
-			else if ("getSelection" in outer) {
-				let sel = outer.getSelection();
-				this.startOffset = sel && sel.anchorOffset;
-			}
-		}
+		let editor = getEditor(outer);
+		let sel = editor && editor.selection;
+		this.startOffset = sel && sel.anchorOffset;
 		
 		/**
 		 * Shift the selection to the right by the given number of characters.
@@ -921,15 +917,9 @@ function AVIM()	{
 		 * @param numChars	{number}	The number of characters to shift.
 		 */
 		this.shiftSelection = function(numChars) {
-			if (!outer) return;
-			if ("selectionStart" in this) {
-				let pos = this.selectionStart + numChars;
-				outer.selectionStart = outer.selectionEnd = pos;
-			}
-			else if ("startOffset" in this) {
-				let sel = outer.getSelection();
-				sel.collapse(node, this.startOffset + numChars);
-			}
+			let editor = getEditor(outer);
+			let sel = editor && editor.selection;
+			sel.collapse(node, this.startOffset + numChars);
 		};
 		
 		/**
@@ -974,68 +964,64 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Replaces the substring inside the given textbox, starting at an index and
-	 * spanning the given number of characters, with the given string.
+	 * Edits the word before the caret according to the given key press event.
 	 *
-	 * @param el	{object}	The textbox's DOM node.
-	 * @param index	{number}	The index at which to begin replacing.
-	 * @param len	{number}	The number of characters to replace.
-	 * @param repl	{string}	The string to insert.
-	 * @returns {number}	The distance to the right that the end of the word
-	 * 						has shifted.
+	 * @param outer	{object}	The DOM node being edited.
+	 * @param evt	{Event}		The key press event.
+	 * @returns {object}	The results of applying the event to the word.
 	 */
-	function splice(el, index, len, repl) {
-		// Anonymous node-based editing
-		try {
-			let editor = getEditor(el);
-//			dump("AVIM.splice -- editor: " + editor + "; repl: " + repl + "\n");	// debug
-			let anchorNode = editor.selection.anchorNode;
-			let absPos = el.selectionStart;
-			let relPos = editor.selection.anchorOffset;
-			if (anchorNode == editor.rootElement) {
-				let pos = 0;
-				for (let i = 0; i < anchorNode.childNodes.length; i++) {
-					let child = anchorNode.childNodes[i];
-					if (child.nodeType != el.TEXT_NODE) {
-						pos++;
-						continue;
-					}
-					pos += child.length;
-					if (pos < absPos) continue;
-					anchorNode = child;
-					break;
-				}
-				relPos = anchorNode.textContent.length;
-			}
-			let replPos = index + relPos - absPos;
-			
-			// Carry out the transaction.
-			let txn = new SpliceTxn(el, anchorNode, replPos, len, repl);
-			editor.doTransaction(txn);
-			
-			//// Coalesce the transaction with an existing one.
-			//// Assuming transactions are batched at most one level deep.
-			//let stack = editor.transactionManager.getUndoList();
-			//let txnIndex = stack.numItems - 1;
-			//let prev = stack.getItem(txnIndex);
-			//let childStack;
-			//if (!prev) {
-			//	childStack = stack.getChildListForItem(txnIndex);
-			//	dump("AVIM.splice() -- childStack.numItems: " + childStack.getNumChildrenForItem(txnIndex) + "\n");	// debug
-			//	child = childStack.getItem(childStack.numItems - 1);
-			//}
-			//prev.merge(txn);
-			//// Clean up refcounted transactions.
-			//txn = stack = prev = childStack = child = null;
-			return repl.length - len;
+	function splice(outer, evt) {
+		let result = {};
+		let editor = getEditor(outer);
+		let sel = editor && editor.selection;
+		if (!sel || sel.rangeCount != 1 || !sel.isCollapsed) return result;
+		let node = sel.anchorNode;
+		// In Midas, clicking the end of the line takes the selection out of any
+		// text node into the document at large. (#69) When an element is
+		// selected, anchorOffset is the number of child nodes preceding the
+		// selection.
+		if (node == editor.rootElement && sel.anchorOffset) {
+			node = node.childNodes[sel.anchorOffset - 1];
+			if (node.data) sel.collapse(node, node.data.length);
 		}
-		catch (e) {}
+		if (!sel.anchorOffset || !node.data) return result;
 		
-		// Ordinary DOM editing
-		let val = el.value;
-		el.value = val.substr(0, index) + repl + val.substr(index + len);
-//		dump("splice() -- <" + val + "> -> <" + el.value + ">\n");				// debug
-		return repl.length - len;
+		let word = lastWordInString(node.substringData(0, sel.anchorOffset));
+		if (word) result = applyKey(word, evt);
+//		dump("AVIM.splice -- editor: " + editor + "; old word: " + word + "; new word: " + result.value + "\n");	// debug
+		
+		// Carry out the transaction.
+		if (editor.beginTransaction) editor.beginTransaction();
+		try {
+			if ("value" in result && result.value != word) {
+				let txn = new SpliceTxn(outer, node,
+										sel.anchorOffset - word.length,
+										word.length, result.value);
+				editor.doTransaction(txn);
+			}
+		}
+		finally {
+			// If we don't put this line in a finally clause, an error carrying
+			// out the transaction will render the application inoperable.
+			if (editor.endTransaction) editor.endTransaction();
+		}
+		
+		//// Coalesce the transaction with an existing one.
+		//// Assuming transactions are batched at most one level deep.
+		//let stack = editor.transactionManager.getUndoList();
+		//let txnIndex = stack.numItems - 1;
+		//let prev = stack.getItem(txnIndex);
+		//let childStack;
+		//if (!prev) {
+		//	childStack = stack.getChildListForItem(txnIndex);
+		//	dump("AVIM.splice() -- childStack.numItems: " + childStack.getNumChildrenForItem(txnIndex) + "\n");	// debug
+		//	child = childStack.getItem(childStack.numItems - 1);
+		//}
+		//prev.merge(txn);
+		//// Clean up refcounted transactions.
+		//txn = stack = prev = childStack = child = null;
+		
+		return result;
 	};
 	
 	let isMac = window.navigator.platform == "MacPPC" ||
@@ -1312,49 +1298,26 @@ function AVIM()	{
 	 * Mozilla's Midas component).
 	 */
 	this.ifMoz = function(e) {
-		let code = e.which;
 		let doc = e.originalTarget.ownerDocument;
 		let target = doc.documentElement;
 		let cwi = new XPCNativeWrapper(doc.defaultView);
-		if (findIgnore(target)) return;
-		if (cwi.frameElement && findIgnore(cwi.frameElement)) return;
-		let editor = getEditor(cwi);
-		let sel = editor && editor.selection;
-		if (!sel || sel.rangeCount != 1 || !sel.isCollapsed) return;
-		let node = sel.anchorNode;
-		// Clicking the end of the line takes the selection out of any text node
-		// into the document at large. (#69) When an element is selected,
-		// anchorOffset is the number of child nodes preceding the selection.
-		if (node == editor.rootElement && sel.anchorOffset) {
-			node = node.childNodes[sel.anchorOffset - 1];
-			if (node.data) sel.collapse(node, node.data.length);
-		}
-		if (!sel.anchorOffset || !node.data) return;
+		if (findIgnore(target)) return false;
+		if (cwi.frameElement && findIgnore(cwi.frameElement)) return false;
 		
-		if (editor.beginTransaction) editor.beginTransaction();
-		let result = {};
-		try {
-			let word = lastWordInString(node.substringData(0, sel.anchorOffset));
-			if (word) result = applyKey(word, e);
-			if ("value" in result && result.value != word) {
-				let txn = new SpliceTxn(cwi, node, sel.anchorOffset - word.length,
-										word.length, result.value);
-				editor.doTransaction(txn);
-			}
-		}
-		catch (exc) {
-			throw exc;
-		}
-		finally {
-			// If we don't put this line in a finally clause, an error in
-			// start() will render the application inoperable.
-			if (editor.endTransaction) editor.endTransaction();
-		}
+		let result = splice(cwi, e);
 		if (result.changed) {
 			e.stopPropagation();
 			e.preventDefault();
 			updateContainer(null, target);
+			// A bit of a hack to prevent textboxes from scrolling to the
+			// beginning.
+			if ("goDoCommand" in window) {
+				goDoCommand("cmd_charPrevious");
+				goDoCommand("cmd_charNext");
+			}
+			return false;
 		}
+		return true;
 	};
 	
 	/**
@@ -1427,25 +1390,7 @@ function AVIM()	{
 									AVIMConfig.exclude.indexOf("e-mail") < 0));
 		if (!isHTML || el.selectionStart != el.selectionEnd) return false;
 		
-		let editor = getEditor(el);
-		if (editor && editor.beginTransaction) editor.beginTransaction();
-		let result = {};
-		try {
-			let word = lastWordInString(el.value.substr(0, el.selectionStart));
-			if (word) result = applyKey(word, e);
-			if ("value" in result && result.value != word) {
-				splice(el, el.selectionStart - word.length, word.length,
-					   result.value);
-			}
-		}
-		catch (exc) {
-			throw exc;
-		}
-		finally {
-			// If we don't put this line in a finally clause, an error in
-			// start() will render Firefox inoperable.
-			if (editor && editor.endTransaction) editor.endTransaction();
-		}
+		let result = splice(el, e);
 		if (result.changed) {
 			e.preventDefault();
 			updateContainer(e.originalTarget, el);
@@ -1783,7 +1728,8 @@ function AVIM()	{
 					}, 0);
 				}
 			}
-		} catch(exc) {
+		}
+		catch(exc) {
 // $if{Debug}
 			throw ">>> avim_slight_onKeyDown -- " + exc;
 // $endif{}
@@ -1827,7 +1773,8 @@ function AVIM()	{
 					ctl.selectionLength = 0;
 				}
 			}
-		} catch(exc) {
+		}
+		catch(exc) {
 // $if{Debug}
 			throw ">>> avim_slight_eatChar -- " + exc;
 // $endif{}
@@ -1957,9 +1904,6 @@ function AVIM()	{
 			
 			proxy.commit();
 			proxy = null;
-		}
-		catch (exc) {
-			throw exc;
 		}
 		finally {
 			// Revert the clipboard to the preexisting contents.
