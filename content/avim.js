@@ -550,7 +550,8 @@ function AVIM()	{
 		let frameDoc = frame.ownerDocument;
 		
 		const overlaySelector = ".kix-selection-overlay,.sketchy-text-selection-overlay";
-		const presItemType = "http://schema.org/CreativeWork/PresentationObject";
+		//const presItemType = "http://schema.org/CreativeWork/PresentationObject";
+		const drawingItemType = "http://schema.org/CreativeWork/DrawingObject";
 		
 		/**
 		 * Returns whether text is currently selected in the editor, as
@@ -717,7 +718,9 @@ function AVIM()	{
 		let wasInTable = this.isInTable();
 //		if (wasInTable) dump("KixProxy -- Caret in table.\n");					// debug
 		this.selectPrecedingWord(wasInTable);
-		if ((!wasInTable && this.isInTable()) || this.isObjectSelected()) {
+		if ((!wasInTable && this.isInTable()) ||
+			(frame.ownerDocument.body.getAttribute("itemtype") != drawingItemType &&
+			 this.isObjectSelected())) {
 			// The selection now lies in the table, so the caret was right after
 			// the table.
 			this.trimLeftSelection();
