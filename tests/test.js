@@ -39,6 +39,9 @@ okApplyKey(prefs, "bố", "^", "bó^");	// #13
 //okApplyKey(prefs, "kilômet", "'", "kilômét");	// #14
 okApplyKey(prefs, "cúu", "+", "cứu");	// #70
 
+okApplyKey(prefs, "tong", "+", "tơng");	// UniKey #32
+okApplyKey(prefs, "Đ", "D", "DD");	// UniKey #38
+
 prefs = {
 	method: 3 /* VIQR */,
 	ckSpell: false,
@@ -54,10 +57,23 @@ let prefs = {
 	method: 1 /* Telex */,
 	ckSpell: true,
 	informal: false,
-	oldAccent: true,
+	oldAccent: false,
 };
 
 okApplyKey(prefs, "bế", "e", "bée");	// #13
+
+okApplyKey(prefs, "cy", "s", "cys");	// Mudim #16
+//okApplyKey(prefs, "ka", "a", "kaa");	// Mudim #16
+//okApplyKey(prefs, "ko", "o", "koo");	// Mudim #16
+//okApplyKey(prefs, "ko", "w", "kow");	// Mudim #16
+//okApplyKey(prefs, "ku", "w", "kuw");	// Mudim #16
+okApplyKey(prefs, "ty", "r", "tỷ");	// Mudim #16
+okApplyKey(prefs, "coa", "f", "coaf");	// Mudim #16
+okApplyKey(prefs, "coe", "f", "coef");	// Mudim #16
+okApplyKey(prefs, "cuy", "f", "cuyf");	// Mudim #16
+okApplyKey(prefs, "ty", "r", "tỷ");	// Mudim #16
+okApplyKey(prefs, "kiu", "s", "kíu");	// UniKey #23
+okApplyKey(prefs, "ki", "s", "kí");	// UniKey #23
 
 let status = assert.errors.length ? 1 : 0;
 assert.flush();
