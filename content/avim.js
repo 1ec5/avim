@@ -864,7 +864,7 @@ function AVIM()	{
 	 * @param el	{object}	The XUL or HTML element.
 	 * @returns	{object}	The associated nsIEditor instance.
 	 */
-	let getEditor = function(el) {
+	function getEditor(el) {
 		if (!el) return undefined;
 		if (el.editor) return el.editor;
 		try {
@@ -887,7 +887,21 @@ function AVIM()	{
 		catch (e) {}
 //		dump("AVIM.getEditor -- couldn't get editor: " + e + "\n");		// debug
 		return undefined;
-	};
+	}
+	
+	const xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
+	function applyKey(word, evt) {
+		return xformer.applyKey(word, {
+			method: AVIMConfig.method,
+			autoMethods: AVIMConfig.autoMethods,
+			ckSpell: AVIMConfig.ckSpell,
+			informal: AVIMConfig.informal,
+			oldAccent: AVIMConfig.oldAccent,
+			keyCode: evt.keyCode,
+			which: evt.which,
+			shiftKey: evt.shiftKey,
+		});
+	}
 	
 	/**
 	 * Transaction that replaces a particular substring in a text node, keeping
@@ -903,7 +917,7 @@ function AVIM()	{
 	 * @implements Components.interfaces.nsITransaction
 	 * @implements Components.interfaces.nsISupports
 	 */
-	let SpliceTxn = function(outer, node, pos, len, repl) {
+	function SpliceTxn(outer, node, pos, len, repl) {
 		//* @type Boolean
 		this.isTransient = false;
 		
@@ -961,7 +975,7 @@ function AVIM()	{
 			if (iid == Ci.nsITransaction || iid == Ci.nsISupports) return this;
 			return null;
 		};
-	};
+	}
 	
 	/**
 	 * Edits the word before the caret according to the given key press event.
@@ -1278,20 +1292,6 @@ function AVIM()	{
 			controller.handleEndComposition();
 		}
 	};
-	
-	const xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
-	function applyKey(word, evt) {
-		return xformer.applyKey(word, {
-			method: AVIMConfig.method,
-			autoMethods: AVIMConfig.autoMethods,
-			ckSpell: AVIMConfig.ckSpell,
-			informal: AVIMConfig.informal,
-			oldAccent: AVIMConfig.oldAccent,
-			keyCode: evt.keyCode,
-			which: evt.which,
-			shiftKey: evt.shiftKey,
-		});
-	}
 	
 	/**
 	 * Handles key presses for WYSIWYG HTML documents (editable through
