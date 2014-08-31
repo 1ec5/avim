@@ -2089,7 +2089,7 @@ function AVIM()	{
 		catch (exc) {}
 		try {
 			// Zoho Show
-			if (!proxyCls && sandbox.evalBoolean("'ShapeEditor'in window")) {
+			if (sandbox.evalBoolean("'ShapeEditor'in window")) {
 				proxyCls = ZShowProxy;
 				//dump(">>> AVIM.handleZoho -- ZShowProxy\n");					// debug
 			}
