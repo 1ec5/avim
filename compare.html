@@ -58,8 +58,56 @@
 		table/* .hide-minor */ .myavim,
 		table/* .hide-minor */ .instcode,
 		table .prism,
-		table.hide-minor .windows-seamonkey {
+		/* table.hide-minor .windows-seamonkey, */
+		#general.collapsed ~ .cat-general,
+		#stats.collapsed ~ .cat-stats,
+		#moz-apps.collapsed ~ .cat-moz-apps,
+		#other-apps.collapsed ~ .cat-other-apps,
+		#methods.collapsed ~ .cat-methods,
+		#input-features.collapsed ~ .cat-input-features,
+		#annoyances.collapsed ~ .cat-annoyances,
+		#spelling.collapsed ~ .cat-spelling,
+		#interface.collapsed ~ .cat-interface,
+		#windows.collapsed ~ .cat-windows,
+		#windows-flock.collapsed ~ .cat-windows-flock,
+		#windows-seamonkey.collapsed ~ .cat-windows-seamonkey,
+		#windows-chrome.collapsed ~ .cat-windows-chrome,
+		#extensions.collapsed ~ .cat-extensions,
+		#web-apps.collapsed ~ .cat-web-apps,
+		#textboxes.collapsed ~ .cat-textboxes,
+		#rich-textboxes.collapsed ~ .cat-rich-textboxes,
+		#plugins.collapsed ~ .cat-plugins,
+		#code-editors.collapsed ~ .cat-code-editors,
+		#rich-editors.collapsed ~ .cat-rich-editors,
+		#scripts.collapsed ~ .cat-scripts,
+		#other.collapsed ~ .cat-other {
 			display: none;
+		}
+		
+		.cat-header {
+			cursor: pointer;
+		}
+		
+		.cat-header th {
+			transition: background-color 1s;
+		}
+		
+		.cat-header th::before {
+			content: "▼";
+			display: block;
+			float: left;
+			margin-right: 1em;
+			transition: transform 0.2s;
+		}
+		
+		.cat-header.collapsed th {
+			background-color: #aaa;
+			transition: background-color 0.2s;
+		}
+		
+		.cat-header.collapsed th::before {
+			/* content: "►"; */
+			transform: rotate(-90deg);
 		}
         
         section.inner {
@@ -75,6 +123,18 @@
             document.getElementById("comparison-wrapper").className = c;
             document.getElementById("moz-colgroup").setAttribute("colspan", show ? "5" : "2");
             document.getElementById("chrome-colgroup").setAttribute("colspan", show ? "3" : "2");
+		}
+		
+		function makeRowGroupsCollapsible() {
+			var headerRows = document.getElementsByClassName("cat-header"),
+				i;
+			
+			for (i = 0; i < headerRows.length; i++) {
+				headerRows[i].addEventListener("click", function (evt) {
+					console.log(this);
+					this.classList.toggle("collapsed");
+				}, false);
+			}
 		}
 		
 		function toAge(qty, unit, smallUnit) {
@@ -113,6 +173,7 @@
 		
 		addEventListener("load", function () {
 			toggleCol(false);
+			makeRowGroupsCollapsible();
 			calcAges();
 			setTimeout(calcAges, 1000 * 60 * 60);
 		});
@@ -175,7 +236,7 @@
 	</tr>
 </thead>
 <tbody>
-	<tr>
+	<tr class="cat-general">
 		<td>Phát hành cuối cùng</td>
 		<td class="avim">Chưa định</td>
 		<td class="mudim"><time datetime="2010-12-06">6 tháng 12 năm 2010</time></td>
@@ -189,9 +250,9 @@
 		<td class="google"><time datetime="2014-07-02">2 tháng 7 năm 2014</time></td>
 		<td class="vietinput"><time datetime="2010-06-03">3 tháng 6 năm 2010</time></td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Kích cỡ gói tải xuống</td>
-		<td class="avim">64,1&nbsp;<abbr title="kilôbyte">kB</abbr></td>
+		<td class="avim">64,7&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="mudim">30,7&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="typingviet">9,2&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="chim">9,7&nbsp;<abbr title="kilôbyte">kB</abbr></td>
@@ -203,9 +264,9 @@
 		<td class="google">538&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="vietinput">14,5&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Kích cỡ sau khi cài</td>
-		<td class="avim">64,1&nbsp;<abbr title="kilôbyte">kB</abbr></td>
+		<td class="avim">94,1&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="mudim">30,7&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="typingviet">9,2&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="chim">10,2&nbsp;<abbr title="kilôbyte">kB</abbr></td>
@@ -217,7 +278,7 @@
 		<td class="google">1,4&nbsp;<abbr title="mêgabyte">MB</abbr></td>
 		<td class="vietinput">28,6&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Diện tích trên màn hình</td>
 		<td class="avim">0&ndash;592&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 0x0 - 17x16 - 37x16 --></td>
 		<td class="mudim">768&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 48x16 --></td>
@@ -231,7 +292,7 @@
 		<td class="google">729&ndash;1.457&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 27x27 + 517x211 --></td>
 		<td class="vietinput">0&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 0x0 --></td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Ngôn ngữ của giao diện</td>
 		<td class="avim">Anh, <acronym title="Bồ Đào Nha">BĐN</acronym>, Đức, <acronym title="Tây Ban Nha">TBN</acronym>, Việt<!-- Hoa, Pháp --></td>
 		<td class="mudim">Anh</td>
@@ -245,7 +306,7 @@
 		<td class="google">41</td>
 		<td class="vietinput">Anh</td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Giá</td>
 		<td class="avim">Miễn phí</td>
 		<td class="mudim">Miễn phí</td>
@@ -259,7 +320,7 @@
 		<td class="google">Miễn phí</td>
 		<td class="vietinput">Miễn phí</td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Giấy phép</td>
 		<td class="avim"><acronym title="Massachusetts Institute of Technology" class="initialism">MIT</acronym></td>
 		<td class="mudim"><acronym title="General Public License">GPL</acronym> 3</td>
@@ -273,7 +334,7 @@
 		<td class="google">Sở&nbsp;hữu độc&nbsp;quyền</td>
 		<td class="vietinput"><a href="http://www.codeproject.com/info/cpol10.aspx" hreflang="en" rel="bookmark" title="The Code Project: The Code Project Open License (CPOL) 1.02"><acronym title="Code Project Open License">CPOL</acronym> 1.02</a></td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Hệ thống nhập liệu</td>
 		<td class="avim"><a href="http://sourceforge.net/projects/rhos/" hreflang="en-GB" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20080728+</td>
 		<td class="mudim"><a href="http://xvnkb.sourceforge.net/chim/" hreflang="en" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.3</td>
@@ -287,7 +348,7 @@
 		<td class="google">Bàn&nbsp;phím Ảo của Google</td>
 		<td class="vietinput"><a href="http://www.codeproject.com/KB/scripting/VietUni2.aspx" hreflang="vi" rel="bookmark" title="The Code Project: Fastest &amp; Smallest Vietnamese JavaScript Input Editor">VietUni</a> 1.7</td>
 	</tr>
-	<tr>
+	<tr class="cat-general">
 		<td>Kiến trúc</td>
 		<td class="avim">Nhạy ngữ cảnh</td>
 		<td class="mudim">Bộ đệm đầu vào</td>
@@ -301,10 +362,10 @@
 		<td class="google">Bộ đệm đầu vào</td>
 		<td class="vietinput">Nhạy ngữ cảnh</td>
 	</tr>
-	<tr class="cat-header">
-		<th id="stats" colspan="12">Thống kê</th>
+	<tr id="stats" class="cat-header cat-stats">
+		<th colspan="12">Thống kê</th>
 	</tr>
-	<tr>
+	<tr class="cat-stats">
 		<td>Điểm đánh giá trung bình</td>
 		<td class="avim"><meter value="4.5" min="1" max="5" low="4" optimum="5">4½/5</td>
 		<td class="mudim"><meter value="5" min="1" max="5" low="4" optimum="5">5/5</td>
@@ -318,7 +379,7 @@
 		<td class="google"><meter value="4" min="1" max="5" low="4" optimum="5">4/5</td>
 		<td class="vietinput"><meter value="3.5" min="1" max="5" low="4" optimum="5">3½/5</td>
 	</tr>
-	<tr>
+	<tr class="cat-stats">
 		<td>Số nguời dùng tích cực</td>
 		<td class="avim">3.763</td>
 		<td class="mudim">77</td>
@@ -332,10 +393,10 @@
 		<td class="google">377.033</td>
 		<td class="vietinput">53</td>
 	</tr>
-	<tr class="cat-header">
-		<th id="apps" colspan="12">Các chương trình ưng dụng hệ Mozilla</th>
+	<tr id="moz-apps" class="cat-header cat-moz-apps collapsed">
+		<th colspan="12">Các chương trình ưng dụng hệ Mozilla</th>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.mozilla.com/vi/firefox/" rel="bookmark" title="Mozilla: Firefox">Mozilla Firefox</a><!-- , <acronym title="GNU&rsquo;s Not Unix">GNU</acronym> IceCat, Iceweasel --></td>
 		<td class="avim yes">2.0&ndash;31.0</td>
 		<td class="mudim yes">1.0&ndash;30.0</td>
@@ -349,7 +410,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="https://www.mozilla.org/vi/thunderbird/" rel="bookmark" title="Mozilla Messaging: Thunderbird">Mozilla Thunderbird</a><!-- , Icedove --></td>
 		<td class="avim yes">2.0&ndash;30.0</td>
 		<td class="mudim no">Không</td>
@@ -363,7 +424,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.mozilla.org/projects/calendar/sunbird/" hreflang="en-US" rel="bookmark" title="mozilla.org: Sunbird">Mozilla Sunbird</a><!-- , Iceowl --></td>
 		<td class="avim yes">0.4&ndash;5.0</td>
 		<td class="mudim no">Không</td>
@@ -377,7 +438,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.mozilla.com/vi/mobile/" rel="bookmark" title="Mozilla: Firefox Mobile">Firefox Di động</a> (Fennec)</td>
 		<td class="avim no"><a href="https://github.com/1ec5/avim/issues/25">0.7&ndash;4.0b3</a></td>
 		<td class="mudim no">Không</td>
@@ -391,7 +452,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://prism.mozillalabs.com/" hreflang="en" rel="bookmark" title="Mozilla Labs: Prism">Mozilla Labs Prism</a></td>
 		<td class="avim yes">0.9&ndash;1.0.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -405,7 +466,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.seamonkey-project.org/" hreflang="en" rel="bookmark" title="The SeaMonkey&reg; Project">SeaMonkey</a><!-- , Gnuzilla, Iceape --></td>
 		<td class="avim yes">1.1&ndash;2.28</td>
 		<td class="mudim no">Không</td>
@@ -419,7 +480,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www-archive.mozilla.org/products/mozilla1.x/" rel="bookmark" title="Mozilla: Mozilla Suite">Mozilla Suite</a></td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -433,7 +494,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<!-- <tr class="flock">
+	<!-- <tr class="flock cat-moz-apps">
 		<td><a href="http://www.flock.com/" hreflang="en" rel="bookmark" title="Flock Browser">Flock</a></td>
 		<td class="avim no">1.2&ndash;2.6.<var>x</var></td>
 		<td class="mudim no">0.7&ndash;2.6.<var>x</var></td>
@@ -447,7 +508,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
-	<!-- <tr>
+	<!-- <tr class="cat-moz-apps">
 		<td><a href="http://getsongbird.com/" hreflang="en" rel="bookmark" title="Songbird Media Player">Songbird</a></td>
 		<td class="avim yes">0.2.5&ndash;2.3.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -461,7 +522,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://getnightingale.com/" hreflang="en" rel="bookmark" title="Nightingale">Nightingale</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -475,7 +536,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://browser.netscape.com/" hreflang="en-US" rel="bookmark" title="The Netscape Archive">Netscape</a></td>
 		<td class="avim yes">9.<var>x</var></td>
 		<td class="mudim yes">8.0&ndash;9.<var>x</var></td>
@@ -489,7 +550,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://en.wikipedia.org/wiki/Netscape_Messenger_9" hreflang="en" rel="bookmark" title="Wikipedia: Netscape Messenger 9">Netscape Messenger</a> (Netscape Mail &amp; Newsgroups)</td>
 		<td class="avim yes">9.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -503,7 +564,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.postbox-inc.com/" hreflang="en" rel="bookmark" title="Postbox">Postbox</a></td>
 		<td class="avim yes">1&ndash;2.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -517,7 +578,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="https://wiki.mozilla.org/Eudora_OSE" rel="bookmark" title="MozillaWiki: Eudora OSE">Eudora <acronym title="Open Source Edition" class="initialism">OSE</acronym></a> (Penelope)</td>
 		<td class="avim yes">8.0&ndash;1.0.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -531,7 +592,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.activestate.com/komodo-ide" hreflang="en" rel="bookmark" title="ActiveState: Komodo IDE">Komodo <acronym title="Integrated Development Environment" class="initialism">IDE</acronym></a>, <a href="http://www.activestate.com/komodo-edit" hreflang="en" rel="bookmark" title="ActiveState: Komodo Edit">Komodo Edit</a></td>
 		<td class="avim yes">4.0&ndash;8.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -545,7 +606,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-moz-apps">
 		<td><a href="http://www.spicebird.com/" hreflang="en" rel="bookmark" title="Spicebird">Spicebird</a></td>
 		<td class="avim yes">0.4&ndash;0.8</td>
 		<td class="mudim no">Không</td>
@@ -559,7 +620,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.instantbird.com/" hreflang="en" rel="bookmark" title="Instantbird">Instantbird</a></td>
 		<td class="avim yes">0.1.2&ndash;1.6</td>
 		<td class="mudim no">Không</td>
@@ -573,7 +634,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.wyzo.com/" hreflang="en" rel="bookmark" title="Wyzo">Wyzo</a></td>
 		<td class="avim yes">3.<var>x</var></td>
 		<td class="mudim yes">0.1&ndash;3.<var>x</var></td>
@@ -587,7 +648,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.celtx.com/" hreflang="en" rel="bookmark" title="Celtx">Celtx</a></td>
 		<td class="avim yes">2.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -601,7 +662,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<!-- <tr class="sameplace">
+	<!-- <tr class="sameplace cat-moz-apps">
 		<td><a href="http://www.sameplace.cc/" hreflang="en" rel="bookmark" title="SamePlace">SamePlace</a></td>
 		<td class="avim buggy">0.9.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -615,7 +676,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.bluegriffon.org/" hreflang="en" rel="bookmark" title="BlueGriffon.org">BlueGriffon</a></td>
 		<td class="avim yes">0.1&ndash;1.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -629,7 +690,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-moz-apps">
 		<td><a href="http://www.twitfactory.com/" hreflang="en" rel="bookmark" title="TwitFactory">TwitFactory</a></td>
 		<td class="avim yes">1.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -643,7 +704,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://www.evolus.vn/Pencil/" hreflang="en" rel="bookmark" title="Evolus: Pencil Project">Pencil</a></td>
 		<td class="avim yes">1.<var>x</var></td>
 		<td class="mudim no">Không</td>
@@ -657,7 +718,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td><a href="http://chatzilla.rdmsoft.com/xulrunner/" hreflang="en" rel="bookmark" title="ChatZilla on XULRunner">ChatZilla</a></td>
 		<td class="avim yes">0.9.69+</td>
 		<td class="mudim no">Không</td>
@@ -671,7 +732,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-moz-apps">
 		<td>Nvu, KompoZer</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -686,10 +747,10 @@
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	
-	<tr class="cat-header">
-		<th id="other-apps" colspan="12">Các chương trình ứng dụng hệ Chromium</th>
+	<tr id="other-apps" class="cat-header cat-other-apps collapsed">
+		<th colspan="12">Các chương trình ứng dụng hệ Chromium</th>
 	</tr>
-	<tr>
+	<tr class="cat-other-apps">
 		<td><a href="http://www.google.com/chrome/?hl=vi" rel="bookmark" title="Google: Google Chrome">Google Chrome</a></td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -703,7 +764,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-other-apps">
 		<td><a href="http://www.opera.com/vi" rel="bookmark" title="Trình duyệt Opera">Opera</a></td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -717,7 +778,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-other-apps">
 		<td><a href="http://torchbrowser.com/" hreflang="en" rel="bookmark" title="Torch Web Browser">Torch</a></td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -732,10 +793,10 @@
 		<td class="vietinput yes">Có</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="methods" class="cat-header cat-methods">
 		<th colspan="12">Các kiểu gõ và bố trí bàn phím</th>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Kiểu gõ Telex</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -749,7 +810,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Kiểu gõ <acronym class="initialism">VNI</acronym></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -763,7 +824,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Kiểu gõ <acronym title="VIetnamese Quoted-Readable">VIQR</acronym> (kiểu <kbd>+</kbd>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -777,7 +838,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Kiểu gõ <acronym title="VIetnamese Quoted-Readable">VIQR</acronym> (kiểu <kbd>*</kbd>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -791,7 +852,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Bố trí <acronym title="Tiêu chuẩn Việt Nam">TCVN</acronym> 6064</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -805,7 +866,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Các hỗn hợp</td>
 		<td class="avim yes">Telex + <acronym class="initialism">VNI</acronym> + <acronym title="VIetnamese Quoted-Readable">VIQR</acronym><sup>+</sup> + <acronym title="VIetnamese Quoted-Readable">VIQR</acronym><sup>*</sup></td>
 		<td class="mudim buggy">Telex + <acronym class="initialism">VNI</acronym></td>
@@ -819,7 +880,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Chế độ tự động nhận diện</td>
 		<td class="avim no">Không</td>
 		<td class="mudim buggy">Không có giao diện</td>
@@ -833,7 +894,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Chế độ tự động bỏ dấu</td>
 		<td class="avim no"><a href="https://github.com/1ec5/avim/issues/19">Không</a></td>
 		<td class="mudim no">Không</td>
@@ -847,7 +908,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-methods">
 		<td>Chế độ viết tay</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -862,10 +923,10 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="input-features" class="cat-header cat-input-features">
 		<th colspan="12">Các tính năng kiểu gõ</th>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Thiết lập kiểu gõ hỗn hợp</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -879,7 +940,7 @@
 		<td class="google">Không có hỗn hợp</td>
 		<td class="vietinput no">Không có hỗn hợp</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Ẩn phím chết</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -893,7 +954,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Chuyển dấu về đầu (<kbd>Viet^.</kbd>)</td>
 		<td class="avim yes"><samp>Việt</samp></td>
 		<td class="mudim buggy"><samp>Viet^.</samp> (chỉ&nbsp;có dấu&nbsp;thanh)</td>
@@ -907,7 +968,7 @@
 		<td class="google buggy"><samp>Viet^̣</samp> (chỉ&nbsp;có dấu&nbsp;thanh trong Telex)</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Sao dấu về đầu (<kbd>truong+`</kbd>)</td>
 		<td class="avim yes"><samp>trường</samp></td>
 		<td class="mudim yes"><samp>trường</samp></td>
@@ -921,7 +982,7 @@
 		<td class="google no"><samp>truong+̀</samp></td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Chuyển dấu về cuối (<kbd>to'an</kbd>)</td>
 		<td class="avim yes"><samp>toán</samp></td>
 		<td class="mudim yes"><samp>toán</samp></td>
@@ -935,7 +996,7 @@
 		<td class="google no"><samp>tóan</samp></td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Sao dấu về cuối (<kbd>tru+ong</kbd>)</td>
 		<td class="avim no"><samp>trưong</samp></td>
 		<td class="mudim yes"><samp>trương</samp></td>
@@ -949,7 +1010,7 @@
 		<td class="google no"><samp>trưong</samp></td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Bỏ dấu trên từ đã có</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Phải nhập lại từ</td>
@@ -963,7 +1024,7 @@
 		<td class="google no">Phải nhập lại từ</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Ghi đè dấu (<kbd>ma'`?~.</kbd>)</td>
 		<td class="avim yes"><samp>mạ</samp></td>
 		<td class="mudim yes"><samp>mạ</samp></td>
@@ -977,7 +1038,7 @@
 		<td class="google no"><samp>mạ́̉̃</samp></td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Xóa dấu (<kbd>cho+?--</kbd> hoặc <kbd>chowrzz</kbd>)</td>
 		<td class="avim yes"><samp>cho</samp></td>
 		<td class="mudim buggy">Chỉ Telex, <acronym class="initialism">VNI</acronym></td>
@@ -991,7 +1052,7 @@
 		<td class="google buggy">Chỉ dấu&nbsp;thanh trong Telex</td>
 		<td class="vietinput buggy"><samp>chơz</samp></td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Xóa dấu dùng <span class="keystrokes"><kbd class="modifier">Shift</kbd> <kbd class="modifier">Backspace</kbd></span></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1005,7 +1066,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Thoát phím chết trong <acronym title="VIetnamese Quoted-Readable">VIQR</acronym> (<kbd>Ddu'ng\.</kbd>)</td>
 		<td class="avim yes"><samp>Đúng.</samp></td>
 		<td class="mudim no"><samp>Đúng\.</samp></td>
@@ -1019,7 +1080,7 @@
 		<td class="google yes"><samp>Đúng.</samp></td>
 		<td class="vietinput">Không hỗ trợ <acronym title="VIetnamese Quoted-Readable">VIQR</acronym></td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Thoát phím chết đúp (<kbd>Sai..</kbd>)</td>
 		<td class="avim yes"><samp>Sai.</samp></td>
 		<td class="mudim yes"><samp>Sai.</samp></td>
@@ -1033,7 +1094,7 @@
 		<td class="google no"><samp>Saị̣</samp></td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Hủy bỏ từ dùng <span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span></td>
 		<td class="avim no">Không</td>
 		<td class="mudim yes">Có</td>
@@ -1047,7 +1108,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Bỏ qua hộp văn bản</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim buggy">Chỉ Thanh Địa chỉ</td>
@@ -1061,7 +1122,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Dấu kết hợp cho từ viết tắt</td>
 		<td class="avim yes"><samp>Ng&#x0303;</samp></td>
 		<td class="mudim no">Không</td>
@@ -1075,7 +1136,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Ký hiệu đồng (₫)</td>
 		<td class="avim yes">Sau con số</td>
 		<td class="mudim no">Không</td>
@@ -1089,7 +1150,7 @@
 		<td class="google buggy">Chỉ&nbsp;có <acronym title="Tiêu chuẩn Việt Nam">TCVN</acronym>&nbsp;6064</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Tiếng Việt bên cạnh chữ <acronym title="Hán, Nhật, Hàn">CJK</acronym></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1103,7 +1164,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-input-features">
 		<td>Phản ứng thuộc tính <a href="https://developer.mozilla.org/En/CSS/Ime-mode" hreflang="en-US" rel="bookmark" title="Mozilla Developer Center: ime-mode"><code>ime-mode</code></a> của <acronym title="Cascading Style Sheets">CSS</acronym></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1118,10 +1179,10 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="annoyances" class="cat-header cat-annoyances">
 		<th colspan="12">Những điều khó chịu</th>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Cho ra các ký tự dựng sẵn</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1135,7 +1196,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Xung đột với <span class="keystrokes"><kbd class="modifier">Ctrl</kbd> <kbd class="modifier">Backspace</kbd></span></td>
 		<td class="avim yes">Không</td>
 		<td class="mudim no">Gẫy</td>
@@ -1149,7 +1210,7 @@
 		<td class="google yes">Không</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Cuộn hộp văn bản tới con nháy</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1163,7 +1224,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Cuộn hộp một dòng về đầu khi bỏ dấu</td>
 		<td class="avim yes">Không</td>
 		<td class="mudim no">Có</td>
@@ -1177,7 +1238,7 @@
 		<td class="google">Không bao giờ cuộn</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Cuộn hộp đa dòng về trên khi bỏ dấu</td>
 		<td class="avim yes">Không</td>
 		<td class="mudim yes">Không</td>
@@ -1191,7 +1252,7 @@
 		<td class="google">Không bao giờ cuộn</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Tương thích với tác vụ hoàn tác/làm lại</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1205,7 +1266,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Toàn bộ văn bản được lựa chọn khi hoàn tác</td>
 		<td class="avim yes">Không</td>
 		<td class="mudim no">Có</td>
@@ -1219,7 +1280,7 @@
 		<td class="google">Hoàn&nbsp;tác chí&nbsp;chóe</td>
 		<td class="vietinput">Không&nbsp;thể hoàn&nbsp;tác</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Con nháy nhảy tới cuối cùng khi làm lại</td>
 		<td class="avim yes">Không</td>
 		<td class="mudim no">Có</td>
@@ -1233,7 +1294,7 @@
 		<td class="google">Làm&nbsp;lại chí&nbsp;chóe</td>
 		<td class="vietinput" rowspan="2">Không&nbsp;thể làm&nbsp;lại</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Mất dấu khi làm lại văn bản có định dạng</td>
 		<td class="avim yes">Không</td>
 		<td class="mudim no">Có</td>
@@ -1246,7 +1307,7 @@
 		<td class="avim-chrome no">Có</td>
 		<td class="google yes">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Thời gian phải chờ từng chữ khi sửa văn bản dài đến 50&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="avim yes">&asymp;0&nbsp;<abbr title="mili giây">ms</abbr></td>
 		<td class="mudim no">>500&nbsp;<abbr title="mili giây">ms</abbr></td>
@@ -1260,7 +1321,7 @@
 		<td class="google yes">&asymp;0&nbsp;<abbr title="mili giây">ms</abbr></td>
 		<td class="vietinput yes">&asymp;0&nbsp;<abbr title="mili giây">ms</abbr></td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Gây lỗi JavaScript</td>
 		<td class="avim yes">Không</td>
 		<td class="typingviet yes">Không</td>
@@ -1274,7 +1335,7 @@
 		<td class="google yes">Không</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-annoyances">
 		<td>Lần hoàn tác/làm lại mỗi chữ sau chữ có dấu</td>
 		<td class="avim yes">1</td>
 		<td class="mudim yes">1</td>
@@ -1288,7 +1349,7 @@
 		<td class="myavim no">2</td>
 		<td class="instcode yes">1</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Nhận ra các phần mở rộng không tương thích</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1302,7 +1363,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Phải khởi động lại chương trình để cài đặt</td>
 		<td class="avim no"><a href="https://github.com/1ec5/avim/issues/9">Có</a></td>
 		<td class="mudim no">Có</td>
@@ -1316,7 +1377,7 @@
 		<td class="google yes">Không</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-annoyances">
 		<td>Hình rõ trên các màn hình có độ phân giải cao</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1331,10 +1392,10 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="spelling" class="cat-header cat-spelling">
 		<th colspan="12">Các tính năng chính tả</th>
 	</tr>
-	<tr>
+	<tr class="cat-spelling">
 		<td>Bắt buộc các quy tắc chính tả</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1348,7 +1409,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-spelling">
 		<td>Bỏ dấu kiểu cũ</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1362,7 +1423,7 @@
 		<td class="google" rowspan="3">Không bắt&nbsp;buộc chính&nbsp;tả</td>
 		<td class="vietinput" rowspan="3">Không bắt&nbsp;buộc chính&nbsp;tả</td>
 	</tr>
-	<tr>
+	<tr class="cat-spelling">
 		<td>Bỏ dấu kiểu mới</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1372,7 +1433,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-spelling">
 		<td>Ngoại lệ cho kiểu chính tả diễn đàn</td>
 		<td class="avim yes"><kbd>dz</kbd>, <kbd>f</kbd></td>
 		<td class="mudim no">Không</td>
@@ -1383,10 +1444,10 @@
 		<td class="avim-chrome no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="interface" class="cat-header cat-interface">
 		<th colspan="12">Các tính năng giao diện</th>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Nút trên Thanh tiện ích</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1400,7 +1461,7 @@
 		<td class="google">Không&nbsp;có Thanh tiện&nbsp;ích</td>
 		<td class="vietinput">Không&nbsp;có Thanh tiện&nbsp;ích</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Trình đơn</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1414,7 +1475,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Trình đơn trên thanh công cụ</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1428,7 +1489,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Nút trên thanh công cụ</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1442,7 +1503,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Cửa sổ tùy chỉnh</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1456,7 +1517,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Các phím tắt (số ngón tay)</td>
 		<td class="avim yes">Có (1)</td>
 		<td class="mudim buggy">Gẫy trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
@@ -1470,7 +1531,7 @@
 		<td class="google yes">Có (2)</td>
 		<td class="vietinput buggy">Có (4)</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Áp dụng các tùy chỉnh ở khắp chương trình</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1484,7 +1545,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Ghi nhớ các tùy chỉnh sau khi khởi động lại</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1498,7 +1559,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Có thể ẩn giao diện</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1512,7 +1573,7 @@
 		<td class="google buggy">Chỉ bàn&nbsp;phím ảo</td>
 		<td class="vietinput" rowspan="2">Không&nbsp;có giao&nbsp;diện</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Skin cho nút trên Thanh Tiện ích</td>
 		<td class="avim no">Không</td>
 		<td class="mudim yes">Simple, Solid, Light</td>
@@ -1525,7 +1586,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-interface">
 		<td>Tương thích với hộp văn bản gợi ý</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1540,10 +1601,10 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr id="windows" class="cat-header">
+	<tr id="windows" class="cat-header cat-windows collapsed">
 		<th colspan="12">Các cửa sổ và hộp thoại trong Firefox</th>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Các cửa sổ trình duyệt</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1557,7 +1618,7 @@
 		<td class="google" rowspan="14">Không hỗ&nbsp;trợ Firefox</td>
 		<td class="vietinput" rowspan="14">Không hỗ&nbsp;trợ Firefox</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Các hộp thoại JavaScript (<code>prompt()</code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1567,7 +1628,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Các hộp thoại xác thực <acronym title="HyperText Transfer Protocol">HTTP</acronym></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1577,7 +1638,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Hộp thoại Mở Địa Chỉ Web</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1587,7 +1648,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Thư viện</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1597,7 +1658,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Panel Thêm Trang đánh dấu</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1607,7 +1668,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Hộp thoại Đánh dấu Tất cả Các thẻ</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1617,7 +1678,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Hộp thoại Thuộc tính Đánh dấu</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1627,7 +1688,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Cửa sổ Mã Nguồn của Trang</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1637,7 +1698,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-windows">
 		<td>Cửa sổ Tải xuống</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1647,7 +1708,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-windows">
 		<td>Cửa sổ Tiện ích</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1657,7 +1718,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Bảng kiểm soát Lỗi</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1667,7 +1728,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Hộp thoại Tùy chọn (cửa sổ Tùy chỉnh)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1677,7 +1738,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Hộp thoại Báo cáo Trang web Hỏng</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1687,7 +1748,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows">
 		<td>Tương tác Tạo Hồ Sơ</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -1698,10 +1759,10 @@
 		<td class="instcode no">Không</td>
 	</tr>
 	
-	<!-- <tr id="windows-flock" class="cat-header flock">
+	<!-- <tr id="windows-flock" class="cat-header flock cat-windows-flock">
 		<th colspan="12">Các cửa sổ và hộp thoại riêng của Flock</th>
 	</tr>
-	<tr class="flock">
+	<tr class="flock cat-windows-flock">
 		<td>Cửa sổ Blog Editor</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1715,21 +1776,21 @@
 		<td class="google" rowspan="3">Không hỗ&nbsp;trợ Flock</td>
 		<td class="vietinput" rowspan="3">Không hỗ&nbsp;trợ Flock</td>
 	</tr>
-	<tr class="flock">
+	<tr class="flock cat-windows-flock">
 		<td>Hộp thoại Image Properties</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
 	</tr>
-	<tr class="flock">
+	<tr class="flock cat-windows-flock">
 		<td>Cửa sổ Photo Uploader</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
 	</tr> -->
 	
-	<tr id="windows-seamonkey" class="cat-header windows-seamonkey">
+	<tr id="windows-seamonkey" class="cat-header windows-seamonkey cat-windows-seamonkey collapsed">
 		<th colspan="12">Các cửa sổ và hộp thoại của SeaMonkey</th>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Các cửa sổ Navigator</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
@@ -1743,116 +1804,116 @@
 		<td class="google" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
 		<td class="vietinput" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Các hộp thoại JavaScript (<code>prompt()</code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Các hộp thoại xác thực <acronym title="HyperText Transfer Protocol">HTTP</acronym></td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Mở Địa Chỉ Web (Navigator)</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Tìm kiếm trong Trang Này</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping yes">Có</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Cửa sổ Quản lý Trang đánh dấu</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Xếp Trang đánh dấu (Navigator)</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Thuộc tính Đánh dấu (Navigator)</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Cửa sổ Quản lý Hình ảnh</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Cửa sổ Quản lý Cửa sổ Popup</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Quản lý Biểu mẫu (Chỉnh sửa)</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Các cửa sổ Messenger</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping yes">Có</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Các cửa sổ Viết thư (Messenger)</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping buggy">Trừ Thanh Lề</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Các cửa sổ Composer</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping buggy">Trừ Thanh Lề</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Cửa sổ Sổ Địa Chỉ</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping yes">Có</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Danh thiếp Mới</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping yes">Có</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Danh sách Thư</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Bảng kiểm soát Lỗi</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Cửa sổ Tùy chỉnh</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Tương tác Tạo Hồ Sơ</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Cửa sổ Trợ giúp</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
-	<tr class="windows-seamonkey">
+	<tr class="windows-seamonkey cat-windows-seamonkey">
 		<td>Hộp thoại Báo cáo Trang web Hỏng</td>
 		<td class="avim yes">Có</td>
 		<td class="viettyping no">Không</td>
 	</tr>
 	
-	<tr id="windows-chrome" class="cat-header">
+	<tr id="windows-chrome" class="cat-header cat-windows-chrome collapsed">
 		<th colspan="12">Các cửa sổ và hộp thoại của Chrome</th>
 	</tr>
-	<tr>
+	<tr class="cat-windows-chrome">
 		<td>Các cửa sổ trình duyệt (trừ thanh điạ chỉ và thanh tìm kiếm)</td>
 		<td class="avim" rowspan="8">Không hỗ&nbsp;trợ Chrome</td>
 		<td class="mudim" rowspan="8">Không hỗ&nbsp;trợ Chrome</td>
@@ -1866,47 +1927,47 @@
 		<td class="google buggy">Trừ tập&nbsp;tin trên máy</td>
 		<td class="vietinput buggy">Trừ các trang an&nbsp;toàn</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows-chrome">
 		<td>Các hộp thoại JavaScript (<code>prompt()</code>)</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows-chrome">
 		<td>Các hộp thoại xác thực <acronym title="HyperText Transfer Protocol">HTTP</acronym></td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows-chrome">
 		<td>Panel Đánh dấu trang</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows-chrome">
 		<td>Hộp thoại Đánh dấu trang Tất cả các Tab</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows-chrome">
 		<td>Hộp thoại Thuộc tính Dấu trang</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-windows-chrome">
 		<td>Công cụ dành cho Nhà phát triển</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="extensions" class="cat-header cat-extensions collapsed">
 		<th colspan="12">Các phần mở rộng được hỗ trợ</th>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/16" rel="bookmark" title="Tiện ích Firefox: ChatZilla">ChatZilla</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1920,7 +1981,7 @@
 		<td class="google" rowspan="6">Không có sẵn</td>
 		<td class="vietinput" rowspan="6">Không có sẵn</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/271" rel="bookmark" title="Tiện ích Firefox: ColorZilla">ColorZilla</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1931,7 +1992,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/1815" rel="bookmark" title="Tiện ích Firefox: Console²">Console²</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1942,7 +2003,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="http://deepestsender.mozdev.org/" hreflang="en" rel="bookmark" title="mozdev.org: Deepest Sender">Deepest Sender</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1953,7 +2014,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/6622" rel="bookmark" title="Tiện ích Firefox: DOM Inspector">Trình Kiểm tra <acronym title="Document Object Model">DOM</acronym></a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1964,7 +2025,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/3794" rel="bookmark" title="Tiện ích Firefox: Facebok Toolbar">Facebook Toolbar</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1975,7 +2036,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/1843" rel="bookmark" title="Tiện ích Firefox: Firebug">Firebug</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -1988,7 +2049,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/33" rel="bookmark" title="Tiện ích Firefox: googlebar">googlebar</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2001,7 +2062,7 @@
 		<td class="google">Không có sẵn</td>
 		<td class="vietinput">Không có sẵn</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/3863" rel="bookmark" title="Tiện ích Firefox: iMacros for Firefox">iMacros</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim buggy">Chỉ thanh lề</td>
@@ -2014,7 +2075,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/4687" rel="bookmark" title="Tiện ích Firefox: IME and DiMENSiON"><acronym title="Input Method Editor">IME</acronym> và DiMENSiON</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2027,7 +2088,7 @@
 		<td class="google" rowspan="12">Không có sẵn</td>
 		<td class="vietinput" rowspan="12">Không có sẵn</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/824" rel="bookmark" title="Tiện ích Firefox: Mozilla XForms">Mozilla XForms</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2038,7 +2099,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/6543" rel="bookmark" title="Tiện ích Firefox: Nightly Tester Tools">Nightly Tester Tools</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2049,7 +2110,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/8487" rel="bookmark" title="Tiện ích Firefox: Pencil">Pencil</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2060,7 +2121,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/6665" rel="bookmark" title="Tiện ích Firefox: Prism for Firefox">Prism cho Firefox</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2070,7 +2131,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="http://pyxpcomext.mozdev.org/samples.html" hreflang="en" rel="bookmark" title="mozdev.org: PyXPCOMExt: PyXPCOM Samples">pyshell</a> cho <a href="http://pyxpcomext.mozdev.org/" hreflang="en" rel="bookmark" title="mozdev.org: PyXPCOMExt"><acronym title="Python Cross-Platform Component Object Model Extension">PyXPCOMExt</acronym></a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2080,7 +2141,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/1333" rel="bookmark" title="Tiện ích Firefox: Quick Locale Switcher">Quick Locale Switcher</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2091,7 +2152,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/1191" rel="bookmark" title="Tiện ích Firefox: ReminderFox">ReminderFox</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2102,7 +2163,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/7263" rel="bookmark" title="Tiện ích Firefox: Sage-Too">Sage-Too</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2113,7 +2174,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/427" rel="bookmark" title="Tiện ích Firefox: ScrapBook">ScrapBook</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2123,7 +2184,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/1730" rel="bookmark" title="Tiện ích Firefox: ScribeFire">ScribeFire</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim buggy">Trừ cửa sổ riêng</td>
@@ -2134,7 +2195,7 @@
 		<td class="myavim buggy">Trừ cửa sổ riêng</td>
 		<td class="instcode buggy">Trừ cửa sổ riêng</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/5817" rel="bookmark" title="Tiện ích Firefox: SQLite Manager"><acronym title="Structured Query Language Lite" class="initialism">SQLite</acronym> Manager</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2145,7 +2206,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/138" rel="bookmark" title="Tiện ích Firefox: StumbleUpon">StumbleUpon</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2159,7 +2220,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="http://toolbar.google.com/intl/vi/" rel="bookmark" title="Thanh công cụ của Google">Thanh công cụ của Google</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2173,7 +2234,7 @@
 		<td class="google" rowspan="5">Không có sẵn</td>
 		<td class="vietinput" rowspan="5">Không có sẵn</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/216" rel="bookmark" title="Tiện ích Firefox: JavaScript Debugger">Trình sửa lỗi JavaScript</a> (Venkman)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2184,7 +2245,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/7479" rel="bookmark" title="Tiện ích Firefox: Vietnamese Dictionary">Từ điển tiếng Việt</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2195,7 +2256,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/8228" rel="bookmark" title="Tiện ích Firefox: Vietnamese Language Pack">Vietnamese Language Pack</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim buggy">Giao diện tiếng Anh</td>
@@ -2206,7 +2267,7 @@
 		<td class="myavim buggy">Giao diện tiếng Anh</td>
 		<td class="instcode yes">Có</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/4238" rel="bookmark" title="Tiện ích Firefox: vnDict">vnDict</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2217,7 +2278,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/8494" rel="bookmark" title="Tiện ích Firefox: WebChunks">WebChunks</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2227,7 +2288,7 @@
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/60" rel="bookmark" title="Tiện ích Firefox: Web Developer">Web Developer</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2240,7 +2301,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="https://addons.mozilla.org/vi/firefox/addon/62" rel="bookmark" title="Tiện ích Firefox: wmlbrowser"><acronym title="Wireless Markup Language " class="initialism">wml</acronym>browser</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2254,7 +2315,7 @@
 		<td class="google" rowspan="4">Không có sẵn</td>
 		<td class="vietinput" rowspan="4">Không có sẵn</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="http://vn.toolbar.yahoo.com/firefox" rel="bookmark" title="Yahoo!: Yahoo! Thanh Công cụ">Yahoo! Thanh Công cụ</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2265,7 +2326,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="http://www.yoono.com/" hreflang="en-US" rel="bookmark" title="yoono">yoono</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2275,7 +2336,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-extensions">
 		<td><a href="http://www.zotero.org/" hreflang="en" rel="bookmark" title="Zotero">Zotero</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2287,10 +2348,10 @@
 		<td class="instcode no">Không</td>
 	</tr>
 	
-	<tr id="web-apps" class="cat-header">
+	<tr id="web-apps" class="cat-header cat-web-apps">
 		<th colspan="12">Các ứng dụng Web</th>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="http://www.etherpad.org/" hreflang="en" title="Etherpad Foundation">Etherpad</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2304,7 +2365,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="http://www.google.com/?hl=vi">Gmail</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2318,7 +2379,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="http://drive.google.com/" hreflang="en">Google Drive</a> (Docs, Sheets, Slides)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim buggy">Chỉ bảng&nbsp;tính</td>
@@ -2332,7 +2393,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="http://www.icloud.com/">iCloud</a> (Pages, Numbers, Keynote)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2346,7 +2407,7 @@
 		<td class="google no">Không&nbsp;thể đánh&nbsp;chữ</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="https://office.com/?omkt=vi-VN" rel="bookmark" title="Microsoft Office Online">Office Online / OneDrive</a> (Word, Excel, PowerPoint, OneNote)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2360,7 +2421,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="http://webodf.org/demos/" hreflang="en">Web<acronym title=" Open Document Format" class="initialism">ODF</acronym></a></td>
 		<td class="avim no"><a href="https://github.com/1ec5/avim/issues/49">Không</a></td>
 		<td class="mudim no">Không</td>
@@ -2374,7 +2435,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="http://vi.wikipedia.org/">Wikipedia</a> (<a href="http://vi.wikipedia.org/wiki/Trợ_giúp:Chỗ_thử">Trình soạn thảo trực quan</a>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2388,7 +2449,7 @@
 		<td class="google no">Làm méo&nbsp;mó</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-web-apps">
 		<td><a href="https://docs.zoho.com/" hreflang="en">Zoho Docs</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim buggy">Chỉ bảng tính</td>
@@ -2403,10 +2464,10 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr id="textboxes" class="cat-header">
+	<tr id="textboxes" class="cat-header cat-textboxes collapsed">
 		<th colspan="12">Các điều khiển văn bản thuần</th>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các trường văn bản <acronym title="HyperText Markup Language" class="initialism">HTML</acronym> một dòng (<code>&lt;input type="text"></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2420,7 +2481,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các trường mật khẩu <acronym title="HyperText Markup Language" class="initialism">HTML</acronym> (<code>&lt;input type="password"></code>)</td>
 		<td class="avim yes">Tùy chọn</td>
 		<td class="typingviet no">Không</td>
@@ -2434,7 +2495,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các trường tìm kiếm <acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5 (<code>&lt;input type="search"></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2448,7 +2509,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các trường <acronym>URL</acronym> <acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5 (<code>&lt;input type="url"></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2457,7 +2518,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các trường thư điện tử <acronym title="HyperText Markup Language " class="initialism">HTML</acronym>5 (<code>&lt;input type="email"></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2466,7 +2527,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các vùng văn bản <acronym title="HyperText Markup Language" class="initialism">HTML</acronym> đa dòng (<code>&lt;textarea></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2480,7 +2541,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các trường tìm kiếm chỉ mục <acronym title="HyperText Markup Language" class="initialism">HTML</acronym> (<code>&lt;isindex></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2494,7 +2555,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-textboxes">
 		<td>Các trường văn bản XForms một dòng (<code>&lt;input></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2508,7 +2569,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các trường mật khẩu XForms (<code>&lt;secret></code>)</td>
 		<td class="avim yes">Tùy chọn</td>
 		<td class="mudim no">Không</td>
@@ -2522,7 +2583,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các vùng văn bản XForms đa dòng (<code>&lt;textarea></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2536,7 +2597,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-textboxes">
 		<td>Các hộp tổ hợp XForms (<code>&lt;select1 selection="open"></code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2551,10 +2612,10 @@
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	
-	<tr class="cat-header">
+	<tr id="rich-textboxes" class="cat-header cat-rich-textboxes collapsed">
 		<th colspan="12">Các điều khiển văn bản có định dạng</th>
 	</tr>
-	<tr>
+	<tr class="cat-rich-textboxes">
 		<td><a href="http://www.mozilla.org/editor/midasdemo/">Midas</a> (<code>designMode</code>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2568,7 +2629,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-textboxes">
 		<td><code>contentEditable</code></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2583,10 +2644,10 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="plugins" class="cat-header cat-plugins">
 		<th colspan="12">Các phần bổ trợ</th>
 	</tr>
-	<tr>
+	<tr class="cat-plugins">
 		<td>Adobe Flash Player</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -2600,7 +2661,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-plugins">
 		<td>Adobe Reader</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -2614,7 +2675,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-plugins">
 		<td>Java Embedding Plugin</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -2628,7 +2689,7 @@
 		<td class="google no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-plugins">
 		<td>Microsoft Silverlight</td>
 		<td class="avim buggy">Trừ mã quản&nbsp;lý</td>
 		<td class="mudim no">Không</td>
@@ -2642,7 +2703,7 @@
 		<td class="google">Không&nbsp;thể đánh&nbsp;chữ</td>
 		<td class="vietinput">Không&nbsp;thể đánh&nbsp;chữ</td>
 	</tr>
-	<tr>
+	<tr class="cat-plugins">
 		<td>SciMoz (<a href="http://www.scintilla.org/" hreflang="en" rel="bookmark" title="Scintilla and SciTE">Scintilla</a>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2657,10 +2718,10 @@
 		<td class="vietinput">Không có sẵn</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="code-editors" class="cat-header cat-code-editors">
 		<th colspan="12">Các hộp tô màu cú pháp của mã nguồn</th>
 	</tr>
-	<tr>
+	<tr class="cat-code-editors">
 		<td><a href="http://ace.ajax.org/" hreflang="en"><acronym title="Ajax.org Code Editor">Ace</acronym></a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2674,7 +2735,7 @@
 		<td class="google buggy">Chỉ tự&nbsp;động bỏ&nbsp;dấu</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-code-editors">
 		<td><a href="http://codemirror.net/" hreflang="en" rel="bookmark">CodeMirror</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2688,7 +2749,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput" rowspan="4">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 	</tr>
-	<!--<tr>
+	<!--<tr class="cat-code-editors">
 		<td><a href="http://qbnz.com/highlighter/" hreflang="en"><acronym title="Generic Syntax Highlighter">GeSHi</acronym></a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2698,7 +2759,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>-->
-	<tr>
+	<tr class="cat-code-editors">
 		<td><a href="http://www.eclipse.org/orion/" hreflang="en" rel="bookmark">Orion</a></td>
 		<td class="avim no"><a href="https://github.com/1ec5/avim/issues/40">Dấu&nbsp;phụ biến&nbsp;mất</a></td>
 		<td class="mudim no">Không</td>
@@ -2708,7 +2769,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Dấu&nbsp;phụ biến&nbsp;mất</td>
 	</tr>
-	<tr>
+	<tr class="cat-code-editors">
 		<td><a href="http://en.wikipedia.org/wiki/User:Cacycle/wikEd" hreflang="en">wikEd</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2718,7 +2779,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-code-editors">
 		<td><a href="http://www.ymacs.org/" hreflang="en" rel="bookmark">Ymacs</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2729,10 +2790,10 @@
 		<td class="google no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="rich-editors" class="cat-header cat-rich-editors collapsed">
 		<th colspan="12">Các hộp soạn thảo có định dạng</th>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://280slides.com/Editor/" rel="bookmark">280 Slides</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2744,7 +2805,7 @@
 		<td class="instcode" rowspan="34">Không hỗ trợ văn bản có định dạng</td>
 		<td class="vietinput" rowspan="34">Không hỗ trợ văn bản có định dạng</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.aloha-editor.org/" hreflang="en">Aloha Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2758,7 +2819,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput" rowspan="23">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://www.ffdi.hr/inc/editor/examples/simple_example.php" hreflang="en">AreaEdit</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2766,7 +2827,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.blueshoes.org/_bsJavascript/components/editor/examples/example3.html" hreflang="en">BlueShoes <acronym title="What You See Is What You Get">Wysiwyg</acronym> Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2776,7 +2837,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.kevinroth.com/rte/demo.htm" hreflang="en">Cross-Browser Rich Text Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2786,7 +2847,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://cutesoft.net/example/general.aspx" hreflang="en">Cute Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2796,7 +2857,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://devedit.interspire-demo.com/demo.php" hreflang="en">DevEdit <acronym class="initialism">NX</acronym></a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2804,7 +2865,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://dojotoolkit.org/reference-guide/1.9/dijit/Editor.html" hreflang="en">dijit/Editor</a><!-- http://demos.dojotoolkit.org/demos/mail/demo.html --> (Dojo)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2814,7 +2875,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://www.cdolivet.net/editarea/editarea/exemples/exemple_full.html" hreflang="en">EditArea</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2823,7 +2884,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.fckeditor.net/demo" hreflang="en">FCKeditor</a>, <a href="http://ckeditor.com/ckeditor/3.0rc/_samples/enterkey.html" hreflang="en">CKeditor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2833,7 +2894,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://www.freerichtexteditor.com/demo/" hreflang="en"><u>Free</u>RichTextEditor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2842,7 +2903,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://closure-library.googlecode.com/svn/trunk/closure/goog/demos/editor/editor.html" hreflang="en">goog.editor</a> (Google Closure)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2852,7 +2913,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://jejacks0n.github.io/mercury/" hreflang="en">Mercury Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2862,7 +2923,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://cheeaun.github.com/mooeditable/" hreflang="en">MooEditable</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2872,7 +2933,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.movabletype.org/" hreflang="en-US">Movable Type</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2882,7 +2943,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://mozile.mozdev.org/" hreflang="en"><acronym title="MOZilla InLine Editor">Mozile</acronym></a></td>
 		<td class="avim buggy">Chỉ 0.8</td>
 		<td class="mudim no">Không</td>
@@ -2892,7 +2953,7 @@
 		<td class="avim-chrome">Không hỗ&nbsp;trợ Chrome</td>
 		<td class="google">Không hỗ&nbsp;trợ Chrome</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://nicedit.com/demos.php" hreflang="en">NicEdit</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2902,7 +2963,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.openwebware.com/wysiwyg/demo.shtml" hreflang="en">openWYSIWYG</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2912,7 +2973,7 @@
 		<td class="avim-chrome">Không hỗ&nbsp;trợ Chrome</td>
 		<td class="google">Không hỗ&nbsp;trợ Chrome</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://www.moxieforge.net/overview.php?project_id=9&amp;category_id=5" hreflang="en"><acronym title="Puny MoxieCode Editor" class="initialism">Puny<acronym title=" Moxiecode Editor">MCE</acronym></acronym></a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2920,7 +2981,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="https://www.raptor-editor.com/demo" hreflang="en">Raptor Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -2930,7 +2991,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://rtef.info/demo_fullscreen.htm" hreflang="en"><acronym title="Richtext Editor: Fork">RTEF</acronym></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2938,7 +2999,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome">?</td>
 	</tr> -->
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://www.rtepad.com/demos/" hreflang="en"><acronym title="Rich Text Editor ">rte</acronym>Pad</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2946,7 +3007,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome">?</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.chezpaul.org.uk/office/rtwedit/example.htm" hreflang="en">RTWedit</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2956,7 +3017,7 @@
 		<td class="avim-chrome">Không hỗ&nbsp;trợ Chrome</td>
 		<td class="google">Không hỗ&nbsp;trợ Chrome</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="hhttp://sourceforge.net/projects/spaw/" hreflang="en"><acronym>SPAW</acronym> Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2966,7 +3027,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.tinymce.com/tryit/full.php" hreflang="en"><acronym title="Tiny MoxieCode Editor" class="initialism">Tiny<acronym title=" Moxiecode Editor">MCE</acronym></acronym></a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2976,7 +3037,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://demo.richtexteditor.org/" hreflang="en">Web Wiz Rich Text Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2986,7 +3047,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.unverse.net/wysiwyg.html" hreflang="en">Whizzywig</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -2996,7 +3057,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://www.themaninblue.com/experiment/widgEditor/" hreflang="en">widgEditor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3006,7 +3067,7 @@
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://files.wymeditor.org/wymeditor-1.0.0b2/examples/01-basic.html" hreflang="en"><acronym title="What You Mean ">WYM</acronym>editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3016,7 +3077,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
 	</tr>
-	<!-- <tr>
+	<!-- <tr class="cat-rich-editors">
 		<td><a href="http://www.wysiwygpro.com/index.php?id=337" hreflang="en"><acronym title="What You See Is What You Get ">wysiwyg</acronym>Pro</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3025,7 +3086,7 @@
 		<td class="myavim yes">Có</td>
 		<td class="avim-chrome">?</td>
 	</tr> -->
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://xinha.raimundmeyer.de/x_examples/ext_example.html" hreflang="en">Xinha</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3035,7 +3096,7 @@
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-rich-editors">
 		<td><a href="http://yuilibrary.com/yui/docs/editor/editor-instance.html" hreflang="en"><acronym title="Yahoo! User Interface Library">YUI</acronym> Rich Text Editor</a></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3046,10 +3107,10 @@
 		<td class="google yes">Có</td>
 	</tr>
 	
-	<tr class="cat-header">
-		<th colspan="12">Sự tương thích với các bộ gõ ở trong trang Web</th>
+	<tr id="scripts" class="cat-header cat-scripts">
+		<th colspan="12">Tính tương thích với các bộ gõ ở trong trang Web</th>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> (trước đây là <acronym title="HAO Input Method">HIM</acronym>)</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3063,7 +3124,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></td>
 		<td class="avim yes">Tùy chọn</td>
 		<td class="mudim yes">Có</td>
@@ -3077,7 +3138,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td>Công cụ nhập liệu của Google</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -3091,7 +3152,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Bị ghi đè</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td>jquery.ime</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3105,7 +3166,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td><acronym title="Mudzot&rsquo;s Input Method">Mudim</acronym></td>
 		<td class="avim yes">Có<!-- Should work even with extensions.avim.scriptMonitor.mudim turned off. --></td>
 		<td class="mudim yes">Có</td>
@@ -3119,7 +3180,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td>MViet</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3133,7 +3194,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td><acronym title="Vietnamese IME for Web Browsers" class="initialism">VietIMEW</acronym></td>
 		<td class="avim yes">Tùy chọn</td>
 		<td class="mudim yes">Có</td>
@@ -3147,7 +3208,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td>VietTyping</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3161,7 +3222,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td>VietUni</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3175,7 +3236,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-scripts">
 		<td>Vinova</td>
 		<td class="avim yes">Tùy chọn</td>
 		<td class="mudim no">Không</td>
@@ -3190,10 +3251,10 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr class="cat-header">
+	<tr id="other" class="cat-header cat-other collapsed">
 		<th colspan="12">Các tính năng khác</th>
 	</tr>
-	<tr>
+	<tr class="cat-other">
 		<td>Nâng cấp tự động</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3207,7 +3268,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-other">
 		<td>Biểu tượng của phần mở rộng</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
@@ -3221,7 +3282,7 @@
 		<td class="google yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
-	<tr>
+	<tr class="cat-other">
 		<td>Các tùy chỉnh trong <kbd>about:config</kbd></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -3236,10 +3297,10 @@
 		<td class="vietinput">Không có sẵn</td>
 	</tr>
 	
-	<!-- <tr class="cat-header">
+	<!-- <tr id="" class="cat-header cat-">
 		<th colspan="12"></th>
 	</tr>
-	<tr>
+	<tr class="cat-">
 		<td></td>
 		<td></td>
 		<td></td>
