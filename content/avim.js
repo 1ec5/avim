@@ -33,6 +33,7 @@ function AVIM()	{
 	
 	const iCloudHostname = "www.icloud.com";
 	const GDocsHostname = "docs.google.com";
+	const ZohoHostname = "docs.zoho.com";
 	
 	// Include characters from major scripts that separate words with a space.
 	const wordChars =
@@ -856,6 +857,53 @@ function AVIM()	{
 		};
 	};
 	CacTrangProxy.prototype = new TextControlProxy();
+	
+	/**
+	 * Proxy for the Zoho Write editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context.
+	 */
+	function ZohoProxy(sandbox) {
+		if (!sandbox.createObjectAlias("$cursor", "editor.doc.cursor")) {
+			throw "No cursor";
+		}
+		if (!sandbox.evalBoolean("$cursor.isCollapsed()")) {
+			throw "Non-empty selection";
+		}
+		
+		//* One-based
+		let selectionStart = sandbox.evalInt("$cursor.getWord().getStart()");
+		let selectionEnd = sandbox.evalInt("$cursor.getEnd()");
+		
+		let word = sandbox.evalString("editor.doc.getContent(" + selectionStart +
+									  "," + selectionEnd + ")");
+		if (!word || !word.length) throw "No word";
+		this.value = word;
+		
+		//dump(">>> ZohoProxy -- word: " + word + "\n");							// debug
+		
+		/**
+		 * Updates the editor represented by this proxy to reflect any changes
+		 * made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+			if (this.value == word) return false;
+			
+			//dump(">>> ZohoProxy -- Replacing <" + word + "> with <" + this.value + ">\n");	// debug
+			
+			sandbox.evalFunctionCall("Selection.deleteContents(" + selectionStart +
+									 "," + selectionEnd + ")");
+			sandbox.evalFunctionCall("$cursor.insert(editor.doc.createElement(" +
+									 "NODE_TYPE.TEXT," + quoteJS(this.value) +
+									 "),{})");
+			sandbox.evalFunctionCall("Op.sendMsg()");
+			return true;
+		};
+	};
+	ZohoProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
@@ -1970,6 +2018,46 @@ function AVIM()	{
 		return true;
 	};
 	
+	/**
+	 * Handles key presses in Zoho Write. This function is triggered as soon as
+	 * the key goes up.
+	 *
+	 * @param evt	{object}	The keypress event.
+	 * @returns {boolean}	True if AVIM plans to modify the input; false
+	 * 						otherwise.
+	 */
+	this.handleZoho = function(evt) {
+		let elt = evt.originalTarget;
+		
+		let win = elt.ownerDocument.defaultView;
+		let sandbox = new Sandbox(win);
+		try {
+			if (!sandbox.evalBoolean("'editor'in window")) return false;
+		}
+		catch (exc) {
+			return false;
+		}
+		
+		//dump(">>> AVIM.handleZoho\n");											// debug
+		
+		// Fake a native textbox.
+		let proxy = new ZohoProxy(sandbox);
+		
+		let result = proxy.value && applyKey(proxy.value, evt);
+		if (result && result.value) proxy.value = result.value;
+		
+		proxy.commit();
+		proxy = null;
+		sandbox = null;
+		
+		if (result && result.changed) {
+			evt.handled = true;
+			evt.stopPropagation();
+			evt.preventDefault();
+		}
+		return true;
+	};
+	
 	// Integration with Mozilla preferences service
 	
 	// Root for AVIM preferences
@@ -2546,8 +2634,13 @@ function AVIM()	{
 				return this.handleKix(e);
 			}
 			
+			// Zoho Write
+			if (doc.location.hostname === ZohoHostname &&
+				origTarget.isContentEditable) {
+				return this.handleZoho(e);
+			}
+			
 			// Ymacs
-			// Zoho Writer: window.editor<HTMLArea>.eventHandlerFunction(evt)
 			if ((tagName == "html" || tagName == "body") &&
 				this.handleYmacs(e)) {
 				return true;
