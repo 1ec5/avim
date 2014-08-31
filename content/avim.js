@@ -864,7 +864,7 @@ function AVIM()	{
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
 	 * 								context.
 	 */
-	function ZohoProxy(sandbox) {
+	function ZWriteProxy(sandbox) {
 		if (!sandbox.createObjectAlias("$cursor", "editor.doc.cursor")) {
 			throw "No cursor";
 		}
@@ -874,6 +874,7 @@ function AVIM()	{
 		
 		//* One-based
 		let selectionStart = sandbox.evalInt("$cursor.getWord().getStart()");
+		//* One-based
 		let selectionEnd = sandbox.evalInt("$cursor.getEnd()");
 		
 		let word = sandbox.evalString("editor.doc.getContent(" + selectionStart +
@@ -881,7 +882,7 @@ function AVIM()	{
 		if (!word || !word.length) throw "No word";
 		this.value = word;
 		
-		//dump(">>> ZohoProxy -- word: " + word + "\n");							// debug
+		//dump(">>> ZWriteProxy -- word: " + word + "\n");							// debug
 		
 		/**
 		 * Updates the editor represented by this proxy to reflect any changes
@@ -892,7 +893,7 @@ function AVIM()	{
 		this.commit = function() {
 			if (this.value == word) return false;
 			
-			//dump(">>> ZohoProxy -- Replacing <" + word + "> with <" + this.value + ">\n");	// debug
+			//dump(">>> ZWriteProxy -- Replacing <" + word + "> with <" + this.value + ">\n");	// debug
 			
 			sandbox.evalFunctionCall("Selection.deleteContents(" + selectionStart +
 									 "," + selectionEnd + ")");
@@ -903,7 +904,53 @@ function AVIM()	{
 			return true;
 		};
 	};
-	ZohoProxy.prototype = new TextControlProxy();
+	ZWriteProxy.prototype = new TextControlProxy();
+	
+	/**
+	 * Proxy for the Zoho Show editor to pose as an ordinary HTML <textarea>.
+	 * 
+	 * @param sandbox	{object}	JavaScript sandbox in the current page's
+	 * 								context.
+	 */
+	function ZShowProxy(sandbox) {
+		if (!sandbox.createObjectAlias("$editor", "ShapeEditor.text.editor")) {
+			throw "No text editor";
+		}
+		if (sandbox.evalBoolean("$editor.cursor.getIndex().si!==" +
+								"$editor.cursor.getIndex().ei")) {
+			throw "Non-empty selection";
+		}
+		
+		sandbox.createObjectAlias("$fromTo", "$editor._getFromTo()");
+		let wholeWord = sandbox.evalString("$fromTo.to.element.word.data().text");
+		// Yes, charCount() is -1-based!
+		let selectionStart = sandbox.evalInt("$fromTo.to.element.charCount") + 1;
+		if (selectionStart > wholeWord.length) throw "Starting a new word";
+		let word = wholeWord.substr(0, selectionStart);
+		if (!word || !word.length) throw "No word";
+		this.value = word;
+		
+		//dump(">>> ZWriteProxy -- word: " + word + "; selectionStart: " + selectionStart + "\n");	// debug
+		
+		/**
+		 * Updates the editor represented by this proxy to reflect any changes
+		 * made to the proxy.
+		 * 
+		 * @returns {boolean}	True if anything was changed; false otherwise.
+		 */
+		this.commit = function() {
+			if (this.value == word) return false;
+			
+			//dump(">>> ZWriteProxy -- Replacing <" + word + "> with <" + this.value + ">\n");	// debug
+			
+			sandbox.evalFunctionCall("$editor.backspace();".repeat(selectionStart));
+			sandbox.evalFunctionCall("$editor.addText(" + quoteJS(this.value) +
+									 ")");
+			
+			return true;
+		};
+	};
+	ZShowProxy.prototype = new TextControlProxy();
 	
 	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
@@ -2031,17 +2078,27 @@ function AVIM()	{
 		
 		let win = elt.ownerDocument.defaultView;
 		let sandbox = new Sandbox(win);
+		let proxyCls;
 		try {
-			if (!sandbox.evalBoolean("'editor'in window")) return false;
+			// Zoho Write
+			if (sandbox.evalBoolean("'editor'in window")) {
+				proxyCls = ZWriteProxy;
+				//dump(">>> AVIM.handleZoho -- ZWriteProxy\n");					// debug
+			}
 		}
-		catch (exc) {
-			return false;
+		catch (exc) {}
+		try {
+			// Zoho Show
+			if (!proxyCls && sandbox.evalBoolean("'ShapeEditor'in window")) {
+				proxyCls = ZShowProxy;
+				//dump(">>> AVIM.handleZoho -- ZShowProxy\n");					// debug
+			}
 		}
-		
-		//dump(">>> AVIM.handleZoho\n");											// debug
+		catch (exc) {}
+		if (!proxyCls) return false;
 		
 		// Fake a native textbox.
-		let proxy = new ZohoProxy(sandbox);
+		let proxy = new proxyCls(sandbox);
 		
 		let result = proxy.value && applyKey(proxy.value, evt);
 		if (result && result.value) proxy.value = result.value;
