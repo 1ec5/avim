@@ -1291,49 +1291,7 @@ function AVIM()	{
 				.getService(Ci.nsIAutoCompleteController);
 			controller.handleEndComposition();
 		}
-	};
-	
-	/**
-	 * Handles key presses for WYSIWYG HTML documents (editable through
-	 * Mozilla's Midas component).
-	 */
-	this.ifMoz = function(e) {
-		let doc = e.originalTarget.ownerDocument;
-		let target = doc.documentElement;
-		let cwi = new XPCNativeWrapper(doc.defaultView);
-		if (findIgnore(target)) return false;
-		if (cwi.frameElement && findIgnore(cwi.frameElement)) return false;
-		
-		let result = splice(cwi, e);
-		if (result.changed) {
-			e.stopPropagation();
-			e.preventDefault();
-			updateContainer(null, target);
-			// A bit of a hack to prevent textboxes from scrolling to the
-			// beginning.
-			if ("goDoCommand" in window) {
-				goDoCommand("cmd_charPrevious");
-				goDoCommand("cmd_charNext");
-			}
-			return false;
-		}
-		return true;
-	};
-	
-	/**
-	 * Returns whether the given key code should be ignored by AVIM.
-	 *
-	 * @param code	{number}	Virtual key code.
-	 * @returns {boolean}	True if AVIM is to ignore the keypress; false
-	 * 						otherwise.
-	 */
-	function checkCode(code) {
-		return !AVIMConfig.onOff ||
-			(code < 45 && code != KeyEvent.DOM_VK_BACK_SPACE && code != 42 &&
-			 /* code != KeyEvent.DOM_VK_SPACE && */ code != 39 && code != 40 &&
-			 code != 43) ||
-			code == 145 || code == 255;
-	};
+	}
 	
 	/**
 	 * Returns whether AVIM should ignore the given element.
@@ -1363,6 +1321,50 @@ function AVIM()	{
 	}
 	
 	/**
+	 * Handles key presses for WYSIWYG HTML documents (editable through
+	 * Mozilla's Midas component).
+	 */
+	this.ifMoz = function(evt) {
+		let elt = evt.originalTarget;
+		let win = new XPCNativeWrapper(elt.ownerDocument.defaultView);
+		if (findIgnore(elt)) return false;
+		if (win.frameElement && findIgnore(win.frameElement)) return false;
+		
+		let result = splice(win, evt);
+		if (result.changed) {
+			evt.stopPropagation();
+			evt.preventDefault();
+			updateContainer(null, doc.documentElement);
+			// A bit of a hack to prevent textboxes from scrolling to the
+			// beginning.
+			if ("goDoCommand" in window) {
+				goDoCommand("cmd_charPrevious");
+				goDoCommand("cmd_charNext");
+			}
+			return false;
+		}
+		return true;
+	};
+	
+	/**
+	 * Returns whether the given key code should be ignored by AVIM.
+	 *
+	 * @param code	{number}	Virtual key code.
+	 * @returns {boolean}	True if AVIM is to ignore the keypress; false
+	 * 						otherwise.
+	 */
+	function checkCode(code) {
+		return !AVIMConfig.onOff ||
+			(code < KeyEvent.DOM_VK_INSERT &&
+			 code != KeyEvent.DOM_VK_BACK_SPACE &&
+			 code != KeyEvent.DOM_VK_PRINT &&
+			 /* code != KeyEvent.DOM_VK_SPACE && */
+			 code != KeyEvent.DOM_VK_RIGHT && code != KeyEvent.DOM_VK_DOWN &&
+			 code != KeyEvent.DOM_VK_EXECUTE) ||
+			code == KeyEvent.DOM_VK_SCROLL_LOCK;
+	}
+	
+	/**
 	 * Handles key presses in the current window. This function is triggered as
 	 * soon as the key goes up. If the key press's target is a XUL element, this
 	 * function finds the anonymous XBL child that actually handles text input,
@@ -1372,28 +1374,28 @@ function AVIM()	{
 	 * @returns {boolean}	true if AVIM plans to modify the input; false
 	 * 						otherwise.
 	 */
-	this.handleKeyPress = function(e) {
+	this.handleKeyPress = function(evt) {
 		// https://developer.mozilla.org/en/HTML/Element/input
 		// Supported <input> types are: text, search, password (if .passwords),
 		// url (if "url" or "urlbar" in .ignoredFieldIds), and email (if
 		// "e-mail" or "email" in .ignoredFieldIds).
 		const htmlTypes = ["search", "text", "textarea"];
 		
-		let el = e.originalTarget || e.target;
-//		dump("AVIM.handleKeyPress -- target: " + el.tagName + "; code: " + e.which + "\n");	// debug
-		if (findIgnore(e.target) || !el.type) return false;
-		let isHTML = htmlTypes.indexOf(el.type) >= 0 ||
-			(el.type == "password" && AVIMConfig.passwords) ||
-			(el.type == "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
+		let elt = evt.originalTarget;
+//		dump("AVIM.handleKeyPress -- target: " + elt.tagName + "; code: " + evt.which + "\n");	// debug
+		if (findIgnore(evt.target) || !elt.type) return false;
+		let isHTML = htmlTypes.indexOf(elt.type) >= 0 ||
+			(elt.type == "password" && AVIMConfig.passwords) ||
+			(elt.type == "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
 								  AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
-			(el.type == "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
+			(elt.type == "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
 									AVIMConfig.exclude.indexOf("e-mail") < 0));
-		if (!isHTML || el.selectionStart != el.selectionEnd) return false;
+		if (!isHTML || elt.selectionStart != elt.selectionEnd) return false;
 		
-		let result = splice(el, e);
+		let result = splice(elt, evt);
 		if (result.changed) {
-			e.preventDefault();
-			updateContainer(e.originalTarget, el);
+			evt.preventDefault();
+			updateContainer(elt, elt);
 			// A bit of a hack to prevent textboxes from scrolling to the
 			// beginning.
 			if ("goDoCommand" in window) {
