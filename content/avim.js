@@ -859,7 +859,7 @@ function AVIM()	{
 	CacTrangProxy.prototype = new TextControlProxy();
 	
 	/**
-	 * Proxy for the Zoho Write editor to pose as an ordinary HTML <textarea>.
+	 * Proxy for the Zoho Writer editor to pose as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
 	 * 								context.
@@ -2066,7 +2066,7 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Handles key presses in Zoho Write. This function is triggered as soon as
+	 * Handles key presses in Zoho Writer. This function is triggered as soon as
 	 * the key goes up.
 	 *
 	 * @param evt	{object}	The keypress event.
@@ -2080,7 +2080,7 @@ function AVIM()	{
 		let sandbox = new Sandbox(win);
 		let proxyCls;
 		try {
-			// Zoho Write
+			// Zoho Writer
 			if (sandbox.evalBoolean("'editor'in window")) {
 				proxyCls = ZWriteProxy;
 				//dump(">>> AVIM.handleZoho -- ZWriteProxy\n");					// debug
@@ -2691,7 +2691,7 @@ function AVIM()	{
 				return this.handleKix(e);
 			}
 			
-			// Zoho Write
+			// Zoho Writer
 			if (doc.location.hostname === ZohoHostname &&
 				origTarget.isContentEditable) {
 				return this.handleZoho(e);
