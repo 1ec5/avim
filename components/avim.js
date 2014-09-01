@@ -55,6 +55,11 @@ AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
 function AVIM() {
 	this.wrappedJSObject = this;
 	this.didObserveStartup = false;
+	
+	let msgMgr = gCc["@mozilla.org/globalmessagemanager;1"]
+		.getService(gCi.nsIMessageListenerManager);
+	dump(">>> AVIMModule -- loading into msgMgr: " + msgMgr + "\n");		// debug
+	msgMgr.loadFrameScript("chrome://avim/content/avim.js", true);			// debug
 }
 
 AVIM.prototype.QueryInterface = function(iid) {
