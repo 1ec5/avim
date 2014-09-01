@@ -110,43 +110,45 @@ function AVIM()	{
 		});
 		if (!sandbox) throw "No sandbox to evaluate in.";
 		
-		let evalInBox = Cu.evalInSandbox;
+		const jsVersion = "1.7";
+		const evalInBox = Cu.evalInSandbox;
 		
 		/**
 		 * Evaluates a statement in the given sandbox and returns a string.
 		 */
 		this.evalString = function (text) {
-			return evalInBox("(" + text + ")+''", sandbox);
-		}
+			return evalInBox("(" + text + ")+''", sandbox, jsVersion);
+		};
 		
 		/**
 		 * Evaluates a statement in the given sandbox and returns a Boolean.
 		 */
 		this.evalBoolean = function (text) {
-			return evalInBox("!!(" + text + ")", sandbox);
-		}
+			return evalInBox("!!(" + text + ")", sandbox, jsVersion);
+		};
 		
 		/**
 		 * Evaluates a statement in the given sandbox and returns an integer.
 		 */
 		this.evalInt = function (text) {
-			return parseInt(evalInBox("(" + text + ")+0", sandbox), 0);
-		}
+			return parseInt(evalInBox("(" + text + ")+0", sandbox, jsVersion),
+							0);
+		};
 		
 		///**
 		// * Evaluates a statement in the given sandbox and returns a floating
 		// * point number.
 		// */
 		//this.evalFloat = function (text) {
-		//	return parseFloat(evalInBox("(" + text + ")+0", sandbox));
-		//}
+		//	return parseFloat(evalInBox("(" + text + ")+0", sandbox, jsVersion));
+		//};
 		
 		/**
 		 * Evaluates a statement in the given sandbox without returning
 		 * anything.
 		 */
 		this.evalFunctionCall = function (text) {
-			evalInBox(text, sandbox);
+			evalInBox(text, sandbox, jsVersion);
 		};
 		
 		/**
@@ -157,9 +159,10 @@ function AVIM()	{
 		 * @returns True if the statement evaluates to a defined value.
 		 */
 		this.createObjectAlias = function (name, text) {
-			sandbox[name] = evalInBox("(" + text + ")||undefined", sandbox);
+			sandbox[name] = evalInBox("(" + text + ")||undefined", sandbox,
+									  jsVersion);
 			return sandbox[name] !== undefined;
-		}
+		};
 		
 		/**
 		 * Imports a function into the sandbox with the given name.
