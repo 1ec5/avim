@@ -1,5 +1,8 @@
 "use strict";
 
+let global = (typeof(window) != "undefined") ? window : content;
+dump(">>> AVIM -- global is now: " + global + "\n");						// debug
+
 /**
  * Default preferences. Be sure to update defaults/preferences/avim.js to
  * reflect any changes to the default preferences. Initially, this variable
@@ -409,8 +412,8 @@ function AVIM()	{
 		return result;
 	};
 	
-	let isMac = window.navigator.platform == "MacPPC" ||
-		window.navigator.platform == "MacIntel";
+	let isMac = global.navigator.platform == "MacPPC" ||
+		global.navigator.platform == "MacIntel";
 	
 	this.prefsRegistered = false;
 	
@@ -708,7 +711,7 @@ function AVIM()	{
 			updateContainer(null, elt.ownerDocument.documentElement);
 			// A bit of a hack to prevent textboxes from scrolling to the
 			// beginning.
-			if ("goDoCommand" in window) {
+			if ("goDoCommand" in global) {
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}
@@ -769,7 +772,7 @@ function AVIM()	{
 			updateContainer(elt, elt);
 			// A bit of a hack to prevent textboxes from scrolling to the
 			// beginning.
-			if ("goDoCommand" in window) {
+			if ("goDoCommand" in global) {
 				goDoCommand("cmd_charPrevious");
 				goDoCommand("cmd_charNext");
 			}
@@ -1244,7 +1247,7 @@ function AVIM()	{
 		// all operations on it.
 		let winWrapper = new XPCNativeWrapper(doc.defaultView);
 		let win = winWrapper.wrappedJSObject;
-		if (win === undefined || win === null || win === window) return;
+		if (win === undefined || win === null || win === global) return;
 		
 		// Create a sandbox to execute the code in.
 //		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
@@ -1306,7 +1309,7 @@ function AVIM()	{
 			return false;
 		}
 		let doc = e.target.ownerDocument;
-		if (doc.defaultView == window) doc = e.originalTarget.ownerDocument;
+		if (doc.defaultView == global) doc = e.originalTarget.ownerDocument;
 		this.disableOthers(doc);
 		
 		return false;
@@ -1331,10 +1334,10 @@ function AVIM()	{
 		let target = e.target;
 		let origTarget = e.originalTarget;
 		let doc = target.ownerDocument;
-		if (doc.defaultView == window) doc = origTarget.ownerDocument;
+		if (doc.defaultView == global) doc = origTarget.ownerDocument;
 		
 		// SciMoz plugin
-		let koManager = window.ko && ko.views && ko.views.manager;
+		let koManager = global.ko && ko.views && ko.views.manager;
 		let koView = koManager && koManager.currentView;
 		let scintilla = koView && koView.scintilla;
 		if (scintilla && scintilla.inputField &&
@@ -1419,7 +1422,7 @@ function AVIM()	{
 	};
 	
 	// IME and DiMENSiON extension
-	if (window && "getIMEStatus" in window) {
+	if (global && "getIMEStatus" in global) {
 		let getStatus = getIMEStatus;
 		getIMEStatus = function() {
 			try {
@@ -1473,7 +1476,9 @@ function AVIM()	{
 };
 
 (function () {
-	if ("avim" in window || window.frameElement) return;
+	if (typeof(global) == "undefined" || "avim" in global || global.frameElement) {
+		return;
+	}
 	
 	let avim = new AVIM();
 	if (!avim) return;
