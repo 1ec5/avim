@@ -1444,7 +1444,7 @@ function AVIM()	{
 		if (result.changed) {
 			evt.stopPropagation();
 			evt.preventDefault();
-			updateContainer(null, doc.documentElement);
+			updateContainer(null, elt.ownerDocument.documentElement);
 			// A bit of a hack to prevent textboxes from scrolling to the
 			// beginning.
 			if ("goDoCommand" in window) {
