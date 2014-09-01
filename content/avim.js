@@ -1773,7 +1773,7 @@ function AVIM()	{
 			sandbox.importFunction(lastWordInString, "lastWordInString");
 			sandbox.importFunction(slightApplyKey, "applyKey");
 			
-			sandbox.injectScript("chrome://avim/content/slight.js");
+			sandbox.injectScript("chrome://avim/content/editors/slight.js");
 		}
 		catch (exc) {
 // $if{Debug}
