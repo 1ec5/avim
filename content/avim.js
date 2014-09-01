@@ -95,6 +95,9 @@ function AVIM()	{
 		return match && match[0];
 	}
 	
+	const subscriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
+		.getService(Ci.mozIJSSubScriptLoader);
+	
 	/**
 	 * A wrapper around a transparent (i.e., Xray-less) Components.utils.Sandbox
 	 * that restricts property access by type.
@@ -169,7 +172,16 @@ function AVIM()	{
 		 */
 		this.importFunction = function (fn, name) {
 			sandbox.importFunction(fn, name);
-		}
+		};
+		
+		/**
+		 * Injects a script with the given URI into the sandbox.
+		 * 
+		 * @see http://dxr.mozilla.org/mozilla-central/source/addon-sdk/source/lib/sdk/content/sandbox.js (importScripts())
+		 */
+		this.injectScript = function (uri) {
+			subscriptLoader.loadSubScript(uri, sandbox, "UTF-8");
+		};
 	}
 	
 	/**
@@ -1740,145 +1752,12 @@ function AVIM()	{
 	}
 	
 	/**
-	 * Returns the Gecko-compatible virtual key code for the given Silverlight
-	 * virtual key code.
-	 *
-	 * @param	keyCode			{number}	Silverlight virtual key code.
-	 * @param	platformKeyCode	{number}	Platform key code.
-	 * @param	shiftKey		{boolean}	True if the Shift key is held down;
-	 * 										false otherwise.
-	 * @returns	A Gecko-compatible virtual key code, or 0xff (255) if no virtual
-	 * 			key is applicable.
-	 *
-	 * @see		http://msdn.microsoft.com/en-us/library/bb979636%28VS.95%29.aspx
-	 * @see		https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+	 * Returns the result of applyKey() as an array, due to security
+	 * restrictions on passing objects.
 	 */
-	function virtualKeyFromSlight(keyCode, platformKeyCode, shiftKey) {
-//		dump("key code: " + keyCode + "; platform key code: " + platformKeyCode + "\n");	// debug
-		if (keyCode > 19 && keyCode < 30) {	// number row
-			if (shiftKey) return 0xff;
-			else keyCode += 28;
-		}
-		else if (keyCode > 29 && keyCode < 56) {	// alphabetic
-			keyCode += 35;
-			if (!shiftKey) keyCode += 32;
-		}
-//		if (keyCode == 0xff && platformKeyCode == 39) {	// '
-//			keyCode = platformKeyCode;
-//		}
-		return keyCode;
-	}
-	
 	function slightApplyKey(word, evtProxy) {
 		let result = applyKey(word, evtProxy);
-		return result && result.value;
-	}
-	
-	/**
-	 * Handles key presses in Silverlight. This function is triggered as soon as
-	 * the key goes down.
-	 *
-	 * This function is stringified and imported into a sandbox, so the let
-	 * keyword and other JavaScript 1.7 goodies are unavailable.
-	 *
-	 * @param sender	{object}	The object that invoked the event.
-	 * @param evt		{object}	The keyDown event.
-	 */
-	function avim_slight_onKeyDown(sender, evt) {
-		try {
-			var ctl = evt.source;
-			var text = ctl.text;
-			if (!text || !ctl.isEnabled || ctl.isReadOnly || evt.ctrl ||
-				ctl.selectionLength || slightFindIgnore(ctl.name)) {
-				return;
-			}
-			var selStart = ctl.selectionStart;
-			var word = lastWordInString(text.substr(0, selStart));
-			
-			var evtProxy = {
-				charCode: virtualKeyFromSlight(evt.key, evt.platformKeyCode,
-											  evt.shift),
-				platformKeyCode: evt.platformKeyCode,
-				shiftKey: evt.shift,
-			};
-			evtProxy.which = evtProxy.charCode;
-			
-			if (!evtProxy.charCode || evtProxy.charCode == 0xff) {
-				setTimeout(function () {
-					avim_slight_eatChar(ctl, evtProxy);
-				}, 0);
-				return;
-			}
-			
-			var newWord = word && slightApplyKey(word, evtProxy);
-			if (newWord && newWord != word) {
-				var numExtraChars = newWord.length - word.length;
-				var tooLong = ctl.maxLength &&
-					text.length + numExtraChars > ctl.maxLength;
-				if (!tooLong) {
-					evt.handled = true;
-					// Silverlight 2 no longer respects KeyboardEventArgs.Handled,
-					// so override the control contents asynchronously.
-					setTimeout(function () {
-						var wordStart = selStart - word.length;
-						ctl.text = text.substr(0, wordStart) + newWord +
-							text.substr(selStart);
-						ctl.selectionStart = selStart + numExtraChars;
-						ctl.selectionLength = 0;
-					}, 0);
-				}
-			}
-		}
-		catch(exc) {
-// $if{Debug}
-			throw ">>> avim_slight_onKeyDown -- " + exc;
-// $endif{}
-		}
-	}
-	
-	/**
-	 * Handles miscellaneous key presses in Silverlight. This function is
-	 * triggered as soon as the key goes up, and only responds if the key does
-	 * not correspond to a virtual key. In that case, it uses the character
-	 * immediately preceding the caret.
-	 *
-	 * This function is stringified and imported into a sandbox, so the let
-	 * keyword and other JavaScript 1.7 goodies are unavailable.
-	 *
-	 * @param ctl		{object}	A <TextBox> XAML element.
-	 * @param evtProxy	{object}	An object imitating a keyUp event.
-	 */
-	function avim_slight_eatChar(ctl, evtProxy) {
-		try {
-			var selStart = ctl.selectionStart;
-			if (!selStart || ctl.selectionLength) return;
-			
-			// Override the event proxy's key code using the last character.
-			var text = ctl.text;
-			evtProxy.which = evtProxy.charCode = text.charCodeAt(selStart - 1);
-			if (evtProxy.charCode == 0xff) return;
-			
-			// Exclude the last character from the word.
-			var word = lastWordInString(text.substr(0, selStart - 1));
-			var newWord = word && slightApplyKey(word, evtProxy);
-			if (newWord && newWord != word) {
-				var numExtraChars = newWord.length - word.length;
-				var tooLong = ctl.maxLength &&
-					text.length - 1 + numExtraChars > ctl.maxLength;
-				if (!tooLong) {
-					var wordStart = selStart - 1 - word.length;
-					ctl.text = text.substr(0, wordStart) + newWord +
-						text.substr(selStart);
-					ctl.selectionStart = selStart - 1 + numExtraChars;
-					ctl.selectionLength = 0;
-				}
-			}
-		}
-		catch(exc) {
-// $if{Debug}
-			throw ">>> avim_slight_eatChar -- " + exc;
-// $endif{}
-		}
+		return [result.value, result.changed];
 	}
 	
 	/**
@@ -1887,27 +1766,14 @@ function AVIM()	{
 	 * @param plugin	{object}	An <object> element.
 	 */
 	function registerSlight(plugin) {
-		//* This method is stringified, so no JavaScript 1.7.
-		let _registerSlight = function () {
-			var plugin = document.querySelector("object[data-avim-registering]");
-			var content = plugin && plugin.content;
-			if (!content) return;
-			content.root.addEventListener("keyDown", avim_slight_onKeyDown);
-		};
-		
 		plugin.setAttribute("data-avim-registering", "true");
 		try {
 			let sandbox = new Sandbox(plugin.ownerDocument.defaultView);
-			sandbox.importFunction(slightFindIgnore, "slightFindIgnore");
+			sandbox.importFunction(slightFindIgnore, "findIgnore");
 			sandbox.importFunction(lastWordInString, "lastWordInString");
-			sandbox.importFunction(virtualKeyFromSlight, "virtualKeyFromSlight");
-			sandbox.importFunction(slightApplyKey, "slightApplyKey");
-			sandbox.createObjectAlias("avim_slight_onKeyDown",
-									  "(" + avim_slight_onKeyDown + ")");
-			sandbox.createObjectAlias("avim_slight_eatChar",
-									  "(" + avim_slight_eatChar + ")");
+			sandbox.importFunction(slightApplyKey, "applyKey");
 			
-			sandbox.evalFunctionCall("(" + _registerSlight + ")()");
+			sandbox.injectScript("chrome://avim/content/slight.js");
 		}
 		catch (exc) {
 // $if{Debug}
