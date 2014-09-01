@@ -15,7 +15,7 @@ for (let i = 0; i < numRanges; i++) {
 	if (!cursor) continue;
 	
 	let lineStr = env.document.getLine(cursor.row);
-	let word = lastWordInString(lineStr.substr(0, cursor.column));
+	let word = _avim_lastWordInString(lineStr.substr(0, cursor.column));
 	if (!word || !word.length) continue;
 	
 	//let selectionStart = word.length;
@@ -24,11 +24,10 @@ for (let i = 0; i < numRanges; i++) {
 //	dump("\tselection: " + cursor.row + ":" + cursor.column + "\n");			// debug
 //	dump("\t<" + word + ">");
 	
-	let evtInfo = $evtInfo.split(",");
-	let [newWord, changed] = applyKey(word, {
-		keyCode: parseInt(evtInfo[0], 10),
-		which: parseInt(evtInfo[1], 10),
-		shiftKey: evtInfo[2] === "true",
+	let [newWord, changed] = _avim_applyKey(word, {
+		keyCode: _avim_evtInfo[0],
+		which: _avim_evtInfo[1],
+		shiftKey: _avim_evtInfo[2],
 	});
 	if (newWord && newWord != word) {
 		//dump(">>> ace.js -- replacing <" + word + "> with <" + newWord + ">\n");	// debug
@@ -37,7 +36,7 @@ for (let i = 0; i < numRanges; i++) {
 		let range = new Range(cursor.row, wordStart, cursor.row, cursor.column);
 		env.document.replace(range, newWord);
 	}
-	if (changed) $anyChanged = true;
+	if (changed) _avim_textChanged = true;
 }
 
 })();

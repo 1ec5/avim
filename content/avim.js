@@ -1574,15 +1574,15 @@ function AVIM()	{
 		
 //		dump("---AceProxy---\n");												// debug
 		let sandbox = new Sandbox(elt.ownerDocument.defaultView);
-		sandbox.createObjectAlias("$evtInfo", quoteJS(keyEventString(evt)));
-		sandbox.createObjectAlias("$anyChanged", "false");
-		sandbox.importFunction(lastWordInString, "lastWordInString");
-		sandbox.importFunction(safeApplyKey, "applyKey");
+		sandbox.createObjectAlias("_avim_evtInfo", "[" + keyEventString(evt) + "]");
+		sandbox.createObjectAlias("_avim_textChanged", "false");
+		sandbox.importFunction(lastWordInString, "_avim_lastWordInString");
+		sandbox.importFunction(safeApplyKey, "_avim_applyKey");
 		
 		sandbox.injectScript("chrome://avim/content/editors/ace.js");
 		
-		let anyChanged = sandbox.evalBoolean("$anyChanged");
-		if (anyChanged) {
+		let changed = sandbox.evalBoolean("_avim_textChanged");
+		if (changed) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
@@ -1706,9 +1706,9 @@ function AVIM()	{
 		plugin.setAttribute("data-avim-registering", "true");
 		try {
 			let sandbox = new Sandbox(plugin.ownerDocument.defaultView);
-			sandbox.importFunction(slightFindIgnore, "findIgnore");
-			sandbox.importFunction(lastWordInString, "lastWordInString");
-			sandbox.importFunction(safeApplyKey, "applyKey");
+			sandbox.importFunction(slightFindIgnore, "_avim_findIgnore");
+			sandbox.importFunction(lastWordInString, "_avim_lastWordInString");
+			sandbox.importFunction(safeApplyKey, "_avim_applyKey");
 			
 			sandbox.injectScript("chrome://avim/content/editors/slight.js");
 		}

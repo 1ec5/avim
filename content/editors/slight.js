@@ -44,11 +44,11 @@ function keyDown(sender, evt) {
 		let ctl = evt.source;
 		let text = ctl.text;
 		if (!text || !ctl.isEnabled || ctl.isReadOnly || evt.ctrl ||
-			ctl.selectionLength || findIgnore(ctl.name)) {
+			ctl.selectionLength || _avim_findIgnore(ctl.name)) {
 			return;
 		}
 		let selStart = ctl.selectionStart;
-		let word = lastWordInString(text.substr(0, selStart));
+		let word = _avim_lastWordInString(text.substr(0, selStart));
 		if (!word) return;
 		
 		let evtProxy = {
@@ -65,7 +65,7 @@ function keyDown(sender, evt) {
 			return;
 		}
 		
-		let [newWord, changed] = applyKey(word, evtProxy);
+		let [newWord, changed] = _avim_applyKey(word, evtProxy);
 		if (changed || (newWord && newWord != word)) {
 			if (!changed) newWord += String.fromCharCode(evtProxy.charCode);
 			let numExtraChars = newWord.length - word.length;
@@ -112,8 +112,8 @@ function eatChar(ctl, evtProxy) {
 		if (evtProxy.charCode == 0xff) return;
 		
 		// Exclude the last character from the word.
-		let word = lastWordInString(text.substr(0, selStart - 1));
-		let [newWord, changed] = word && applyKey(word, evtProxy);
+		let word = _avim_lastWordInString(text.substr(0, selStart - 1));
+		let [newWord, changed] = word && _avim_applyKey(word, evtProxy);
 		if (changed || (newWord && newWord != word)) {
 			if (!changed) newWord += text[selStart - 1];
 			let numExtraChars = newWord.length - word.length;
