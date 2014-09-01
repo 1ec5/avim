@@ -200,61 +200,6 @@ function AVIM()	{
 		this.selectionEnd = end;
 	};
 	
-	/**
-	 * Proxy for an Ace editor, to encapsulate the oft-renamed
-	 * Bespin/Skywriter/Ace API while posing as an ordinary HTML <textarea>.
-	 * 
-	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context.
-	 * @param rangeNum	{number}	Selection range index, for multiple
-	 * 								selection.
-	 * @param numRanges	{number}	Total number of selection ranges.
-	 */
-	function AceProxy(sandbox, rangeNum, numRanges) {
-		if (!sandbox.createObjectAlias("$cursor",
-									   (numRanges > 1 ?
-										"$sel.ranges[" + rangeNum + "].cursor" :
-										"$sel.selectionLead"))) {
-			throw "No cursor";
-		}
-		
-		let selLead = {
-			row: sandbox.evalInt("$cursor.row"),
-			column: sandbox.evalInt("$cursor.column"),
-		};
-		
-		let lineStr = sandbox.evalString("$env.document.getLine(" +
-										 selLead.row + ")");
-		let word = this.value = lastWordInString(lineStr.substr(0, selLead.column));
-		if (!word || !word.length) throw "No word";
-		let wordStart = selLead.column - word.length;
-		
-		this.selectionStart = this.selectionEnd = this.value.length;
-		
-//		dump("\tselection: " + selLead.row + ":" + selLead.column + "\n");	// debug
-//		dump("\t<" + word + ">");
-		
-		/**
-		 * Updates the Ace editor represented by this proxy to reflect any
-		 * changes made to the proxy.
-		 * 
-		 * @returns {boolean}	True if anything was changed; false otherwise.
-		 */
-		this.commit = function() {
-			if (this.value == word) return false;
-//			dump("Replacing <" + $env.document.doc.$lines[selLead.row].substring(0, 10) + "> ");	// debug
-			
-			// Work around <https://github.com/ajaxorg/ace/pull/1813>.
-			sandbox.createObjectAlias("$Range",
-									  "$sel.getRange().__proto__.constructor");
-			sandbox.evalFunctionCall("$env.document.replace(new $Range($cursor.row," +
-									 wordStart + ",$cursor.row,$cursor.column)," +
-									 quoteJS(this.value) + ")");
-			return true;
-		};
-	};
-	AceProxy.prototype = new TextControlProxy();
-	
 // $if{Debug}
 	/**
 	 * Proxy for an Eclipse Orion editor to pose as an ordinary HTML <textarea>.
@@ -1591,6 +1536,25 @@ function AVIM()	{
 	};
 	
 	/**
+	 * Returns a parseable string representing the given KeyEvent.
+	 *
+	 * The returned string must be wrapped in quoteJS() before being passed into
+	 * a Sandbox.
+	 */
+	function keyEventString(evt) {
+		return [evt.keyCode, evt.which, evt.shiftKey].join(",");
+	}
+	
+	/**
+	 * Returns the result of applyKey() as an array, due to security
+	 * restrictions on passing objects.
+	 */
+	function safeApplyKey(word, evtProxy) {
+		let result = applyKey(word, evtProxy);
+		return [result.value, result.changed];
+	}
+	
+	/**
 	 * Handles key presses in the Ace editor. This function is triggered as soon
 	 * soon as the key goes up.
 	 *
@@ -1602,40 +1566,22 @@ function AVIM()	{
 //		dump("AVIM.handleAce\n");												// debug
 		let elt = evt.originalTarget.parentNode;
 		// <pre class="ace-editor">
-		if (!("classList" in elt && elt.classList.contains("ace_editor")) ||
-			!document.querySelector) {
+		if (!("classList" in elt && elt.classList.contains("ace_editor") &&
+			  elt.classList.contains("ace_focus")) || !document.querySelector) {
 			return false;
 		}
 		if (findIgnore(evt.target)) return false;
 		
 //		dump("---AceProxy---\n");												// debug
-		// Build a sandbox with all the toys an Ace editor could want.
 		let sandbox = new Sandbox(elt.ownerDocument.defaultView);
-		// This selector assumes that only one ACE editor can be focused at a
-		// time.
-		let eltSrc = "document.querySelector('.ace_editor.ace_focus')";
-		if (!sandbox.createObjectAlias("$env", eltSrc + "&&" + eltSrc + ".env") ||
-			!sandbox.createObjectAlias("$sel", "$env.document.selection") ||
-			!sandbox.evalBoolean("$sel.isEmpty()")) {
-			return false;
-		}
+		sandbox.createObjectAlias("$evtInfo", quoteJS(keyEventString(evt)));
+		sandbox.createObjectAlias("$anyChanged", "false");
+		sandbox.importFunction(lastWordInString, "lastWordInString");
+		sandbox.importFunction(safeApplyKey, "applyKey");
 		
-		let numRanges = sandbox.evalInt("$sel.rangeCount") || 1;
-		let anyChanged = false;
-		for (let i = 0; i < numRanges; i++) {
-			let proxy = new AceProxy(sandbox, i, numRanges);
-			if (!proxy) continue;
-			
-			let result = proxy.value && applyKey(proxy.value, evt);
-			
-			if (result) {
-				if (result.value) proxy.value = result.value;
-				if (result.changed) anyChanged = true;
-			}
-			if (proxy.commit) proxy.commit();
-			proxy = null;
-		}
+		sandbox.injectScript("chrome://avim/content/editors/ace.js");
 		
+		let anyChanged = sandbox.evalBoolean("$anyChanged");
 		if (anyChanged) {
 			evt.handled = true;
 			evt.stopPropagation();
@@ -1752,15 +1698,6 @@ function AVIM()	{
 	}
 	
 	/**
-	 * Returns the result of applyKey() as an array, due to security
-	 * restrictions on passing objects.
-	 */
-	function slightApplyKey(word, evtProxy) {
-		let result = applyKey(word, evtProxy);
-		return [result.value, result.changed];
-	}
-	
-	/**
 	 * Attaches AVIM to the given Silverlight applet.
 	 *
 	 * @param plugin	{object}	An <object> element.
@@ -1771,7 +1708,7 @@ function AVIM()	{
 			let sandbox = new Sandbox(plugin.ownerDocument.defaultView);
 			sandbox.importFunction(slightFindIgnore, "findIgnore");
 			sandbox.importFunction(lastWordInString, "lastWordInString");
-			sandbox.importFunction(slightApplyKey, "applyKey");
+			sandbox.importFunction(safeApplyKey, "applyKey");
 			
 			sandbox.injectScript("chrome://avim/content/editors/slight.js");
 		}
