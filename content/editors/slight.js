@@ -49,6 +49,7 @@ function keyDown(sender, evt) {
 		}
 		let selStart = ctl.selectionStart;
 		let word = lastWordInString(text.substr(0, selStart));
+		if (!word) return;
 		
 		let evtProxy = {
 			charCode: virtualKey(evt.key, evt.platformKeyCode, evt.shift),
@@ -64,10 +65,10 @@ function keyDown(sender, evt) {
 			return;
 		}
 		
-		let result = word && applyKey(word, evtProxy);
-		if (result && (result[1] || result[0] != word)) {
-			if (!result[1]) result[0] += String.fromCharCode(evtProxy.charCode);
-			let numExtraChars = result[0].length - word.length;
+		let [newWord, changed] = applyKey(word, evtProxy);
+		if (changed || (newWord && newWord != word)) {
+			if (!changed) newWord += String.fromCharCode(evtProxy.charCode);
+			let numExtraChars = newWord.length - word.length;
 			let tooLong = ctl.maxLength &&
 				text.length + numExtraChars > ctl.maxLength;
 			if (!tooLong) {
@@ -75,14 +76,14 @@ function keyDown(sender, evt) {
 				// so override the control contents asynchronously.
 				setTimeout(function () {
 					let wordStart = selStart - word.length;
-					ctl.text = text.substr(0, wordStart) + result[0] +
+					ctl.text = text.substr(0, wordStart) + newWord +
 						text.substr(selStart);
 					ctl.selectionStart = selStart + numExtraChars;
 					ctl.selectionLength = 0;
 				}, 0);
 			}
 		}
-		if (result && result[1]) evt.handled = true;
+		if (changed) evt.handled = true;
 	}
 	catch(exc) {
 // $if{Debug}
@@ -112,15 +113,15 @@ function eatChar(ctl, evtProxy) {
 		
 		// Exclude the last character from the word.
 		let word = lastWordInString(text.substr(0, selStart - 1));
-		let result = word && applyKey(word, evtProxy);
-		if (result && (result[1] || result[0] != word)) {
-			if (!result[1]) result[0] += text[selStart - 1];
-			let numExtraChars = result[0].length - word.length;
+		let [newWord, changed] = word && applyKey(word, evtProxy);
+		if (changed || (newWord && newWord != word)) {
+			if (!changed) newWord += text[selStart - 1];
+			let numExtraChars = newWord.length - word.length;
 			let tooLong = ctl.maxLength &&
 				text.length - 1 + numExtraChars > ctl.maxLength;
 			if (!tooLong) {
 				let wordStart = selStart - 1 - word.length;
-				ctl.text = text.substr(0, wordStart) + result[0] +
+				ctl.text = text.substr(0, wordStart) + newWord +
 					text.substr(selStart);
 				ctl.selectionStart = selStart - 1 + numExtraChars;
 				ctl.selectionLength = 0;
