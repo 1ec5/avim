@@ -1439,8 +1439,8 @@ function AVIM()	{
 	/**
 	 * Returns a parseable string representing the given KeyEvent.
 	 *
-	 * The returned string must be wrapped in quoteJS() before being passed into
-	 * a Sandbox.
+	 * The returned string must be wrapped in quoteJS() or brackets before being
+	 * passed into a Sandbox.
 	 */
 	function keyEventString(evt) {
 		return [evt.keyCode, evt.which, evt.shiftKey].join(",");
@@ -1453,6 +1453,33 @@ function AVIM()	{
 	function safeApplyKey(word, evtProxy) {
 		let result = applyKey(word, evtProxy);
 		return [result.value, result.changed];
+	}
+	
+	/**
+	 * Handles a key press on a target element by injecting a content script
+	 * with the given name into the content page.
+	 *
+	 * @param elt			{object}	A DOM element.
+	 * @param scriptName	{string}	The base file name of the content script
+	 * 									with the .js extension.
+	 */
+	function handleWithContentScript(elt, scriptName) {
+		let sandbox = new Sandbox(elt.ownerDocument.defaultView);
+		sandbox.createObjectAlias("_avim_evtInfo",
+								  "[" + keyEventString(evt) + "]");
+		sandbox.createObjectAlias("_avim_textChanged", "false");
+		sandbox.importFunction(lastWordInString, "_avim_lastWordInString");
+		sandbox.importFunction(safeApplyKey, "_avim_applyKey");
+		
+		sandbox.injectScript("chrome://avim/content/editors/" + scriptName +
+							 ".js");
+		
+		if (sandbox.evalBoolean("_avim_textChanged")) {
+			evt.handled = true;
+			evt.stopPropagation();
+			evt.preventDefault();
+			updateContainer(elt, elt);
+		}
 	}
 	
 	/**
@@ -1474,20 +1501,7 @@ function AVIM()	{
 		if (findIgnore(evt.target)) return false;
 		
 //		dump("---AceProxy---\n");												// debug
-		let sandbox = new Sandbox(elt.ownerDocument.defaultView);
-		sandbox.createObjectAlias("_avim_evtInfo", "[" + keyEventString(evt) + "]");
-		sandbox.createObjectAlias("_avim_textChanged", "false");
-		sandbox.importFunction(lastWordInString, "_avim_lastWordInString");
-		sandbox.importFunction(safeApplyKey, "_avim_applyKey");
-		
-		sandbox.injectScript("chrome://avim/content/editors/ace.js");
-		
-		if (sandbox.evalBoolean("_avim_textChanged")) {
-			evt.handled = true;
-			evt.stopPropagation();
-			evt.preventDefault();
-			updateContainer(elt, elt);
-		}
+		handleWithContentScript(elt, "ace");
 		return true;
 	};
 	
@@ -1506,20 +1520,7 @@ function AVIM()	{
 		if (!frameContents.length) return false;
 		
 //		dump("AVIM.handleYmacs\n");												// debug
-		let sandbox = new Sandbox(doc.defaultView);
-		sandbox.createObjectAlias("_avim_evtInfo", "[" + keyEventString(evt) + "]");
-		sandbox.createObjectAlias("_avim_textChanged", "false");
-		sandbox.importFunction(lastWordInString, "_avim_lastWordInString");
-		sandbox.importFunction(safeApplyKey, "_avim_applyKey");
-		
-		sandbox.injectScript("chrome://avim/content/editors/ymacs.js");
-		
-		if (sandbox.evalBoolean("_avim_textChanged")) {
-			evt.handled = true;
-			evt.stopPropagation();
-			evt.preventDefault();
-			updateContainer(elt, elt);
-		}
+		handleWithContentScript(elt, "ymacs");
 		return true;
 	};
 	
