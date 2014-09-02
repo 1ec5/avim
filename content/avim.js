@@ -201,59 +201,6 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Proxy for a Ymacs editor to pose as an ordinary HTML <textarea>.
-	 * 
-	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context.
-	 */
-	function YmacsProxy(sandbox) {
-		sandbox.createObjectAlias("$buffer", "ymacs.getActiveBuffer()");
-		if (sandbox.evalBoolean("$buffer.transientMarker&&" +
-								"$buffer.caretMarker.position!==" +
-								"$buffer.transientMarker.position")) {
-			throw "Non-empty selection";
-		}
-		let oldSelection = {
-			row: sandbox.evalInt("$buffer.caretMarker.rowcol.row"),
-			column: sandbox.evalInt("$buffer.caretMarker.rowcol.col"),
-		};
-		this.selectionStart = this.selectionEnd = oldSelection.column;
-		
-		this.oldLine = sandbox.evalString("$buffer.getLine(" +
-										   oldSelection.row + ")");
-		let word = lastWordInString(this.oldLine.substr(0, oldSelection.column));
-		this.value = word;
-		
-		/**
-		 * Updates the Ymacs editor represented by this proxy to reflect any
-		 * changes made to the proxy.
-		 * 
-		 * @returns {boolean}	True if anything was changed; false otherwise.
-		 */
-		this.commit = function() {
-			if (word == this.value) return false;
-			
-			let linePos = sandbox.evalInt("$buffer._rowColToPosition(" +
-										  oldSelection.row + ",0)");
-			let line = this.oldLine.substr(0, oldSelection.column - word.length) +
-				this.value + this.oldLine.substr(oldSelection.column);
-			let pos = linePos + oldSelection.column + line.length -
-				this.oldLine.length;
-			sandbox.evalFunctionCall("$buffer._replaceLine(" +
-									 oldSelection.row + "," + quoteJS(line) +
-									 ")");
-			sandbox.evalFunctionCall("$buffer.redrawDirtyLines()");
-			sandbox.evalFunctionCall("$buffer.caretMarker.setPosition(" + pos +
-									 ")");
-			//let after = sandbox.evalString("$buffer.getLine(" +
-			//							   oldSelection.row + ")");
-			
-			return true;
-		};
-	};
-	YmacsProxy.prototype = new TextControlProxy();
-	
-	/**
 	 * Returns the current position of the cursor in the given SciMoz plugin
 	 * object.
 	 *
@@ -1510,7 +1457,7 @@ function AVIM()	{
 	
 	/**
 	 * Handles key presses in the Ace editor. This function is triggered as soon
-	 * soon as the key goes up.
+	 * as the key goes up.
 	 *
 	 * @param evt	{object}	The keypress event.
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
@@ -1535,8 +1482,7 @@ function AVIM()	{
 		
 		sandbox.injectScript("chrome://avim/content/editors/ace.js");
 		
-		let changed = sandbox.evalBoolean("_avim_textChanged");
-		if (changed) {
+		if (sandbox.evalBoolean("_avim_textChanged")) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
@@ -1546,8 +1492,8 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Handles key presses in the Ymacs editor. This function is
-	 * triggered as soon soon as the key goes up.
+	 * Handles key presses in the Ymacs editor. This function is triggered as
+	 * soon as the key goes up.
 	 *
 	 * @param evt	{object}	The keypress event.
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
@@ -1559,30 +1505,16 @@ function AVIM()	{
 		let frameContents = doc.getElementsByClassName("Ymacs-frame-content");
 		if (!frameContents.length) return false;
 		
-		let sandbox = new Sandbox(doc.defaultView);
-		try {
-			if (!sandbox.evalBoolean("'YMACS_SRC_PATH'in window&&" +
-									 "'ymacs'in window")) {
-				return false;
-			}
-		}
-		catch (exc) {
-			return false;
-		}
-		
 //		dump("AVIM.handleYmacs\n");												// debug
+		let sandbox = new Sandbox(doc.defaultView);
+		sandbox.createObjectAlias("_avim_evtInfo", "[" + keyEventString(evt) + "]");
+		sandbox.createObjectAlias("_avim_textChanged", "false");
+		sandbox.importFunction(lastWordInString, "_avim_lastWordInString");
+		sandbox.importFunction(safeApplyKey, "_avim_applyKey");
 		
-		// Fake a native textbox.
-		let proxy = new YmacsProxy(sandbox);
+		sandbox.injectScript("chrome://avim/content/editors/ymacs.js");
 		
-		let result = proxy.value && applyKey(proxy.value, evt);
-		if (result && result.value) proxy.value = result.value;
-		
-		proxy.commit();
-		proxy = null;
-		sandbox = null;
-		
-		if (result && result.changed) {
+		if (sandbox.evalBoolean("_avim_textChanged")) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
@@ -1653,7 +1585,7 @@ function AVIM()	{
 	
 	/**
 	 * Handles key presses in the Kix editor. This function is triggered as soon
-	 * soon as the key goes up.
+	 * as the key goes up.
 	 *
 	 * @param evt	{object}	The keypress event.
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
@@ -1738,8 +1670,8 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Handles key presses in Pages. This function is triggered as soon soon as
-	 * the key goes up.
+	 * Handles key presses in Pages. This function is triggered as soon as the
+	 * key goes up.
 	 *
 	 * @param evt	{object}	The keypress event.
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
