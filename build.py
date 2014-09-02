@@ -13,7 +13,7 @@ config_build.py in the same directory as itself."""
 __version__ = "2.2"
 __authors__ = ["Minh Nguyen <mxn@1ec5.org>"]
 __license__ = """\
-Copyright (c) 2008-2010 Minh Nguyen.
+Copyright (c) 2008-2014 Minh Nguyen.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
