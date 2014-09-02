@@ -670,100 +670,6 @@ function AVIM()	{
 	KixProxy.prototype = new TextControlProxy();
 	
 	/**
-	 * Proxy for the Zoho Writer editor to pose as an ordinary HTML <textarea>.
-	 * 
-	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context.
-	 */
-	function ZWriteProxy(sandbox) {
-		if (!sandbox.createObjectAlias("$cursor", "editor.doc.cursor")) {
-			throw "No cursor";
-		}
-		if (!sandbox.evalBoolean("$cursor.isCollapsed()")) {
-			throw "Non-empty selection";
-		}
-		
-		//* One-based
-		let selectionStart = sandbox.evalInt("$cursor.getWord().getStart()");
-		//* One-based
-		let selectionEnd = sandbox.evalInt("$cursor.getEnd()");
-		
-		let word = sandbox.evalString("editor.doc.getContent(" + selectionStart +
-									  "," + selectionEnd + ")");
-		if (!word || !word.length) throw "No word";
-		this.value = word;
-		
-		//dump(">>> ZWriteProxy -- word: " + word + "\n");							// debug
-		
-		/**
-		 * Updates the editor represented by this proxy to reflect any changes
-		 * made to the proxy.
-		 * 
-		 * @returns {boolean}	True if anything was changed; false otherwise.
-		 */
-		this.commit = function() {
-			if (this.value == word) return false;
-			
-			//dump(">>> ZWriteProxy -- Replacing <" + word + "> with <" + this.value + ">\n");	// debug
-			
-			sandbox.evalFunctionCall("Selection.deleteContents(" + selectionStart +
-									 "," + selectionEnd + ")");
-			sandbox.evalFunctionCall("$cursor.insert(editor.doc.createElement(" +
-									 "NODE_TYPE.TEXT," + quoteJS(this.value) +
-									 "),{})");
-			sandbox.evalFunctionCall("Op.sendMsg()");
-			return true;
-		};
-	};
-	ZWriteProxy.prototype = new TextControlProxy();
-	
-	/**
-	 * Proxy for the Zoho Show editor to pose as an ordinary HTML <textarea>.
-	 * 
-	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context.
-	 */
-	function ZShowProxy(sandbox) {
-		if (!sandbox.createObjectAlias("$editor", "ShapeEditor.text.editor")) {
-			throw "No text editor";
-		}
-		if (sandbox.evalBoolean("$editor.cursor.getIndex().si!==" +
-								"$editor.cursor.getIndex().ei")) {
-			throw "Non-empty selection";
-		}
-		
-		sandbox.createObjectAlias("$fromTo", "$editor._getFromTo()");
-		let wholeWord = sandbox.evalString("$fromTo.to.element.word.data().text");
-		// Yes, charCount() is -1-based!
-		let selectionStart = sandbox.evalInt("$fromTo.to.element.charCount") + 1;
-		if (selectionStart > wholeWord.length) throw "Starting a new word";
-		let word = wholeWord.substr(0, selectionStart);
-		if (!word || !word.length) throw "No word";
-		this.value = word;
-		
-		//dump(">>> ZWriteProxy -- word: " + word + "; selectionStart: " + selectionStart + "\n");	// debug
-		
-		/**
-		 * Updates the editor represented by this proxy to reflect any changes
-		 * made to the proxy.
-		 * 
-		 * @returns {boolean}	True if anything was changed; false otherwise.
-		 */
-		this.commit = function() {
-			if (this.value == word) return false;
-			
-			//dump(">>> ZWriteProxy -- Replacing <" + word + "> with <" + this.value + ">\n");	// debug
-			
-			sandbox.evalFunctionCall("$editor.backspace();".repeat(selectionStart));
-			sandbox.evalFunctionCall("$editor.addText(" + quoteJS(this.value) +
-									 ")");
-			
-			return true;
-		};
-	};
-	ZShowProxy.prototype = new TextControlProxy();
-	
-	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
 	 * XUL or HTML element.
 	 *
@@ -1647,45 +1553,16 @@ function AVIM()	{
 	 * @returns {boolean}	True if AVIM plans to modify the input; false
 	 * 						otherwise.
 	 */
-	this.handleZoho = function(evt) {
+	this.handleZD = function(evt) {
 		let elt = evt.originalTarget;
-		
-		let win = elt.ownerDocument.defaultView;
-		let sandbox = new Sandbox(win);
-		let proxyCls;
-		try {
-			// Zoho Writer
-			if (sandbox.evalBoolean("'editor'in window")) {
-				proxyCls = ZWriteProxy;
-				//dump(">>> AVIM.handleZoho -- ZWriteProxy\n");					// debug
-			}
+		let doc = elt.ownerDocument;
+		let scriptName;
+		if (doc.getElementsByClassName("zw-page").length) scriptName = "zwrite";
+		else if (doc.getElementsByClassName("slide-parent-overlay").length) {
+			scriptName = "zshow";
 		}
-		catch (exc) {}
-		try {
-			// Zoho Show
-			if (sandbox.evalBoolean("'ShapeEditor'in window")) {
-				proxyCls = ZShowProxy;
-				//dump(">>> AVIM.handleZoho -- ZShowProxy\n");					// debug
-			}
-		}
-		catch (exc) {}
-		if (!proxyCls) return false;
-		
-		// Fake a native textbox.
-		let proxy = new proxyCls(sandbox);
-		
-		let result = proxy.value && applyKey(proxy.value, evt);
-		if (result && result.value) proxy.value = result.value;
-		
-		proxy.commit();
-		proxy = null;
-		sandbox.nuke();
-		
-		if (result && result.changed) {
-			evt.handled = true;
-			evt.stopPropagation();
-			evt.preventDefault();
-		}
+		else return false;
+		handleWithContentScript(evt.originalTarget, evt, scriptName);
 		return true;
 	};
 	
@@ -2047,7 +1924,7 @@ function AVIM()	{
 			// Zoho Writer
 			if (doc.location.hostname === ZohoHostname &&
 				origTarget.isContentEditable) {
-				return this.handleZoho(e);
+				return this.handleZD(e);
 			}
 			
 			// Ymacs
