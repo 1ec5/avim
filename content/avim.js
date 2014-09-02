@@ -11,6 +11,7 @@ function AVIM()	{
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
 	const Cu = Components.utils;
+	const CC = Components.Constructor;
 	
 	const PREF_VERSION = 1;
 	
@@ -93,6 +94,25 @@ function AVIM()	{
 		if (str.substr(-1) === "\\" && methodIsVIQR()) return "\\";
 		let match = wordRe.exec(str);
 		return match && match[0];
+	}
+	
+	const nsTransferable = CC("@mozilla.org/widget/transferable;1",
+								  "nsITransferable");
+	
+	/**
+	 * A wrapper around nsITransferable that sets the source in order to respect
+	 * Private Browsing Mode.
+	 */
+	function Transferable(win) {
+		let xfer = nsTransferable();
+		if ("init" in xfer) {
+			if (win instanceof Ci.nsIDOMWindow) {
+				win = win.QueryInterface(Ci.nsIInterfaceRequestor)
+					.getInterface(Ci.nsIWebNavigation);
+			}
+			xfer.init(win);
+		}
+		return xfer;
 	}
 	
 	const subscriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
@@ -504,8 +524,7 @@ function AVIM()	{
 											  board.kGlobalClipboard)) {
 				return false;
 			}
-			let xfer = Cc["@mozilla.org/widget/transferable;1"]
-				.createInstance(Ci.nsITransferable);
+			let xfer = Transferable(frameDoc.defaultView);
 			// TODO: Use the text/html flavor to retain formatting.
 			xfer.addDataFlavor("text/unicode");
 			board.getData(xfer, board.kGlobalClipboard);
@@ -564,9 +583,8 @@ function AVIM()	{
 		 */
 		this.getSelectedText = function(isInTable) {
 			// Clear the clipboard.
-			board.setData(Cc["@mozilla.org/widget/transferable;1"]
-							.createInstance(Ci.nsITransferable),
-						  null, board.kGlobalClipboard);
+			let xfer = Transferable(frameDoc.defaultView);
+			board.setData(xfer, null, board.kGlobalClipboard);
 			
 			// Copy the word.
 			winUtils.sendContentCommandEvent("copy");
@@ -640,8 +658,7 @@ function AVIM()	{
 				return false;
 			}
 			
-			let xfer = Cc["@mozilla.org/widget/transferable;1"]
-				.createInstance(Ci.nsITransferable);
+			let xfer = Transferable(frameDoc.defaultView);
 			// TODO: Use the text/html flavor to retain formatting.
 			xfer.addDataFlavor("text/unicode");
 			var cStr = Cc["@mozilla.org/supports-string;1"]
@@ -1471,8 +1488,7 @@ function AVIM()	{
 		// to avoid dropping any clipboard data.
 		const board = Cc["@mozilla.org/widget/clipboard;1"]
 			.getService(Ci.nsIClipboard);
-		let xfer = Cc["@mozilla.org/widget/transferable;1"]
-			.createInstance(Ci.nsITransferable);
+		let xfer = Transferable(elt.ownerDocument.defaultView);
 		let flavors = [
 			// /widget/public/nsITransferable.idl
 			"text/plain",				// kTextMime
@@ -1515,8 +1531,7 @@ function AVIM()	{
 			board.setData(xfer, null, board.kGlobalClipboard);
 			
 			// Clear the clipboard.
-			//let xfer = Cc["@mozilla.org/widget/transferable;1"]
-			//	.createInstance(Ci.nsITransferable);
+			//let xfer = Transferable(elt.ownerDocument.defaultView);
 			//let board = Cc["@mozilla.org/widget/clipboard;1"]
 			//	.getService(Ci.nsIClipboard);
 			//board.setData(xfer, null, board.kGlobalClipboard);
