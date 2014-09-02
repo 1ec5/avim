@@ -9,12 +9,10 @@ if (buffer.transientMarker &&
 	return;
 }
 
-let oldSelection = {
-	row: buffer.caretMarker.rowcol.row,
-	column: buffer.caretMarker.rowcol.col,
-};
+let oldSelection = buffer.caretMarker.rowcol;
 let oldLine = buffer.getLine(oldSelection.row);
-let word = _avim_lastWordInString(oldLine.substr(0, oldSelection.column));
+let word = _avim_lastWordInString(oldLine.substr(0, oldSelection.col));
+if (!word || !word.length) return;
 
 let [newWord, changed] = _avim_applyKey(word, {
 	keyCode: _avim_evtInfo[0],
@@ -23,9 +21,9 @@ let [newWord, changed] = _avim_applyKey(word, {
 });
 if (newWord && newWord != word) {
 	let linePos = buffer._rowColToPosition(oldSelection.row, 0);
-	let line = oldLine.substr(0, oldSelection.column - word.length) +
-		newWord + oldLine.substr(oldSelection.column);
-	let pos = linePos + oldSelection.column + line.length - oldLine.length;
+	let line = oldLine.substr(0, oldSelection.col - word.length) + newWord +
+		oldLine.substr(oldSelection.col);
+	let pos = linePos + oldSelection.col + line.length - oldLine.length;
 	buffer._replaceLine(oldSelection.row, line);
 	buffer.redrawDirtyLines();
 	buffer.caretMarker.setPosition(pos);
