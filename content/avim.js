@@ -670,70 +670,6 @@ function AVIM()	{
 	KixProxy.prototype = new TextControlProxy();
 	
 	/**
-	 * Proxy for the Pages editor to pose as an ordinary HTML <textarea>.
-	 * 
-	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context.
-	 */
-	function CacTrangProxy(sandbox) {
-		if (!sandbox.createObjectAlias("$selection",
-									   "GSAUI.selectionController.topSelection[0]")) {
-			throw "No selection";
-		}
-		if (!sandbox.evalBoolean("$selection instanceof GSWP.TextSelection")) {
-			throw "Non-text selection";
-		}
-		if (!sandbox.evalBoolean("$selection.isInsertionPoint()")) {
-			throw "Non-empty selection";
-		}
-		
-		if (!sandbox.createObjectAlias("$storage", "$selection.getTextStorage()")) {
-			throw "No text storage";
-		}
-		
-		let selectionStart =
-			sandbox.evalInt("$selection.getNormalizedRange().location");
-		
-		let beforeString = sandbox.evalString("$storage.getSubstring(0," +
-											  selectionStart + ")");
-		let word = this.value = lastWordInString(beforeString);
-		if (!word || !word.length) throw "No word";
-		let wordStart = selectionStart - word.length;
-		
-		this.selectionStart = this.selectionEnd = this.value.length;
-		
-		//dump("\tselection: " + selectionStart + " back to " + wordStart + "\n");	// debug
-		//dump("\t<" + word + ">\n");
-		
-		/**
-		 * Updates the editor represented by this proxy to reflect any changes
-		 * made to the proxy.
-		 * 
-		 * @returns {boolean}	True if anything was changed; false otherwise.
-		 */
-		this.commit = function() {
-			if (this.value == word) return false;
-			
-			//dump(">>> Replacing <" + word + "> with <" + this.value + ">\n");	// debug
-			
-			sandbox.createObjectAlias("$editor",
-									  "GSK.DocumentViewController.currentController." +
-									  "canvasViewController.getEditorController()." +
-									  "getMostSpecificCurrentEditorOfClass(GSD.Editor)");
-			sandbox.createObjectAlias("$wordSelection",
-									  "GSWP.TextSelection.createWithStartAndStopAndCaretAffinityAndLeadingEdge(" +
-									  "$storage," + wordStart + "," + selectionStart + ",null,null)");
-			sandbox.createObjectAlias("$cmd", "$editor._createReplaceTextCommand(" +
-									  "$wordSelection," + quoteJS(this.value) +
-									  ")");
-			sandbox.evalFunctionCall("$editor._executeCommand($cmd)");
-			
-			return true;
-		};
-	};
-	CacTrangProxy.prototype = new TextControlProxy();
-	
-	/**
 	 * Proxy for the Zoho Writer editor to pose as an ordinary HTML <textarea>.
 	 * 
 	 * @param sandbox	{object}	JavaScript sandbox in the current page's
@@ -1698,36 +1634,8 @@ function AVIM()	{
 	 * 						otherwise.
 	 */
 	this.handleCacTrang = function(evt) {
-		let elt = evt.originalTarget;
-		
-		let win = elt.ownerDocument.defaultView;
-		let sandbox = new Sandbox(win);
-		try {
-			if (!sandbox.evalBoolean("'GSAUI'in window&&" + "'GSF'in window")) {
-				return false;
-			}
-		}
-		catch (exc) {
-			return false;
-		}
-		
 		//dump(">>> AVIM.handleCacTrang\n");												// debug
-		
-		// Fake a native textbox.
-		let proxy = new CacTrangProxy(sandbox);
-		
-		let result = proxy.value && applyKey(proxy.value, evt);
-		if (result && result.value) proxy.value = result.value;
-		
-		proxy.commit();
-		proxy = null;
-		sandbox = null;
-		
-		if (result && result.changed) {
-			evt.handled = true;
-			evt.stopPropagation();
-			evt.preventDefault();
-		}
+		handleWithContentScript(evt.originalTarget, evt, "trang");
 		return true;
 	};
 	
