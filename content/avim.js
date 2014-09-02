@@ -1555,9 +1555,11 @@ function AVIM()	{
 	 */
 	this.handleYmacs = function(evt) {
 		let elt = evt.originalTarget;
+		let doc = elt.ownerDocument;
+		let frameContents = doc.getElementsByClassName("Ymacs-frame-content");
+		if (!frameContents.length) return false;
 		
-		let win = elt.ownerDocument.defaultView;
-		let sandbox = new Sandbox(win);
+		let sandbox = new Sandbox(doc.defaultView);
 		try {
 			if (!sandbox.evalBoolean("'YMACS_SRC_PATH'in window&&" +
 									 "'ymacs'in window")) {
