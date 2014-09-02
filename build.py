@@ -534,7 +534,8 @@ def main():
         src = src_file.read()
         src_file.close()
         # Preprocess the file.
-        if f in VAR_FILES or path.basename(f) in VAR_NAMES:
+        if (f in VAR_FILES or path.splitext(f)[1][1:] in VAR_EXTS or
+            path.basename(f) in VAR_NAMES):
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
@@ -586,7 +587,8 @@ def main():
         src = src_file.read()
         src_file.close()
         # Preprocess the file.
-        if f in VAR_FILES or path.basename(f) in VAR_NAMES:
+        if (f in VAR_FILES or path.splitext(f)[1][1:] in VAR_EXTS or
+            path.basename(f) in VAR_NAMES):
             print "\t%s" % f
             src = preprocess(src, vals={"Rev": revision, "Version": version,
                                         "Date": today, "Year": year})
