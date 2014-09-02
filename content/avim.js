@@ -213,7 +213,7 @@ function AVIM()	{
 		};
 		
 		this.nuke = function () {
-			Cu.nukeSandbox(sandbox);
+			if ("nukeSandbox" in Cu) Cu.nukeSandbox(sandbox);
 			sandbox = null;
 		};
 	}
