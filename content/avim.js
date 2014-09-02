@@ -200,52 +200,6 @@ function AVIM()	{
 		this.selectionEnd = end;
 	};
 	
-// $if{Debug}
-	/**
-	 * Proxy for an Eclipse Orion editor to pose as an ordinary HTML <textarea>.
-	 * 
-	 * @param sandbox	{object}	JavaScript sandbox in the current page's
-	 * 								context.
-	 */
-	function OrionProxy(sandbox) {
-		if (sandbox.evalBoolean("editor.getSelection().start!==" +
-								"editor.getSelection().end")) {
-			throw "Non-empty selection";
-		}
-		let offset = sandbox.evalInt("editor.getCaretOffset()");
-		let lineStart = sandbox.evalInt("editor.getModel().getLineStart(" +
-										"editor.getModel().getLineAtOffset(" +
-										offset + "))");
-		this.selectionStart = this.selectionEnd = offset - lineStart;
-		
-		this.oldValue = sandbox.evalString("editor.getText(" + lineStart + "," +
-										   offset + ")");
-		// TODO: applyKey() can only handle one word at a time, but this will
-		// send it the entire line.
-		this.value = this.oldValue;
-		
-		/**
-		 * Updates the Orion editor represented by this proxy to reflect any
-		 * changes made to the proxy.
-		 * 
-		 * @returns {boolean}	True if anything was changed; false otherwise.
-		 */
-		this.commit = function() {
-			if (this.value == this.oldValue) return false;
-			
-			sandbox.evalFunctionCall("editor.setText(" + quoteJS(this.value) +
-									  "," + lineStart + "," + offset + ")");
-			offset += this.value.length - this.oldValue.length;
-			sandbox.evalFunctionCall("editor.redrawRange(" + lineStart + "," +
-									 offset + ")");
-			sandbox.evalFunctionCall("editor.setCaretOffset(" + offset + ")");
-			
-			return true;
-		};
-	};
-	OrionProxy.prototype = new TextControlProxy();
-// $endif{}
-	
 	/**
 	 * Proxy for a Ymacs editor to pose as an ordinary HTML <textarea>.
 	 * 
@@ -1591,54 +1545,6 @@ function AVIM()	{
 		return true;
 	};
 	
-// $if{Debug}
-	/**
-	 * Handles key presses in the Eclipse Orion editor. This function is
-	 * triggered as soon soon as the key goes up.
-	 *
-	 * @param evt	{object}	The keypress event.
-	 * @returns {boolean}	True if AVIM plans to modify the input; false
-	 * 						otherwise.
-	 */
-	this.handleOrion = function(evt) {
-		let elt = evt.originalTarget;
-		if (elt.id != "clientDiv") return false;
-		if (!("classList" in elt && elt.classList.contains("editorContent"))) {
-			return false;
-		}
-		let parentWin = elt.ownerDocument.defaultView.parent;
-		if (!parentWin) return false;
-		
-		let sandbox = new Sandbox(parentWin);
-		try {
-			if (!sandbox.evalBoolean("'eclipse'in window&&'editor'in window")) {
-				return false;
-			}
-		}
-		catch (exc) {
-			return false;
-		}
-		
-		// Fake a native textbox.
-		let proxy = new OrionProxy(sandbox);
-		
-		let result = proxy.value && applyKey(proxy.value, evt);
-		if (result && result.value) proxy.value = result.value;
-		
-		proxy.commit();
-		proxy = null;
-		sandbox = null;
-		
-		if (result && result.changed) {
-			evt.handled = true;
-			evt.stopPropagation();
-			evt.preventDefault();
-			updateContainer(elt, elt);
-		}
-		return true;
-	};
-// $endif{}
-	
 	/**
 	 * Handles key presses in the Ymacs editor. This function is
 	 * triggered as soon soon as the key goes up.
@@ -2291,11 +2197,6 @@ function AVIM()	{
 			
 			// ACE editor
 			if (tagName == "textarea" && this.handleAce(e)) return true;
-			
-// $if{Debug}
-			// Eclipse Orion
-			if (tagName == "div" && this.handleOrion(e)) return true;
-// $endif{}
 		}
 		catch (exc) {
 // $if{Debug}
