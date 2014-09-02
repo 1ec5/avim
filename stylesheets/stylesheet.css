@@ -136,7 +136,8 @@ strong {
 img {
   position: relative;
   margin: 0 auto;
-  max-width: 739px;
+  /*max-width: 739px;*/
+  max-width: 640px;
   padding: 5px;
   margin: 10px 0 10px 0;
   border: 1px solid #ebebeb;
@@ -260,6 +261,18 @@ input[type="search"] {
 
 .fine-print {
   font-size: 80%;
+}
+
+figure {
+  margin-bottom: 3em;
+}
+
+figcaption {
+  font-size: 90%;
+  font-style: italic;
+  text-align: center;
+  margin: auto;
+  width: 90%;
 }
 
 /*******************************************************************************
@@ -437,6 +450,50 @@ Full-Width Styles
 #languages:lang(es) li:lang(es),
 #languages:lang(vi) li:lang(vi) {
   font-weight: bold;
+}
+
+.carousel {
+  position: relative;
+  min-height: calc(500px + 5px * 2 + 10px * 2 + 1px * 2 + 5em);
+  width: 100%;
+  border-bottom: 1px solid #c0c0c0;
+  margin-bottom: 1em;
+}
+
+.carousel figure {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  transition: opacity 0.5s, z-index 0s 0.5s, visibility 0s 0.5s;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.carousel figure.selected {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s, z-index 0s 0.5s, visibility 0s 0s;
+  z-index: 2;
+}
+
+.carousel-footer {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 80%;
+  word-spacing: 0.5em;
+}
+
+.carousel-footer button:first-of-type::before {
+  content: "« ";
+}
+
+.carousel-footer button:last-of-type::after {
+  content: " »";
 }
 
 #compare-methods caption {
