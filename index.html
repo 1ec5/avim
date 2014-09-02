@@ -10,6 +10,11 @@
     <link rel="shortcut icon" type="image/png" href="images/favicon.png">
     <link rel="alternate" lang="en-US" href="en/">
     <link rel="alternate" lang="es" href="es/">
+    
+    <script src="javascripts/main.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      addEventListener("load", buildCarousel, false);
+    </script>
 
     <title>AVIM cho Firefox</title>
   </head>
@@ -45,14 +50,39 @@
   </ul>
 </nav>
 
-<h1>Tiếng Việt có dấu trên đầu ngón tay</h1>
+<h1>Bỏ&nbsp;dấu vào bất&nbsp;cứ mọi trang&nbsp;Web!</h1>
+
+<div class="carousel">
+  <figure class="selected">
+    <img src="images/mac109_ff34_vi_webapps.png" type="image/png">
+    <figcaption><strong>Mới trong bản&nbsp;beta:</strong> Chỉ&nbsp;có AVIM cho&nbsp;phép nhập tiếng&nbsp;Việt dễ&nbsp;dàng vào các ứng&nbsp;dụng Web phổ&nbsp;biến, chẳng&nbsp;hạn như Google&nbsp;Docs, Office&nbsp;Online, iCloud, Zoho&nbsp;Docs, và SVG-edit.</figcaption>
+  </figure>
+  
+  <figure>
+    <img src="images/mac109_ff34_vi_pdf.png" type="image/png">
+    <figcaption>AVIM hoạt động trong toàn thể trình duyệt, kể cả thanh tìm kiếm và trình xem PDF.</figcaption>
+  </figure>
+  
+  <figure>
+    <video preload="auto" style="width: 616px; margin-left: auto; margin-right: auto;">
+      <source src="images/mac109_ff34_vi_ace.webm" type="video/webm">
+    </video>
+    <figcaption>Chỉ&nbsp;có AVIM hỗ&nbsp;trợ tính&nbsp;năng “con&nbsp;nháy nhiều dòng” của trình&nbsp;soạn&nbsp;thảo Ace để nhập văn&nbsp;bản lặp&nbsp;đi lặp&nbsp;lại một&nbsp;cách nhanh&nbsp;nhẹn.</figcaption>
+  </figure>
+  
+  <div class="carousel-footer">
+    <button value="-1">Trước</button>
+    <span class="status"></span>
+    <button value="+1">Sau</button>
+  </div>
+</div>
 
 <p><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> là một phần mở rộng miễn phí dành cho <a href="http://www.mozilla.org/vi/firefox/">Firefox</a> và <a href="https://github.com/1ec5/avim/wiki/Yêu-cầu-hệ-thống">các ứng dụng khác thuộc hệ Mozilla</a>. Đây là bộ gõ nhanh nhẹn cho phép nhập văn bản tiếng Việt một cách tự nhiên đến nỗi bạn sẽ không để ý đến nó.</p>
 
 <p>Dựa trên <a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM">kịch bản của Đặng Trần Hiếu</a>, phần mở rộng này được cải thiện thành bộ gõ <a href="compare.html" title="So sánh Tính năng">thượng hạng</a> có nhiều <a href="https://github.com/1ec5/avim/wiki/Tính%20năng">sáng kiến rất tiện lợi</a>:</p>
 
 <ul>
-<li>Nhạy ngữ cảnh – sửa dấu mà không cần đánh lại cả từ</li>
+<li>Sửa dấu mà không cần đánh lại cả từ</li>
 <li>Bỏ qua các từ không nhìn giống tiếng Việt</li>
 <li>Phím tắt tiện và tùy chọn tỉ mỉ</li>
 <li>Tránh đụng với các bộ gõ do trang Web cung cấp</li>

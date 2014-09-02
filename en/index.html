@@ -10,6 +10,11 @@
     <link rel="shortcut icon" type="image/png" href="../images/favicon.png">
     <link rel="alternate" lang="es" href="../es/">
     <link rel="alternate" lang="vi" href="../">
+    
+    <script src="../javascripts/main.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      addEventListener("load", buildCarousel, false);
+    </script>
 
     <title>AVIM for Firefox</title>
   </head>
@@ -45,14 +50,39 @@
   </ul>
 </nav>
 
-<h1>Accented Vietnamese at your fingertips</h1>
+<h1>Accented Vietnamese everywhere!</h1>
+
+<div class="carousel">
+  <figure class="selected">
+    <img src="../images/mac109_ff34_vi_webapps.png" type="image/png">
+	<figcaption><strong>New in the beta version:</strong> Only AVIM lets you write Vietnamese effortlessly in all the popular Web applications, including Google&nbsp;Docs, Office&nbsp;Online, iCloud, Zoho&nbsp;Docs, and SVG-edit.</figcaption>
+  </figure>
+  
+  <figure>
+    <img src="../images/mac109_ff34_vi_pdf.png" type="image/png">
+    <figcaption>AVIM works in every part of the browser, including in the find bar and PDF viewer.</figcaption>
+  </figure>
+  
+  <figure>
+    <video preload="auto" style="width: 616px; margin-left: auto; margin-right: auto;">
+      <source src="../images/mac109_ff34_vi_ace.webm" type="video/webm">
+    </video>
+    <figcaption>Only AVIM supports the “multiline cursor” feature in the Ace editor, so you can enter lots of repetitive text in an instant.</figcaption>
+  </figure>
+  
+  <div class="carousel-footer">
+    <button value="-1">Previous</button>
+    <span class="status"></span>
+    <button value="+1">Next</button>
+  </div>
+</div>
 
 <p><acronym>AVIM</acronym> – the Advanced Vietnamese Input Method – is a free extension for <a href="http://www.mozilla.org/en-US/firefox/">Firefox</a> and <a href="https://github.com/1ec5/avim/wiki/System-requirements">other Mozilla-based applications</a>. It’s a fast input method editor that lets you type in Vietnamese so naturally you won’t even notice it.</p>
 
 <p>Based on <a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM">the script by <span lang="vi" xml:lang="vi">Hiếu Đặng</span></a>, this extension has been refined with many <a href="https://github.com/1ec5/avim/wiki/Features">convenient and innovative features</a> that <a href="compare.html" title="Feature Comparison">set it apart from the competition</a>:</p>
 
 <ul>
-<li>Modeless – fix a tone mark without retyping the whole word</li>
+<li>Fix a tone mark without retyping the whole word</li>
 <li>Ignores words that don’t look like Vietnamese</li>
 <li>Handy keyboard shortcuts and fine-grained preferences</li>
 <li>Avoids collisions with input method editors embedded in websites</li>

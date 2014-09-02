@@ -10,6 +10,11 @@
     <link rel="shortcut icon" type="image/png" href="../images/favicon.png">
     <link rel="alternate" lang="en-US" href="../en/">
     <link rel="alternate" lang="vi" href="../">
+    
+    <script src="../javascripts/main.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      addEventListener("load", buildCarousel, false);
+    </script>
 
     <title>AVIM para Firefox</title>
   </head>
@@ -45,14 +50,39 @@
   </ul>
 </nav>
 
-<h1>La vietnamita al alcance de su mano</h1>
+<h1>¡Accentos en todas partes!</h1>
+
+<div class="carousel">
+  <figure class="selected">
+    <img src="../images/mac109_ff34_vi_webapps.png" type="image/png">
+    <figcaption><strong>Nuevo en la versión beta:</strong> Sólo AVIM permite escribir en vietnamita sin esfuerzo en todas las aplicaciones web populares, incluyendo Google&nbsp;Docs, Office&nbsp;Online, iCloud, Zoho&nbsp;Docs, y SVG-edit.</figcaption>
+  </figure>
+  
+  <figure>
+    <img src="../images/mac109_ff34_vi_pdf.png" type="image/png">
+    <figcaption>AVIM funciona en todas partes del navegador, incluyendo en la barra de buscar y el visualizador de PDF.</figcaption>
+  </figure>
+  
+  <figure>
+    <video preload="auto" style="width: 616px; margin-left: auto; margin-right: auto;">
+      <source src="../images/mac109_ff34_vi_ace.webm" type="video/webm">
+    </video>
+    <figcaption>Sólo AVIM apoya el “cursor multilineal” en el editor Ace, para que puedes entrar muchos textos repetitivos muy rápidamente.</figcaption>
+  </figure>
+  
+  <div class="carousel-footer">
+    <button value="-1">Anterior</button>
+    <span class="status"></span>
+    <button value="+1">Siguiente</button>
+  </div>
+</div>
 
 <p><acronym title="Advanced Vietnamese Input Method">AVIM</acronym>&nbsp;– el Método de Entrada Vietnamita Avanzada&nbsp;– es una extensión gratis para <a href="http://www.mozilla.org/es/firefox/">Firefox</a> y <a href="https://github.com/1ec5/avim/wiki/Requisitos-del-sistema">otras aplicaciones de la familia Mozilla</a>. Es un editor de método de entrada para que tecles en vietnamita tan naturalmente que la extensión se te escapará.</p>
 
 <p>Basada en <a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM">el script por <span lang="vi" xml:lang="vi">Hiếu Đặng</span></a>, se ha perfeccionado esta extensión con muchos <a href="https://github.com/1ec5/avim/wiki/Características">innovaciones convenientes</a> que <a href="../compare.html" hreflang="vi" title="Comparación de Características">la distingue de la competencia</a>:</p>
 
 <ul>
-<li>Sin modos – puedes adjustar una marca tonal sin reteclar toda la palabra</li>
+<li>Puedes adjustar una marca tonal sin reteclar toda la palabra</li>
 <li>Ignora las palabras que no parecen como vietnamita</li>
 <li>Los atajos de teclado y las preferencias detalladas</li>
 <li>Evita las colisiones con otros editores de método de entrada de los sitios Web</li>
