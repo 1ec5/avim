@@ -1463,7 +1463,7 @@ function AVIM()	{
 	 * @param scriptName	{string}	The base file name of the content script
 	 * 									with the .js extension.
 	 */
-	function handleWithContentScript(elt, scriptName) {
+	function handleWithContentScript(elt, evt, scriptName) {
 		let sandbox = new Sandbox(elt.ownerDocument.defaultView);
 		sandbox.createObjectAlias("_avim_evtInfo",
 								  "[" + keyEventString(evt) + "]");
@@ -1501,7 +1501,7 @@ function AVIM()	{
 		if (findIgnore(evt.target)) return false;
 		
 //		dump("---AceProxy---\n");												// debug
-		handleWithContentScript(elt, "ace");
+		handleWithContentScript(elt, evt, "ace");
 		return true;
 	};
 	
@@ -1520,7 +1520,7 @@ function AVIM()	{
 		if (!frameContents.length) return false;
 		
 //		dump("AVIM.handleYmacs\n");												// debug
-		handleWithContentScript(elt, "ymacs");
+		handleWithContentScript(elt, evt, "ymacs");
 		return true;
 	};
 	
