@@ -1,7 +1,0 @@
- - Make AVIM compatible with editors that do custom key event handling, like
-   textile-editor [1].
- - Automatically convert q<[aeioy]> -> qu, g<e> -> gh, ng<[ei]> -> ngh, etc.
- - Get the AVIM core running in Camino [2], Chrome, and Safari.
-
-[1] https://github.com/guillaumebort/textile-editor
-[2] https://bugzilla.mozilla.org/show_bug.cgi?id=244890
