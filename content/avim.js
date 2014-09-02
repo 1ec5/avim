@@ -180,7 +180,21 @@ function AVIM()	{
 		 * @see http://dxr.mozilla.org/mozilla-central/source/addon-sdk/source/lib/sdk/content/sandbox.js (importScripts())
 		 */
 		this.injectScript = function (uri) {
-			subscriptLoader.loadSubScript(uri, sandbox, "UTF-8");
+			if ("loadSubScriptWithOptions" in subscriptLoader) {
+				subscriptLoader.loadSubScriptWithOptions(uri, {
+					charset: "UTF-8",
+					target: sandbox,
+// $if{Debug}
+					ignoreCache: true,
+// $endif{}
+				});
+			}
+			else subscriptLoader.loadSubScript(uri, sandbox, "UTF-8");
+		};
+		
+		this.nuke = function () {
+			Cu.nukeSandbox(sandbox);
+			sandbox = null;
 		};
 	}
 	
@@ -1462,6 +1476,8 @@ function AVIM()	{
 	 * @param elt			{object}	A DOM element.
 	 * @param scriptName	{string}	The base file name of the content script
 	 * 									with the .js extension.
+	 * @returns {boolean} True if the content script changed the text; false
+	 * 					  if the text remained the same.
 	 */
 	function handleWithContentScript(elt, evt, scriptName) {
 		let sandbox = new Sandbox(elt.ownerDocument.defaultView);
@@ -1474,12 +1490,14 @@ function AVIM()	{
 		sandbox.injectScript("chrome://avim/content/editors/" + scriptName +
 							 ".js");
 		
-		if (sandbox.evalBoolean("_avim_textChanged")) {
+		let changed = sandbox.evalBoolean("_avim_textChanged");
+		sandbox.nuke();
+		if (changed) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
-			updateContainer(elt, elt);
 		}
+		return changed;
 	}
 	
 	/**
@@ -1501,7 +1519,7 @@ function AVIM()	{
 		if (findIgnore(evt.target)) return false;
 		
 //		dump("---AceProxy---\n");												// debug
-		handleWithContentScript(elt, evt, "ace");
+		if (handleWithContentScript(elt, evt, "ace")) updateContainer(elt, elt);
 		return true;
 	};
 	
@@ -1520,7 +1538,7 @@ function AVIM()	{
 		if (!frameContents.length) return false;
 		
 //		dump("AVIM.handleYmacs\n");												// debug
-		handleWithContentScript(elt, evt, "ymacs");
+		if (handleWithContentScript(elt, evt, "ymacs")) updateContainer(elt, elt);
 		return true;
 	};
 	
@@ -1552,6 +1570,7 @@ function AVIM()	{
 			sandbox.importFunction(safeApplyKey, "_avim_applyKey");
 			
 			sandbox.injectScript("chrome://avim/content/editors/slight.js");
+			sandbox.nuke();
 		}
 		catch (exc) {
 // $if{Debug}
@@ -1752,7 +1771,7 @@ function AVIM()	{
 		
 		proxy.commit();
 		proxy = null;
-		sandbox = null;
+		sandbox.nuke();
 		
 		if (result && result.changed) {
 			evt.handled = true;
@@ -2013,8 +2032,7 @@ function AVIM()	{
 		sandbox.createObjectAlias("disabledScripts",
 								  quoteJS(disabledScriptNames.join("|")));
 		sandbox.injectScript("chrome://avim/content/disabler.js");
-		
-		sandbox = null;
+		sandbox.nuke();
 	};
 	
 	this.numCtrlPresses = 0;
