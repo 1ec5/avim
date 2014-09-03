@@ -97,7 +97,7 @@ function AVIM()	{
 	}
 	
 	const nsTransferable = CC("@mozilla.org/widget/transferable;1",
-								  "nsITransferable");
+							  "nsITransferable");
 	
 	/**
 	 * A wrapper around nsITransferable that sets the source in order to respect
@@ -113,6 +113,18 @@ function AVIM()	{
 			xfer.init(win);
 		}
 		return xfer;
+	}
+	
+	const nsSupportsString = CC("@mozilla.org/supports-string;1",
+								"nsISupportsString");
+	
+	/**
+	 * A wrapper around nsISupportsString.
+	 */
+	function SupportsString(value) {
+		var cStr = nsSupportsString();
+		cStr.data = value;
+		return cStr;
 	}
 	
 	const subscriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
@@ -219,22 +231,6 @@ function AVIM()	{
 	}
 	
 	/**
-	 * Proxy for a specialized editor to appear as an ordinary HTML text field
-	 * control to the rest of the AVIM codebase.
-	 */
-	function TextControlProxy() {
-		this.type = "text";
-	}
-	
-	/**
-	 * @see https://developer.mozilla.org/en/DOM/Input.setSelectionRange
-	 */
-	TextControlProxy.prototype.setSelectionRange = function(start, end) {
-		this.selectionStart = start;
-		this.selectionEnd = end;
-	};
-	
-	/**
 	 * Returns the current position of the cursor in the given SciMoz plugin
 	 * object.
 	 *
@@ -269,7 +265,7 @@ function AVIM()	{
 		let linePos = scintilla.positionFromLine(lineNum);
 		return scintilla.charPosAtPosition(caretPos) -
 			scintilla.charPosAtPosition(linePos);
-	};
+	}
 	
 	/**
 	 * Retrieves the current line from the SciMoz plugin.
@@ -294,7 +290,7 @@ function AVIM()	{
 		let startPos = scintilla.positionFromLine(lineNum);
 		let endPos = scintilla.getLineEndPosition(lineNum);
 		return scintilla.getTextRange(startPos, endPos);
-	};
+	}
 	
 	/**
 	 * Proxy for a SciMoz plugin object posing as an ordinary HTML <input>
@@ -416,8 +412,7 @@ function AVIM()	{
 			
 			return true;
 		};
-	};
-	SciMozProxy.prototype = new TextControlProxy();
+	}
 	
 	/*
 	 * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
@@ -661,9 +656,7 @@ function AVIM()	{
 			let xfer = Transferable(frameDoc.defaultView);
 			// TODO: Use the text/html flavor to retain formatting.
 			xfer.addDataFlavor("text/unicode");
-			var cStr = Cc["@mozilla.org/supports-string;1"]
-				.createInstance(Ci.nsISupportsString);
-			cStr.data = this.value;
+			var cStr = SupportsString(this.value);
 			xfer.setTransferData("text/unicode", cStr, this.value.length * 2);
 			
 			// Paste the updated string into the editor.
@@ -683,8 +676,7 @@ function AVIM()	{
 			
 			return true;
 		};
-	};
-	KixProxy.prototype = new TextControlProxy();
+	}
 	
 	/**
 	 * Returns the nsIEditor (or subclass) instance associated with the given
@@ -1679,9 +1671,7 @@ function AVIM()	{
 		
 		// Custom string preferences
 		if (!changedPref || changedPref == "ignoredFieldIds") {
-			let ids = Cc["@mozilla.org/supports-string;1"]
-				.createInstance(Ci.nsISupportsString);
-			ids.data = AVIMConfig.exclude.join(" ").toLowerCase();
+			let ids = SupportsString(AVIMConfig.exclude.join(" ").toLowerCase());
 			prefs.setComplexValue("ignoredFieldIds", Ci.nsISupportsString, ids);
 		}
 	};
