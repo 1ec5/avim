@@ -845,6 +845,11 @@ AVIMTransformerService.prototype = {
 		throw Components.results.NS_ERROR_NO_INTERFACE;
 	},
 	
+	/**
+	 * Applies the information in the context object to a prefix string. The
+	 * context should include relevant preferences from AVIMConfig, as well as
+	 * KeyEvent.charCode, KeyEvent.which, and KeyEvent.shiftKey.
+	 */
 	applyKey: function (prefix, context) {
 		let result = {};
 		if (!prefix) return result;
@@ -859,6 +864,7 @@ AVIMTransformerService.prototype = {
 		}
 		catch(exc) {
 // $if{Debug}
+			// Log an error to the Browser Console.
 			Cu.reportError(exc);
 // $endif{}
 		}
