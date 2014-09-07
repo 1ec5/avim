@@ -22,6 +22,36 @@ okApplyKey(prefs, "bo", "^", "bô");
 okApplyKey(prefs, "bô", ".", "bộ");
 okApplyKey(prefs, "gõ", "-", "go");
 
+okApplyKey(prefs, "Viet", "^", "Viêt");
+okApplyKey(prefs, "Viêt", ".", "Việt");
+
+okApplyKey(prefs, "truong", "+", "trương");
+okApplyKey(prefs, "trương", "`", "trường");
+
+okApplyKey(prefs, "to", "'", "tó");
+okApplyKey(prefs, "tó", "a", "tóa");
+okApplyKey(prefs, "tóa", "n", "toán");
+
+okApplyKey(prefs, "truơng", "`", "trường");
+//okApplyKey(prefs, "trưong", "`", "trường");	// #79
+
+okApplyKey(prefs, "ma", "'", "má");
+okApplyKey(prefs, "má", "`", "mà");
+okApplyKey(prefs, "mà", "?", "mả");
+okApplyKey(prefs, "mả", "~", "mã");
+okApplyKey(prefs, "mã", ".", "mạ");
+
+okApplyKey(prefs, "chở", "-", "chơ");
+okApplyKey(prefs, "chơ", "-", "cho");
+
+okApplyKey(prefs, "Đúng\\", ".", "Đúng.");
+
+okApplyKey(prefs, "Sai", ".", "Sại");
+okApplyKey(prefs, "Sại", ".", "Sai.");
+
+okApplyKey(prefs, "1d", "d", "1₫");
+okApplyKey(prefs, "1₫", "d", "1dd");
+
 okApplyKey(prefs, "dt", "d", "dtd");	// d44df2bae6c2
 okApplyKey(prefs, "zi", "`", "zi`");	// cdf616a8ce81
 okApplyKey(prefs, "qi", "'", "qi'");	// Mudim #16
