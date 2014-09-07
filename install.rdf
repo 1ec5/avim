@@ -137,6 +137,15 @@
 			</Description>
 		</em:targetApplication>
 		
+		<!-- BlueGriffon -->
+		<em:targetApplication>
+			<Description>
+				<em:id>bluegriffon@disruptive-innovations.com</em:id>
+				<em:minVersion>0.1</em:minVersion>
+				<em:maxVersion>1.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
 		<!-- Catch-all for Mozilla-based applications -->
 		<em:targetApplication>
 			<Description>
