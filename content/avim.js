@@ -148,12 +148,12 @@ function AVIM()	{
 		const jsVersion = "1.7";
 		const evalInBox = Cu.evalInSandbox;
 		
-		/**
-		 * Evaluates a statement in the given sandbox and returns a string.
-		 */
-		this.evalString = function (text) {
-			return evalInBox("(" + text + ")+''", sandbox, jsVersion);
-		};
+		///**
+		// * Evaluates a statement in the given sandbox and returns a string.
+		// */
+		//this.evalString = function (text) {
+		//	return evalInBox("(" + text + ")+''", sandbox, jsVersion);
+		//};
 		
 		/**
 		 * Evaluates a statement in the given sandbox and returns a Boolean.
@@ -162,13 +162,13 @@ function AVIM()	{
 			return evalInBox("!!(" + text + ")", sandbox, jsVersion);
 		};
 		
-		/**
-		 * Evaluates a statement in the given sandbox and returns an integer.
-		 */
-		this.evalInt = function (text) {
-			return parseInt(evalInBox("(" + text + ")+0", sandbox, jsVersion),
-							0);
-		};
+		///**
+		// * Evaluates a statement in the given sandbox and returns an integer.
+		// */
+		//this.evalInt = function (text) {
+		//	return parseInt(evalInBox("(" + text + ")+0", sandbox, jsVersion),
+		//					0);
+		//};
 		
 		///**
 		// * Evaluates a statement in the given sandbox and returns a floating
@@ -178,13 +178,13 @@ function AVIM()	{
 		//	return parseFloat(evalInBox("(" + text + ")+0", sandbox, jsVersion));
 		//};
 		
-		/**
-		 * Evaluates a statement in the given sandbox without returning
-		 * anything.
-		 */
-		this.evalFunctionCall = function (text) {
-			evalInBox(text, sandbox, jsVersion);
-		};
+		///**
+		// * Evaluates a statement in the given sandbox without returning
+		// * anything.
+		// */
+		//this.evalFunctionCall = function (text) {
+		//	evalInBox(text, sandbox, jsVersion);
+		//};
 		
 		/**
 		 * Assigns the evaluated result of a single JavaScript statement to the
