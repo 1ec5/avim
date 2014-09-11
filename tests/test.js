@@ -52,6 +52,8 @@ okApplyKey(prefs, "Sại", ".", "Sai.");
 okApplyKey(prefs, "1d", "d", "1₫");
 okApplyKey(prefs, "1₫", "d", "1dd");
 
+okApplyKey(prefs, "gya", ".", "gya.");
+
 okApplyKey(prefs, "dt", "d", "dtd");	// d44df2bae6c2
 okApplyKey(prefs, "zi", "`", "zi`");	// cdf616a8ce81
 okApplyKey(prefs, "qi", "'", "qi'");	// Mudim #16
@@ -68,6 +70,7 @@ okApplyKey(prefs, "bế", "^", "bé^");	// #13
 okApplyKey(prefs, "bố", "^", "bó^");	// #13
 //okApplyKey(prefs, "kilômet", "'", "kilômét");	// #14
 okApplyKey(prefs, "cúu", "+", "cứu");	// #70
+//okApplyKey(prefs, "coong", "^", "côông");	// #82
 
 okApplyKey(prefs, "tong", "+", "tơng");	// UniKey #32
 okApplyKey(prefs, "Đ", "D", "DD");	// UniKey #38
@@ -82,6 +85,8 @@ prefs = {
 okApplyKey(prefs, "Ng", "~", "Ng̃");
 okApplyKey(prefs, "ng", "~", "ng̃");	// ce59e67eadca
 //okApplyKey(prefs, "Ng̃", "u", "Ngũ");	// #12
+
+okApplyKey(prefs, "gya", ".", "gỵa");
 
 let prefs = {
 	method: 1 /* Telex */,
