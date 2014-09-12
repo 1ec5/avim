@@ -441,7 +441,7 @@ function AVIM()	{
 		let frameDoc = frame.ownerDocument;
 		
 		const overlaySelector = ".kix-selection-overlay,.sketchy-text-selection-overlay";
-		//const presItemType = "http://schema.org/CreativeWork/PresentationObject";
+		const presItemType = "http://schema.org/CreativeWork/PresentationObject";
 		const drawingItemType = "http://schema.org/CreativeWork/DrawingObject";
 		
 		/**
@@ -470,11 +470,14 @@ function AVIM()	{
 			return frameDoc.querySelector(tablePropsSel);
 		};
 		
+		let itemType = frame.ownerDocument.body.getAttribute("itemtype");
+		
 		/**
 		 * Returns whether a resizable (i.e., non-text) object is selected.
 		 */
 		this.isObjectSelected = function () {
-			return frameDoc.querySelector(altTextSel);
+			return itemType != drawingItemType && itemType != presItemType &&
+				frameDoc.querySelector(altTextSel);
 		};
 		
 		/**
@@ -607,9 +610,7 @@ function AVIM()	{
 		let wasInTable = this.isInTable();
 //		if (wasInTable) dump("KixProxy -- Caret in table.\n");					// debug
 		this.selectPrecedingWord(wasInTable);
-		if ((!wasInTable && this.isInTable()) ||
-			(frame.ownerDocument.body.getAttribute("itemtype") != drawingItemType &&
-			 this.isObjectSelected())) {
+		if ((!wasInTable && this.isInTable()) || this.isObjectSelected()) {
 			// The selection now lies in the table, so the caret was right after
 			// the table.
 			this.trimLeftSelection();
@@ -669,14 +670,17 @@ function AVIM()	{
 			// composition prevents the selection from flashing.
 			// In Kix 3491395419, "kix-clipboard-iframe" inserts a newline after
 			// the composition ends, breaking editing.
-			//let compose =
-			//	!frame.classList.contains("kix-clipboard-iframe") &&
-			//	frame.ownerDocument.body.getAttribute("itemtype") != presItemType;
-			//if (compose) winUtils.sendCompositionEvent("compositionstart", "", "");
+			let compose =
+				!frame.classList.contains("kix-clipboard-iframe") &&
+				frame.ownerDocument.body.getAttribute("itemtype") != presItemType;
+			if (compose) winUtils.sendCompositionEvent("compositionstart", "", "");
+			//Array.forEach(this.value, function (c) {
+			//	winUtils.sendKeyEvent("keypress", 0, c.charCodeAt(0), 0);
+			//});
 			setTimeout(function () {
 				winUtils.sendContentCommandEvent("pasteTransferable", xfer);
 			}, 0);
-			//if (compose) winUtils.sendCompositionEvent("compositionend", "", "");
+			if (compose) winUtils.sendCompositionEvent("compositionend", "", "");
 			
 			return true;
 		};
