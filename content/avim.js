@@ -1517,7 +1517,12 @@ function AVIM()	{
 			let proxy = new KixProxy(evt);
 			
 			result = proxy.value && applyKey(proxy.value, evt);
-			if (result && result.value) proxy.value = result.value;
+			if (result && result.value) {
+				proxy.value = result.value;
+				if (!result.changed) {
+					proxy.value += String.fromCharCode(evt.which);
+				}
+			}
 			
 			proxy.commit();
 			proxy = null;
@@ -1534,7 +1539,7 @@ function AVIM()	{
 			//board.emptyClipboard(board.kGlobalClipboard);
 		}
 		
-		if (result && result.changed) {
+		if (result) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
