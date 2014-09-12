@@ -635,6 +635,10 @@ function AVIM()	{
 			value = this.getSelectedText();
 		}
 		if (!value) throw "No text.";
+		if (!lastWordInString(value)) {
+			this.revertSelection();
+			throw "No word.";
+		}
 //		dump("KixProxy -- value: <" + value + ">\n");							// debug
 		
 		this.value = this.oldValue = value;
