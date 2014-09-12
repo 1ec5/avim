@@ -658,29 +658,24 @@ function AVIM()	{
 				return false;
 			}
 			
-			let xfer = Transferable(frameDoc.defaultView);
-			// TODO: Use the text/html flavor to retain formatting.
-			xfer.addDataFlavor("text/unicode");
-			var cStr = SupportsString(this.value);
-			xfer.setTransferData("text/unicode", cStr, this.value.length * 2);
-			
 			// Paste the updated string into the editor.
 			// In Kix 3790525131, which sends events to
 			// "docs-texteventtarget-iframe", wrapping the paste operation in a
 			// composition prevents the selection from flashing.
 			// In Kix 3491395419, "kix-clipboard-iframe" inserts a newline after
 			// the composition ends, breaking editing.
-			let compose =
-				!frame.classList.contains("kix-clipboard-iframe") &&
-				frame.ownerDocument.body.getAttribute("itemtype") != presItemType;
-			if (compose) winUtils.sendCompositionEvent("compositionstart", "", "");
-			//Array.forEach(this.value, function (c) {
-			//	winUtils.sendKeyEvent("keypress", 0, c.charCodeAt(0), 0);
-			//});
-			setTimeout(function () {
-				winUtils.sendContentCommandEvent("pasteTransferable", xfer);
-			}, 0);
-			if (compose) winUtils.sendCompositionEvent("compositionend", "", "");
+			// kix_2014.35-Tue_c handles pastes asynchronously, so insert one
+			// character at a time.
+			winUtils.sendCompositionEvent("compositionstart", "", "");
+			try {
+				for (let i = 0; i < this.value.length; i++) {
+					winUtils.sendKeyEvent("keypress", 0,
+										  this.value.charCodeAt(i), 0);
+				}
+			}
+			finally {
+				winUtils.sendCompositionEvent("compositionend", "", "");
+			}
 			
 			return true;
 		};
@@ -1521,12 +1516,7 @@ function AVIM()	{
 			let proxy = new KixProxy(evt);
 			
 			result = proxy.value && applyKey(proxy.value, evt);
-			if (result && result.value) {
-				proxy.value = result.value;
-				if (!result.changed) {
-					proxy.value += String.fromCharCode(evt.which);
-				}
-			}
+			if (result && result.value) proxy.value = result.value;
 			
 			proxy.commit();
 			proxy = null;
@@ -1543,7 +1533,7 @@ function AVIM()	{
 			//board.emptyClipboard(board.kGlobalClipboard);
 		}
 		
-		if (result) {
+		if (result && result.changed) {
 			evt.handled = true;
 			evt.stopPropagation();
 			evt.preventDefault();
