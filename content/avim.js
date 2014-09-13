@@ -1947,8 +1947,9 @@ function AVIM()	{
 		}
 		catch (exc) {
 // $if{Debug}
-			dump(">>> AVIM.onKeyPress -- error on line " + exc.lineNumber +
-				 ": " + exc + "\n" + exc.stack + "\n");
+			dump(">>> AVIM.onKeyPress -- error on line " +
+				 (exc && exc.lineNumber) + ": " + exc + "\n" +
+				 (exc && exc.stack) + "\n");
 // $endif{}
 			// Instead of returning here, try to handle it as a normal textbox.
 //			return false;
