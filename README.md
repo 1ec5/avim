@@ -27,7 +27,7 @@ python build.py
 
 Two installable archives, `avim.xpi` and `avim-VERSION.xpi`, should now reside in that directory.
 
-*Để gói lấy mã nguồn thành phần mở rộng, bạn có thể sử dụng script xây dựng, cần Python 2.5–2.7. Trong cửa sổ dòng lệnh, hãy duyệt tới thư mục `avim/` và chạy lệnh sau:*
+*Để gói lấy mã nguồn thành phần mở rộng, bạn có thể sử dụng script xây dựng, cần Python 2.7. Trong cửa sổ dòng lệnh, hãy duyệt tới thư mục `avim/` và chạy lệnh sau:*
 
 ```bash
 pip install -r requirements.txt

@@ -46,6 +46,7 @@ from xmlformatter import Formatter as XmlFormatter
 from config_build import *
 
 BLOB = None
+TAG = None
 
 class BuildConfig:
     """An enumeration of build configurations."""
@@ -167,11 +168,11 @@ def preprocess(src, debug=False, vals=None):
     return src
 
 def get_repo_url(file_path):
-    """Returns the URL of the file in ViewVC."""
+    """Returns the URL of the file at GitHub."""
     try:
         return REPO_URL % {
             "path": file_path,
-            "rev": BLOB or "master",
+            "rev": TAG or BLOB or "master",
         }
     except (ValueError, TypeError):
         return REPO_URL % {"path": file_path, "rev": ""}
@@ -419,13 +420,13 @@ def local_to_jar(src, package_name):
     return src
 
 def main():
-    global CONFIG, BLOB
+    global CONFIG, BLOB, TAG
     
-    blob = subprocess.Popen("git show --abbrev-commit",
-                            stdout=subprocess.PIPE,
-                            shell=True).communicate()[0]
-    blob = blob and re.match(r"^commit ([\w]+)$", blob, re.M)
+    blob = subprocess.check_output(["git", "show", "--oneline"])
+    blob = blob and re.match(r"^([\w]+)", blob, re.M)
     BLOB = blob and blob.group(1)
+    tags = BLOB and subprocess.check_output(["git", "tag", "--points-at", BLOB])
+    TAG = tags and tags.split()[-1]
     
     # Defaults
 ##    config_file = None
@@ -633,7 +634,7 @@ def main():
     sha.update(xpi.read())
     xpi.close()
     props = [("Configuration", CONFIG),
-             ("Version", "%s (commit %s)" % (version, BLOB)),
+             ("Version", "%s (commit %s, tag %s)" % (version, BLOB, TAG)),
              ("Date", today),
              ("Size compressed", "%i B (%.1f kB)" % (size, size_kb)),
              ("Size uncompressed", "%i B (%.1f kB)" % (r_size, r_size_kb)),
