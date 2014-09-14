@@ -425,7 +425,8 @@ def main():
     blob = subprocess.check_output(["git", "show", "--oneline"])
     blob = blob and re.match(r"^([\w]+)", blob, re.M)
     BLOB = blob and blob.group(1)
-    tags = BLOB and subprocess.check_output(["git", "tag", "--points-at", BLOB])
+    tags = BLOB and subprocess.check_output(["git", "describe", "--abbrev=0",
+                                             BLOB])
     TAG = tags and tags.split()[-1]
     
     # Defaults
