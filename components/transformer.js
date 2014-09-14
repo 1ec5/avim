@@ -851,16 +851,16 @@ AVIMTransformerService.prototype = {
 	 * KeyEvent.charCode, KeyEvent.which, and KeyEvent.shiftKey.
 	 */
 	applyKey: function (prefix, context) {
-		let result = {};
+		let result = {
+			oldValue: prefix,
+		};
 		if (!prefix) return result;
 		
 		let xform = new Transformation(prefix, context);
 		try {
 			xform.start();
-			result = {
-				value: xform.value,
-				changed: xform.changed,
-			};
+			result.value = xform.value;
+			result.changed = xform.changed;
 		}
 		catch(exc) {
 // $if{Debug}

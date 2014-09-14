@@ -1,8 +1,5 @@
 "use strict";
 
-let global = (typeof(window) != "undefined") ? window : content;
-dump(">>> AVIM -- global is now: " + global + "\n");						// debug
-
 /**
  * Default preferences. Be sure to update defaults/preferences/avim.js to
  * reflect any changes to the default preferences. Initially, this variable
@@ -830,7 +827,7 @@ function AVIM()	{
 		
 		let word = lastWordInString(node.substringData(0, sel.anchorOffset));
 		if (word) result = applyKey(word, evt);
-//		dump("AVIM.splice -- editor: " + editor + "; old word: " + word + "; new word: " + result.value + "\n");	// debug
+		//dump("AVIM.splice -- editor: " + editor + "; old word: " + word + "; new word: " + result.value + "\n");	// debug
 		
 		// Carry out the transaction.
 		if (editor.beginTransaction) editor.beginTransaction();
@@ -864,10 +861,10 @@ function AVIM()	{
 		//txn = stack = prev = childStack = child = null;
 		
 		return result;
-	};
+	}
 	
-	let isMac = global.navigator.platform == "MacPPC" ||
-		global.navigator.platform == "MacIntel";
+	let isMac = navigator.platform == "MacPPC" ||
+		navigator.platform == "MacIntel";
 	
 	this.prefsRegistered = false;
 	
@@ -1149,6 +1146,16 @@ function AVIM()	{
 	}
 	
 	/**
+	 * Prevents the current textbox from scrolling to the beginning.
+	 */
+	function scrollToCaret() {
+		if ("goDoCommand" in window) {
+			goDoCommand("cmd_charPrevious");
+			goDoCommand("cmd_charNext");
+		}
+	};
+	
+	/**
 	 * Handles key presses for WYSIWYG HTML documents (editable through
 	 * Mozilla's Midas component).
 	 */
@@ -1163,15 +1170,9 @@ function AVIM()	{
 			evt.stopPropagation();
 			evt.preventDefault();
 			updateContainer(null, elt.ownerDocument.documentElement);
-			// A bit of a hack to prevent textboxes from scrolling to the
-			// beginning.
-			if ("goDoCommand" in global) {
-				goDoCommand("cmd_charPrevious");
-				goDoCommand("cmd_charNext");
-			}
-			return false;
+			scrollToCaret();
 		}
-		return true;
+		return !result.changed;
 	};
 	
 	/**
@@ -1224,15 +1225,9 @@ function AVIM()	{
 		if (result.changed) {
 			evt.preventDefault();
 			updateContainer(elt, elt);
-			// A bit of a hack to prevent textboxes from scrolling to the
-			// beginning.
-			if ("goDoCommand" in global) {
-				goDoCommand("cmd_charPrevious");
-				goDoCommand("cmd_charNext");
-			}
-			return false;
+			scrollToCaret();
 		}
-		return true;
+		return !result.changed;
 	};
 	
 	/**
@@ -1819,7 +1814,7 @@ function AVIM()	{
 		// all operations on it.
 		let winWrapper = new XPCNativeWrapper(doc.defaultView);
 		let win = winWrapper.wrappedJSObject;
-		if (win === undefined || win === null || win === global) return;
+		if (win === undefined || win === null || win === window) return;
 		
 		// Create a sandbox to execute the code in.
 //		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
@@ -1881,7 +1876,7 @@ function AVIM()	{
 			return false;
 		}
 		let doc = e.target.ownerDocument;
-		if (doc.defaultView == global) doc = e.originalTarget.ownerDocument;
+		if (doc.defaultView == window) doc = e.originalTarget.ownerDocument;
 		this.disableOthers(doc);
 		
 		return false;
@@ -1906,10 +1901,10 @@ function AVIM()	{
 		let target = e.target;
 		let origTarget = e.originalTarget;
 		let doc = target.ownerDocument;
-		if (doc.defaultView == global) doc = origTarget.ownerDocument;
+		if (doc.defaultView == window) doc = origTarget.ownerDocument;
 		
 		// SciMoz plugin
-		let koManager = global.ko && ko.views && ko.views.manager;
+		let koManager = window.ko && ko.views && ko.views.manager;
 		let koView = koManager && koManager.currentView;
 		let scintilla = koView && koView.scintilla;
 		if (scintilla && scintilla.inputField &&
@@ -1993,8 +1988,22 @@ function AVIM()	{
 		return false;
 	};
 	
+	/**
+	 * First responder for applyKey messages from frame scripts.
+	 */
+	this.onApplyKey = function (msg) {
+		//dump(">>> AVIM avim.js onApplyKey -- data: " + msg.data + "\n");		// debug
+		let evt = msg.data.evt;
+		if (evt.ctrlKey || evt.metaKey || evt.altKey || checkCode(evt.which)) {
+			return false;
+		}
+		
+		let word = lastWordInString(msg.data.prefix);
+		return word && applyKey(word, evt);
+	};
+	
 	// IME and DiMENSiON extension
-	if (global && "getIMEStatus" in global) {
+	if ("getIMEStatus" in window) {
 		let getStatus = getIMEStatus;
 		getIMEStatus = function() {
 			try {
@@ -2048,31 +2057,38 @@ function AVIM()	{
 };
 
 (function () {
-	if (typeof(global) == "undefined" || "avim" in global || global.frameElement) {
-		return;
+
+if ("avim" in window || window.frameElement) return;
+
+let avim = new AVIM();
+if (!avim) return;
+addEventListener("load", function load(evt) {
+	removeEventListener("load", load, false);
+	if ("avim" in evt.target.defaultView) return;
+	
+	evt.target.defaultView.avim = avim;
+	avim.registerPrefs();
+	avim.updateUI();
+	avim.registerSlights();
+	avim.doFirstRun();
+	
+	addEventListener("keydown", function (evt) {
+		avim.onKeyDown(evt);
+	}, true);
+	addEventListener("keypress", function (evt) {
+		avim.onKeyPress(evt);
+	}, true);
+	
+	if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
+		messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
+		messageManager.addMessageListener("AVIM:applyKey", avim.onApplyKey);
 	}
 	
-	let avim = new AVIM();
-	if (!avim) return;
-	addEventListener("load", function load(evt) {
-		removeEventListener("load", load, false);
-		if ("avim" in evt.target.defaultView) return;
-		
-		evt.target.defaultView.avim = avim;
-		avim.registerPrefs();
-		avim.updateUI();
-		avim.registerSlights();
-		avim.doFirstRun();
-		
-		addEventListener("keydown", function (evt) {
-			avim.onKeyDown(evt);
-		}, true);
-		addEventListener("keypress", function (evt) {
-			avim.onKeyPress(evt);
-		}, true);
-		addEventListener("unload", function unload(evt) {
-			removeEventListener("unload", unload, false);
-			avim.unregisterPrefs();
-		}, false);
+	addEventListener("unload", function unload(evt) {
+		removeEventListener("unload", unload, false);
+		messageManager.removeMessageListener("AVIM:applyKey", avim.onApplyKey);
+		avim.unregisterPrefs();
 	}, false);
+}, false);
+
 })();
