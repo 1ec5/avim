@@ -422,19 +422,26 @@ def local_to_jar(src, package_name):
 def main():
     global CONFIG, BLOB, TAG
     
-    blob = subprocess.check_output(["git", "show", "--oneline"])
-    blob = blob and re.match(r"^([\w]+)", blob, re.M)
-    BLOB = blob and blob.group(1)
-    tags = BLOB and subprocess.check_output(["git", "describe", "--abbrev=0",
-                                             BLOB])
-    TAG = tags and tags.split()[-1]
-    
     # Defaults
 ##    config_file = None
-    package_name = PACKAGE_NAME
     revision = REVISION
     version = "%i.%s" % (AVIM_VERSION, revision) if AVIM_VERSION else revision
     today = (DATE or date.today()).strftime("%A, %B %e, %Y")
+    
+    commit = subprocess.check_output(["git", "show", "--pretty=format:%h_%at"])
+    m = commit and re.match(r"^([\w]+)_([\d]+)", commit)
+    if m:
+        BLOB = m.group(1)
+        today = date.fromtimestamp(float(m.group(2))).strftime("%A, %B %e, %Y")
+    tags = BLOB and subprocess.check_output(["git", "describe", BLOB])
+    tags = tags and tags.strip().split("-")
+    if tags:
+        version = tags[0]
+        if len(tags) > 1:
+            version += "+"
+        TAG = tags[0]
+    
+    package_name = PACKAGE_NAME
     year = date.today().year
     
     xpi_paths = []
