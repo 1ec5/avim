@@ -18,7 +18,7 @@ Building
 
 [![Build Status](https://travis-ci.org/1ec5/avim.png?branch=master)](https://travis-ci.org/1ec5/avim)
 
-To package the code as an extension yourself, you can use the included build script, which requires Python 2.5–2.7. In a command line window, navigate to the `avim/` directory and execute the following commands:
+To package the code as an extension yourself, you can use the included build script, which requires Python 2.7. In a command line window, navigate to the `avim/` directory and execute the following commands:
 
 ```bash
 pip install -r requirements.txt
