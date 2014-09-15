@@ -512,6 +512,14 @@ Full-Width Styles
   text-align: center;
 }
 
+.checklist li::before,
+.checklist dd::before {
+  content: url(../images/check.svg);
+  vertical-align: bottom;
+  font-size: 50%;
+  margin-right: 0.6em;
+}
+
 .keystrokes {
   white-space: nowrap;
 }
