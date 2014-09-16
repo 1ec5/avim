@@ -224,6 +224,12 @@ function AVIM()	{
 			else subscriptLoader.loadSubScript(uri, sandbox, "UTF-8");
 		};
 		
+		/**
+		 * Frees the internal sandbox to avoid memory leaks.
+		 * 
+		 * Once this method is called, all the other methods will fail, so the
+		 * overall sandbox object should be discarded.
+		 */
 		this.nuke = function () {
 			if ("nukeSandbox" in Cu) Cu.nukeSandbox(sandbox);
 			sandbox = null;
