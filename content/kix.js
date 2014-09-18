@@ -297,14 +297,16 @@ function KixProxy(evt, helpers) {
 
 AVIM.prototype._handleKix = function (evt, helpers) {
 	let elt = evt.originalTarget;
+	if ("_avim_isBeingHandled" in elt || !document.querySelector) return false;
 	let frame = elt.ownerDocument.defaultView.frameElement;
 	if (!frame || !("classList" in frame) ||
 		!(frame.classList.contains("docs-texteventtarget-iframe") ||
-		  frame.classList.contains("kix-clipboard-iframe")) ||
-		!document.querySelector) {
+		  frame.classList.contains("kix-clipboard-iframe"))) {
 		return false;
 	}
 	
+	// Prevent reentrancy due to keypress events being sent by commit(). (#85)
+	elt._avim_isBeingHandled = true;
 //	dump("AVIM.handleKix\n");													// debug
 	
 	// Get the existing clipboard data in as many formats as the application
@@ -352,6 +354,8 @@ AVIM.prototype._handleKix = function (evt, helpers) {
 		proxy = null;
 	}
 	finally {
+		delete elt._avim_isBeingHandled;
+		
 		// Revert the clipboard to the preexisting contents.
 		board.setData(xfer, null, board.kGlobalClipboard);
 		
