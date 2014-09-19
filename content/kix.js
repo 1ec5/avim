@@ -322,9 +322,10 @@ AVIM.prototype._handleKix = function (evt, helpers) {
 		"text/unicode",				// kUnicodeMime
 		"text/x-moz-text-internal",	// kMozTextInternal
 		"text/html",				// kHTMLMime
-		//"AOLMAIL",					// kAOLMailMime
+		"AOLMAIL",					// kAOLMailMime
 		"image/png",				// kPNGImageMime
-		"image/jpg",				// kJPEGImageMime
+		"image/jpeg",				// kJPEGImageMime
+		"image/jpg",				// kJPGImageMime
 		"image/gif",				// kGIFImageMime
 		"application/x-moz-file",	// kFileMime
 		// Registering "text/x-moz-url" and its variants cause the
@@ -335,6 +336,10 @@ AVIM.prototype._handleKix = function (evt, helpers) {
 		//"text/x-moz-url-priv",		// kURLPrivateMime
 		"application/x-moz-nativeimage",// kNativeImageMime
 		"application/x-moz-nativehtml",	// kNativeHTMLMime
+		//"application/x-moz-file-promise-url",	// kFilePromiseURLMime
+		//"application/x-moz-file-promise-dest-filename",	// kFilePromiseDestFilename
+		//"application/x-moz-file-promise",	// kFilePromiseMime
+		//"application/x-moz-file-promise-dir",	// kFilePromiseDirectoryMime
 		
 		// /widget/src/xpwidgets/nsClipboardPrivacyHandler.cpp
 		"application/x-moz-private-browsing"	// NS_MOZ_DATA_FROM_PRIVATEBROWSING
