@@ -325,7 +325,6 @@ function AVIM()	{
 		this.updateUI();
 		
 		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
-			dump(">>> sending AVIM:prefschanged\n");							// debug
 			messageManager.broadcastAsyncMessage("AVIM:prefschanged", AVIMConfig);
 		}
 	};
