@@ -2,9 +2,9 @@
 
 (function () {
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const CC = Components.Constructor;
+const Cc = window.Components.classes;
+const Ci = window.Components.interfaces;
+const CC = window.Components.Constructor;
 
 const nsTransferable = CC("@mozilla.org/widget/transferable;1",
 							  "nsITransferable");
@@ -295,7 +295,7 @@ function KixProxy(evt, helpers) {
 	};
 }
 
-AVIM.prototype._handleKix = function (evt, helpers) {
+this.lazyHandlers.kix = function (evt, helpers) {
 	let elt = evt.originalTarget;
 	if ("_avim_isBeingHandled" in elt || !document.querySelector) return false;
 	let frame = elt.ownerDocument.defaultView.frameElement;

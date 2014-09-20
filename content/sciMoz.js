@@ -187,7 +187,7 @@ function SciMozProxy(elt, helpers, selId, lineNum) {
 	};
 }
 
-AVIM.prototype._handleSciMoz = function (evt, helpers) {
+this.lazyHandlers.sciMoz = function (evt, helpers) {
 	let elt = ko.views.manager.currentView.scimoz || evt.originalTarget;
 //	dump("AVIM.handleSciMoz -- target: " + elt + "; type: " + elt.type + "; code: " + evt.which + "\n");	// debug
 //	dump("xul:scintilla:\n" + [prop for (prop in elt)] + "\n");					// debug

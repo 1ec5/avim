@@ -4,6 +4,7 @@
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<script type="application/x-javascript;version=1.7" src="chrome://avim/content/avim.js" />
+	<script type="application/x-javascript;version=1.7" src="chrome://avim/content/frame.js" />
 	
 	<commandset>
 		<command id="avim-enabled-cmd" oncommand="avim.toggle(); event.stopPropagation();" />
