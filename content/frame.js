@@ -13,8 +13,16 @@ const ZohoHostname = "docs.zoho.com";
 const isChrome = typeof(window) === "object";
 
 // Root for AVIM preferences
-let AVIMConfig = (isChrome ? window.avim.getConfig() :
-				  {autoMethods: {}, disabledScripts: {}});
+let AVIMConfig;
+if (isChrome) AVIMConfig = avim.onFrameReadyForPrefs();
+else {
+	let results = sendSyncMessage("AVIM:readyforprefs");
+	if (results) AVIMConfig = results[0];
+	addMessageListener("AVIM:prefschanged", function (msg) {
+		//dump(">>> Received AVIM:prefschanged -- AVIMConfig: " + msg.data + "\n");		// debug
+		AVIMConfig = msg.data;
+	});
+}
 
 // Include characters from major scripts that separate words with a space.
 const wordChars =
@@ -767,6 +775,7 @@ addEventListener("keypress", function (evt) {
 	
 	let target = evt.target;
 	let origTarget = evt.originalTarget;
+	if (isChrome && origTarget.localName === "browser") return;
 	let doc = target.ownerDocument;
 	if (isChrome && doc.defaultView == window) {
 		doc = origTarget.ownerDocument;
@@ -834,13 +843,6 @@ addEventListener("keypress", function (evt) {
 	// Plain text editors
 	else handleKeyPress(evt);
 }, true);
-
-if (!isChrome) {
-	addMessageListener("AVIM:prefschanged", function (msg) {
-		//dump(">>> Received AVIM:prefschanged -- AVIMConfig: " + msg.data + "\n");		// debug
-		AVIMConfig = msg.data;
-	});
-}
 
 registerSlights();
 

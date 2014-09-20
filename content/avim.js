@@ -288,10 +288,6 @@ function AVIM()	{
 	const prefs = Cc["@mozilla.org/preferences-service;1"]
 		.getService(Ci.nsIPrefService).getBranch("extensions.avim.");
 	
-	this.getConfig = function () {
-		return AVIMConfig;
-	};
-	
 	/**
 	 * Registers an observer so that AVIM automatically reflects changes to its
 	 * preferences.
@@ -618,6 +614,13 @@ function AVIM()	{
 		return result;
 	};
 	
+	/**
+	 * Responds to messages from frame scripts that are ready for preferences.
+	 */
+	this.onFrameReadyForPrefs = function (msg) {
+		return AVIMConfig;
+	};
+	
 	// IME and DiMENSiON extension
 	if ("getIMEStatus" in window) {
 		let getStatus = getIMEStatus;
@@ -693,7 +696,8 @@ addEventListener("load", function load(evt) {
 	
 	if ("gMultiProcessBrowser" in win && win.gMultiProcessBrowser) {
 		messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
-		messageManager.broadcastAsyncMessage("AVIM:prefschanged", AVIMConfig);
+		messageManager.addMessageListener("AVIM:readyforprefs",
+										  avim.onFrameReadyForPrefs);
 		messageManager.addMessageListener("AVIM:keypress", avim.onFrameKeyPress);
 	}
 	
