@@ -1,10 +1,10 @@
 "use strict";
 
-(function () {
+(function (context) {
 
-const Cc = window.Components.classes;
-const Ci = window.Components.interfaces;
-const CC = window.Components.Constructor;
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const CC = Components.Constructor;
 
 const nsTransferable = CC("@mozilla.org/widget/transferable;1",
 							  "nsITransferable");
@@ -25,8 +25,6 @@ function Transferable(win) {
 	return xfer;
 }
 
-let isMac = navigator.platform == "MacPPC" || navigator.platform == "MacIntel";
-
 /*
  * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
  * 
@@ -35,7 +33,7 @@ let isMac = navigator.platform == "MacPPC" || navigator.platform == "MacIntel";
  * 								subscript, to wit: applyKey() and
  * 								lastWordInString().
  */
-function KixProxy(evt, helpers) {
+function KixProxy(evt) {
 	if (evt.keyCode == evt.DOM_VK_BACK_SPACE && !evt.shiftKey) {
 		throw "Backspace.";
 	}
@@ -43,7 +41,8 @@ function KixProxy(evt, helpers) {
 	let doc = evt.originalTarget.ownerDocument;
 	if (!doc || !doc.body) throw "No document body to copy from.";
 	
-	let winUtils = QueryInterface(Ci.nsIInterfaceRequestor)
+	let win = doc.defaultView;
+	let winUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
 		.getInterface(Ci.nsIDOMWindowUtils);
 	if (!winUtils || !("sendKeyEvent" in winUtils &&
 					   "sendCompositionEvent" in winUtils &&
@@ -52,7 +51,7 @@ function KixProxy(evt, helpers) {
 		throw "Can't issue native events."
 	}
 	
-	let frame = doc.defaultView.frameElement;
+	let frame = win.frameElement;
 	if (!frame) throw "Not in iframe.";
 	let frameDoc = frame.ownerDocument;
 	
@@ -67,6 +66,9 @@ function KixProxy(evt, helpers) {
 	this.hasSelection = function() {
 		return frameDoc.querySelectorAll(overlaySelector).length;
 	};
+	
+	const isMac = win.navigator.platform == "MacPPC" ||
+		win.navigator.platform == "MacIntel";
 	
 	const tablePropsSel = "[role='menuitem'][aria-disabled='false'] " +
 		"[aria-label^='Table properties']";
@@ -117,10 +119,10 @@ function KixProxy(evt, helpers) {
 	this.selectPrecedingWord = function(toLineStart) {
 //		dump("KixProxy.selectPrecedingWord()\n");								// debug
 		let key = (isMac || !toLineStart) ?
-			KeyEvent.DOM_VK_LEFT : KeyEvent.DOM_VK_HOME;
+			evt.DOM_VK_LEFT : evt.DOM_VK_HOME;
 		let modifiers = (isMac || toLineStart) ?
-			Event.SHIFT_MASK : (Event.CONTROL_MASK | Event.SHIFT_MASK);
-		if (isMac) modifiers |= toLineStart ? Event.META_MASK : Event.ALT_MASK;
+			evt.SHIFT_MASK : (evt.CONTROL_MASK | evt.SHIFT_MASK);
+		if (isMac) modifiers |= toLineStart ? evt.META_MASK : evt.ALT_MASK;
 		winUtils.sendKeyEvent("keypress", key, 0, modifiers);
 	};
 	
@@ -172,7 +174,7 @@ function KixProxy(evt, helpers) {
 	 */
 	this.revertSelection = function() {
 //		dump("KixProxy.revertSelection()\n");									// debug
-		winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0, 0);
+		winUtils.sendKeyEvent("keypress", evt.DOM_VK_RIGHT, 0, 0);
 	};
 	
 	/**
@@ -180,7 +182,7 @@ function KixProxy(evt, helpers) {
 	 * character from the selection.
 	 */
 	this.trimLeftSelection = function() {
-		winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_RIGHT, 0,
+		winUtils.sendKeyEvent("keypress", evt.DOM_VK_RIGHT, 0,
 							  Event.SHIFT_MASK);
 	};
 	
@@ -194,8 +196,7 @@ function KixProxy(evt, helpers) {
 	 */
 	this.getSelectedText = function(isInTable) {
 		// Clear the clipboard.
-		let xfer = Transferable(frameDoc.defaultView);
-		board.setData(xfer, null, board.kGlobalClipboard);
+		board.emptyClipboard(board.kGlobalClipboard);
 		
 		// Copy the word.
 		winUtils.sendContentCommandEvent("copy");
@@ -249,7 +250,7 @@ function KixProxy(evt, helpers) {
 		value = this.getSelectedText();
 	}
 	if (!value) throw "No text.";
-	if (!helpers.lastWordInString(value)) {
+	if (!context.lastWordInString(value)) {
 		this.revertSelection();
 		throw "No word.";
 	}
@@ -279,7 +280,7 @@ function KixProxy(evt, helpers) {
 		// composition ends, breaking editing.
 		// kix_2014.35-Tue_c handles pastes asynchronously, so insert one
 		// character at a time.
-		winUtils.sendKeyEvent("keypress", KeyEvent.DOM_VK_BACK_SPACE, 0, 0);
+		winUtils.sendKeyEvent("keypress", evt.DOM_VK_BACK_SPACE, 0, 0);
 		winUtils.sendCompositionEvent("compositionstart", "", "");
 		try {
 			for (let i = 0; i < this.value.length; i++) {
@@ -295,10 +296,13 @@ function KixProxy(evt, helpers) {
 	};
 }
 
-this.lazyHandlers.kix = function (evt, helpers) {
+context.lazyHandlers.kix = function (evt) {
 	let elt = evt.originalTarget;
-	if ("_avim_isBeingHandled" in elt || !document.querySelector) return false;
-	let frame = elt.ownerDocument.defaultView.frameElement;
+	let doc = elt.ownerDocument;
+	if ("_avim_isBeingHandled" in elt || !("querySelector" in doc)) {
+		return false;
+	}
+	let frame = doc.defaultView.frameElement;
 	if (!frame || !("classList" in frame) ||
 		!(frame.classList.contains("docs-texteventtarget-iframe") ||
 		  frame.classList.contains("kix-clipboard-iframe"))) {
@@ -315,7 +319,7 @@ this.lazyHandlers.kix = function (evt, helpers) {
 	// avoid dropping any clipboard data.
 	const board = Cc["@mozilla.org/widget/clipboard;1"]
 		.getService(Ci.nsIClipboard);
-	let xfer = Transferable(elt.ownerDocument.defaultView);
+	let xfer = Transferable(doc.defaultView);
 	let flavors = [
 		// /widget/public/nsITransferable.idl
 		"text/plain",				// kTextMime
@@ -350,9 +354,9 @@ this.lazyHandlers.kix = function (evt, helpers) {
 	let result = {};
 	try {
 		// Fake a native textbox.
-		let proxy = new KixProxy(evt, helpers);
+		let proxy = new KixProxy(evt);
 		
-		result = proxy.value && helpers.applyKey(proxy.value, evt);
+		result = proxy.value && context.applyKey(proxy.value, evt);
 		if (result && result.value) proxy.value = result.value;
 		
 		proxy.commit();
@@ -365,7 +369,7 @@ this.lazyHandlers.kix = function (evt, helpers) {
 		board.setData(xfer, null, board.kGlobalClipboard);
 		
 		// Clear the clipboard.
-		//let xfer = Transferable(elt.ownerDocument.defaultView);
+		//let xfer = Transferable(doc.defaultView);
 		//let board = Cc["@mozilla.org/widget/clipboard;1"]
 		//	.getService(Ci.nsIClipboard);
 		//board.setData(xfer, null, board.kGlobalClipboard);
@@ -380,4 +384,4 @@ this.lazyHandlers.kix = function (evt, helpers) {
 	return true;
 };
 	
-})();
+})(this);

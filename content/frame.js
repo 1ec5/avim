@@ -1,6 +1,6 @@
 "use strict";
 
-(function () {
+(function (msgMgr) {
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -87,13 +87,14 @@ const subscriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
  */
 function loadSubScript(uri, target) {
 	if ("loadSubScriptWithOptions" in subscriptLoader) {
-		subscriptLoader.loadSubScriptWithOptions(uri, {
+		let options = {
 			charset: "UTF-8",
-			target: target,
 // $if{Debug}
 			ignoreCache: true,
 // $endif{}
-		});
+		};
+		if (target) options.target = target;
+		subscriptLoader.loadSubScriptWithOptions(uri, options);
 	}
 	else subscriptLoader.loadSubScript(uri, target, "UTF-8");
 }
@@ -492,14 +493,12 @@ let lazyHandlers = {};
 function handleLazily(evt, methodName, scriptName) {
 	if (!(methodName in lazyHandlers)) {
 		loadSubScript("chrome://avim/content/" + scriptName + ".js", {
-			window: window,
+			applyKey: applyKey,
+			lastWordInString: lastWordInString,
 			lazyHandlers: lazyHandlers,
 		});
 	}
-	return lazyHandlers[methodName](evt, {
-		applyKey: applyKey,
-		lastWordInString: lastWordInString,
-	});
+	return lazyHandlers[methodName](evt);
 }
 
 /**
@@ -846,4 +845,4 @@ addEventListener("keypress", function (evt) {
 
 registerSlights();
 
-})();
+})(this);

@@ -1,6 +1,6 @@
 "use strict";
 
-(function() {
+(function (context) {
 
 /**
  * Returns the current position of the cursor in the given SciMoz plugin object.
@@ -76,7 +76,7 @@ function getLine(scintilla, selId, lineNum) {
  *								selection. Omit if the selection is
  *								non-rectangular.
  */
-function SciMozProxy(elt, helpers, selId, lineNum) {
+function SciMozProxy(elt, selId, lineNum) {
 	if ((selId || 0) >= elt.selections) return;
 	
 	this.elt = elt;
@@ -105,7 +105,7 @@ function SciMozProxy(elt, helpers, selId, lineNum) {
 //	dump("\tselectionStart: " + this.selectionStart + "\n");					// debug
 	if (this.selectionStart < 0) return;
 	this.oldLine = getLine(elt, selId, lineNum)
-	let word = helpers.lastWordInString(this.oldLine.substr(0, this.selectionStart));
+	let word = context.lastWordInString(this.oldLine.substr(0, this.selectionStart));
 	this.value = word;
 //	dump("\t<" + this.value + ">\n");											// debug
 	
@@ -187,7 +187,7 @@ function SciMozProxy(elt, helpers, selId, lineNum) {
 	};
 }
 
-this.lazyHandlers.sciMoz = function (evt, helpers) {
+context.lazyHandlers.sciMoz = function (evt) {
 	let elt = ko.views.manager.currentView.scimoz || evt.originalTarget;
 //	dump("AVIM.handleSciMoz -- target: " + elt + "; type: " + elt.type + "; code: " + evt.which + "\n");	// debug
 //	dump("xul:scintilla:\n" + [prop for (prop in elt)] + "\n");					// debug
@@ -216,8 +216,8 @@ this.lazyHandlers.sciMoz = function (evt, helpers) {
 		
 		let proxy;
 		for (let i = firstSel; i < firstSel + numSel; i++) {
-			if (selectionIsRectangle) proxy = new SciMozProxy(elt, helpers, 0, i);
-			else proxy = new SciMozProxy(elt, helpers, i);
+			if (selectionIsRectangle) proxy = new SciMozProxy(elt, 0, i);
+			else proxy = new SciMozProxy(elt, i);
 			if (!proxy) continue;
 			
 			let result = proxy.value && helpers.applyKey(proxy.value, evt);
@@ -248,4 +248,4 @@ this.lazyHandlers.sciMoz = function (evt, helpers) {
 	return true;
 };
 	
-})();
+})(this);
