@@ -67,9 +67,6 @@ function getLine(scintilla, selId, lineNum) {
  * Proxy for a SciMoz plugin object posing as an ordinary HTML <input> element.
  *
  * @param elt		{object}	The <xul:scintilla> tag.
- * @param helpers	{object}	An object containing functions required by this
- * 								subscript, to wit: applyKey() and
- * 								lastWordInString().
  * @param selId		{number}	The selection range number. By default, this
  * 								parameter is 0 (for the main selection).
  * @param lineNum	{number}	The line number of a line within a rectangular
@@ -188,15 +185,17 @@ function SciMozProxy(elt, selId, lineNum) {
 }
 
 context.lazyHandlers.sciMoz = function (evt) {
-	let elt = ko.views.manager.currentView.scimoz || evt.originalTarget;
+	let win = evt.originalTarget.ownerDocument.defaultView;
+	let elt = win.ko.views.manager.currentView.scimoz || evt.originalTarget;
 //	dump("AVIM.handleSciMoz -- target: " + elt + "; type: " + elt.type + "; code: " + evt.which + "\n");	// debug
 //	dump("xul:scintilla:\n" + [prop for (prop in elt)] + "\n");					// debug
 //	elt.setSelectionNStart(0, 8);												// debug
 //	dump(">>> scimoz.getSelectionNStart: " + elt.selections ? elt.getSelectionNStart(0) : "" + "\n");					// debug
 	
 	let anyChanged = false;
-	elt.beginUndoAction();
 	try {
+		elt.beginUndoAction();
+		
 		// Fake a native textbox and keypress event for each selection.
 		let firstSel = 0;
 		let numSel = elt.selections;
@@ -220,7 +219,7 @@ context.lazyHandlers.sciMoz = function (evt) {
 			else proxy = new SciMozProxy(elt, i);
 			if (!proxy) continue;
 			
-			let result = proxy.value && helpers.applyKey(proxy.value, evt);
+			let result = proxy.value && context.applyKey(proxy.value, evt);
 			
 			if (result) {
 				if (result.value) proxy.value = result.value;
@@ -232,6 +231,8 @@ context.lazyHandlers.sciMoz = function (evt) {
 	}
 	catch (exc) {
 // $if{Debug}
+		dump(">>> AVIM.handleSciMoz -- error on line " + (exc && exc.lineNumber) +
+			 ": " + exc + "\n" + (exc && exc.stack) + "\n");
 		throw exc;
 // $endif{}
 	}

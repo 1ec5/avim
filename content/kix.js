@@ -29,9 +29,6 @@ function Transferable(win) {
  * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
  * 
  * @param evt		{object}	The keyPress event.
- * @param helpers	{object}	An object containing functions required by this
- * 								subscript, to wit: applyKey() and
- * 								lastWordInString().
  */
 function KixProxy(evt) {
 	if (evt.keyCode == evt.DOM_VK_BACK_SPACE && !evt.shiftKey) {

@@ -767,7 +767,7 @@ addEventListener("keydown", function (evt) {
 }, true);
 
 addEventListener("keypress", function (evt) {
-	//dump("AVIM.onKeyPress -- code: " + String.fromCharCode(evt.which) + " #" + evt.which +
+	//dump("AVIM.onKeyPress -- isChrome: " + isChrome + "; code: " + String.fromCharCode(evt.which) + " #" + evt.which +
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
 	if (evt.ctrlKey || evt.metaKey || evt.altKey || checkCode(evt)) return;
@@ -786,7 +786,7 @@ addEventListener("keypress", function (evt) {
 	let scintilla = koView && koView.scintilla;
 	if (scintilla && scintilla.inputField &&
 		origTarget == scintilla.inputField.inputField) {
-		handleSciMoz(e);
+		handleSciMoz(evt);
 		return;
 	}
 	
