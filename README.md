@@ -2,7 +2,7 @@
 AVIM for Firefox
 ================
 
-AVIM is a extension for Firefox and similar applications that provides an input method editor for Vietnamese, based on Hiếu Đặng’s [webpage script](http://sourceforge.net/projects/rhos/) of the same name. Hiếu was the original developer of this extension; Minh Nguyễn has been the developer since 2007. (There is also an unaffiliated [Chrome extension](https://github.com/kimkha/avim-chrome) of the same name.)
+AVIM is an extension for Firefox and similar applications that provides an input method editor for Vietnamese, based on Hiếu Đặng’s [webpage script](http://sourceforge.net/projects/rhos/) of the same name. Hiếu was the original developer of this extension; Minh Nguyễn has been the developer since 2007. (There is also an unaffiliated [Chrome extension](https://github.com/kimkha/avim-chrome) of the same name.)
 
 *AVIM là một phần mở rộng cung cấp bộ gõ tiếng Việt trong Firefox và các chương trình tương tự, dựa trên [kịch bản cùng tên](http://sourceforge.net/projects/rhos/) của Đặng Trần Hiếu. Hiếu là người đầu tiên phát triển phần mở rộng này, còn Nguyễn Xuân Minh là người phát triển phần mở rộng kể từ năm 2007. (Một dự án không có liên quan sản xuất một [tiện ích mở rộng Chrome](https://github.com/kimkha/avim-chrome) cùng tên.)*
 
