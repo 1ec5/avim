@@ -51,8 +51,18 @@ okApplyKey(prefs, "Sại", ".", "Sai.");
 
 okApplyKey(prefs, "1d", "d", "1₫");
 okApplyKey(prefs, "1₫", "d", "1dd");
+//okApplyKey(prefs, "₫", "d", "dd");	// #92
+okApplyKey(prefs, "1₫", "-", "1d");
+//okApplyKey(prefs, "₫", "-", "d");	// #92
 
 okApplyKey(prefs, "gya", ".", "gya.");
+
+okApplyKey(prefs, "D", "D", "Đ");
+okApplyKey(prefs, "D", "d", "Đ");
+okApplyKey(prefs, "d", "D", "đ");
+okApplyKey(prefs, "Đ", "D", "DD");
+okApplyKey(prefs, "Đ", "d", "Dd");
+okApplyKey(prefs, "đ", "D", "dD");
 
 okApplyKey(prefs, "dt", "d", "dtd");	// d44df2bae6c2
 okApplyKey(prefs, "zi", "`", "zi`");	// cdf616a8ce81
