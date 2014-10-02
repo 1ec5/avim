@@ -51,9 +51,9 @@ okApplyKey(prefs, "Sại", ".", "Sai.");
 
 okApplyKey(prefs, "1d", "d", "1₫");
 okApplyKey(prefs, "1₫", "d", "1dd");
-//okApplyKey(prefs, "₫", "d", "dd");	// #92
+okApplyKey(prefs, "₫", "d", "dd");	// #92
 okApplyKey(prefs, "1₫", "-", "1d");
-//okApplyKey(prefs, "₫", "-", "d");	// #92
+okApplyKey(prefs, "₫", "-", "d");	// #92
 
 okApplyKey(prefs, "gya", ".", "gya.");
 

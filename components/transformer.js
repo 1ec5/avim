@@ -379,7 +379,7 @@ Transformation.prototype = {
 	convertCustomChars: function (word, key, pos) {
 		let uw = up(word), uk = up(key);
 		
-		if (/^[0-9]+.$/.test(word)) {
+		if (/^[0-9]+.$/.test(word) || word == "\u20ab") {	// ₫
 			let lastChar = word.substr(-1);
 			if (lastChar == "\u0111" /* đ */ && uk == this.method.D) {
 				// Convert [number]đ (case-sensitive) into the đồng sign.
