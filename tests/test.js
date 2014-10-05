@@ -87,6 +87,7 @@ okApplyKey(prefs, "Đ", "D", "DD");	// UniKey #38
 
 okApplyKey(prefs, "khuya", "'", "khuya'");
 okApplyKey(prefs, "queo", ".", "quẹo");
+//okApplyKey(prefs, "queue", ".", "queue.");	// #94
 
 prefs = {
 	method: 3 /* VIQR */,
