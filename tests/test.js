@@ -86,8 +86,9 @@ okApplyKey(prefs, "tong", "+", "tơng");	// UniKey #32
 okApplyKey(prefs, "Đ", "D", "DD");	// UniKey #38
 
 okApplyKey(prefs, "khuya", "'", "khuya'");
+okApplyKey(prefs, "khuyu", "?", "khuỷu");
 okApplyKey(prefs, "queo", ".", "quẹo");
-//okApplyKey(prefs, "queue", ".", "queue.");	// #94
+okApplyKey(prefs, "queue", ".", "queue.");	// #94
 
 prefs = {
 	method: 3 /* VIQR */,

@@ -244,7 +244,7 @@ Transformation.prototype = {
 		}
 		
 		// Non-Vietnamese diphthongs and triphthongs: invalid
-		let vowRe = /A[AE]|E[AEIY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|UU.|Y[AIOY]/;
+		let vowRe = /A[AE]|E[AEIY]|EU[AEIOUY]|I[IY]|^IO|[^G]IO|OOO|^OU|[^U]OU|UU.|Y[AIOY]/;
 		if (vowRe.test(uw2)) return true;
 		
 		// Remove initial consonants.
