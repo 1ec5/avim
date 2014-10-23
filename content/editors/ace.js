@@ -24,11 +24,11 @@ for (let i = 0; i < numRanges; i++) {
 //	dump("\tselection: " + cursor.row + ":" + cursor.column + "\n");			// debug
 //	dump("\t<" + word + ">");
 	
-	let [newWord, changed] = _avim_applyKey(word, {
+	let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 		keyCode: _avim_evtInfo[0],
 		which: _avim_evtInfo[1],
 		shiftKey: _avim_evtInfo[2],
-	});
+	}));
 	if (newWord && newWord != word) {
 		//dump(">>> ace.js -- replacing <" + word + "> with <" + newWord + ">\n");	// debug
 		// Work around <https://github.com/ajaxorg/ace/pull/1813>.

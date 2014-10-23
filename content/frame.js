@@ -535,12 +535,12 @@ function keyEventString(evt) {
 }
 
 /**
- * Returns the result of applyKey() as an array, due to security restrictions on
- * passing objects.
+ * Returns the result of applyKey() as a JSON representation of an array, due to
+ * security restrictions on passing objects.
  */
 function safeApplyKey(word, evtProxy) {
 	let result = applyKey(word, evtProxy);
-	return [result.value, result.changed];
+	return JSON.stringify([result.value, result.changed]);
 }
 
 /**

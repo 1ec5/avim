@@ -16,11 +16,11 @@ if (!word || !word.length) return;
 
 //dump(">>> zshow.js -- word: " + word + "; selectionStart: " + selectionStart + "\n");	// debug
 
-let [newWord, changed] = _avim_applyKey(word, {
+let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 	keyCode: _avim_evtInfo[0],
 	which: _avim_evtInfo[1],
 	shiftKey: _avim_evtInfo[2],
-});
+}));
 if (newWord && newWord != word) {
 	//dump(">>> zshow.js -- Replacing <" + word + "> with <" + newWord + ">\n");	// debug
 	

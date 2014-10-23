@@ -65,7 +65,7 @@ function keyDown(sender, evt) {
 			return;
 		}
 		
-		let [newWord, changed] = _avim_applyKey(word, evtProxy);
+		let [newWord, changed] = JSON.parse(_avim_applyKey(word, evtProxy));
 		if (changed || (newWord && newWord != word)) {
 			if (!changed) newWord += String.fromCharCode(evtProxy.charCode);
 			let numExtraChars = newWord.length - word.length;

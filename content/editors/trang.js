@@ -22,11 +22,11 @@ let wordStart = selectionStart - word.length;
 //dump("\tselection: " + selectionStart + " back to " + wordStart + "\n");	// debug
 //dump("\t<" + word + ">\n");
 
-let [newWord, changed] = _avim_applyKey(word, {
+let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 	keyCode: _avim_evtInfo[0],
 	which: _avim_evtInfo[1],
 	shiftKey: _avim_evtInfo[2],
-});
+}));
 if (newWord && newWord != word) {
 	//dump(">>> Replacing <" + word + "> with <" + newWord + ">\n");				// debug
 	

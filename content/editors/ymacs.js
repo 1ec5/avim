@@ -14,11 +14,11 @@ let oldLine = buffer.getLine(oldSelection.row);
 let word = _avim_lastWordInString(oldLine.substr(0, oldSelection.col));
 if (!word || !word.length) return;
 
-let [newWord, changed] = _avim_applyKey(word, {
+let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 	keyCode: _avim_evtInfo[0],
 	which: _avim_evtInfo[1],
 	shiftKey: _avim_evtInfo[2],
-});
+}));
 if (newWord && newWord != word) {
 	let linePos = buffer._rowColToPosition(oldSelection.row, 0);
 	let line = oldLine.substr(0, oldSelection.col - word.length) + newWord +
