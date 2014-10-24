@@ -424,9 +424,9 @@ def main():
     
     # Defaults
 ##    config_file = None
-    # The "r" is a kludge to force the Mozilla Add-ons update service to
+    # The "*" is a kludge to force the Mozilla Add-ons update service to
     # consider the version to be greater than 20,060,713 (AVIM's first version).
-    default_version = version = "r." + ".".join(str(part) for part in VERSION)
+    default_version = version = "*." + ".".join(str(part) for part in VERSION)
     today = (DATE or date.today()).strftime("%A, %B %e, %Y")
     
     commit = subprocess.check_output(["git", "show", "--pretty=format:%h_%at"])
