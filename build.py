@@ -438,6 +438,8 @@ def main():
     tags = tags and tags.strip().split("-")
     if tags:
         version = tags[0]
+        if version.startswith("v"):
+            version = "*." + version[1:]
         if len(tags) > 1:
             version += "+"
         TAG = tags[0]
