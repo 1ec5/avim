@@ -203,7 +203,6 @@ function Sandbox(principal) {
  */
 function getEditor(el) {
 	if (!el) return undefined;
-	if (el.editor) return el.editor;
 	try {
 		return el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
 	}
