@@ -506,7 +506,7 @@ def main():
         xpi_paths.append(arg)
     
     if not xpi_paths:
-        xpi_vars = {"package": package_name, "version": version}
+        xpi_vars = {"package": package_name, "version": version.replace("*.", "")}
         xpi_paths = [p % xpi_vars for p in XPI_FILES]
     
     # Directories
