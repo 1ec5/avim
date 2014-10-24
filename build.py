@@ -424,8 +424,9 @@ def main():
     
     # Defaults
 ##    config_file = None
-    revision = REVISION
-    version = "%i.%s" % (AVIM_VERSION, revision) if AVIM_VERSION else revision
+    # The "r" is a kludge to force the Mozilla Add-ons update service to
+    # consider the version to be greater than 20,060,713 (AVIM's first version).
+    default_version = version = "r." + ".".join(str(part) for part in VERSION)
     today = (DATE or date.today()).strftime("%A, %B %e, %Y")
     
     commit = subprocess.check_output(["git", "show", "--pretty=format:%h_%at"])
@@ -496,7 +497,7 @@ def main():
         if arg.startswith("-"):
             if arg not in ["-h", "--help"]:
                 print "Invalid option '%s'." % arg
-            print_help("%i.%s" % (AVIM_VERSION, revision))
+            print_help(default_version)
             return
         
         # Override output locations.
@@ -546,7 +547,7 @@ def main():
         if (f in VAR_FILES or path.splitext(f)[1][1:] in VAR_EXTS or
             path.basename(f) in VAR_NAMES):
             print "\t%s" % f
-            src = preprocess(src, vals={"Rev": revision, "Version": version,
+            src = preprocess(src, vals={"Version": version,
                                         "Date": today, "Year": year})
         # Add documentation for BabelZilla localizers.
         if f.endswith(".dtd") or f.endswith(".properties"):
@@ -599,7 +600,7 @@ def main():
         if (f in VAR_FILES or path.splitext(f)[1][1:] in VAR_EXTS or
             path.basename(f) in VAR_NAMES):
             print "\t%s" % f
-            src = preprocess(src, vals={"Rev": revision, "Version": version,
+            src = preprocess(src, vals={"Version": version,
                                         "Date": today, "Year": year})
         if path.basename(f) == "install.rdf":
             src = l10n_compat_install(src)

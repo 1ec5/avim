@@ -8,17 +8,13 @@ from build import BuildConfig
 # Type of build to produce.
 CONFIG = BuildConfig.RELEASE
 
-# Version number of the avim.js release used in this build. Included in the
-# extension's version string.
-AVIM_VERSION = 20080728
-
 # Format of URL to view a project file in the public-facing Git repository,
 # given the relative path of that file.
 REPO_URL = "https://github.com/1ec5/avim/blob/%(rev)s/%(path)s"
 
-# Incremented revision number, originally based on the latest Subversion
-# revision.
-REVISION = 526
+# Incremented version number.
+# See <https://developer.mozilla.org/en-US/docs/Toolkit_version_format>.
+VERSION = (5, 3, 0)
 
 # Build date.
 DATE = None
