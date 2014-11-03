@@ -16,7 +16,7 @@ Visit [AVIM’s homepage](http://avim.1ec5.org/en/) for the latest version or [F
 Building
 --------
 
-[![Build Status](https://travis-ci.org/1ec5/avim.png?branch=master)](https://travis-ci.org/1ec5/avim)
+[![Build Status](https://travis-ci.org/1ec5/avim.svg?branch=master)](https://travis-ci.org/1ec5/avim)
 
 To package the code as an extension yourself, you can use the included build script, which requires Python 2.7. In a command line window, navigate to the `avim/` directory and execute the following commands:
 
