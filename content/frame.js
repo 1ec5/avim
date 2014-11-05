@@ -427,13 +427,14 @@ function findIgnore(el) {
 }
 
 /**
- * Prevents the current textbox from scrolling to the beginning.
+ * Scrolls the input field to ensure that the caret is visible.
  */
-function scrollToCaret(win) {
-	const winUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
-		.getInterface(Ci.nsIDOMWindowUtils);
-	winUtils.sendKeyEvent("keypress", win.KeyEvent.DOM_VK_LEFT, 0, 0);
-	winUtils.sendKeyEvent("keypress", win.KeyEvent.DOM_VK_RIGHT, 0, 0);
+function scrollToCaret(outer) {
+	let editor = getEditor(outer);
+	let selCtrlr = editor && editor.selectionController;
+	if (!selCtrlr) return;
+	selCtrlr.scrollSelectionIntoView(selCtrlr.SELECTION_NORMAL,
+									 selCtrlr.SELECTION_FOCUS_REGION, 0);
 }
 
 /**
@@ -478,7 +479,7 @@ function handleKeyPress(evt) {
 	if (result.changed) {
 		evt.preventDefault();
 		updateContainer(elt, elt);
-		scrollToCaret(elt.ownerDocument.defaultView);
+		scrollToCaret(elt);
 	}
 	return !result.changed;
 }
