@@ -46,7 +46,7 @@ The test harness requires [SpiderMonkey](https://developer.mozilla.org/en-US/doc
 1. Go to the tests/ directory in your checkout of this project.
 1. Run `js24 -b -s test.js`.
 
-The tests/ directory also contains corpus.js, useful for testing AVIM against a wordlist, such as those maintained by the [hunspell-spellcheck-vi](https://code.google.com/p/hunspell-spellcheck-vi/source/browse/trunk/dictionaries/) and [viet-corpus](https://github.com/lewtds/viet-corpus) projects.
+The tests/ directory also contains corpus.js, useful for testing AVIM against a wordlist, such as those maintained by the [hunspell-vi](https://github.com/1ec5/hunspell-vi) project.
 
 Translations
 ------------
