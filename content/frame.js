@@ -263,7 +263,8 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	 */
 	this.doTransaction = this.redoTransaction = function() {
 		this.orig = node.substringData(pos, len);
-		node.replaceData(pos, len, repl);
+		node.deleteData(pos, len);
+		node.insertData(pos, repl);
 		this.shiftSelection(repl.length - len);
 	};
 	
@@ -271,7 +272,9 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	 * Replaces the previously inserted substitution with the original string.
 	 */
 	this.undoTransaction = function() {
-		node.replaceData(pos, repl.length, this.orig);
+		//node.replaceData(pos, repl.length, this.orig);
+		node.deleteData(pos, repl.length);
+		node.insertData(pos, this.orig);
 		this.shiftSelection(0);
 	};
 	
