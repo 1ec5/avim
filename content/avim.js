@@ -510,6 +510,7 @@ function AVIM()	{
 	
 	this.numCtrlPresses = 0;
 	this.isWaitingForCtrlKeyUp = false;
+	this.ctrlStartDate = null;
 	
 	/**
 	 * Starts listening for Ctrl press events to track the toggling key binding.
@@ -518,6 +519,7 @@ function AVIM()	{
 		//dump(">>> Start listening with " + this.numCtrlPresses + " key press(es)\n");	// debug
 		this.isWaitingForCtrlKeyUp = true;
 		if (!this.numCtrlPresses) {
+			this.ctrlStartDate = new Date();
 			addEventListener("keyup", this.onKeyUp, true);
 			addEventListener("mousedown", this.stopListeningForCtrl, true);
 			addEventListener("mouseup", this.stopListeningForCtrl, true);
@@ -531,6 +533,7 @@ function AVIM()	{
 		//dump(">>> Stop listening with " + avim.numCtrlPresses + " key press(es)\n");	// debug
 		avim.isWaitingForCtrlKeyUp = false;
 		avim.numCtrlPresses = 0;
+		avim.ctrlStartDate = null;
 		removeEventListener("keyup", avim.onKeyUp, true);
 		removeEventListener("mousedown", avim.stopListeningForCtrl, true);
 		removeEventListener("mouseup", avim.stopListeningForCtrl, true);
@@ -582,7 +585,10 @@ function AVIM()	{
 		if (avim && avim.isWaitingForCtrlKeyUp) {
 			avim.isWaitingForCtrlKeyUp = false;
 			if (e.which == e.DOM_VK_CONTROL && !e.ctrlKey && !e.metaKey &&
-				!e.altKey && !e.shiftKey) {
+				!e.altKey && !e.shiftKey && avim.ctrlStartDate &&
+				// GetDoubleClickTime() on Windows: ?–5 s, default 500 ms
+				// +[NSEvent doubleClickInterval] on OS X: 150 ms–5 s, default 500 ms
+				new Date() - avim.ctrlStartDate <= 1000 /* ms */) {
 				if (++avim.numCtrlPresses > 1) {
 					avim.stopListeningForCtrl();
 					avim.toggle(true);
