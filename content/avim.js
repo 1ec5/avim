@@ -78,6 +78,7 @@ function AVIM()	{
 	};
 	
 	this.onCue = this.offCue = null;
+	this.popupFadeTimer = 0;
 	
 	/**
 	 * Plays a sound to alert the user that AVIM's settings have changed, in
@@ -90,6 +91,32 @@ function AVIM()	{
 		
 		if (volume === undefined) volume = AVIMConfig.volume;
 		volume = clamp(volume / 100, 0, 1);
+		
+		// Display a popup next to the application menu if AVIM’s toolbar button
+		// isn’t visible.
+		let tb = $("avim-tb");
+		let tbAreaType = tb && tb.getAttribute("cui-areatype");
+		let panel = $("avim-toggle-panel");
+		let appMenuTbItem = $("PanelUI-menu-button");
+		if (panel && appMenuTbItem && tbAreaType !== "toolbar") {
+			let bc = $(broadcasterIds.methods[AVIMConfig.method]);
+			let methodName = bc.getAttribute("label");
+			let lbl = $("avim-toggle-label");
+			lbl.value = methodName;
+			lbl.setAttribute("avim-disabled", "" + !enabled);
+			panel.openPopup(appMenuTbItem, "bottomcenter topright", 0, 0, false,
+							false);
+			clearTimeout(this.popupFadeTimer);
+			this.popupFadeTimer = setTimeout(function () {
+				$("avim-toggle-panel").hidePopup(true);
+			}, 2000 /* ms */);
+			if (!panel.onpopuphiding) {
+				panel.onpopuphiding = function (evt) {
+					if (this.popupFadeTimer) clearTimeout(this.popupFadeTimer);
+					this.popupFadeTimer = 0;
+				};
+			}
+		}
 		
 		if (enabled && !this.onCue) {
 			this.onCue = new Audio("chrome://avim/content/on.wav");

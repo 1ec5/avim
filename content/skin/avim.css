@@ -1,5 +1,21 @@
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
+#avim-toggle-panel:not([animate="false"]) {
+	transform: scale(.9);
+	opacity: 0;
+}
+
+#avim-toggle-panel[animate="open"] {
+	transform: none;
+	opacity: 0.8;
+}
+
+#avim-toggle-icon {
+	list-style-image: url(chrome://avim/content/skin/tb.svg);
+	width: 24px;
+	height: 24px;
+}
+
 #avim-tb {
 	color: rgb(34, 34, 34);
 	list-style: url(chrome://avim/content/skin/tb.svg);
@@ -34,12 +50,14 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 }
 
 #avim-tb .toolbarbutton-text,
-#avim-status {
+#avim-status,
+#avim-toggle-label {
 	animation: enabled 2s ease-in-out;
 }
 
 #avim-tb[avim-disabled="true"] :-moz-any(.toolbarbutton-text, .toolbarbutton-multiline-text),
-#avim-status[avim-disabled="true"] {
+#avim-status[avim-disabled="true"],
+#avim-toggle-label[avim-disabled="true"] {
 	animation: disabled 2s ease-in-out;
 	text-decoration: line-through;
 	-moz-text-decoration-style: double;

@@ -4,4 +4,12 @@
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+	<popupset id="mainPopupSet">
+		<panel id="avim-toggle-panel" animate="open" flip="slide" noautofocus="true" position="bottomcenter topright" type="arrow">
+			<hbox align="center">
+				<image id="avim-toggle-icon" />
+				<label id="avim-toggle-label" />
+			</hbox>
+		</panel>
+	</popupset>
 </overlay>
