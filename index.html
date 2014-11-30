@@ -14,6 +14,7 @@
     <script src="javascripts/main.js" type="text/javascript"></script>
     <script type="text/javascript">
       addEventListener("load", buildCarousel, false);
+      addEventListener("load", buildAnim, false);
     </script>
 
     <title>AVIM cho Firefox</title>
@@ -54,6 +55,74 @@
 
 <p><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> là công&nbsp;cụ tiện&nbsp;lợi nhất để nhập tiếng&nbsp;Việt trên Web. Nó là một phần&nbsp;mở&nbsp;rộng miễn&nbsp;phí dành&nbsp;cho <a href="http://www.mozilla.org/vi/firefox/">Firefox</a> và <a href="https://github.com/1ec5/avim/wiki/Yêu-cầu-hệ-thống">các ứng&nbsp;dụng liên&nbsp;quan</a>. Với bộ&nbsp;gõ AVIM, bạn sẽ nhập văn&nbsp;bản tiếng&nbsp;Việt một&nbsp;cách thật tự&nbsp;nhiên.</p>
 
+    </section>
+    <section class="anim-wrapper" style="background: white; display: -webkit-flex; display: flex;">
+      <style type="text/css">
+        @-webkit-keyframes blink {
+          from {
+            opacity: 1;
+          }
+          50% {
+            opacity: 1;
+          }
+          55% {
+            opacity: 0;
+          }
+          to {
+            opacity: 0;
+          }
+        }
+        
+        @keyframes blink {
+          from {
+            opacity: 1;
+          }
+          50% {
+            opacity: 1;
+          }
+          55% {
+            opacity: 0;
+          }
+          to {
+            opacity: 0;
+          }
+        }
+        
+        p {
+          color: #555;
+        }
+        
+        #way-before-caret, #way-after-caret {
+          white-space: pre-wrap;
+        }
+        
+        #before-caret, #after-caret {
+          white-space: pre;
+        }
+        
+        #before-caret::after {
+          content: "|";
+          position: absolute;
+          margin-left: -0.1em;
+          margin-top: -0.05em;
+        }
+        #before-caret.idle::after {
+          -webkit-animation-duration: 1.2s;
+          -webkit-animation-name: blink;
+          -webkit-animation-iteration-count: infinite;
+          animation-duration: 1.2s;
+          animation-name: blink;
+          animation-iteration-count: infinite;
+        }
+      </style>
+      <p style="font-size: 200%; height: 5em; padding: 5%; width: 45%;"><span id="way-before-caret"></span><span id="before-caret" class="idle"></span><span id="after-caret"></span><span id="way-after-caret"></span></p>
+      <div style="width: 45%; padding: 5%;">
+        <h3>Dễ dàng sửa các lỗi</h3>
+        <p>Bạn đặt dấu lộn thì chỉ việc sửa dấu thôi, không cần đánh lại cả từ.</p>
+      </div>
+    </section>
+    
+<section class="inner">
 <div class="carousel">
   <figure class="selected">
     <img src="images/mac109_ff34_vi_webapps.png" type="image/png">
@@ -65,12 +134,12 @@
     <figcaption>AVIM hoạt&nbsp;động trong toàn&nbsp;thể trình&nbsp;duyệt, kể&nbsp;cả thanh tìm&nbsp;kiếm và trình&nbsp;xem PDF.</figcaption>
   </figure>
   
-  <figure>
+<!--  <figure>
     <video preload="auto" style="width: 616px; margin-left: auto; margin-right: auto;">
       <source src="images/mac109_ff34_vi_ace.webm" type="video/webm">
     </video>
     <figcaption>Chỉ&nbsp;có AVIM hỗ&nbsp;trợ tính&nbsp;năng “con&nbsp;nháy nhiều dòng” của trình&nbsp;soạn&nbsp;thảo Ace để nhập văn&nbsp;bản lặp&nbsp;đi lặp&nbsp;lại một&nbsp;cách nhanh&nbsp;nhẹn.</figcaption>
-  </figure>
+  </figure>-->
   
   <div class="carousel-footer">
     <button value="-1">Trước</button>
