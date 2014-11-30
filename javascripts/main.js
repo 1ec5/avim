@@ -26,7 +26,7 @@ function buildCarousel() {
 			for (j = 0; j < videos.length; j++) {
 				if (selectedIdx == i) {
 					currentVideo = videos[j];
-					videos[j].fastSeek(0);
+					videos[j].currentTime = 0;
 					videos[j].play();
 				}
 				else {
