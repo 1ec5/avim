@@ -546,7 +546,6 @@ function AVIM()	{
 		//dump(">>> Start listening with " + this.numCtrlPresses + " key press(es)\n");	// debug
 		this.isWaitingForCtrlKeyUp = true;
 		if (!this.numCtrlPresses) {
-			this.ctrlStartDate = new Date();
 			addEventListener("keyup", this.onKeyUp, true);
 			addEventListener("mousedown", this.stopListeningForCtrl, true);
 			addEventListener("mouseup", this.stopListeningForCtrl, true);
@@ -577,7 +576,11 @@ function AVIM()	{
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
 		if (e.which == e.DOM_VK_CONTROL && e.ctrlKey && !e.metaKey &&
-			!e.altKey && !e.shiftKey) {
+			!e.altKey && !e.shiftKey &&
+			!(this.numCtrlPresses && this.ctrlStartDate &&
+			  // GetDoubleClickTime() on Windows: ?–5 s, default 500 ms
+			  // +[NSEvent doubleClickInterval] on OS X: 150 ms–5 s, default 500 ms
+			  new Date() - this.ctrlStartDate > 1000 /* ms */)) {
 			this.startListeningForCtrl();
 		}
 		else this.stopListeningForCtrl();
@@ -611,11 +614,9 @@ function AVIM()	{
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
 		if (avim && avim.isWaitingForCtrlKeyUp) {
 			avim.isWaitingForCtrlKeyUp = false;
+			if (!avim.ctrlStartDate) avim.ctrlStartDate = new Date();
 			if (e.which == e.DOM_VK_CONTROL && !e.ctrlKey && !e.metaKey &&
-				!e.altKey && !e.shiftKey && avim.ctrlStartDate &&
-				// GetDoubleClickTime() on Windows: ?–5 s, default 500 ms
-				// +[NSEvent doubleClickInterval] on OS X: 150 ms–5 s, default 500 ms
-				new Date() - avim.ctrlStartDate <= 1000 /* ms */) {
+				!e.altKey && !e.shiftKey) {
 				if (++avim.numCtrlPresses > 1) {
 					avim.stopListeningForCtrl();
 					avim.toggle(true);
