@@ -125,6 +125,19 @@ okApplyKey(prefs, "ty", "r", "tỷ");	// Mudim #16
 okApplyKey(prefs, "kiu", "s", "kíu");	// UniKey #23
 okApplyKey(prefs, "ki", "s", "kí");	// UniKey #23
 
+// https://chrome.google.com/webstore/detail/opgbbffpdglhkpglnlkiclakjlpiedoh/reviews
+okApplyKey(prefs, "đuơc", "j", "được");
+
+let prefs = {
+	method: 2 /* VNI */,
+	ckSpell: true,
+	informal: false,
+	oldAccent: false,
+};
+
+// https://chrome.google.com/webstore/detail/opgbbffpdglhkpglnlkiclakjlpiedoh/reviews
+okApplyKey(prefs, "truờn", "g", "trường");
+
 let status = assert.errors.length ? 1 : 0;
 assert.flush();
 quit(status);
