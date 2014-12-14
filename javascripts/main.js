@@ -78,7 +78,7 @@ function showReleaseNotes() {
 			}
 			
 			version = release.tag_name.replace(/^v/, "");
-			$(".version").text(version);
+			$(".version").text($(".version").data("prefix") + " " + version);
 			
 			var mdown = $(markdown.toHTML(release.body));
 			$("#relnotes").html(mdown);
@@ -87,7 +87,7 @@ function showReleaseNotes() {
 			var en = $("#relnotes > hr:first-of-type").nextUntil("hr");
 			var es = $("#relnotes > hr:nth-of-type(2)").nextAll();
 			if (lang !== "vi") iv.detach();
-			if (lang !== "en") en.detach();
+			if (lang !== "en-US") en.detach();
 			if (lang !== "es") es.detach();
 			$("#relnotes > hr").detach();
 			$("#relnotes").prepend(screenshot.css("float", "right"));
