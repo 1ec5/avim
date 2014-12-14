@@ -56,3 +56,41 @@ function buildCarousel() {
 		else selectFigure((selectedIdx + 1) % figures.length);
 	}, 5 * 1000);
 }
+
+function showReleaseNotes() {
+	var lang = document.documentElement.lang;
+	var version = location.search.match(/\bversion=\*\.([.0-9a-z]+)/);
+	version = version && version[1];
+	
+	var url = "https://github.com/1ec5/avim/releases/tag/v" + version;
+	$("#relnotes").html("<a href='" + url + "'>Xem tại GitHub</a>");
+	
+	$.ajax("https://api.github.com/repos/1ec5/avim/releases", {
+		ifModified: true,
+		complete: function (data) {
+			var releases = data.responseJSON;
+			var release = releases[0];
+			for (var i = 0; i < releases.length; i++) {
+				if (releases[i].tag_name === "v" + version) {
+					release = releases[i];
+					break;
+				}
+			}
+			
+			version = release.tag_name.replace(/^v/, "");
+			$(".version").text(version);
+			
+			var mdown = $(markdown.toHTML(release.body));
+			$("#relnotes").html(mdown);
+			var screenshot = $("#relnotes").find("img, video, audio");
+			var iv = $("#relnotes > hr:first-of-type").prevAll();
+			var en = $("#relnotes > hr:first-of-type").nextUntil("hr");
+			var es = $("#relnotes > hr:nth-of-type(2)").nextAll();
+			if (lang !== "vi") iv.detach();
+			if (lang !== "en") en.detach();
+			if (lang !== "es") es.detach();
+			$("#relnotes > hr").detach();
+			$("#relnotes").prepend(screenshot.css("float", "right"));
+		},
+	});
+}
