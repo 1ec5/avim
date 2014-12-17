@@ -278,13 +278,15 @@ function KixProxy(evt) {
 		// kix_2014.35-Tue_c handles pastes asynchronously, so insert one
 		// character at a time.
 		// In kix_2014.50-Tue_e, the caret gets stuck in a weird position if we
-		// synthesize composition events.
+		// synthesize composition events. In sketchy_2014.50-Tue-b, the same
+		// happens unless we also synthesize keydown and keyup.
 		//winUtils.sendKeyEvent("keypress", evt.DOM_VK_BACK_SPACE, 0, 0);
 		//winUtils.sendCompositionEvent("compositionstart", "", "");
 		//try {
 			for (let i = 0; i < this.value.length; i++) {
-				winUtils.sendKeyEvent("keypress", 0, this.value.charCodeAt(i),
-									  0);
+				winUtils.sendKeyEvent("keydown", 0, this.value.charCodeAt(i), 0);
+				winUtils.sendKeyEvent("keypress", 0, this.value.charCodeAt(i), 0);
+				winUtils.sendKeyEvent("keyup", 0, this.value.charCodeAt(i), 0);
 			}
 		//}
 		//finally {
