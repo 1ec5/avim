@@ -8,10 +8,6 @@ from build import BuildConfig
 # Type of build to produce.
 CONFIG = BuildConfig.RELEASE
 
-# Format of URL to view a project file in the public-facing Git repository,
-# given the relative path of that file.
-REPO_URL = "https://github.com/1ec5/avim/blob/%(rev)s/%(path)s"
-
 # Incremented version number.
 # See <https://developer.mozilla.org/en-US/docs/Toolkit_version_format>.
 VERSION = (5, 3, 0)

@@ -167,16 +167,6 @@ def preprocess(src, debug=False, vals=None):
 
     return src
 
-def get_repo_url(file_path):
-    """Returns the URL of the file at GitHub."""
-    try:
-        return REPO_URL % {
-            "path": file_path,
-            "rev": TAG or BLOB or "master",
-        }
-    except (ValueError, TypeError):
-        return REPO_URL % {"path": file_path, "rev": ""}
-
 def minify_properties(src):
     """Returns a minified version of the given properties file source."""
     min_re = re.compile(r"(^|[^\\](?:\\\\)*)#.*$", re.M)
@@ -234,10 +224,6 @@ def minify_xml(file_path, src):
     if file_ext == "svg":
         src = minify_colors(src)
     
-    url = get_repo_url(file_path)
-    if url:
-        msg = "<!--Minified w/ xmlformatter: see %s-->\n" % url
-        src = re.sub(r"((?:<\?(?:xml|xul)\b.*?\?>\n*)+)", r"\1" + msg, src)
     return src
 
 def minify_dtd(src):
@@ -251,24 +237,14 @@ def minify_js(file_path, src):
     in_str = StringIO(src)
     out_str = StringIO()
     JavascriptMinify().minify(in_str, out_str)
-    url = get_repo_url(file_path)
-    if url:
-        src = "//Minified w/ JSMin: see %s\n%s" % (url, out_str.getvalue())
-    else:
-        src = out_str.getvalue()
+    src = out_str.getvalue()
     in_str.close()
     out_str.close()
     return src
 
 def minify_css(file_path, src):
     """Returns a minified version of the given CSS source string."""
-    min_src = minify_colors(cssmin(src))
-    if src.strip() == min_src.strip():
-        return min_src
-    url = file_path and get_repo_url(file_path)
-    if url:
-        min_src = "/*Minified w/ cssmin: see %s*/\n%s" % (url, min_src)
-    return min_src
+    return minify_colors(cssmin(src))
 
 def l10n_main_locale_equiv(file_path):
     """Changes the given file path to point to the equivalent file for the main
