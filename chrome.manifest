@@ -98,3 +98,8 @@ style	chrome://komodo/content/komodo.xul	chrome://avim/content/skin/avim.css
 ### BlueGriffon ################################################################
 
 style	chrome://bluegriffon/content/xul/bluegriffon.xul	chrome://avim/content/skin/avim.css
+
+### Extension <prefwindow>s (#117) #############################################
+
+overlay	chrome://dta/content/preferences/prefs.xul	chrome://avim/content/generalOverlay.xul
+overlay	chrome://tabmixplus/content/preferences/preferences.xul	chrome://avim/content/generalOverlay.xul
