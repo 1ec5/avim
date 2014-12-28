@@ -121,6 +121,7 @@ function buildAnim(animIdx, anim) {
 	function deleteAll() {
 		anim.find("span").removeClass("selected");
 		anim.find("span").html("");
+		before.addClass("idle");
 		meter.val(0);
 		setTimeout(step, 0.5 * 1000);
 	}
@@ -172,6 +173,7 @@ function buildAnim(animIdx, anim) {
 			setTimeout(selectAll, 5 * 1000);
 		}
 	}
+	before.addClass("idle");
 	setTimeout(step, 2 * 1000);
 }
 
