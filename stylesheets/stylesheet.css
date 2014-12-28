@@ -496,6 +496,245 @@ Full-Width Styles
   content: " »";
 }
 
+@-webkit-keyframes blink {
+  from {
+	opacity: 1;
+  }
+  50% {
+	opacity: 1;
+  }
+  55% {
+	opacity: 0;
+  }
+  to {
+	opacity: 0;
+  }
+}
+
+@keyframes blink {
+  from {
+	opacity: 1;
+  }
+  50% {
+	opacity: 1;
+  }
+  55% {
+	opacity: 0;
+  }
+  to {
+	opacity: 0;
+  }
+}
+
+#main_content_wrap > figure {
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+#main_content_wrap > figure:not(.ambient) {
+  display: -webkit-flex;
+  display: flex;
+  min-height: 50vh;
+  background: white;
+}
+
+#main_content_wrap > figure.ambient {
+  height: 50vh;
+  padding-top: 50vh;
+}
+
+/*#main_content_wrap > figure.ambient {
+  background:
+	radial-gradient(circle at top left, rgba(255, 255, 255, 1) 1%, transparent 4%),
+	radial-gradient(circle at top left, rgba(255, 255, 255, 0.8) 1%, transparent 40%),
+	linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5)),
+	radial-gradient(closest-side at center bottom, skyblue 60%, cornflowerblue 80%);
+}*/
+
+#main_content_wrap > figure.ambient:hover::after {
+  opacity: 0;
+}
+
+#main_content_wrap > figure .anim {
+  color: #555;
+  font-size: 200%;
+  margin: auto;
+  padding: 5%;
+  width: 40%;
+  height: 5em;
+}
+
+#main_content_wrap > figure .ambiance {
+  position: absolute;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  min-width: 100%;
+}
+
+#main_content_wrap > figure .ambiance.scan-horizontal {
+  top: 0;
+  left: 0;
+  transition: left ease-in-out 2s, min-width ease 1.5s;
+}
+
+#main_content_wrap > figure:hover .ambiance.scan-horizontal {
+  min-width: 150%;
+  left: -50%;
+  transition: left ease-out 30s, min-width ease 2.5s;
+}
+
+@keyframes scan-toolbars {
+  from {
+	min-width: 100%;
+	bottom: -50%;
+	opacity: 1;
+  }
+  0.5% {
+	opacity: 0;
+  }
+  1% {
+	min-width: 100%;
+	bottom: -50%;
+  }
+  2% {
+	min-width: 200%;
+	bottom: -40%;
+	opacity: 0;
+  }
+  8% {
+	min-width: 250%;
+	bottom: 0;
+	opacity: 1;
+  }
+  15% {
+	min-width: 250%;
+	bottom: 0;
+  }
+  to {
+	min-width: 100%;
+	bottom: -50%;
+  }
+}
+
+#main_content_wrap > figure .ambiance.scan-toolbars {
+  bottom: -50%;
+  transition: opacity ease 0.5s, bottom ease 1.5s, min-width ease 1.5s;
+}
+
+#main_content_wrap > figure:hover .ambiance.scan-toolbars {
+  animation: scan-toolbars 30s 1.5s;
+  animation-fill-mode: forwards;
+}
+
+#main_content_wrap > figure figcaption {
+  width: 40%;
+  padding: 5%;
+  text-align: left;
+  font-style: normal;
+}
+
+#main_content_wrap > figure.ambient {
+  opacity: 0.6;
+  transition: opacity ease 0.5s 1s;
+}
+
+#main_content_wrap > figure.ambient:hover {
+  opacity: 1;
+  transition: opacity ease 0.5s 0.5s;
+}
+
+#main_content_wrap > figure.ambient figcaption {
+  position: relative;
+  z-index: 200;
+  top: -50%;
+  width: 30em;
+  max-width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+#main_content_wrap > figure.ambient figcaption * {
+  color: white;
+}
+
+#main_content_wrap > figure.ambient figcaption a {
+  text-decoration: underline;
+}
+
+#main_content_wrap > figure.secure {
+  background:
+	repeating-linear-gradient(to bottom, transparent 1px, transparent 37px, rgba(255, 255, 255, 0.6) 38px),
+	repeating-linear-gradient(to bottom, transparent 1px, transparent 17px, rgba(255, 255, 255, 0.4) 18px),
+	repeating-linear-gradient(to bottom, transparent 1px, transparent 4px, rgba(255, 255, 255, 0.2) 5px),
+	repeating-linear-gradient(to bottom, transparent 1px, transparent 100px, rgba(255, 255, 255, 0.2) 101px, rgba(255, 255, 255, 0.2) 150px),
+	linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.1)),
+	linear-gradient(60deg, #aaa, white 20%, white 40%, #aaa);
+}
+
+@media (-webkit-min-device-pixel-ratio: 2),
+  (min--moz-device-pixel-ratio: 2),
+  (-o-min-device-pixel-ratio: 2),
+  (min-resolution: 2dppx),
+  (min-resolution: 192dpi) {
+  #main_content_wrap > figure.secure {
+	background:
+	  repeating-linear-gradient(to bottom, transparent 1px, transparent 37px, rgba(255, 255, 255, 0.6) 37.5px),
+	  repeating-linear-gradient(to bottom, transparent 1px, transparent 17px, rgba(255, 255, 255, 0.4) 17.5px),
+	  repeating-linear-gradient(to bottom, transparent 1px, transparent 4px, rgba(255, 255, 255, 0.2) 4.5px),
+	  repeating-linear-gradient(to bottom, transparent 1px, transparent 100px, rgba(255, 255, 255, 0.2) 100.5px, rgba(255, 255, 255, 0.2) 150px),
+	  linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.1)),
+	  linear-gradient(60deg, #aaa, white 20%, white 40%, #aaa);
+  }
+}
+
+#main_content_wrap > figure.secure * {
+  color: #555 !important;
+}
+
+.way-before-caret, .way-after-caret {
+  white-space: pre-wrap;
+}
+
+.before-caret, .after-caret {
+  white-space: pre;
+}
+
+.way-before-caret.selected,
+.before-caret.selected,
+.after-caret.selected,
+.way-after-caret.selected {
+  background: TextSelectBackground;
+  color: HighlightText;
+}
+
+/* Bug 656378 */
+@media (-moz-mac-graphite-theme), (-moz-mac-yosemite-theme), (-moz-mac-lion-theme) {
+  .way-before-caret.selected,
+  .before-caret.selected,
+  .after-caret.selected,
+  .way-after-caret.selected {
+	background: -moz-dragtargetzone;
+	color: -moz-FieldText;
+  }
+}
+
+.before-caret:not(.selected)::after {
+  content: "|";
+  position: absolute;
+  margin-left: -0.1em;
+  margin-top: -0.05em;
+}
+.before-caret.idle::after {
+  -webkit-animation-duration: 1.2s;
+  -webkit-animation-name: blink;
+  -webkit-animation-iteration-count: infinite;
+  animation-duration: 1.2s;
+  animation-name: blink;
+  animation-iteration-count: infinite;
+}
+
 #compare-methods caption {
   color:#222222;
   font-weight: 700;
@@ -510,6 +749,11 @@ Full-Width Styles
 
 #compare-methods th[scope="row"] {
   text-align: center;
+}
+
+.checklist li,
+.checklist dd {
+  list-style-type: none;
 }
 
 .checklist li::before,

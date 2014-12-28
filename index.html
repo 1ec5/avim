@@ -11,10 +11,10 @@
     <link rel="alternate" lang="en-US" href="en/">
     <link rel="alternate" lang="es" href="es/">
     
-    <script src="javascripts/main.js" type="text/javascript"></script>
+    <script src="javascripts/jquery-2.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="javascripts/main.js" type="text/javascript"></script>
     <script type="text/javascript">
-      addEventListener("load", buildCarousel, false);
-      addEventListener("load", buildAnim, false);
+      addEventListener("load", buildAnims, false);
     </script>
 
     <title>AVIM cho Firefox</title>
@@ -56,116 +56,80 @@
 <p><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> là công&nbsp;cụ tiện&nbsp;lợi nhất để nhập tiếng&nbsp;Việt trên Web. Nó là một phần&nbsp;mở&nbsp;rộng miễn&nbsp;phí dành&nbsp;cho <a href="http://www.mozilla.org/vi/firefox/">Firefox</a> và <a href="https://github.com/1ec5/avim/wiki/Yêu-cầu-hệ-thống">các ứng&nbsp;dụng liên&nbsp;quan</a>. Với bộ&nbsp;gõ AVIM, bạn sẽ nhập văn&nbsp;bản tiếng&nbsp;Việt một&nbsp;cách thật tự&nbsp;nhiên.</p>
 
     </section>
-    <section class="anim-wrapper" style="background: white; display: -webkit-flex; display: flex;">
-      <style type="text/css">
-        @-webkit-keyframes blink {
-          from {
-            opacity: 1;
-          }
-          50% {
-            opacity: 1;
-          }
-          55% {
-            opacity: 0;
-          }
-          to {
-            opacity: 0;
-          }
-        }
-        
-        @keyframes blink {
-          from {
-            opacity: 1;
-          }
-          50% {
-            opacity: 1;
-          }
-          55% {
-            opacity: 0;
-          }
-          to {
-            opacity: 0;
-          }
-        }
-        
-        p {
-          color: #555;
-        }
-        
-        #way-before-caret, #way-after-caret {
-          white-space: pre-wrap;
-        }
-        
-        #before-caret, #after-caret {
-          white-space: pre;
-        }
-        
-        #before-caret::after {
-          content: "|";
-          position: absolute;
-          margin-left: -0.1em;
-          margin-top: -0.05em;
-        }
-        #before-caret.idle::after {
-          -webkit-animation-duration: 1.2s;
-          -webkit-animation-name: blink;
-          -webkit-animation-iteration-count: infinite;
-          animation-duration: 1.2s;
-          animation-name: blink;
-          animation-iteration-count: infinite;
-        }
-      </style>
-      <p style="font-size: 200%; height: 5em; padding: 5%; width: 45%;"><span id="way-before-caret"></span><span id="before-caret" class="idle"></span><span id="after-caret"></span><span id="way-after-caret"></span></p>
-      <div style="width: 45%; padding: 5%;">
-        <h3>Dễ dàng sửa các lỗi</h3>
-        <p>Bạn đặt dấu lộn thì chỉ việc sửa dấu thôi, không cần đánh lại cả từ.</p>
-      </div>
-    </section>
+    
+    <figure class="anim-wrapper">
+      <p class="anim" data-chords="H|Ho|Hom|Hôm|Hôm |Hôm q|Hôm qu|Hôm qua|Hôm qua |Hôm qua |Hôm qua d|Hôm qua đ|Hôm qua đi|Hôm qua đi |Hôm qua đi t|Hôm qua đi tr|Hôm qua đi tre|Hôm qua đi trê|Hôm qua đi trên|Hôm qua đi trên |Hôm qua đi trên n|Hôm qua đi trên nh|Hôm qua đi trên nhu|Hôm qua đi trên nhun|Hôm qua đi trên nhung|Hôm qua đi trên nhưng|Hôm qua đi trên những|Hôm qua đi trên những |Hôm qua đi trên những c|Hôm qua đi trên những co|Hôm qua đi trên những con|Hôm qua đi trên những con |Hôm qua đi trên những con d|Hôm qua đi trên những con du|Hôm qua đi trên những con duo|Hôm qua đi trên những con duon|Hôm qua đi trên những con duong|Hôm qua đi trên những con đuong|Hôm qua đi trên những con đuong |Hôm qua đi trên những con đuong n|Hôm qua đi trên những con đuong ng|Hôm qua đi trên những con đuong ngo|Hôm qua đi trên những con đuong ngoa|Hôm qua đi trên những con đuong ngoan|Hôm qua đi trên những con đuong ngoăn|Hôm qua đi trên những con đuong ngoă/n|Hôm qua đi trên những con đuong ngo/ăn|Hôm qua đi trên những con đuong ng/oăn|Hôm qua đi trên những con đuong n/goăn|Hôm qua đi trên những con đuong /ngoăn|Hôm qua đi trên những con đuong/ ngoăn|Hôm qua đi trên những con đương/ ngoăn|Hôm qua đi trên những con đường/ ngoăn|Hôm qua đi trên những con đường /ngoăn|Hôm qua đi trên những con đường n/goăn|Hôm qua đi trên những con đường ng/oăn|Hôm qua đi trên những con đường ngo/ăn|Hôm qua đi trên những con đường ngoă/n|Hôm qua đi trên những con đường ngoặ/n|Hôm qua đi trên những con đường ngoằ/n|Hôm qua đi trên những con đường ngoằn|Hôm qua đi trên những con đường ngoằn |Hôm qua đi trên những con đường ngoằn n|Hôm qua đi trên những con đường ngoằn ngo|Hôm qua đi trên những con đường ngoằn ngoe|Hôm qua đi trên những con đường ngoằn ngoeo|Hôm qua đi trên những con đường ngoằn ngoèo|Hôm qua đi trên những con đường ngoằn ngoèo."><span class="way-before-caret"></span><span class="before-caret" class="idle"></span><span class="after-caret"></span><span class="way-after-caret"></span></p>
+      <figcaption>
+        <h3>Dễ&nbsp;dàng sửa các lỗi</h3>
+        <p>Nếu đặt dấu lộn, chỉ&nbsp;việc quay trở&nbsp;lại và thay&nbsp;thế dấu&nbsp;– không cần đánh&nbsp;lại cả từ. Vả&nbsp;lại bạn có&nbsp;thể hoàn&nbsp;tác và làm&nbsp;lại như bình&nbsp;thường.</p>
+      </figcaption>
+    </figure>
+    
+    <figure class="ambient">
+      <img class="ambiance scan-horizontal" src="images/mac109_ff34_vi_webapps.png" type="image/png">
+      <figcaption>
+        <h3>Tất&nbsp;cả các ứng&nbsp;dụng Web</h3>
+        <p>Chỉ&nbsp;có AVIM cho&nbsp;phép nhập tiếng&nbsp;Việt dễ&nbsp;dàng vào các ứng&nbsp;dụng Web phổ&nbsp;biến, chẳng&nbsp;hạn:</p>
+        <ul class="checklist">
+          <li>Google&nbsp;Docs và Gmail</li>
+          <li>Office&nbsp;Online</li>
+          <li>iCloud</li>
+          <li>Zoho&nbsp;Docs</li>
+          <li>Haiku&nbsp;Deck</li>
+        </ul>
+      </figcaption>
+    </figure>
+    
+    <figure>
+      <figcaption>
+        <h3>Tránh sự&nbsp;xung&nbsp;đột</h3>
+        <p>Bạn không cần&nbsp;phải tắt thủ&nbsp;công các bộ&nbsp;gõ do diễn&nbsp;đàn cung&nbsp;cấp: AVIM sẽ tự&nbsp;động tắt các bộ&nbsp;gõ đó để tránh sự&nbsp;xung&nbsp;đột.</p>
+      </figcaption>
+      <figcaption>
+        <h3>Quốc&nbsp;ngữ lẫn ngoại&nbsp;ngữ</h3>
+        <p>Nếu cần nhập một tên ngoại&nbsp;ngữ, chỉ&nbsp;việc bấm <span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span> hai lần liên&nbsp;tục để tắt AVIM. Nhiều&nbsp;khi chỉ&nbsp;cần gõ như bình&nbsp;thường: theo mặc&nbsp;định, AVIM chỉ đặt dấu trên các từ tuân&nbsp;theo chính&nbsp;tả tiếng&nbsp;Việt.</p>
+      </figcaption>
+    </figure>
+    
+    <figure class="ambient">
+      <img class="ambiance scan-toolbars" src="images/mac109_ff34_vi_pdf.png" type="image/png">
+      <figcaption>
+        <h3>Cáo lửa&nbsp;– từ đầu đến đuôi</h3>
+        <p>AVIM gắn vào bất&nbsp;cứ mọi phần của Firefox, không&nbsp;phải chỉ các biểu&nbsp;mẫu trong trang&nbsp;Web. Bạn có&nbsp;thể nhập tiếng&nbsp;Việt vào chẳng&nbsp;hạn:</p>
+        <ul class="checklist">
+          <li>thanh URL và thanh tìm&nbsp;kiếm Web</li>
+          <li>thanh tìm&nbsp;kiếm trong trang</li>
+          <li>cửa&nbsp;sổ đặt&nbsp;tên dấu&nbsp;trang</li>
+          <li>trình&nbsp;xem PDF</li>
+          <li>tất&nbsp;cả các tiện&nbsp;ích</li>
+        </ul>
+        <p>Ngoài&nbsp;ra, bạn có&nbsp;thể soạn&nbsp;thảo thư điện&nbsp;tử trong <a href="https://www.mozilla.org/vi/thunderbird/">Thunderbird</a> và nhắn&nbsp;tin nhanh với bạn&nbsp;bè trong <a href="http://www.instantbird.com/">Instantbird</a>.</p>
+      </figcaption>
+    </figure>
+    
+    <figure class="secure">
+      <p class="anim password" data-chords="•|••|••|•••|•••|•••|••••|•••••"><span class="way-before-caret"></span><span class="before-caret" class="idle"></span><span class="after-caret"></span><span class="way-after-caret"></span><br /><meter class="password-strength" min="0" low="4" high="7" max="12" optimum="12" /></p>
+      <figcaption>
+        <h3>An&nbsp;toàn hơn</h3>
+        <p>Những bộ&nbsp;gõ khác liên&nbsp;tục gửi qua mạng các chữ bạn đang gõ, điều này làm dễ bị nghe&nbsp;lén. AVIM chẳng bao&nbsp;giờ lén&nbsp;lút gửi thông&nbsp;tin qua mạng.</p>
+        <p>Ngoài&nbsp;ra, bạn có&nbsp;thể tùy&nbsp;ý đặt dấu ngay&nbsp;cả vào mật&nbsp;khẩu để khó bị đoán&nbsp;ra.</p>
+        <p>Để an toàn trên Internet, bạn phải cẩn thận và sử dụng những phần mềm an toàn. Bàn phím của bạn cũng nên tôn trọng quyền riêng tư của bạn để chắc chắn.</p>
+      </figcaption>
+    </figure>
     
 <section class="inner">
-<div class="carousel">
-  <figure class="selected">
-    <img src="images/mac109_ff34_vi_webapps.png" type="image/png">
-    <figcaption><strong>Mới:</strong> Chỉ&nbsp;có AVIM cho&nbsp;phép nhập tiếng&nbsp;Việt dễ&nbsp;dàng vào các ứng&nbsp;dụng Web phổ&nbsp;biến, chẳng&nbsp;hạn như Google&nbsp;Docs, Office&nbsp;Online, iCloud, Zoho&nbsp;Docs, và SVG-edit.</figcaption>
-  </figure>
-  
-  <figure>
-    <img src="images/mac109_ff34_vi_pdf.png" type="image/png">
-    <figcaption>AVIM hoạt&nbsp;động trong toàn&nbsp;thể trình&nbsp;duyệt, kể&nbsp;cả thanh tìm&nbsp;kiếm và trình&nbsp;xem PDF.</figcaption>
-  </figure>
-  
-<!--  <figure>
-    <video preload="auto" style="width: 616px; margin-left: auto; margin-right: auto;">
-      <source src="images/mac109_ff34_vi_ace.webm" type="video/webm">
-    </video>
-    <figcaption>Chỉ&nbsp;có AVIM hỗ&nbsp;trợ tính&nbsp;năng “con&nbsp;nháy nhiều dòng” của trình&nbsp;soạn&nbsp;thảo Ace để nhập văn&nbsp;bản lặp&nbsp;đi lặp&nbsp;lại một&nbsp;cách nhanh&nbsp;nhẹn.</figcaption>
-  </figure>-->
-  
-  <div class="carousel-footer">
-    <button value="-1">Trước</button>
-    <span class="status"></span>
-    <button value="+1">Sau</button>
-  </div>
-</div>
 
-<p>Dựa&nbsp;trên <a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM">kịch&nbsp;bản của Đặng&nbsp;Trần&nbsp;Hiếu</a>, phần&nbsp;mở&nbsp;rộng này được cải&nbsp;thiện thành bộ&nbsp;gõ <a href="compare.html" title="So sánh Tính năng">thượng&nbsp;hạng</a> có nhiều <a href="https://github.com/1ec5/avim/wiki/Tính-năng">sáng&nbsp;kiến rất tiện&nbsp;lợi</a>:</p>
+<a class="amo_beta_link" href="downloads/avim-beta.xpi" type="application/x-xpinstall">Beta</a>
+<a class="amo_link" href="downloads/avim.xpi" type="application/x-xpinstall">Cài đặt</a>
 
-<dl class="checklist">
-  <dt>Tiện&nbsp;lợi</dt>
-    <dd>Sửa dấu mà không cần đánh lại cả từ</dd>
-    <dd>Hoàn&nbsp;tác và làm&nbsp;lại mà không bị mất&nbsp;chỗ</dd>
-    <dd>Tránh xung&nbsp;đột với các bộ&nbsp;gõ khác</dd>
-  <dt>Toàn&nbsp;diện</dt>
-    <dd>Gõ trong bất&nbsp;kỳ trang&nbsp;Web và tất&nbsp;cả những ứng&nbsp;dụng Web phổ&nbsp;biến</dd>
-    <dd>Gõ trong hộp tìm&nbsp;kiếm, hộp&nbsp;thoại, và bất&nbsp;cứ mọi&nbsp;nơi khác</dd>
-    <dd>Soạn&nbsp;thảo thư điện&nbsp;tử trong <a href="https://www.mozilla.org/vi/thunderbird/">Thunderbird</a> và nhắn&nbsp;tin nhanh trong <a href="http://www.instantbird.com/">Instantbird</a></dd>
-  <dt>An&nbsp;toàn</dt>
-    <dd>AVIM chẳng bao&nbsp;giờ cho ai biết bạn đang gõ những&nbsp;gì</dd>
-</dl>
+<h3>Tìm&nbsp;hiểu thêm về AVIM</h3>
 
-<p>Trước hết, nó tránh ra để bạn đánh chữ như bình thường.</p>
-
-<p>Xem chi tiết đầy đủ trên <a href="https://github.com/1ec5/avim/wiki">wiki của dự án</a>.</p>
+<ul>
+  <li><a href="https://github.com/1ec5/avim/wiki/Câu-hỏi-thường-gặp">Câu&nbsp;hỏi thường&nbsp;gặp</a></li>
+  <li><a href="compare.html">Những lý&nbsp;do AVIM hữu&nbsp;ích hơn các bộ&nbsp;gõ khác</a></li>
+  <li><a href="https://github.com/1ec5/avim/wiki">Wiki của dự án AVIM</a></li>
+  <li><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM">Kịch&nbsp;bản dành&nbsp;cho trang&nbsp;Web</a> do Đặng&nbsp;Trần&nbsp;Hiếu phát&nbsp;triển</li>
+</ul>
       </section>
     </div>
 

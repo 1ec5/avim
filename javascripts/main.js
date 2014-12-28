@@ -25,56 +25,43 @@ if (!String.prototype.endsWith) {
 }
 
 function buildCarousel() {
-	var carousel = document.getElementsByClassName("carousel");
-	if (!carousel || !carousel.length) return;
-	carousel = carousel[0];
+	if (!$(".carousel").length) return;
 	
 	var selectedIdx = 0,
-		figures = carousel.getElementsByTagName("figure"),
-		status = carousel.getElementsByClassName("status")[0],
-		buttons = carousel.getElementsByTagName("button"),
+		figures = $(".carousel figure"),
 		currentVideo;
 	
 	function updateStatus() {
-		if (status) {
-			status.textContent = (selectedIdx + 1) + " / " + figures.length;
-		}
+		$(".carousel .status").text((selectedIdx + 1) + " / " + figures.length);
 	}
 	
 	function selectFigure(idx) {
-		var i,
-			videos,
-			j;
 		selectedIdx = idx;
-		for (i = 0; i < figures.length; i++) {
-			figures[i].classList.toggle("selected", selectedIdx == i);
-			videos = figures[i].getElementsByTagName("video");
-			for (j = 0; j < videos.length; j++) {
-				if (selectedIdx == i) {
-					currentVideo = videos[j];
-					videos[j].currentTime = 0;
-					videos[j].play();
+		figures.each(function (figureIdx, figure) {
+			$(figure).toggleClass("selected", selectedIdx === figureIdx);
+			$(figure).find("video").each(function (videoIdx, video) {
+				if (selectedIdx === figureIdx) {
+					currentVideo = video;
+					video.currentTime = 0;
+					video.play();
 				}
 				else {
 					currentVideo = null;
-					videos[j].pause();
+					video.pause();
 				}
-			}
-		}
+			});
+		});
 		updateStatus();
 	}
 	selectFigure(0);
 	
-	var i,
-		skip = false;
-	for (var i = 0; i < buttons.length; i++) {
-		buttons[i].addEventListener("click", function (evt) {
-			var newIdx = (selectedIdx + parseInt(this.value, 10) +
-						  figures.length) % figures.length;
-			selectFigure(newIdx);
-			skip = true;
-		}, false);
-	}
+	var skip = false;
+	$(".carousel button").click(function (evt) {
+		var newIdx = (selectedIdx + parseInt(this.value, 10) +
+					  figures.length) % figures.length;
+		selectFigure(newIdx);
+		skip = true;
+	});
 	
 	setInterval(function () {
 		if (currentVideo && !currentVideo.paused) return;
@@ -121,17 +108,32 @@ function showReleaseNotes() {
 	});
 }
 
-function buildAnim() {
-	var wayBefore = document.getElementById("way-before-caret"),
-		wayAfter = document.getElementById("way-after-caret"),
-		before = document.getElementById("before-caret"),
-		after = document.getElementById("after-caret"),
-		chord = "H|Ho|Hom|Hôm|Hôm |Hôm q|Hôm qu|Hôm qua|Hôm qua |Hôm qua |Hôm qua d|Hôm qua đ|Hôm qua đi|Hôm qua đi |Hôm qua đi t|Hôm qua đi tr|Hôm qua đi tre|Hôm qua đi trê|Hôm qua đi trên|Hôm qua đi trên |Hôm qua đi trên n|Hôm qua đi trên nh|Hôm qua đi trên nhu|Hôm qua đi trên nhun|Hôm qua đi trên nhung|Hôm qua đi trên nhưng|Hôm qua đi trên những|Hôm qua đi trên những |Hôm qua đi trên những c|Hôm qua đi trên những co|Hôm qua đi trên những con|Hôm qua đi trên những con |Hôm qua đi trên những con d|Hôm qua đi trên những con du|Hôm qua đi trên những con duo|Hôm qua đi trên những con duon|Hôm qua đi trên những con duong|Hôm qua đi trên những con đuong|Hôm qua đi trên những con đuong |Hôm qua đi trên những con đuong n|Hôm qua đi trên những con đuong ng|Hôm qua đi trên những con đuong ngo|Hôm qua đi trên những con đuong ngoa|Hôm qua đi trên những con đuong ngoan|Hôm qua đi trên những con đuong ngoăn|Hôm qua đi trên những con đuong ngoă/n|Hôm qua đi trên những con đuong ngo/ăn|Hôm qua đi trên những con đuong ng/oăn|Hôm qua đi trên những con đuong n/goăn|Hôm qua đi trên những con đuong /ngoăn|Hôm qua đi trên những con đuong/ ngoăn|Hôm qua đi trên những con đương/ ngoăn|Hôm qua đi trên những con đường/ ngoăn|Hôm qua đi trên những con đường /ngoăn|Hôm qua đi trên những con đường n/goăn|Hôm qua đi trên những con đường ng/oăn|Hôm qua đi trên những con đường ngo/ăn|Hôm qua đi trên những con đường ngoă/n|Hôm qua đi trên những con đường ngoặ/n|Hôm qua đi trên những con đường ngoằ/n|Hôm qua đi trên những con đường ngoằn|Hôm qua đi trên những con đường ngoằn |Hôm qua đi trên những con đường ngoằn n|Hôm qua đi trên những con đường ngoằn ngo|Hôm qua đi trên những con đường ngoằn ngoe|Hôm qua đi trên những con đường ngoằn ngoeo|Hôm qua đi trên những con đường ngoằn ngoèo|Hôm qua đi trên những con đường ngoằn ngoèo.".split("|"),
-		i;
+function buildAnim(animIdx, anim) {
+	anim = $(anim);
+	var wayBefore = anim.find(".way-before-caret"),
+		wayAfter = anim.find(".way-after-caret"),
+		before = anim.find(".before-caret"),
+		after = anim.find(".after-caret"),
+		meter = anim.find("meter"),
+		chord = anim.data("chords").split("|"),
+		i = 0;
+	
+	function deleteAll() {
+		anim.find("span").removeClass("selected");
+		anim.find("span").html("");
+		meter.val(0);
+		setTimeout(step, 0.5 * 1000);
+	}
+	
+	function selectAll() {
+		before.removeClass("idle");
+		anim.find("span").addClass("selected");
+		setTimeout(deleteAll, 0.5 * 1000);
+	}
 	
 	function step() {
-		before.classList.remove("idle");
-		var text = chord.shift(),
+		before.removeClass("idle");
+		var text = chord[i++],
 			segments,
 			timeout = 250;
 		if (text) {
@@ -147,25 +149,32 @@ function buildAnim() {
 				segments[2] = segments[2].replace(/^\S+/, "");
 			}
 			
-			wayBefore.innerHTML = segments[1] || "";
-			before.innerHTML = segments[3] || "";
-			after.innerHTML = segments[4] || "";
-			wayAfter.innerHTML = segments[2] || "";
+			wayBefore.html(segments[1] || "");
+			before.html(segments[3] || "");
+			after.html(segments[4] || "");
+			wayAfter.html(segments[2] || "");
+			meter.val(i);
 			
-			if (chord.length) {
-				if (chord[0].startsWith(text)) timeout -= 100;
-				else if (chord[0].replace("/", "") === text.replace("/", "")) {
+			if (i < chord.length) {
+				if (chord[i].startsWith(text)) timeout -= 100;
+				else if (chord[i].replace("/", "") === text.replace("/", "")) {
 					timeout -= 150;
 				}
-				if (!chord[0].endsWith(" ") && text.endsWith(" ")) {
+				if (!chord[i].endsWith(" ") && text.endsWith(" ")) {
 					timeout += 100;
 				}
 			}
 			setTimeout(step, timeout + (Math.random() - 0.5) * 100);
 		}
 		else {
-			before.classList.add("idle");
+			before.addClass("idle");
+			i = 0;
+			setTimeout(selectAll, 5 * 1000);
 		}
 	}
 	setTimeout(step, 2 * 1000);
+}
+
+function buildAnims() {
+	$(".anim").each(buildAnim);
 }
