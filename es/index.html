@@ -11,9 +11,10 @@
     <link rel="alternate" lang="en-US" href="../en/">
     <link rel="alternate" lang="vi" href="../">
     
-    <script src="../javascripts/main.js" type="text/javascript"></script>
+    <script src="../javascripts/jquery-2.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../javascripts/main.js" type="text/javascript"></script>
     <script type="text/javascript">
-      addEventListener("load", buildCarousel, false);
+      addEventListener("load", buildAnims, false);
     </script>
 
     <title>AVIM para Firefox</title>
@@ -54,49 +55,81 @@
 
 <p><acronym title="Advanced Vietnamese Input Method">AVIM</acronym>&nbsp;– el Método de Entrada Vietnamita Avanzada&nbsp;– es la herramienta más conveniente para teclear en vietnamita en la web. Es disponible como una extensión gratis para <a href="http://www.mozilla.org/es/firefox/">Firefox</a> y <a href="https://github.com/1ec5/avim/wiki/Requisitos-del-sistema">las aplicaciones relacionadas</a>. Con AVIM, puedes teclear en vietnamita naturalmente y eficientemente.</p>
 
-<div class="carousel">
-  <figure class="selected">
-    <img src="../images/mac109_ff34_vi_webapps.png" type="image/png">
-    <figcaption><strong>Nuevo:</strong> Sólo AVIM permite escribir en vietnamita sin esfuerzo en todas las aplicaciones web populares, incluyendo Google&nbsp;Docs, Office&nbsp;Online, iCloud, Zoho&nbsp;Docs, y SVG-edit.</figcaption>
-  </figure>
-  
-  <figure>
-    <img src="../images/mac109_ff34_vi_pdf.png" type="image/png">
-    <figcaption>AVIM funciona en todas partes del navegador, incluyendo en la barra de buscar y el visualizador de PDF.</figcaption>
-  </figure>
-  
-  <figure>
-    <video preload="auto" style="width: 616px; margin-left: auto; margin-right: auto;">
-      <source src="../images/mac109_ff34_vi_ace.webm" type="video/webm">
-    </video>
-    <figcaption>Sólo AVIM apoya el “cursor multilineal” en el editor Ace, para que puedes entrar muchos textos repetitivos muy rápidamente.</figcaption>
-  </figure>
-  
-  <div class="carousel-footer">
-    <button value="-1">Anterior</button>
-    <span class="status"></span>
-    <button value="+1">Siguiente</button>
-  </div>
-</div>
+    </section>
+    
+    <figure class="anim-wrapper">
+      <p class="anim" data-chords="H|Ho|Hom|Hôm|Hôm |Hôm q|Hôm qu|Hôm qua|Hôm qua |Hôm qua |Hôm qua d|Hôm qua đ|Hôm qua đi|Hôm qua đi |Hôm qua đi t|Hôm qua đi tr|Hôm qua đi tre|Hôm qua đi trê|Hôm qua đi trên|Hôm qua đi trên |Hôm qua đi trên n|Hôm qua đi trên nh|Hôm qua đi trên nhu|Hôm qua đi trên nhun|Hôm qua đi trên nhung|Hôm qua đi trên nhưng|Hôm qua đi trên những|Hôm qua đi trên những |Hôm qua đi trên những c|Hôm qua đi trên những co|Hôm qua đi trên những con|Hôm qua đi trên những con |Hôm qua đi trên những con d|Hôm qua đi trên những con du|Hôm qua đi trên những con duo|Hôm qua đi trên những con duon|Hôm qua đi trên những con duong|Hôm qua đi trên những con đuong|Hôm qua đi trên những con đuong |Hôm qua đi trên những con đuong n|Hôm qua đi trên những con đuong ng|Hôm qua đi trên những con đuong ngo|Hôm qua đi trên những con đuong ngoa|Hôm qua đi trên những con đuong ngoan|Hôm qua đi trên những con đuong ngoăn|Hôm qua đi trên những con đuong ngoă/n|Hôm qua đi trên những con đuong ngo/ăn|Hôm qua đi trên những con đuong ng/oăn|Hôm qua đi trên những con đuong n/goăn|Hôm qua đi trên những con đuong /ngoăn|Hôm qua đi trên những con đuong/ ngoăn|Hôm qua đi trên những con đương/ ngoăn|Hôm qua đi trên những con đường/ ngoăn|Hôm qua đi trên những con đường /ngoăn|Hôm qua đi trên những con đường n/goăn|Hôm qua đi trên những con đường ng/oăn|Hôm qua đi trên những con đường ngo/ăn|Hôm qua đi trên những con đường ngoă/n|Hôm qua đi trên những con đường ngoặ/n|Hôm qua đi trên những con đường ngoằ/n|Hôm qua đi trên những con đường ngoằn|Hôm qua đi trên những con đường ngoằn |Hôm qua đi trên những con đường ngoằn n|Hôm qua đi trên những con đường ngoằn ngo|Hôm qua đi trên những con đường ngoằn ngoe|Hôm qua đi trên những con đường ngoằn ngoeo|Hôm qua đi trên những con đường ngoằn ngoèo|Hôm qua đi trên những con đường ngoằn ngoèo."><span class="way-before-caret"></span><span class="before-caret" class="idle"></span><span class="after-caret"></span><span class="way-after-caret"></span></p>
+      <figcaption>
+        <h3>Corregir fácilmente los errores</h3>
+        <p>Si has tecleado el diacrítico incorrecto, sólamente hay que regresar y cambiarlo&nbsp;– no tienes que reteclear todo la palabra. Y puedes deshacer y rehacer como siempre.</p>
+      </figcaption>
+    </figure>
+    
+    <figure class="ambient">
+      <img class="ambiance scan-horizontal" src="../images/mac109_ff34_vi_webapps.png" type="image/png">
+      <figcaption>
+        <h3>Todas las aplicaciones Web</h3>
+        <p>Sólo AVIM te ayuda a escribir naturalmente en vietnamita en todas las aplicaciones Web populares, incluyendo:</p>
+        <ul class="checklist">
+          <li>Google&nbsp;Docs y Gmail</li>
+          <li>Office&nbsp;Online</li>
+          <li>iCloud</li>
+          <li>Zoho&nbsp;Docs</li>
+          <li>Haiku&nbsp;Deck</li>
+        </ul>
+      </figcaption>
+    </figure>
+    
+    <figure>
+      <figcaption>
+        <h3>Evitar los conflictos</h3>
+        <p>Si un foro o wiki ya provee su propio editor de método de entrada, AVIM automáticamente lo desactiva para tí. (Varios editores de método de entrada operando simultáneamente te confundiría mucho.)</p>
+      </figcaption>
+      <figcaption>
+        <h3>Para los poliglotos como tí</h3>
+        <p>Cuando necesitas escribir en español, sólo hay que presionar <span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span> dos veces rápidamente para desactivar AVIM. Frecuentamente, aun no es necesario: por defecto, AVIM sólamente afecta las palabras que parecen como vietnamita.</p>
+      </figcaption>
+    </figure>
+    
+    <figure class="ambient">
+      <img class="ambiance scan-toolbars" src="../images/mac109_ff34_vi_pdf.png" type="image/png">
+      <figcaption>
+        <h3>Firefox, de la cola a la cabeza</h3>
+        <p>AVIM funciona en cualquier parte de Firefox, no sólo en los formularios en las páginas Web. Entonces puedes teclear en vietnamita en todas partes, incluyendo:</p>
+        <ul class="checklist">
+          <li>las barras de direcciones y búsqueda</li>
+          <li>la barra de búsquedas dentro de la página</li>
+          <li>el panel del marcador</li>
+          <li>el visor de archivos PDF</li>
+          <li>cada complemento de Firefox</li>
+        </ul>
+        <p>Además, puedes escribir los correos electrónicos en <a href="https://www.mozilla.org/thunderbird/">Thunderbird</a> y charlar con tus amigos en <a href="http://www.instantbird.com/">Instantbird</a>.</p>
+      </figcaption>
+    </figure>
+    
+    <figure class="secure">
+      <p class="anim password" data-chords="•|••|••|•••|•••|•••|••••|•••••"><span class="way-before-caret"></span><span class="before-caret" class="idle"></span><span class="after-caret"></span><span class="way-after-caret"></span><br /><meter class="password-strength" min="0" low="4" high="7" max="12" optimum="12" /></p>
+      <figcaption>
+        <h3>Más seguro</h3>
+        <p>Algunos otros editores de método de entrada envian tus pulsaciones del teclado sobre la red mientras que tecleas, haciéndote más vulnerable a los escuchadores secretos. AVIM nunca envía nada sobre la red.</p>
+        <p>Aun hay una opción para poner los diacríticos en las contraseñas, para que tus contraseñas sean menos deducibles.</p>
+		<p>Estar seguro en el Internet necesita la vigilancia y varias formas de protección. Por lo menos, es una buen idea que uses un teclado que respeta tu privacidad.</p>
+      </figcaption>
+    </figure>
+    
+<section class="inner">
 
-<p>Basada en <a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM">el script por <span lang="vi" xml:lang="vi">Hiếu Đặng</span></a>, se ha perfeccionado esta extensión con muchos <a href="https://github.com/1ec5/avim/wiki/Características">innovaciones convenientes</a> que <a href="../compare.html" hreflang="vi" title="Comparación de Características">la distingue de la competencia</a>:</p>
+<a class="amo_beta_link" href="../downloads/avim-beta.xpi" type="application/x-xpinstall">Beta</a>
+<a class="amo_link" href="../downloads/avim.xpi" type="application/x-xpinstall">Instalar</a>
 
-<dl class="checklist">
-  <dt>Conveniente</dt>
-    <dd>Adjustar una marca tonal sin reteclear toda la palabra</dd>
-    <dd>Deshacer y rehacer sin perder tu lugar</dd>
-    <dd>AVIM evita las colisiones con otros editores de método de entrada</dd>
-  <dt>Comprensivo</dt>
-    <dd>Teclar en cada página web y todas las aplicaciones web populares</dd>
-    <dd>Teclar en la barra de buscar, los cuadros de diálogo, y todos los demás</dd>
-    <dd>Escribir los correos electrónicos en <a href="https://www.mozilla.org/thunderbird/">Thunderbird</a> y charlar en <a href="http://www.instantbird.com/">Instantbird</a></dd>
-  <dt>Seguro</dt>
-    <dd>AVIM nunca envía a nadie lo que estás tecleando</dd>
-</dl>
+<h3>Aprenda más sobre AVIM</h3>
 
-<p>Más importantemente, es sutil para que puedes teclear sin distracciones.</p>
-
-<p>Ver más detalles en <a href="https://github.com/1ec5/avim/wiki">el wiki del proyecto</a>.</p>
+<ul>
+  <li><a href="https://github.com/1ec5/avim/wiki/Frequently-asked-questions">Preguntas frecuentes</a></li>
+  <li><a href="../en/compare.html">Porqué AVIM es mejor que los otros editores de método de entrada</a></li>
+  <li><a href="https://github.com/1ec5/avim/wiki">Wiki del proyecto AVIM</a></li>
+  <li><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM">Script para las páginas Web</a> por Hiếu Đặng</li>
+</ul>
       </section>
     </div>
 

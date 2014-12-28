@@ -1,54 +1,67 @@
+if (!String.prototype.startsWith) {
+	Object.defineProperty(String.prototype, "startsWith", {
+		enumerable: false,
+		configurable: false,
+		writable: false,
+		value: function(searchString, position) {
+			position = position || 0;
+			return this.lastIndexOf(searchString, position) === position;
+		}
+	});
+}
+
+if (!String.prototype.endsWith) {
+	Object.defineProperty(String.prototype, "endsWith", {
+		value: function(searchString, position) {
+			var subjectString = this.toString();
+			if (position === undefined || position > subjectString.length) {
+				position = subjectString.length;
+			}
+			position -= searchString.length;
+			var lastIndex = subjectString.indexOf(searchString, position);
+			return lastIndex !== -1 && lastIndex === position;
+		}
+	});
+}
+
 function buildCarousel() {
-	var carousel = document.getElementsByClassName("carousel");
-	if (!carousel || !carousel.length) return;
-	carousel = carousel[0];
+	if (!$(".carousel").length) return;
 	
 	var selectedIdx = 0,
-		figures = carousel.getElementsByTagName("figure"),
-		status = carousel.getElementsByClassName("status")[0],
-		buttons = carousel.getElementsByTagName("button"),
+		figures = $(".carousel figure"),
 		currentVideo;
 	
 	function updateStatus() {
-		if (status) {
-			status.textContent = (selectedIdx + 1) + " / " + figures.length;
-		}
+		$(".carousel .status").text((selectedIdx + 1) + " / " + figures.length);
 	}
 	
 	function selectFigure(idx) {
-		var i,
-			videos,
-			j;
 		selectedIdx = idx;
-		for (i = 0; i < figures.length; i++) {
-			figures[i].classList.toggle("selected", selectedIdx == i);
-			videos = figures[i].getElementsByTagName("video");
-			for (j = 0; j < videos.length; j++) {
-				if (selectedIdx == i) {
-					currentVideo = videos[j];
-					videos[j].currentTime = 0;
-					videos[j].play();
+		figures.each(function (figureIdx, figure) {
+			$(figure).toggleClass("selected", selectedIdx === figureIdx);
+			$(figure).find("video").each(function (videoIdx, video) {
+				if (selectedIdx === figureIdx) {
+					currentVideo = video;
+					video.currentTime = 0;
+					video.play();
 				}
 				else {
 					currentVideo = null;
-					videos[j].pause();
+					video.pause();
 				}
-			}
-		}
+			});
+		});
 		updateStatus();
 	}
 	selectFigure(0);
 	
-	var i,
-		skip = false;
-	for (var i = 0; i < buttons.length; i++) {
-		buttons[i].addEventListener("click", function (evt) {
-			var newIdx = (selectedIdx + parseInt(this.value, 10) +
-						  figures.length) % figures.length;
-			selectFigure(newIdx);
-			skip = true;
-		}, false);
-	}
+	var skip = false;
+	$(".carousel button").click(function (evt) {
+		var newIdx = (selectedIdx + parseInt(this.value, 10) +
+					  figures.length) % figures.length;
+		selectFigure(newIdx);
+		skip = true;
+	});
 	
 	setInterval(function () {
 		if (currentVideo && !currentVideo.paused) return;
@@ -93,4 +106,75 @@ function showReleaseNotes() {
 			$("#relnotes").prepend(screenshot.css("float", "right"));
 		},
 	});
+}
+
+function buildAnim(animIdx, anim) {
+	anim = $(anim);
+	var wayBefore = anim.find(".way-before-caret"),
+		wayAfter = anim.find(".way-after-caret"),
+		before = anim.find(".before-caret"),
+		after = anim.find(".after-caret"),
+		meter = anim.find("meter"),
+		chord = anim.data("chords").split("|"),
+		i = 0;
+	
+	function deleteAll() {
+		anim.find("span").removeClass("selected");
+		anim.find("span").html("");
+		meter.val(0);
+		setTimeout(step, 0.5 * 1000);
+	}
+	
+	function selectAll() {
+		before.removeClass("idle");
+		anim.find("span").addClass("selected");
+		setTimeout(deleteAll, 0.5 * 1000);
+	}
+	
+	function step() {
+		before.removeClass("idle");
+		var text = chord[i++],
+			segments,
+			timeout = 250;
+		if (text) {
+			segments = /([^/]+)(?:\/(.+))?/.exec(text);
+			if (!segments[1].endsWith(" ")) {
+				segments[3] = /\S+$/.exec(segments[1]);
+				segments[3] = segments[3] && segments[3][0];
+				segments[1] = segments[1].replace(/\S+$/, "");
+			}
+			if (segments[2] && !segments[2].startsWith(" ")) {
+				segments[4] = /^\S+/.exec(segments[2]);
+				segments[4] = segments[4] && segments[4][0];
+				segments[2] = segments[2].replace(/^\S+/, "");
+			}
+			
+			wayBefore.html(segments[1] || "");
+			before.html(segments[3] || "");
+			after.html(segments[4] || "");
+			wayAfter.html(segments[2] || "");
+			meter.val(i);
+			
+			if (i < chord.length) {
+				if (chord[i].startsWith(text)) timeout -= 100;
+				else if (chord[i].replace("/", "") === text.replace("/", "")) {
+					timeout -= 150;
+				}
+				if (!chord[i].endsWith(" ") && text.endsWith(" ")) {
+					timeout += 100;
+				}
+			}
+			setTimeout(step, timeout + (Math.random() - 0.5) * 100);
+		}
+		else {
+			before.addClass("idle");
+			i = 0;
+			setTimeout(selectAll, 5 * 1000);
+		}
+	}
+	setTimeout(step, 2 * 1000);
+}
+
+function buildAnims() {
+	$(".anim").each(buildAnim);
 }
