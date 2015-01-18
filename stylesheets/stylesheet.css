@@ -673,6 +673,11 @@ Full-Width Styles
 	linear-gradient(60deg, #aaa, white 20%, white 40%, #aaa);
 }
 
+#main_content_wrap > figure.secure a {
+  color: #007EDF !important;
+  text-decoration: underline;
+}
+
 @media (-webkit-min-device-pixel-ratio: 2),
   (min--moz-device-pixel-ratio: 2),
   (-o-min-device-pixel-ratio: 2),
