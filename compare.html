@@ -123,7 +123,7 @@
 			document.getElementById("comparison").className = c;
             document.getElementById("comparison-wrapper").className = c;
             document.getElementById("moz-colgroup").setAttribute("colspan", show ? "5" : "2");
-            document.getElementById("chrome-colgroup").setAttribute("colspan", show ? "3" : "2");
+            document.getElementById("chrome-colgroup").setAttribute("colspan", show ? "4" : "3");
 		}
 		
 		function makeRowGroupsCollapsible() {
@@ -233,6 +233,7 @@
 		<th class="instcode"><a href="http://forum.vnoss.org/post26320.html#p26320" rel="bookmark" title="VnOSS Forum: CHIM extension for Firefox [27/12/2006 10:06]">Instcode <acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 1.0</th>
 		<th class="avim-chrome"><a href="https://chrome.google.com/webstore/detail/opgbbffpdglhkpglnlkiclakjlpiedoh?hl=vi" rel="bookmark" title="Cửa hàng Chrome trực tuyến: AVIM - Bộ Gõ Tiếng Việt"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> cho Chrome</a> 0.7</th>
 		<th class="google"><a href="https://chrome.google.com/webstore/detail/google-input-tools-by-goo/mclkkofklkfljcocdinagocijmpgbhab?hl=vi" rel="bookmark" title="Cửa hàng Chrome trực tuyến: Công cụ nhập liệu của Google (bởi Google)">Công&nbsp;cụ nhập&nbsp;liệu của Google</a> 3.10.0.0</th>
+		<th class="chrominom"><a href="https://chrome.google.com/webstore/detail/chrominom-vietnamese-han/ndhhadaiabkdkifjbjginjcdenedmgma?hl=vi" rel="bookmark" title="Cửa hàng Chrome trực tuyến: ChromiNom Vietnamese Han-Nom IME">ChromiNom</a> 1.0.4</th>
 		<th class="vietinput"><a href="https://chrome.google.com/webstore/detail/omjoadfhmincpkcpjoiccobdefjbbipl?hl=vi" rel="bookmark" title="Cửa hàng Chrome trực tuyến: VietInput">VietInput</a> 1.0.2</th>
 	</tr>
 </thead>
@@ -249,6 +250,7 @@
 		<td class="instcode"><time datetime="2006-12-12">12 tháng 12 năm 2006</time></td>
 		<td class="avim-chrome"><time datetime="2014-07-04">4 tháng 7 năm 2014</time></td>
 		<td class="google"><time datetime="2015-02-11">11 tháng 2 năm 2015</time></td>
+		<td class="chrominom"><time datetime="2014-09-28">28 tháng 9 năm 2014</time></td>
 		<td class="vietinput"><time datetime="2010-06-03">3 tháng 6 năm 2010</time></td>
 	</tr>
 	<tr class="cat-general">
@@ -263,6 +265,7 @@
 		<td class="instcode">10,6&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="avim-chrome">17.9&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="google">583&nbsp;<abbr title="kilôbyte">kB</abbr></td>
+		<td class="chrominom">98,9&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="vietinput">14,5&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 	</tr>
 	<tr class="cat-general">
@@ -277,6 +280,7 @@
 		<td class="instcode">11,2&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="avim-chrome">30,2&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="google">1,6&nbsp;<abbr title="mêgabyte">MB</abbr></td>
+		<td class="chrominom">695,0&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="vietinput">28,6&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 	</tr>
 	<tr class="cat-general">
@@ -291,6 +295,7 @@
 		<td class="instcode">3.153,6&nbsp;<abbr title="điểm ảnh">px</abbr><!-- (67.6+6+6+4+4)x(20+6+6) --></td>
 		<td class="avim-chrome">729&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 27x27 --></td>
 		<td class="google">729&ndash;1.457&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 27x27 + 517x211 --></td>
+		<td class="chrominom">729&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 27x27 --></td>
 		<td class="vietinput">0&nbsp;<abbr title="điểm ảnh">px</abbr><!-- 0x0 --></td>
 	</tr>
 	<tr class="cat-general">
@@ -305,39 +310,42 @@
 		<td class="instcode">Việt</td>
 		<td class="avim-chrome">Anh, Việt</td>
 		<td class="google">41</td>
+		<td class="chrominom">Anh</td>
 		<td class="vietinput">Anh</td>
 	</tr>
 	<tr class="cat-general">
 		<td>Giá</td>
-		<td class="avim">Miễn phí</td>
-		<td class="mudim">Miễn phí</td>
-		<td class="typingviet">Miễn phí</td>
-		<td class="chim">Miễn phí</td>
-		<td class="viettyping">Miễn phí</td>
-		<td class="vport">Miễn phí</td>
-		<td class="myavim">Miễn phí</td>
-		<td class="instcode">Miễn phí</td>
-		<td class="avim-chrome">Miễn phí</td>
-		<td class="google">Miễn phí</td>
-		<td class="vietinput">Miễn phí</td>
+		<td class="avim yes">Miễn phí</td>
+		<td class="mudim yes">Miễn phí</td>
+		<td class="typingviet yes">Miễn phí</td>
+		<td class="chim yes">Miễn phí</td>
+		<td class="viettyping yes">Miễn phí</td>
+		<td class="vport yes">Miễn phí</td>
+		<td class="myavim yes">Miễn phí</td>
+		<td class="instcode yes">Miễn phí</td>
+		<td class="avim-chromev">Miễn phí</td>
+		<td class="google yes">Miễn phí</td>
+		<td class="chrominom yes">Miễn phí</td>
+		<td class="vietinput yes">Miễn phí</td>
 	</tr>
 	<tr class="cat-general">
 		<td>Giấy phép</td>
-		<td class="avim"><acronym title="Massachusetts Institute of Technology" class="initialism">MIT</acronym></td>
-		<td class="mudim"><acronym title="General Public License">GPL</acronym> 3</td>
-		<td class="typingviet"><acronym title="Mozilla Public License">MPL</acronym> 2</td>
-		<td class="chim"><acronym title="General Public License">GPL</acronym> 2</td>
-		<td class="viettyping"><acronym title="General Public License">GPL</acronym></td>
-		<td class="vport">(Dễ dãi)</td>
-		<td class="myavim">(Dễ dãi)</td>
-		<td class="instcode"><acronym title="General Public License">GPL</acronym> 2</td>
-		<td class="avim-chrome"><a href="https://github.com/kimkha/avim-chrome/issues/8" rel="bookmark" title="GitHub: kimkha/avim-chrome: Vi phạm bản quyền">“<acronym title="General Public License">GPL</acronym> 3”</a></td>
-		<td class="google">Sở&nbsp;hữu độc&nbsp;quyền</td>
-		<td class="vietinput"><a href="http://www.codeproject.com/info/cpol10.aspx" hreflang="en" rel="bookmark" title="The Code Project: The Code Project Open License (CPOL) 1.02"><acronym title="Code Project Open License">CPOL</acronym> 1.02</a></td>
+		<td class="avim yes"><acronym title="Massachusetts Institute of Technology" class="initialism">MIT</acronym></td>
+		<td class="mudim yes"><acronym title="General Public License">GPL</acronym> 3</td>
+		<td class="typingviet yes"><acronym title="Mozilla Public License">MPL</acronym> 2</td>
+		<td class="chim yes"><acronym title="General Public License">GPL</acronym> 2</td>
+		<td class="viettyping yes"><acronym title="General Public License">GPL</acronym></td>
+		<td class="vport buggy">(Dễ dãi)</td>
+		<td class="myavim buggy">(Dễ dãi)</td>
+		<td class="instcode yes"><acronym title="General Public License">GPL</acronym> 2</td>
+		<td class="avim-chrome yes"><acronym title="General Public License">GPL</acronym> 3</td>
+		<td class="google no">Sở&nbsp;hữu độc&nbsp;quyền</td>
+		<td class="chrominom no">Sở&nbsp;hữu độc&nbsp;quyền</td>
+		<td class="vietinput buggy"><a href="http://www.codeproject.com/info/cpol10.aspx" hreflang="en" rel="bookmark" title="The Code Project: The Code Project Open License (CPOL) 1.02"><acronym title="Code Project Open License">CPOL</acronym> 1.02</a></td>
 	</tr>
 	<tr class="cat-general">
 		<td>Hệ thống nhập liệu</td>
-		<td class="avim"><a href="http://sourceforge.net/projects/rhos/" hreflang="en-GB" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20080728+</td>
+		<td class="avim">Theo <a href="http://sourceforge.net/projects/rhos/" hreflang="en-GB" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a></td>
 		<td class="mudim"><a href="http://xvnkb.sourceforge.net/chim/" hreflang="en" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.3</td>
 		<td class="typingviet">Riêng</td>
 		<td class="chim"><a href="http://xvnkb.sourceforge.net/chim/" hreflang="en" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.2</td>
@@ -347,6 +355,7 @@
 		<td class="instcode"><a href="http://xvnkb.sourceforge.net/chim/" hreflang="en" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.2</td>
 		<td class="avim-chrome"><a href="http://sourceforge.net/projects/rhos/" hreflang="en-GB" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20080728</td>
 		<td class="google">Bàn&nbsp;phím Ảo của Google</td>
+		<td class="chrominom">Theo <a href="http://www.codeproject.com/KB/scripting/VietUni2.aspx" hreflang="vi" rel="bookmark" title="The Code Project: Fastest &amp; Smallest Vietnamese JavaScript Input Editor">VietUni</a></td>
 		<td class="vietinput"><a href="http://www.codeproject.com/KB/scripting/VietUni2.aspx" hreflang="vi" rel="bookmark" title="The Code Project: Fastest &amp; Smallest Vietnamese JavaScript Input Editor">VietUni</a> 1.7</td>
 	</tr>
 	<tr class="cat-general">
@@ -361,6 +370,7 @@
 		<td class="instcode">Bộ đệm đầu vào</td>
 		<td class="avim-chrome">Nhạy ngữ cảnh</td>
 		<td class="google">Bộ đệm đầu vào</td>
+		<td class="chrominom">Nhạy ngữ cảnh</td>
 		<td class="vietinput">Nhạy ngữ cảnh</td>
 	</tr>
 	<tr id="stats" class="cat-header cat-stats">
@@ -378,6 +388,7 @@
 		<td class="instcode">Không có</td>
 		<td class="avim-chrome"><meter value="4.24" min="1" max="5" low="4" optimum="5">4/5</td>
 		<td class="google"><meter value="4.15" min="1" max="5" low="4" optimum="5">4/5</td>
+		<td class="chrominom">Không có</td>
 		<td class="vietinput"><meter value="3.5" min="1" max="5" low="4" optimum="5">3½/5</td>
 	</tr>
 	<tr class="cat-stats">
@@ -392,6 +403,7 @@
 		<td class="instcode">Không được ghi danh</td>
 		<td class="avim-chrome">7.429</td>
 		<td class="google">478.998</td>
+		<td class="chrominom">8</td>
 		<td class="vietinput">36</td>
 	</tr>
 	<tr id="moz-apps" class="cat-header cat-moz-apps collapsed">
@@ -400,8 +412,8 @@
 	<tr class="cat-moz-apps">
 		<td><a href="http://www.mozilla.com/vi/firefox/" rel="bookmark" title="Mozilla: Firefox">Mozilla Firefox</a><!-- , <acronym title="GNU&rsquo;s Not Unix">GNU</acronym> IceCat, Iceweasel --></td>
 		<td class="avim yes">2.0&ndash;39.0</td>
-		<td class="mudim yes">1.0&ndash;35.0</td>
-		<td class="typingviet yes">5.0&ndash;35.0</td>
+		<td class="mudim yes">1.0&ndash;37.0</td>
+		<td class="typingviet yes">5.0&ndash;37.0</td>
 		<td class="chim no">1.0&ndash;2.0</td>
 		<td class="viettyping no">Không</td>
 		<td class="vport no">1.5&ndash;2.0.0.<var>x</var></td>
@@ -409,6 +421,7 @@
 		<td class="instcode no">2.0&ndash;3.0</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -423,6 +436,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -437,6 +451,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -451,6 +466,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps prism">
@@ -465,6 +481,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -479,6 +496,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -493,6 +511,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<!-- <tr class="flock cat-moz-apps">
@@ -507,6 +526,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	<!-- <tr class="cat-moz-apps">
@@ -521,6 +541,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	<tr class="cat-moz-apps">
@@ -535,6 +556,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -549,6 +571,7 @@
 		<td class="instcode yes">9.<var>x</var></td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -563,6 +586,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -577,6 +601,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -591,6 +616,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -605,6 +631,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<!-- <tr class="cat-moz-apps">
@@ -619,6 +646,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	<tr class="cat-moz-apps">
@@ -633,6 +661,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -647,6 +676,7 @@
 		<td class="instcode buggy">0.5&ndash;3.0</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -661,6 +691,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<!-- <tr class="sameplace cat-moz-apps">
@@ -675,6 +706,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	<tr class="cat-moz-apps">
@@ -689,6 +721,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<!-- <tr class="cat-moz-apps">
@@ -703,6 +736,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -717,6 +751,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -731,6 +766,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-moz-apps">
@@ -745,6 +781,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	
@@ -763,6 +800,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">18+</td>
 		<td class="google yes">31+</td>
+		<td class="chrominom yes">18+</td>
 		<td class="vietinput yes">4+</td>
 	</tr>
 	<tr class="cat-other-apps">
@@ -777,6 +815,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-other-apps">
@@ -791,6 +830,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-other-apps">
@@ -805,6 +845,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	
@@ -823,6 +864,7 @@
 		<td class="instcode buggy">Trừ trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-methods">
@@ -837,6 +879,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-methods">
@@ -851,6 +894,7 @@
 		<td class="instcode buggy">Trừ trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-methods">
@@ -865,6 +909,7 @@
 		<td class="instcode buggy">Trừ trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-methods">
@@ -879,6 +924,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-methods">
@@ -893,6 +939,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome buggy">Telex + <acronym class="initialism">VNI</acronym></td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-methods">
@@ -907,6 +954,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-methods">
@@ -921,6 +969,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-methods">
@@ -935,6 +984,41 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
+		<td class="vietinput no">Không</td>
+	</tr>
+	
+	<tr id="output-features" class="cat-header cat-output">
+		<th colspan="12">Đầu ra</th>
+	</tr>
+	<tr class="cat-output">
+		<td>Quốc ngữ</td>
+		<td class="avim yes">Có</td>
+		<td class="mudim yes">Có</td>
+		<td class="typingviet yes">Có</td>
+		<td class="chim yes">Có</td>
+		<td class="viettyping yes">Có</td>
+		<td class="vport yes">Có</td>
+		<td class="myavim yes">Có</td>
+		<td class="instcode yes">Có</td>
+		<td class="avim-chrome yes">Có</td>
+		<td class="google yes">Có</td>
+		<td class="chrominom buggy">Phải bấm <kbd>Esc</kbd></td>
+		<td class="vietinput yes">Có</td>
+	</tr>
+	<tr class="cat-output">
+		<td>Chữ Hán/Nôm</td>
+		<td class="avim no">Không</td>
+		<td class="mudim no">Không</td>
+		<td class="typingviet no">Không</td>
+		<td class="chim no">Không</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport no">Không</td>
+		<td class="myavim no">Không</td>
+		<td class="instcode no">Không</td>
+		<td class="avim-chrome no">Không</td>
+		<td class="google no">Không</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -953,6 +1037,7 @@
 		<td class="instcode">Không có hỗn hợp</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google">Không có hỗn hợp</td>
+		<td class="chrominom no">Không có hỗn hợp</td>
 		<td class="vietinput no">Không có hỗn hợp</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -967,6 +1052,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -981,6 +1067,7 @@
 		<td class="instcode buggy">Chỉ&nbsp;có dấu&nbsp;thanh</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google buggy"><samp>Viet^̣</samp> (chỉ&nbsp;có dấu&nbsp;thanh trong Telex)</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -995,6 +1082,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no"><samp>truong+̀</samp></td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1009,6 +1097,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no"><samp>tóan</samp></td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1023,6 +1112,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no"><samp>trưong</samp></td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1037,6 +1127,7 @@
 		<td class="instcode no">Phải nhập lại từ</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Phải nhập lại từ</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1051,6 +1142,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no"><samp>mạ́̉̃</samp></td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1065,6 +1157,7 @@
 		<td class="instcode yes"><samp>cho</samp></td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google buggy">Chỉ dấu&nbsp;thanh trong Telex</td>
+		<td class="chrominom buggy"><samp>chơz</samp></td>
 		<td class="vietinput buggy"><samp>chơz</samp></td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1079,6 +1172,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1093,6 +1187,7 @@
 		<td class="instcode">Không hỗ trợ <acronym title="VIetnamese Quoted-Readable">VIQR</acronym></td>
 		<td class="avim-chrome">Không hỗ trợ <acronym title="VIetnamese Quoted-Readable">VIQR</acronym></td>
 		<td class="google yes"><samp>Đúng.</samp></td>
+		<td class="chrominom">Không hỗ trợ <acronym title="VIetnamese Quoted-Readable">VIQR</acronym></td>
 		<td class="vietinput">Không hỗ trợ <acronym title="VIetnamese Quoted-Readable">VIQR</acronym></td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1107,6 +1202,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no"><samp>Saị̣</samp></td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1121,6 +1217,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1135,6 +1232,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1149,6 +1247,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1163,6 +1262,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google buggy">Chỉ&nbsp;có <acronym title="Tiêu chuẩn Việt Nam">TCVN</acronym>&nbsp;6064</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1177,6 +1277,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
@@ -1191,6 +1292,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -1209,6 +1311,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Không</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1223,6 +1326,7 @@
 		<td class="instcode no">Gẫy</td>
 		<td class="avim-chrome yes">Không</td>
 		<td class="google yes">Không</td>
+		<td class="chrominom yes">Không</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1237,6 +1341,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Không</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1251,6 +1356,7 @@
 		<td class="instcode no">Có</td>
 		<td class="avim-chrome yes">Không</td>
 		<td class="google">Không bao giờ cuộn</td>
+		<td class="chrominom yes">Không</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1265,6 +1371,7 @@
 		<td class="instcode yes">Không</td>
 		<td class="avim-chrome yes">Không</td>
 		<td class="google">Không bao giờ cuộn</td>
+		<td class="chrominom yes">Không</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1279,6 +1386,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome buggy">Mất&nbsp;dấu khi làm&nbsp;lại</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1293,6 +1401,7 @@
 		<td class="instcode no">Có</td>
 		<td class="avim-chrome yes">Không</td>
 		<td class="google">Hoàn&nbsp;tác chí&nbsp;chóe</td>
+		<td class="chrominom">Không&nbsp;thể hoàn&nbsp;tác</td>
 		<td class="vietinput">Không&nbsp;thể hoàn&nbsp;tác</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1307,6 +1416,7 @@
 		<td class="instcode no">Có</td>
 		<td class="avim-chrome yes">Không</td>
 		<td class="google">Làm&nbsp;lại chí&nbsp;chóe</td>
+		<td class="chrominom" rowspan="2">Không&nbsp;thể làm&nbsp;lại</td>
 		<td class="vietinput" rowspan="2">Không&nbsp;thể làm&nbsp;lại</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1334,6 +1444,7 @@
 		<td class="instcode no">>500&nbsp;<abbr title="mili giây">ms</abbr></td>
 		<td class="avim-chrome yes">&asymp;0&nbsp;<abbr title="mili giây">ms</abbr></td>
 		<td class="google yes">&asymp;0&nbsp;<abbr title="mili giây">ms</abbr></td>
+		<td class="chrominom yes">&asymp;0&nbsp;<abbr title="mili giây">ms</abbr></td>
 		<td class="vietinput yes">&asymp;0&nbsp;<abbr title="mili giây">ms</abbr></td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1348,6 +1459,7 @@
 		<td class="instcode yes">Không</td>
 		<td class="avim-chrome no">Có</td>
 		<td class="google yes">Không</td>
+		<td class="chrominom no">Có</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
 	<!-- <tr class="cat-annoyances">
@@ -1358,6 +1470,7 @@
 		<td class="chim yes">1</td>
 		<td class="avim-chrome yes">1</td>
 		<td class="google">Hoàn&nbsp;tác chí&nbsp;chóe</td>
+		<td class="chrominom no">0</td>
 		<td class="vietinput no">0</td>
 		<td class="viettyipng yes">1</td>
 		<td class="vport no">2</td>
@@ -1376,6 +1489,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1390,6 +1504,7 @@
 		<td class="instcode no">Có</td>
 		<td class="avim-chrome yes">Không</td>
 		<td class="google yes">Không</td>
+		<td class="chrominom yes">Không</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
 	<tr class="cat-annoyances">
@@ -1404,6 +1519,7 @@
 		<td class="instcode">Ứng&nbsp;dụng không hỗ&nbsp;trợ <acronym title="độ phân giải cao">ĐPGC</acronym></td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -1422,6 +1538,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-spelling">
@@ -1436,6 +1553,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google" rowspan="3">Không bắt&nbsp;buộc chính&nbsp;tả</td>
+		<td class="chrominom" rowspan="3">Không bắt&nbsp;buộc chính&nbsp;tả</td>
 		<td class="vietinput" rowspan="3">Không bắt&nbsp;buộc chính&nbsp;tả</td>
 	</tr>
 	<tr class="cat-spelling">
@@ -1462,7 +1580,7 @@
 	<tr id="interface" class="cat-header cat-interface">
 		<th colspan="12">Các tính năng giao diện</th>
 	</tr>
-	<tr class="cat-interface">
+	<!-- <tr class="cat-interface">
 		<td>Nút trên Thanh tiện ích</td>
 		<td class="avim yes">Có</td>
 		<td class="mudim yes">Có</td>
@@ -1474,8 +1592,9 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome">Không&nbsp;có Thanh tiện&nbsp;ích</td>
 		<td class="google">Không&nbsp;có Thanh tiện&nbsp;ích</td>
+		<td class="chrominom">Không&nbsp;có Thanh tiện&nbsp;ích</td>
 		<td class="vietinput">Không&nbsp;có Thanh tiện&nbsp;ích</td>
-	</tr>
+	</tr> -->
 	<tr class="cat-interface">
 		<td>Trình đơn</td>
 		<td class="avim yes">Có</td>
@@ -1488,6 +1607,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1502,6 +1622,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1516,6 +1637,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1530,6 +1652,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1544,6 +1667,7 @@
 		<td class="instcode buggy">Gẫy trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
 		<td class="avim-chrome yes">Có (1)</td>
 		<td class="google yes">Có (2)</td>
+		<td class="chrominom buggy">Có (4)</td>
 		<td class="vietinput buggy">Có (4)</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1558,6 +1682,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1572,6 +1697,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1586,6 +1712,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google buggy">Chỉ bàn&nbsp;phím ảo</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput" rowspan="2">Không&nbsp;có giao&nbsp;diện</td>
 	</tr>
 	<tr class="cat-interface">
@@ -1600,6 +1727,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 	</tr>
 	<tr class="cat-interface">
 		<td>Tương thích với hộp văn bản gợi ý</td>
@@ -1613,6 +1741,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -1631,6 +1760,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome" rowspan="15">Không hỗ&nbsp;trợ Firefox</td>
 		<td class="google" rowspan="15">Không hỗ&nbsp;trợ Firefox</td>
+		<td class="chrominom" rowspan="15">Không hỗ&nbsp;trợ Firefox</td>
 		<td class="vietinput" rowspan="15">Không hỗ&nbsp;trợ Firefox</td>
 	</tr>
 	<tr class="cat-windows">
@@ -1799,6 +1929,7 @@
 		<td class="instcode" rowspan="3">Không hỗ&nbsp;trợ Flock</td>
 		<td class="avim-chrome" rowspan="3">Không hỗ&nbsp;trợ Flock</td>
 		<td class="google" rowspan="3">Không hỗ&nbsp;trợ Flock</td>
+		<td class="chrominom" rowspan="3">Không hỗ&nbsp;trợ Flock</td>
 		<td class="vietinput" rowspan="3">Không hỗ&nbsp;trợ Flock</td>
 	</tr>
 	<tr class="flock cat-windows-flock">
@@ -1827,6 +1958,7 @@
 		<td class="instcode" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
 		<td class="avim-chrome" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
 		<td class="google" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
+		<td class="chrominom" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
 		<td class="vietinput" rowspan="22">Không hỗ&nbsp;trợ SeaMonkey</td>
 	</tr>
 	<tr class="windows-seamonkey cat-windows-seamonkey">
@@ -1950,42 +2082,49 @@
 		<td class="instcode" rowspan="8">Không hỗ&nbsp;trợ Chrome</td>
 		<td class="avim-chrome buggy">Trừ tập&nbsp;tin trên máy</td>
 		<td class="google buggy">Trừ tập&nbsp;tin trên máy</td>
+		<td class="chrominom buggy">Trừ các trang an&nbsp;toàn</td>
 		<td class="vietinput buggy">Trừ các trang an&nbsp;toàn</td>
 	</tr>
 	<tr class="cat-windows-chrome">
 		<td>Các hộp thoại JavaScript (<code>prompt()</code>)</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-windows-chrome">
 		<td>Các hộp thoại xác thực <acronym title="HyperText Transfer Protocol">HTTP</acronym></td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-windows-chrome">
 		<td>Panel Đánh dấu trang</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-windows-chrome">
 		<td>Hộp thoại Đánh dấu trang Tất cả các Tab</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-windows-chrome">
 		<td>Hộp thoại Thuộc tính Dấu trang</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-windows-chrome">
 		<td>Công cụ dành cho Nhà phát triển</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -2004,6 +2143,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome" rowspan="6">Không có sẵn</td>
 		<td class="google" rowspan="6">Không có sẵn</td>
+		<td class="chrominom" rowspan="6">Không có sẵn</td>
 		<td class="vietinput" rowspan="6">Không có sẵn</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2072,6 +2212,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2085,6 +2226,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome">Không có sẵn</td>
 		<td class="google">Không có sẵn</td>
+		<td class="chrominom">Không có sẵn</td>
 		<td class="vietinput">Không có sẵn</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2098,6 +2240,7 @@
 		<td class="instcode buggy">Chỉ thanh&nbsp;lề</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2111,6 +2254,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome" rowspan="12">Không có sẵn</td>
 		<td class="google" rowspan="12">Không có sẵn</td>
+		<td class="chrominom" rowspan="12">Không có sẵn</td>
 		<td class="vietinput" rowspan="12">Không có sẵn</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2243,6 +2387,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2257,6 +2402,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome" rowspan="5">Không có sẵn</td>
 		<td class="google" rowspan="5">Không có sẵn</td>
+		<td class="chrominom" rowspan="5">Không có sẵn</td>
 		<td class="vietinput" rowspan="5">Không có sẵn</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2324,6 +2470,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2338,6 +2485,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome" rowspan="4">Không có sẵn</td>
 		<td class="google" rowspan="4">Không có sẵn</td>
+		<td class="chrominom" rowspan="4">Không có sẵn</td>
 		<td class="vietinput" rowspan="4">Không có sẵn</td>
 	</tr>
 	<tr class="cat-extensions">
@@ -2388,6 +2536,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2402,6 +2551,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google buggy">Chỉ chế&nbsp;độ tự&nbsp;động đặt&nbsp;dấu</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2416,6 +2566,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2430,6 +2581,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome buggy">Chỉ bảng&nbsp;tính</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2444,6 +2596,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2458,6 +2611,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Sự&nbsp;cố</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2472,6 +2626,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2486,6 +2641,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2500,6 +2656,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2514,6 +2671,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2528,6 +2686,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Làm méo&nbsp;mó</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-web-apps">
@@ -2542,6 +2701,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome buggy">Chỉ bảng tính</td>
 		<td class="google buggy">Chỉ bảng tính</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -2560,6 +2720,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2574,6 +2735,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2588,6 +2750,7 @@
 		<td class="instcode" rowspan="3">Không có sẵn</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2597,6 +2760,7 @@
 		<td class="typingviet no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2606,6 +2770,7 @@
 		<td class="typingviet no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2620,6 +2785,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2634,6 +2800,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<!-- <tr class="cat-textboxes">
@@ -2648,6 +2815,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2662,6 +2830,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2676,6 +2845,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2690,6 +2860,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
 	
@@ -2708,6 +2879,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-rich-textboxes">
@@ -2722,6 +2894,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -2740,6 +2913,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-plugins">
@@ -2754,6 +2928,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-plugins">
@@ -2768,6 +2943,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-plugins">
@@ -2782,6 +2958,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome">Không&nbsp;thể đánh&nbsp;chữ</td>
 		<td class="google">Không&nbsp;thể đánh&nbsp;chữ</td>
+		<td class="chrominom">Không&nbsp;thể đánh&nbsp;chữ</td>
 		<td class="vietinput">Không&nbsp;thể đánh&nbsp;chữ</td>
 	</tr>
 	<tr class="cat-plugins">
@@ -2796,6 +2973,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome">Không có sẵn</td>
 		<td class="google">Không có sẵn</td>
+		<td class="chrominom">Không có sẵn</td>
 		<td class="vietinput">Không có sẵn</td>
 	</tr>
 	
@@ -2814,6 +2992,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google buggy">Chỉ chế&nbsp;độ tự&nbsp;động đặt&nbsp;dấu</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-code-editors">
@@ -2828,6 +3007,7 @@
 		<td class="instcode" rowspan="4">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom" rowspan="4">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 		<td class="vietinput" rowspan="4">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 	</tr>
 	<!--<tr class="cat-code-editors">
@@ -2884,6 +3064,7 @@
 		<td class="vport no">Không</td>
 		<td class="myavim no">Không</td>
 		<td class="instcode" rowspan="34">Không hỗ trợ văn bản có định dạng</td>
+		<td class="chrominom" rowspan="34">Không hỗ trợ văn bản có định dạng</td>
 		<td class="vietinput" rowspan="34">Không hỗ trợ văn bản có định dạng</td>
 	</tr> -->
 	<tr class="cat-rich-editors">
@@ -2898,6 +3079,7 @@
 		<td class="instcode" rowspan="23">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom" rowspan="23">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 		<td class="vietinput" rowspan="23">Không hỗ&nbsp;trợ văn&nbsp;bản có định&nbsp;dạng</td>
 	</tr>
 	<!-- <tr class="cat-rich-editors">
@@ -3203,6 +3385,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3217,6 +3400,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3231,6 +3415,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Bị ghi đè</td>
 		<td class="vietinput no">Bị ghi đè</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3245,6 +3430,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3259,6 +3445,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3273,6 +3460,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3287,6 +3475,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3301,6 +3490,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3315,6 +3505,7 @@
 		<td class="instcode yes">Có</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-scripts">
@@ -3329,6 +3520,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome no">Không</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr>
 	
@@ -3347,6 +3539,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-other">
@@ -3361,6 +3554,7 @@
 		<td class="instcode buggy">Chỉ khi kích&nbsp;hoạt</td>
 		<td class="avim-chrome yes">Có</td>
 		<td class="google yes">Có</td>
+		<td class="chrominom no">Không</td>
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-other">
@@ -3375,6 +3569,7 @@
 		<td class="instcode no">Không</td>
 		<td class="avim-chrome">Không có sẵn</td>
 		<td class="google">Không có sẵn</td>
+		<td class="chrominom">Không có sẵn</td>
 		<td class="vietinput">Không có sẵn</td>
 	</tr>
 	

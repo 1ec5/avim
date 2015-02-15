@@ -123,7 +123,7 @@
 			document.getElementById("comparison").className = c;
             document.getElementById("comparison-wrapper").className = c;
             document.getElementById("moz-colgroup").setAttribute("colspan", show ? "5" : "2");
-            document.getElementById("chrome-colgroup").setAttribute("colspan", show ? "3" : "2");
+            document.getElementById("chrome-colgroup").setAttribute("colspan", show ? "4" : "3");
 		}
 		
 		function makeRowGroupsCollapsible() {
@@ -233,8 +233,9 @@
             <th class="myavim"><a href="http://my.opera.com/nicole82/blog/myavim" hreflang="vi" rel="bookmark" title="My Opera: Nicole82 pages: Bộ gõ add-on trong firefox">My AVIM</a> 20061001</th>
             <th class="instcode"><a href="http://forum.vnoss.org/post26320.html#p26320" hreflang="vi" rel="bookmark" title="VnOSS Forum: CHIM extension for Firefox [27/12/2006 10:06]">Instcode <acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 1.0</th>
             <th class="avim-chrome"><a href="https://chrome.google.com/webstore/detail/opgbbffpdglhkpglnlkiclakjlpiedoh" rel="bookmark" title="Chrome Web Store: AVIM - Bộ Gõ Tiếng Việt"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> for Chrome</a> 0.7</th>
-            <th class="google"><a href="https://chrome.google.com/webstore/detail/google-input-tools-by-goo/mclkkofklkfljcocdinagocijmpgbhab" rel="bookmark" title="Chrome Web Store: Google Input Tools (by Google)">Google Input Tools</a> 3.10.0.0</th>
-            <th class="vietinput"><a href="https://chrome.google.com/webstore/detail/omjoadfhmincpkcpjoiccobdefjbbipl" rel="bookmark" title="Chrome Web Store: VietInput">VietInput</a> 1.0.2</th>
+			<th class="google"><a href="https://chrome.google.com/webstore/detail/google-input-tools-by-goo/mclkkofklkfljcocdinagocijmpgbhab" rel="bookmark" title="Chrome Web Store: Google Input Tools (by Google)">Google Input Tools</a> 3.10.0.0</th>
+			<th class="chrominom"><a href="https://chrome.google.com/webstore/detail/chrominom-vietnamese-han/ndhhadaiabkdkifjbjginjcdenedmgma" rel="bookmark" title="Cửa hàng Chrome trực tuyến: ChromiNom Vietnamese Han-Nom IME">ChromiNom</a> 1.0.4</th>
+			<th class="vietinput"><a href="https://chrome.google.com/webstore/detail/omjoadfhmincpkcpjoiccobdefjbbipl" rel="bookmark" title="Chrome Web Store: VietInput">VietInput</a> 1.0.2</th>
         </tr>
     </thead>
     <tbody>
@@ -249,8 +250,9 @@
             <td class="myavim"><time datetime="2007-06-07">June 7<sup>th</sup>, 2007</time></td>
             <td class="instcode"><time datetime="2006-12-12">December 12<sup>th</sup>, 2006</time></td>
             <td class="avim-chrome"><time datetime="2014-07-04">July 4<sup>th</sup>, 2014</time></td>
-            <td class="google"><time datetime="2015-02-11">February 11<sup>th</sup>, 2015</time></td>
-            <td class="vietinput"><time datetime="2010-06-03">June 3<sup>rd</sup>, 2010</time></td>
+			<td class="google"><time datetime="2015-02-11">February 11<sup>th</sup>, 2015</time></td>
+			<td class="chrominom"><time datetime="2014-09-28">September, 28<sup>th</sup>, 2014</time></td>
+			<td class="vietinput"><time datetime="2010-06-03">June 3<sup>rd</sup>, 2010</time></td>
         </tr>
         <tr class="cat-general">
             <td>Download size</td>
@@ -263,8 +265,9 @@
             <td class="myavim">18.4&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="instcode">10.6&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="avim-chrome">17.9&nbsp;<abbr title="kilobytes">kB</abbr></td>
-            <td class="google">583&nbsp;<abbr title="kilobytes">kB</abbr></td>
-            <td class="vietinput">14.5&nbsp;<abbr title="kilobytes">kB</abbr></td>
+			<td class="google">583&nbsp;<abbr title="kilobytes">kB</abbr></td>
+			<td class="chrominom">98.9&nbsp;<abbr title="kilobytes">kB</abbr></td>
+			<td class="vietinput">14.5&nbsp;<abbr title="kilobytes">kB</abbr></td>
         </tr>
         <tr class="cat-general">
             <td>Size after installation</td>
@@ -277,8 +280,9 @@
             <td class="myavim">33.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="instcode">11.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="avim-chrome">30.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
-            <td class="google">1.6&nbsp;<abbr title="megabytes">MB</abbr></td>
-            <td class="vietinput">28.6&nbsp;<abbr title="kilobytes">kB</abbr></td>
+			<td class="google">1.6&nbsp;<abbr title="megabytes">MB</abbr></td>
+			<td class="chrominom">695.0&nbsp;<abbr title="kilobytes">kB</abbr></td>
+			<td class="vietinput">28.6&nbsp;<abbr title="kilobytes">kB</abbr></td>
         </tr>
         <tr class="cat-general">
             <td>Screen area</td>
@@ -291,7 +295,8 @@
             <td class="myavim">6,120&nbsp;<abbr title="pixels">px</abbr><!-- (87+81+2+2+79+2+2)x(22+1+1) --></td>
             <td class="instcode">3,153.6&nbsp;<abbr title="pixels">px</abbr><!-- (67.6+6+6+4+4)x(20+6+6) --></td>
             <td class="avim-chrome">729&nbsp;<abbr title="pixels">px</abbr><!-- 27x27 --></td>
-            <td class="google">729&ndash;1,457&nbsp;<abbr title="pixels">px</abbr><!-- 27x27 + 517x211 --></td>
+			<td class="google">729&ndash;1,457&nbsp;<abbr title="pixels">px</abbr><!-- 27x27 + 517x211 --></td>
+			<td class="chrominom">729&nbsp;<abbr title="pixels">px</abbr><!-- 27x27 --></td>
             <td class="vietinput">0&nbsp;<abbr title="pixels">px</abbr><!-- 0x0 --></td>
         </tr>
         <tr class="cat-general">
@@ -305,40 +310,43 @@
             <td class="myavim"><abbr title="English">en</abbr></td>
             <td class="instcode"><abbr title="Vietnamese">vi</abbr></td>
             <td class="avim-chrome"><abbr title="English">en</abbr>, <abbr title="Vietnamese">vi</abbr></td>
-            <td class="google">41</td>
+			<td class="google">41</td>
+			<td class="chrominom"><abbr title="English">en</abbr></td>
             <td class="vietinput"><abbr title="English">en</abbr></td>
         </tr>
         <tr class="cat-general">
             <td>Price</td>
-            <td class="avim">Free</td>
-            <td class="mudim">Free</td>
-            <td class="typingviet">Free</td>
-            <td class="chim">Free</td>
-            <td class="viettyping">Free</td>
-            <td class="vport">Free</td>
-            <td class="myavim">Free</td>
-            <td class="instcode">Free</td>
-            <td class="avim-chrome">Free</td>
-            <td class="google">Free</td>
-            <td class="vietinput">Free</td>
+            <td class="avim yes">Free</td>
+            <td class="mudim yes">Free</td>
+            <td class="typingviet yes">Free</td>
+            <td class="chim yes">Free</td>
+            <td class="viettyping yes">Free</td>
+            <td class="vport yes">Free</td>
+            <td class="myavim yes">Free</td>
+            <td class="instcode yes">Free</td>
+            <td class="avim-chrome yes">Free</td>
+			<td class="google yes">Free</td>
+			<td class="chrominom yes">Free</td>
+            <td class="vietinput yes">Free</td>
         </tr>
         <tr class="cat-general">
             <td>License</td>
-            <td class="avim"><acronym title="Massachusetts Institute of Technology" class="initialism">MIT</acronym></td>
-            <td class="mudim"><acronym title="General Public License">GPL</acronym> 3</td>
-            <td class="typingviet"><acronym title="Mozilla Public License">MPL</acronym> 2</td>
-            <td class="chim"><acronym title="General Public License">GPL</acronym> 2</td>
-            <td class="viettyping"><acronym title="General Public License">GPL</acronym></td>
-            <td class="vport">(Permissive)</td>
-            <td class="myavim">(Permissive)</td>
-            <td class="instcode"><acronym title="General Public License">GPL</acronym> 2</td>
-            <td class="avim-chrome"><a href="https://github.com/kimkha/avim-chrome/issues/8" rel="bookmark" hreflang="vi" title="GitHub: kimkha/avim-chrome: Vi phạm bản quyền">“<acronym title="General Public License">GPL</acronym> 3”</a></td>
-            <td class="google">Proprietary</td>
-            <td class="vietinput"><a href="http://www.codeproject.com/info/cpol10.aspx" rel="bookmark" title="The Code Project: The Code Project Open License (CPOL) 1.02"><acronym title="Code Project Open License">CPOL</acronym> 1.02</a></td>
+            <td class="avim yes"><acronym title="Massachusetts Institute of Technology" class="initialism">MIT</acronym></td>
+            <td class="mudim yes"><acronym title="General Public License">GPL</acronym> 3</td>
+            <td class="typingviet yes"><acronym title="Mozilla Public License">MPL</acronym> 2</td>
+            <td class="chim yes"><acronym title="General Public License">GPL</acronym> 2</td>
+            <td class="viettyping yes"><acronym title="General Public License">GPL</acronym></td>
+            <td class="vport buggy">(Permissive)</td>
+            <td class="myavim buggy">(Permissive)</td>
+            <td class="instcode yes"><acronym title="General Public License">GPL</acronym> 2</td>
+            <td class="avim-chrome yes"><acronym title="General Public License">GPL</acronym> 3</td>
+            <td class="google no">Proprietary</td>
+            <td class="chrominom no">Proprietary</td>
+            <td class="vietinput buggy"><a href="http://www.codeproject.com/info/cpol10.aspx" rel="bookmark" title="The Code Project: The Code Project Open License (CPOL) 1.02"><acronym title="Code Project Open License">CPOL</acronym> 1.02</a></td>
         </tr>
         <tr class="cat-general">
             <td>Input engine</td>
-            <td class="avim"><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20080728+</td>
+            <td class="avim"><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a>-based</td>
             <td class="mudim"><a href="http://xvnkb.sourceforge.net/chim/" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.3</td>
             <td class="typingviet">Custom</td>
             <td class="chim"><a href="http://xvnkb.sourceforge.net/chim/" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.2</td>
@@ -347,7 +355,8 @@
             <td class="myavim"><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20061001</td>
             <td class="instcode"><a href="http://xvnkb.sourceforge.net/chim/" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 0.9.2</td>
             <td class="avim-chrome"><a href="http://sourceforge.net/projects/rhos/" rel="bookmark" title="SourceForge.net: AVIM"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym></a> 20080728</td>
-            <td class="google">Google Virtual Keyboard</td>
+			<td class="google">Google Virtual Keyboard</td>
+			<td class="chrominom"><a href="http://www.codeproject.com/KB/scripting/VietUni2.aspx" rel="bookmark" title="The Code Project: Fastest &amp; Smallest Vietnamese JavaScript Input Editor">VietUni</a>-based</td>
             <td class="vietinput"><a href="http://www.codeproject.com/KB/scripting/VietUni2.aspx" rel="bookmark" title="The Code Project: Fastest &amp; Smallest Vietnamese JavaScript Input Editor">VietUni</a> 1.7</td>
         </tr>
         <tr class="cat-general">
@@ -361,7 +370,8 @@
             <td class="myavim">Context-sensitive</td>
             <td class="instcode">Input buffer</td>
             <td class="avim-chrome">Context-sensitive</td>
-            <td class="google">Input buffer</td>
+			<td class="google">Input buffer</td>
+			<td class="chrominom">Context-sensitive</td>
             <td class="vietinput">Context-sensitive</td>
         </tr>
 		<tr id="stats" class="cat-header cat-stats">
@@ -374,11 +384,12 @@
             <td class="typingviet"><meter value="4" min="1" max="5" low="4" optimum="5">4/5</td>
             <td class="chim">Unlisted</td>
             <td class="viettyping">Unlisted</td>
-            <td class="vport" title="Unlisted"></td>
+            <td class="vport">Unlisted</td>
             <td class="myavim">Unlisted</td>
             <td class="instcode">Unlisted</td>
             <td class="avim-chrome"><meter value="4.24" min="1" max="5" low="4" optimum="5">4/5</td>
             <td class="google"><meter value="4.15" min="1" max="5" low="4" optimum="5">4/5</td>
+            <td class="chrominom">Unrated</td>
             <td class="vietinput"><meter value="3.5" min="1" max="5" low="4" optimum="5">3½/5</td>
         </tr>
         <tr class="cat-stats">
@@ -392,7 +403,8 @@
             <td class="myavim">Unlisted</td>
             <td class="instcode">Unlisted</td>
             <td class="avim-chrome">7,429</td>
-            <td class="google">478,998</td>
+			<td class="google">478,998</td>
+			<td class="chrominom">8</td>
             <td class="vietinput">36</td>
         </tr>
 		<tr id="moz-apps" class="cat-header cat-moz-apps collapsed">
@@ -401,15 +413,16 @@
         <tr class="cat-moz-apps">
             <td><a href="http://www.mozilla.com/en-US/firefox/" rel="bookmark" title="Mozilla: Firefox">Mozilla Firefox</a><!-- , <acronym title="GNU&rsquo;s Not Unix">GNU</acronym> IceCat, Iceweasel --></td>
             <td class="avim yes">2.0&ndash;39.0</td>
-            <td class="mudim yes">1.0&ndash;35.0</td>
-            <td class="typingviet yes">5.0&ndash;35.0</td>
+            <td class="mudim yes">1.0&ndash;37.0</td>
+            <td class="typingviet yes">5.0&ndash;37.0</td>
             <td class="chim no">1.0&ndash;2.0</td>
             <td class="viettyping no">No</td>
             <td class="vport no">1.5&ndash;2.0.0.<var>x</var></td>
             <td class="myavim no">1.5&ndash;2.0.0.<var>x</var></td>
             <td class="instcode no">2.0&ndash;3.0</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -423,7 +436,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -437,7 +451,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -451,7 +466,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps prism">
@@ -465,7 +481,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -479,7 +496,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -493,7 +511,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <!-- <tr class="cat-moz-apps flock">
@@ -507,7 +526,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr> -->
         <!-- <tr class="cat-moz-apps">
@@ -522,6 +542,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr> -->
         <tr class="cat-moz-apps">
@@ -535,7 +556,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -549,7 +571,8 @@
             <td class="myavim yes">8.0&ndash;9.<var>x</var></td>
             <td class="instcode yes">9.<var>x</var></td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -563,7 +586,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -577,7 +601,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -591,7 +616,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -605,7 +631,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <!-- <tr class="cat-moz-apps spicebird">
@@ -620,6 +647,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr> -->
         <tr class="cat-moz-apps">
@@ -633,7 +661,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -647,7 +676,8 @@
             <td class="myavim no">0.1&ndash;0.5.<var>x</var></td>
             <td class="instcode buggy">0.5&ndash;3.0</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -661,7 +691,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <!-- <tr class="cat-moz-apps sameplace">
@@ -676,6 +707,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr> -->
         <tr class="cat-moz-apps">
@@ -689,7 +721,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <!-- <tr class="cat-moz-apps">
@@ -704,6 +737,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -718,6 +752,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -732,6 +767,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-moz-apps">
@@ -744,7 +780,9 @@
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
+			<td class="chrominom no">No</td>
             <td class="google no">No</td>
         </tr> -->
         
@@ -762,7 +800,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">18+</td>
-            <td class="google yes">31+</td>
+			<td class="google yes">31+</td>
+			<td class="chrominom yes">18+</td>
             <td class="vietinput yes">4+</td>
         </tr>
         <tr class="cat-other-apps">
@@ -776,7 +815,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-other-apps">
@@ -790,7 +830,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-other-apps">
@@ -804,7 +845,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         
@@ -822,7 +864,8 @@
             <td class="myavim no">No</td>
             <td class="instcode buggy">Except in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="avim-chrome yes">Yes</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-methods">
@@ -836,7 +879,8 @@
             <td class="myavim yes">Yes</td>
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-methods">
@@ -850,7 +894,8 @@
             <td class="myavim no">No</td>
             <td class="instcode buggy">Except in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="avim-chrome no">No</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-methods">
@@ -864,7 +909,8 @@
             <td class="myavim no">No</td>
             <td class="instcode buggy">Except in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-methods">
@@ -878,7 +924,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-methods">
@@ -892,7 +939,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome buggy">Telex + <acronym class="initialism">VNI</acronym></td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-methods">
@@ -906,7 +954,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-methods">
@@ -920,7 +969,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-methods">
@@ -934,9 +984,44 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
-        </tr>
+		</tr>
+		
+		<tr id="output-features" class="cat-header cat-output">
+			<th colspan="12">Output</th>
+		</tr>
+		<tr class="cat-output">
+			<td>Vietnamese alphabet</td>
+			<td class="avim yes">Yes</td>
+			<td class="mudim yes">Yes</td>
+			<td class="typingviet yes">Yes</td>
+			<td class="chim yes">Yes</td>
+			<td class="viettyping yes">Yes</td>
+			<td class="vport yes">Yes</td>
+			<td class="myavim yes">Yes</td>
+			<td class="instcode yes">Yes</td>
+			<td class="avim-chrome yes">Yes</td>
+			<td class="google yes">Yes</td>
+			<td class="chrominom buggy">Must press <kbd>Esc</kbd></td>
+			<td class="vietinput yes">Yes</td>
+		</tr>
+		<tr class="cat-output">
+			<td>Han/Nom characters</td>
+			<td class="avim no">No</td>
+			<td class="mudim no">No</td>
+			<td class="typingviet no">No</td>
+			<td class="chim no">No</td>
+			<td class="viettyping no">No</td>
+			<td class="vport no">No</td>
+			<td class="myavim no">No</td>
+			<td class="instcode no">No</td>
+			<td class="avim-chrome no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom yes">Yes</td>
+			<td class="vietinput no">No</td>
+		</tr>
         
 		<tr id="input-features" class="cat-header cat-input-features">
             <th colspan="12">Input method features</th>
@@ -952,7 +1037,8 @@
             <td class="myavim">No combinations</td>
             <td class="instcode">No combinations</td>
             <td class="avim-chrome no">No</td>
-            <td class="google">No combinations</td>
+			<td class="google">No combinations</td>
+			<td class="chrominom">No combinations</td>
             <td class="vietinput">No combinations</td>
         </tr>
         <tr class="cat-input-features">
@@ -967,6 +1053,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
@@ -981,6 +1068,7 @@
             <td class="instcode buggy">Only tones</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google buggy"><samp>Viet^̣</samp> (only tones in Telex)</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
@@ -995,6 +1083,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no"><samp>truong+̀</samp></td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
@@ -1009,6 +1098,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no"><samp>tóan</samp></td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-input-features">
@@ -1023,6 +1113,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no"><samp>trưong</samp></td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-input-features">
@@ -1037,6 +1128,7 @@
             <td class="instcode no">Must retype word</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">Must retype word</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
@@ -1051,6 +1143,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no"><samp>mạ́̉̃</samp></td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
@@ -1065,6 +1158,7 @@
             <td class="instcode yes"><samp>cho</samp></td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google buggy">Tones in Telex only</td>
+            <td class="chrominom buggy"><samp>chơz</samp></td>
             <td class="vietinput buggy"><samp>chơz</samp></td>
         </tr>
         <tr class="cat-input-features">
@@ -1079,6 +1173,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-input-features">
@@ -1093,6 +1188,7 @@
             <td class="instcode"><acronym title="VIetnamese Quoted-Readable">VIQR</acronym> not supported</td>
             <td class="avim-chrome"><acronym title="VIetnamese Quoted-Readable">VIQR</acronym> not supported</td>
             <td class="google yes"><samp>Đúng.</samp></td>
+            <td class="chrominom"><acronym title="VIetnamese Quoted-Readable">VIQR</acronym> not supported</td>
             <td class="vietinput"><acronym title="VIetnamese Quoted-Readable">VIQR</acronym> not supported</td>
         </tr>
         <tr class="cat-input-features">
@@ -1107,6 +1203,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no"><samp>Saị̣</samp></td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
@@ -1121,6 +1218,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-input-features">
@@ -1135,6 +1233,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-input-features">
@@ -1149,6 +1248,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-input-features">
@@ -1163,6 +1263,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google buggy"><acronym title="Tiêu chuẩn Việt Nam">TCVN</acronym> 6064 only</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-input-features">
@@ -1177,6 +1278,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
@@ -1191,6 +1293,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         
@@ -1209,6 +1312,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">No</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1223,6 +1327,7 @@
             <td class="instcode no">Stops working</td>
             <td class="avim-chrome yes">No</td>
             <td class="google yes">No</td>
+            <td class="chrominom yes">No</td>
             <td class="vietinput yes">No</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1237,6 +1342,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">No</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1251,6 +1357,7 @@
             <td class="instcode no">Yes</td>
             <td class="avim-chrome yes">No</td>
             <td class="google">Doesn&rsquo;t scroll at all</td>
+            <td class="chrominom yes">No</td>
             <td class="vietinput yes">No</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1265,6 +1372,7 @@
             <td class="instcode yes">No</td>
             <td class="avim-chrome yes">No</td>
             <td class="google">Doesn&rsquo;t scroll at all</td>
+            <td class="chrominom yes">No</td>
             <td class="vietinput yes">No</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1279,6 +1387,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome buggy">Redo loses accents</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1293,6 +1402,7 @@
             <td class="instcode no">Yes</td>
             <td class="avim-chrome yes">No</td>
             <td class="google">Undo is broken</td>
+            <td class="chrominom">Unable to undo</td>
             <td class="vietinput">Unable to undo</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1307,6 +1417,7 @@
             <td class="instcode no">Yes</td>
             <td class="avim-chrome yes">No</td>
             <td class="google">Redo is broken</td>
+            <td class="chrominom" rowspan="2">Unable to redo</td>
             <td class="vietinput" rowspan="2">Unable to redo</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1334,6 +1445,7 @@
             <td class="instcode no">>500&nbsp;<abbr title="milliseconds">ms</abbr></td>
             <td class="avim-chrome yes">&asymp;0&nbsp;<abbr title="milliseconds">ms</abbr></td>
             <td class="google yes">&asymp;0&nbsp;<abbr title="milliseconds">ms</abbr></td>
+            <td class="chrominom yes">&asymp;0&nbsp;<abbr title="milliseconds">ms</abbr></td>
             <td class="vietinput yes">&asymp;0&nbsp;<abbr title="milliseconds">ms</abbr></td>
         </tr>
         <tr class="cat-annoyances">
@@ -1345,10 +1457,11 @@
             <td class="viettyping yes">No</td>
             <td class="vport yes">No</td>
             <td class="myavim yes">No</td>
-            <td class="instcode yes">No</td>
+			<td class="instcode yes">No</td>
+			<td class="avim-chrome no">Yes</td>
+			<td class="google yes">No</td>
+            <td class="chrominom no">Yes</td>
             <td class="vietinput yes">No</td>
-            <td class="avim-chrome no">Yes</td>
-            <td class="avim-chrome yes">No</td>
         </tr>
         <!-- <tr class="cat-annoyances">
             <td>Undo/redo levels per letter following an accented letter</td>
@@ -1362,6 +1475,7 @@
             <td class="instcode yes">1</td>
             <td class="avim-chrome yes">1</td>
             <td class="google">Undo is broken</td>
+            <td class="chrominom no">0</td>
             <td class="vietinput no">0</td>
         </tr> -->
         <tr class="cat-annoyances">
@@ -1376,6 +1490,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1390,6 +1505,7 @@
             <td class="instcode no">Yes</td>
             <td class="avim-chrome yes">No</td>
             <td class="google yes">No</td>
+            <td class="chrominom yes">No</td>
             <td class="vietinput yes">No</td>
         </tr>
         <tr class="cat-annoyances">
@@ -1404,6 +1520,7 @@
             <td class="instcode">No high-res support in application</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         
@@ -1422,6 +1539,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-spelling">
@@ -1436,6 +1554,7 @@
             <td class="instcode" rowspan="3">Spelling not enforced</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google" rowspan="3">Spelling not enforced</td>
+            <td class="chrominom" rowspan="3">Spelling not enforced</td>
             <td class="vietinput" rowspan="3">Spelling not enforced</td>
         </tr>
         <tr class="cat-spelling">
@@ -1460,7 +1579,7 @@
 		<tr id="interface" class="cat-header cat-interface">
             <th colspan="12">User interface features</th>
         </tr>
-        <tr class="cat-interface">
+        <!-- <tr class="cat-interface">
             <td>Add-on Bar button</td>
             <td class="avim yes">Yes</td>
             <td class="mudim yes">Yes</td>
@@ -1472,8 +1591,9 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome">No Add-on Bar</td>
             <td class="google">No Add-on Bar</td>
+            <td class="chrominom">No Add-on Bar</td>
             <td class="vietinput">No Add-on Bar</td>
-        </tr>
+        </tr> -->
         <tr class="cat-interface">
             <td>Menu</td>
             <td class="avim yes">Yes</td>
@@ -1486,6 +1606,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-interface">
@@ -1500,6 +1621,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-interface">
@@ -1514,6 +1636,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-interface">
@@ -1528,11 +1651,12 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-interface">
             <td>Keyboard shortcuts (number of fingers required)</td>
-            <td class="avim yes">Yes</td>
+            <td class="avim yes">Yes (1)</td>
             <td class="mudim buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="typingviet yes">Yes (2)</td>
             <td class="chim buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
@@ -1542,6 +1666,7 @@
             <td class="instcode buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="avim-chrome yes">Yes (1)</td>
             <td class="google yes">Yes (2)</td>
+            <td class="chrominom yes">Yes (4)</td>
             <td class="vietinput yes">Yes (4)</td>
         </tr>
         <tr class="cat-interface">
@@ -1556,6 +1681,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-interface">
@@ -1570,6 +1696,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-interface">
@@ -1583,7 +1710,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google buggy">Only the virtual keyboard</td>
+			<td class="google buggy">Only the virtual keyboard</td>
+			<td class="chrominom no">No</td>
             <td class="vietinput" rowspan="2">No controls</td>
         </tr>
         <tr class="cat-interface">
@@ -1597,7 +1725,8 @@
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
-            <td class="google no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
         </tr>
         <tr class="cat-interface">
             <td>Compatible with autocompletion in textboxes</td>
@@ -1611,6 +1740,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         
@@ -1629,6 +1759,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome" rowspan="15">Firefox not supported</td>
             <td class="google" rowspan="15">Firefox not supported</td>
+            <td class="chrominom" rowspan="15">Firefox not supported</td>
             <td class="vietinput" rowspan="15">Firefox not supported</td>
         </tr>
 		<tr class="cat-windows">
@@ -1797,6 +1928,7 @@
             <td class="instcode" rowspan="3">Flock not supported</td>
             <td class="avim-chrome" rowspan="3">Flock not supported</td>
             <td class="google" rowspan="3">Flock not supported</td>
+            <td class="chrominom" rowspan="3">Flock not supported</td>
             <td class="vietinput" rowspan="3">Flock not supported</td>
         </tr>
 	 <tr class="flock cat-windows-flock">
@@ -1825,6 +1957,7 @@
             <td class="instcode" rowspan="22">SeaMonkey not supported</td>
             <td class="avim-chrome" rowspan="22">SeaMonkey not supported</td>
             <td class="google" rowspan="22">SeaMonkey not supported</td>
+            <td class="chrominom" rowspan="22">SeaMonkey not supported</td>
             <td class="vietinput" rowspan="22">SeaMonkey not supported</td>
         </tr>
 		<tr class="windows-seamonkey cat-windows-seamonkey">
@@ -1948,42 +2081,49 @@
             <td class="instcode" rowspan="8">Chrome not supported</td>
             <td class="avim-chrome buggy">Except local files</td>
             <td class="google buggy">Except local files</td>
+            <td class="chrominom buggy">Except secure pages</td>
             <td class="vietinput buggy">Except secure pages</td>
         </tr>
         <tr class="cat-windows-chrome">
             <td>JavaScript dialogs (<code>prompt()</code>)</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-windows-chrome">
             <td><acronym title="HyperText Transfer Protocol">HTTP</acronym> authentication dialogs</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-windows-chrome">
             <td>Add Bookmark panel</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-windows-chrome">
             <td>Bookmark All Tabs dialog</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-windows-chrome">
             <td>Bookmark Properties dialog</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-windows-chrome">
             <td>Developer Tools</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         
@@ -2002,6 +2142,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome" rowspan="6">Unavailable</td>
             <td class="google" rowspan="6">Unavailable</td>
+            <td class="chrominom" rowspan="6">Unavailable</td>
             <td class="vietinput" rowspan="6">Unavailable</td>
         </tr>
         <tr class="cat-extensions">
@@ -2070,6 +2211,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-extensions">
@@ -2083,6 +2225,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome" rowspan="2">Unavailable</td>
             <td class="google" rowspan="2">Unavailable</td>
+            <td class="chrominom" rowspan="2">Unavailable</td>
             <td class="vietinput" rowspan="2">Unavailable</td>
         </tr>
         <tr class="cat-extensions">
@@ -2106,6 +2249,7 @@
             <td class="instcode buggy">Sidebar only</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-extensions">
@@ -2119,6 +2263,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome" rowspan="13">Unavailable</td>
             <td class="google" rowspan="13">Unavailable</td>
+            <td class="chrominom" rowspan="13">Unavailable</td>
             <td class="vietinput" rowspan="13">Unavailable</td>
         </tr>
         <tr class="cat-extensions">
@@ -2262,6 +2407,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-extensions">
@@ -2276,6 +2422,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome" rowspan="3">Unavailable</td>
             <td class="google" rowspan="3">Unavailable</td>
+            <td class="chrominom" rowspan="3">Unavailable</td>
             <td class="vietinput" rowspan="3">Unavailable</td>
         </tr>
         <!-- <tr class="cat-extensions">
@@ -2320,6 +2467,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-extensions">
@@ -2334,6 +2482,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome" rowspan="4">Unavailable</td>
             <td class="google" rowspan="4">Unavailable</td>
+            <td class="chrominom" rowspan="4">Unavailable</td>
             <td class="vietinput" rowspan="4">Unavailable</td>
         </tr>
         <tr class="cat-extensions">
@@ -2384,6 +2533,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2398,6 +2548,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google buggy">Auto-accent only</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2412,6 +2563,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2426,6 +2578,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome buggy">Only spreadsheets</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2440,6 +2593,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2454,6 +2608,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">Crashes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2468,6 +2623,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2482,6 +2638,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2496,6 +2653,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2510,6 +2668,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2524,6 +2683,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2538,6 +2698,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">Mangles text</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-web-apps">
@@ -2552,6 +2713,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome buggy">Only spreadsheets</td>
             <td class="google buggy">Only spreadsheets</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         
@@ -2570,6 +2732,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2584,6 +2747,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2598,6 +2762,7 @@
             <td class="instcode" rowspan="3">Unavailable</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2607,6 +2772,7 @@
             <td class="typingviet no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2616,6 +2782,7 @@
             <td class="typingviet no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2630,6 +2797,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2644,6 +2812,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <!-- <tr class="cat-textboxes">
@@ -2658,6 +2827,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2672,6 +2842,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2686,6 +2857,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-textboxes">
@@ -2700,6 +2872,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr> -->
         
@@ -2718,6 +2891,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-rich-textboxes">
@@ -2732,6 +2906,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         
@@ -2750,6 +2925,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-plugins">
@@ -2764,6 +2940,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-plugins">
@@ -2778,6 +2955,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google no">No</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-plugins">
@@ -2792,6 +2970,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome">Can’t type</td>
             <td class="google">Can’t type</td>
+            <td class="chrominom">Can’t type</td>
             <td class="vietinput">Can’t type</td>
         </tr>
         <tr class="cat-plugins">
@@ -2806,6 +2985,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome">Unavailable</td>
             <td class="google">Unavailable</td>
+            <td class="chrominom">Unavailable</td>
             <td class="vietinput">Unavailable</td>
         </tr>
         
@@ -2824,6 +3004,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google buggy">Auto-accent only</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-code-editors">
@@ -2838,6 +3019,7 @@
             <td class="instcode" rowspan="4">Rich text editing not supported</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom" rowspan="4">Rich text editing not supported</td>
             <td class="vietinput" rowspan="4">Rich text editing not supported</td>
         </tr>
         <!--<tr class="cat-code-editors">
@@ -2893,6 +3075,7 @@
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="instcode" rowspan="34">Rich text editing not supported</td>
+            <td class="chrominom" rowspan="34">Rich text editing not supported</td>
             <td class="vietinput" rowspan="34">Rich text editing not supported</td>
             <td class="avim-chrome no">No</td>
         </tr> -->
@@ -2908,6 +3091,7 @@
             <td class="instcode" rowspan="24">Rich text editing not supported</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom" rowspan="24">Rich text editing not supported</td>
             <td class="vietinput" rowspan="24">Rich text editing not supported</td>
         </tr>
         <!-- <tr class="cat-rich-editors">
@@ -3212,6 +3396,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-scripts">
@@ -3226,6 +3411,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-scripts">
@@ -3240,6 +3426,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">Overridden</td>
             <td class="vietinput no">Overridden</td>
         </tr>
         <tr class="cat-scripts">
@@ -3254,6 +3441,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-scripts">
@@ -3268,6 +3456,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-scripts">
@@ -3282,6 +3471,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         <tr class="cat-scripts">
@@ -3296,6 +3486,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-scripts">
@@ -3310,6 +3501,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-scripts">
@@ -3324,6 +3516,7 @@
             <td class="instcode yes">Yes</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-scripts">
@@ -3338,6 +3531,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome no">No</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr>
         
@@ -3356,6 +3550,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-other">
@@ -3370,6 +3565,7 @@
             <td class="instcode buggy">Only when enabled</td>
             <td class="avim-chrome yes">Yes</td>
             <td class="google yes">Yes</td>
+            <td class="chrominom no">No</td>
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-other">
@@ -3384,6 +3580,7 @@
             <td class="instcode no">No</td>
             <td class="avim-chrome">Unavailable</td>
             <td class="google">Unavailable</td>
+            <td class="chrominom">Unavailable</td>
             <td class="vietinput">Unavailable</td>
         </tr>
         
