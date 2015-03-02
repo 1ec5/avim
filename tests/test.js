@@ -128,6 +128,8 @@ okApplyKey(prefs, "ki", "s", "kí");	// UniKey #23
 // https://chrome.google.com/webstore/detail/opgbbffpdglhkpglnlkiclakjlpiedoh/reviews
 okApplyKey(prefs, "đuơc", "j", "được");
 
+okApplyKey(prefs, "qu", "w", "quw");	// kimkha/avim-chrome#10
+
 let prefs = {
 	method: 2 /* VNI */,
 	ckSpell: true,
