@@ -345,9 +345,14 @@ function splice(outer, evt) {
 	// Carry out the transaction.
 	if (editor.beginTransaction) editor.beginTransaction();
 	try {
+		// (#123) convertCustomChars() can increase the word length.
+		let wordStart = sel.anchorOffset - word.length;
+		if ("maxLength" in outer && outer.maxLength !== -1) {
+			result.value = result.value.substr(0, outer.maxLength - wordStart);
+		}
 		if ("value" in result && result.value != word) {
-			let txn = new SpliceTxn(outer, node, sel.anchorOffset - word.length,
-									word.length, result.value);
+			let txn = new SpliceTxn(outer, node, wordStart, word.length,
+									result.value);
 			editor.doTransaction(txn);
 		}
 	}
