@@ -25,6 +25,9 @@ function Transferable(win) {
 	return xfer;
 }
 
+const tip = "@mozilla.org/text-input-processor;1" in Cc &&
+	Cc["@mozilla.org/text-input-processor;1"].createInstance(Ci.nsITextInputProcessor);
+
 /*
  * Proxy for a Google Kix editor to pose as an ordinary HTML <textarea>.
  * 
@@ -280,6 +283,11 @@ function KixProxy(evt) {
 		// In kix_2014.50-Tue_e, the caret gets stuck in a weird position if we
 		// synthesize composition events. In sketchy_2014.50-Tue-b, the same
 		// happens unless we also synthesize keydown and keyup.
+		// Firefox 38 introduces a convenient abstraction for IMEs.
+		if (tip && tip.beginInputTransactionForTests(win) &&
+			tip.commitCompositionWith(this.value)) {
+			return true;
+		}
 		//winUtils.sendKeyEvent("keypress", evt.DOM_VK_BACK_SPACE, 0, 0);
 		//winUtils.sendCompositionEvent("compositionstart", "", "");
 		//try {
