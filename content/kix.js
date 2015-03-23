@@ -42,7 +42,7 @@ function KixProxy(evt) {
 	let winUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
 		.getInterface(Ci.nsIDOMWindowUtils);
 	if (!winUtils || !("sendKeyEvent" in winUtils &&
-					   "sendCompositionEvent" in winUtils &&
+					   //"sendCompositionEvent" in winUtils &&
 					   "sendContentCommandEvent" in winUtils)) {
 		// Parts of the API are only available starting in Gecko 1.9 or 2.0.
 		throw "Can't issue native events."
