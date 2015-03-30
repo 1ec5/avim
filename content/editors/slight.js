@@ -113,7 +113,7 @@ function eatChar(ctl, evtProxy) {
 		
 		// Exclude the last character from the word.
 		let word = _avim_lastWordInString(text.substr(0, selStart - 1));
-		let [newWord, changed] = word && _avim_applyKey(word, evtProxy);
+		let [newWord, changed] = word && JSON.parse(_avim_applyKey(word, evtProxy));
 		if (changed || (newWord && newWord != word)) {
 			if (!changed) newWord += text[selStart - 1];
 			let numExtraChars = newWord.length - word.length;
