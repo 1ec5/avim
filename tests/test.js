@@ -103,7 +103,7 @@ okApplyKey(prefs, "ng", "~", "ng̃");	// ce59e67eadca
 
 okApplyKey(prefs, "gya", ".", "gỵa");
 
-let prefs = {
+prefs = {
 	method: 1 /* Telex */,
 	ckSpell: true,
 	informal: false,
@@ -130,7 +130,7 @@ okApplyKey(prefs, "đuơc", "j", "được");
 
 okApplyKey(prefs, "qu", "w", "quw");	// kimkha/avim-chrome#10
 
-let prefs = {
+prefs = {
 	method: 2 /* VNI */,
 	ckSpell: true,
 	informal: false,
