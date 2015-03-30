@@ -1,6 +1,6 @@
-"use strict";
-
+/* global _avim_lastWordInString, _avim_applyKey, _avim_evtInfo, _avim_textChanged:true, ymacs */
 (function () {
+"use strict";
 
 let buffer = "ymacs" in window && ymacs.getActiveBuffer();
 if (!buffer) return;
@@ -19,7 +19,7 @@ let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 	which: _avim_evtInfo[1],
 	shiftKey: _avim_evtInfo[2],
 }));
-if (newWord && newWord != word) {
+if (newWord && newWord !== word) {
 	let linePos = buffer._rowColToPosition(oldSelection.row, 0);
 	let line = oldLine.substr(0, oldSelection.col - word.length) + newWord +
 		oldLine.substr(oldSelection.col);

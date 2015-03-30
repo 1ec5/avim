@@ -1,3 +1,4 @@
+/* global messageManager, avim, getIMEStatus:true */
 "use strict";
 
 /**
@@ -10,7 +11,7 @@ let AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 function AVIM()	{
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
-	const Cu = Components.utils;
+//	const Cu = Components.utils;
 	const CC = Components.Constructor;
 	
 	const PREF_VERSION = 1;
@@ -49,14 +50,14 @@ function AVIM()	{
 	/**
 	 * A wrapper around nsISupportsString.
 	 */
-	function SupportsString(value) {
+	function makeSupportsString(value) {
 		var cStr = nsSupportsString();
 		cStr.data = value;
 		return cStr;
 	}
 	
-	const isMac = navigator.platform == "MacPPC" ||
-		navigator.platform == "MacIntel";
+	const isMac = navigator.platform === "MacPPC" ||
+		navigator.platform === "MacIntel";
 	
 	this.prefsRegistered = false;
 	
@@ -111,7 +112,7 @@ function AVIM()	{
 				$("avim-toggle-panel").hidePopup(true);
 			}, 2000 /* ms */);
 			if (!panel.onpopuphiding) {
-				panel.onpopuphiding = function (evt) {
+				panel.onpopuphiding = function (/* evt */) {
 					if (this.popupFadeTimer) clearTimeout(this.popupFadeTimer);
 					this.popupFadeTimer = 0;
 				};
@@ -145,7 +146,7 @@ function AVIM()	{
 	 * 						AVIM.
 	 */
 	this.setMethod = function(m) {
-		if (m == -1) AVIMConfig.onOff = false;
+		if (m === -1) AVIMConfig.onOff = false;
 		else {
 			AVIMConfig.onOff = true;
 			AVIMConfig.method = m;
@@ -224,7 +225,7 @@ function AVIM()	{
 	this.setStatusPanel = function(shown) {
 		AVIMConfig.statusBarPanel = shown;
 		this.setPrefs("statusBarPanel");
-	}
+	};
 	
 	/**
 	 * Displays the status bar panel if currently hidden; hides it otherwise.
@@ -343,7 +344,7 @@ function AVIM()	{
 	 * @param data		{string}	the name of the preference that changed.
 	 */
 	this.observe = function(subject, topic, data) {
-		if (topic != "nsPref:changed") return;
+		if (topic !== "nsPref:changed") return;
 		this.getPrefs(data);
 		this.updateUI();
 		
@@ -393,26 +394,29 @@ function AVIM()	{
 		}
 		else {
 			for (let pref in boolPrefs) {
-				prefs.setBoolPref(pref, !!boolPrefs[pref]);
+				if (boolPrefs.propertyIsEnumerable(pref)) {
+					prefs.setBoolPref(pref, !!boolPrefs[pref]);
+				}
 			}
 		}
 		
 		// Integer preferences
-		if (!changedPref || changedPref == "prefVersion") {
+		if (!changedPref || changedPref === "prefVersion") {
 			prefs.setIntPref("prefVersion", AVIMConfig.prefVersion);
 		}
-		if (!changedPref || changedPref == "method") {
+		if (!changedPref || changedPref === "method") {
 			prefs.setIntPref("method", AVIMConfig.method);
 		}
-		if (!changedPref || changedPref == "volume") {
+		if (!changedPref || changedPref === "volume") {
 			prefs.setIntPref("volume",
 							 Math.round(clamp(AVIMConfig.volume, 0, 100)));
 		}
 		
 		// Custom string preferences
-		if (!changedPref || changedPref == "ignoredFieldIds") {
-			let ids = SupportsString(AVIMConfig.exclude.join(" ").toLowerCase());
-			prefs.setComplexValue("ignoredFieldIds", Ci.nsISupportsString, ids);
+		if (!changedPref || changedPref === "ignoredFieldIds") {
+			let ids = AVIMConfig.exclude.join(" ").toLowerCase();
+			prefs.setComplexValue("ignoredFieldIds", Ci.nsISupportsString,
+								  makeSupportsString(ids));
 		}
 	};
 	
@@ -424,6 +428,7 @@ function AVIM()	{
 	this.getPrefs = function(changedPref) {
 //		dump("Changed pref: " + changedPref + "\n");							// debug
 		let specificPref = true;
+/* jshint -W086 */
 		switch (changedPref) {
 			default:
 				// Fall through when changedPref isn't defined, which happens at
@@ -533,6 +538,7 @@ function AVIM()	{
 					prefs.getBoolPref("scriptMonitor.vinova");
 //				if (specificPref) break;
 		}
+/* jshint +W086 */
 	};
 	
 	this.numCtrlPresses = 0;
@@ -575,7 +581,7 @@ function AVIM()	{
 		//dump("AVIM.onKeyDown -- code: " + String.fromCharCode(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
-		if (e.which == e.DOM_VK_CONTROL && e.ctrlKey && !e.metaKey &&
+		if (e.which === e.DOM_VK_CONTROL && e.ctrlKey && !e.metaKey &&
 			!e.altKey && !e.shiftKey &&
 			!(this.numCtrlPresses && this.ctrlStartDate &&
 			  // GetDoubleClickTime() on Windows: ?–5 s, default 500 ms
@@ -595,7 +601,7 @@ function AVIM()	{
 	 * @returns {boolean}	True if AVIM modified the textbox as a result of the
 	 * 						keypress.
 	 */
-	this.onKeyPress = function(e) {
+	this.onKeyPress = function(/* e */) {
 		//dump("AVIM.onKeyPress -- code: " + String.fromCharCode(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
@@ -615,7 +621,7 @@ function AVIM()	{
 		if (avim && avim.isWaitingForCtrlKeyUp) {
 			avim.isWaitingForCtrlKeyUp = false;
 			if (!avim.ctrlStartDate) avim.ctrlStartDate = new Date();
-			if (e.which == e.DOM_VK_CONTROL && !e.ctrlKey && !e.metaKey &&
+			if (e.which === e.DOM_VK_CONTROL && !e.ctrlKey && !e.metaKey &&
 				!e.altKey && !e.shiftKey) {
 				if (++avim.numCtrlPresses > 1) {
 					avim.stopListeningForCtrl();
@@ -651,7 +657,7 @@ function AVIM()	{
 	/**
 	 * Responds to messages from frame scripts that are ready for preferences.
 	 */
-	this.onFrameReadyForPrefs = function (msg) {
+	this.onFrameReadyForPrefs = function (/* msg */) {
 		return AVIMConfig;
 	};
 	
@@ -665,7 +671,7 @@ function AVIM()	{
 			catch (e) {
 				return AVIMConfig.onOff;
 			}
-		}
+		};
 	}
 	
 	/**
@@ -687,7 +693,7 @@ function AVIM()	{
 			let before = null;
 			if (afterId) {
 				let elem = $(afterId);
-				if (elem && elem.parentNode == target) {
+				if (elem && elem.parentNode === target) {
 					before = elem.nextElementSibling;
 				}
 			}
@@ -706,15 +712,15 @@ function AVIM()	{
 			AVIMConfig.prefVersion = PREF_VERSION;
 			this.setPrefs("prefVersion");
 		}
-	}
-};
+	};
+}
 
 (function (win) {
 
 if ("avim" in win || win.frameElement) return;
 
 win.avim = new AVIM();
-addEventListener("load", function load(evt) {
+addEventListener("load", function load(/* evt */) {
 	removeEventListener("load", load, false);
 	
 	avim.registerPrefs();
@@ -735,7 +741,7 @@ addEventListener("load", function load(evt) {
 		messageManager.addMessageListener("AVIM:keypress", avim.onFrameKeyPress);
 	}
 	
-	addEventListener("unload", function unload(evt) {
+	addEventListener("unload", function unload(/* evt */) {
 		removeEventListener("unload", unload, false);
 		messageManager.removeMessageListener("AVIM:keypress",
 											 avim.onFrameKeyPress);

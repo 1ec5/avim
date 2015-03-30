@@ -1,6 +1,7 @@
+/* exported NSGetModule, NSGetFactory */
 "use strict";
 
-const Cc = Components.classes,
+const /* Cc = Components.classes, */
 	  Ci = Components.interfaces,
 	  Cu = Components.utils;
 
@@ -17,7 +18,7 @@ const fcc = String.fromCharCode,
 	  up = String.toUpperCase;
 
 function nan(w) {
-	return isNaN(w) || w == 'e';
+	return isNaN(w) || w === 'e';
 }
 
 function codesFromChars(chars) {
@@ -122,9 +123,10 @@ function unV2(w) {
 		else unW = w[a] + unW;
 	}
 	return unW;
-};
+}
 
-function Transformation(startValue, context) {
+function _Transformation(startValue, context) {
+/* jshint -W040 */
 	this.value = startValue;
 	this.startLength = this.value.length;
 	
@@ -143,9 +145,10 @@ function Transformation(startValue, context) {
 		which: context.which,
 		shiftKey: context.shiftKey,
 	};
+/* jshint +W040 */
 }
 
-Transformation.prototype = {
+_Transformation.prototype = {
 	changed: false,
 	whit: false,
 	tw5: false,
@@ -158,8 +161,8 @@ Transformation.prototype = {
 	 */
 	methodIsVIQR: function () {
 		if (this.context.method > 2) return true;
-		return this.context.method == 0 && (this.context.autoMethods.viqr ||
-											this.context.autoMethods.viqrStar);
+		return this.context.method === 0 && (this.context.autoMethods.viqr ||
+											 this.context.autoMethods.viqrStar);
 	},
 	
 	/**
@@ -193,14 +196,12 @@ Transformation.prototype = {
 		
 		// Đồng sign after a number: valid
 		let num = /^([0-9]+)(d?)$/.exec(w);
-		let isVni = this.context.method == 2 ||
-			(this.context.method == 0 && this.context.autoMethods.vni);
 		if (num) {
 			// Entering the first D: valid
-			if (!num[2] && uk == "D") return false;
+			if (!num[2] && uk === "D") return false;
 			
 			// Entering the second D: valid
-			if (num[2] && uk == this.method.D) return false;
+			if (num[2] && uk === this.method.D) return false;
 		}
 		
 		w = this.unV(w);
@@ -213,7 +214,7 @@ Transformation.prototype = {
 		}
 		
 		// NG~: valid
-		if (uw == "NG" && uk == this.method.X && this.context.informal) {
+		if (uw === "NG" && uk === this.method.X && this.context.informal) {
 			return false;
 		}
 		
@@ -239,7 +240,7 @@ Transformation.prototype = {
 			.test(uw2)) { // CHY|K[AOU]|P[^H]|TRY|[NRX]Y|[NPT]HY
 			return true;
 		}
-		if (uw2 == "QU" && (this.method.DAWEO || this.method.SFJRX)) {
+		if (uw2 === "QU" && (this.method.DAWEO || this.method.SFJRX)) {
 			return true;
 		}
 		
@@ -262,44 +263,44 @@ Transformation.prototype = {
 		if (endCons && endCons[0]) {
 			tw = tw.substr(0, tw.length - endCons[0].length);
 			// NH after incompatible diphthongs and triphthongs: invalid
-			if (endCons[0] == "NH") {
+			if (endCons[0] === "NH") {
 				if (/^(?:[\u0102\u00c2\u00d4\u01a0]|I[E\u00ca]|O[\u0102E\u00ca]?|[U\u01af][AO\u01a0]?|UY[E\u00ca])$/.test(tw)) {	// /^(?:[ĂÂÔƠ]|I[EÊ]|O[ĂEÊ]?|[UƯ][AOƠ]?|UY[EÊ])$/
 					return true;
 				}
-				if (uk == this.method.trang && (tw == "A" || tw == "OA")) {
+				if (uk === this.method.trang && (tw === "A" || tw === "OA")) {
 					return true;
 				}
 			}
 			// Disallow DCD etc., but allow words beginning in GI.
-			if (!tw && cons && cons[0] != "GI") return true;
+			if (!tw && cons && cons[0] !== "GI") return true;
 		}
 		
 		// Extraneous consonants: invalid
 		if (tw && new RegExp(consRe).test(tw)) return true;
 		
 		uw2 = unV2(tw);
-		if (uw2 == "IAO") return true;
+		if (uw2 === "IAO") return true;
 		
 		// Invalid standalone diphthongs and triphthongs: invalid
-		if (tw != twE && /A[IOUY]|IA|IEU|UU|UO[UI]/.test(uw2)) return true;
+		if (tw !== twE && /A[IOUY]|IA|IEU|UU|UO[UI]/.test(uw2)) return true;
 		
-		if (tw != uw && uw2 == "YEU") return true;
-		if (uk == this.method.AEO && /\u01af[AEO\u01a0]$/.test(tw)) return true;	// ưô /Ư[AEOƠ]$/
+		if (tw !== uw && uw2 === "YEU") return true;
+		if (uk === this.method.AEO && /\u01af[AEO\u01a0]$/.test(tw)) return true;	// ưô /Ư[AEOƠ]$/
 		
 		if (this.method.them.indexOf(uk) >= 0 && !/^.UYE/.test(uw2) &&
-			uk != "E") {
+			uk !== "E") {
 			if (/A[IO]|EO|IA|O[EO]/.test(uw2)) return true;
 			
-			if (uk == this.method.trang) {
-				if (this.method.trang != "W" && uw2 == "UA") return true;
+			if (uk === this.method.trang) {
+				if (this.method.trang !== "W" && uw2 === "UA") return true;
 			}
-			else if (uw2 == "OA") return true;
+			else if (uw2 === "OA") return true;
 			
-			if (uk == this.method.moc && /^(?:[EI]U|UE|UYE?)$/.test(uw2)) {
+			if (uk === this.method.moc && /^(?:[EI]U|UE|UYE?)$/.test(uw2)) {
 				return true;
 			}
-			if (uk == this.method.moc || uk == this.method.trang) {
-				if (uw2 == "AU" || uw2 == "AY") return true;
+			if (uk === this.method.moc || uk === this.method.trang) {
+				if (uw2 === "AU" || uw2 === "AY") return true;
 			}
 		}
 		this.tw5 = tw;
@@ -319,7 +320,7 @@ Transformation.prototype = {
 		if (pos < 0) return false;
 		
 		let w = this.value.substring(0, pos);
-		if (w.substr(-1) == "\\" && this.methodIsVIQR()) return ["\\", pos];
+		if (w.substr(-1) === "\\" && this.methodIsVIQR()) return ["\\", pos];
 		return [w, pos];
 	},
 	
@@ -328,16 +329,16 @@ Transformation.prototype = {
 		let uniA = [];
 		this.D2 = "";
 		
-		if (method == 1 || (method == 0 && this.context.autoMethods.telex)) {
+		if (method === 1 || (method === 0 && this.context.autoMethods.telex)) {
 			uniA.push("DAEOWW".split("")); this.D2 += "DAWEO";
 		}
-		if (method == 2 || (method == 0 && this.context.autoMethods.vni)) {
+		if (method === 2 || (method === 0 && this.context.autoMethods.vni)) {
 			uniA.push("966678".split("")); this.D2 += "6789";
 		}
-		if (method == 3 || (method == 0 && this.context.autoMethods.viqr)) {
+		if (method === 3 || (method === 0 && this.context.autoMethods.viqr)) {
 			uniA.push("D^^^+(".split("")); this.D2 += "D^+(";
 		}
-		if (method == 4 || (method == 0 && this.context.autoMethods.viqrStar)) {
+		if (method === 4 || (method === 0 && this.context.autoMethods.viqrStar)) {
 			uniA.push("D^^^*(".split("")); this.D2 += "D^*(";
 		}
 		
@@ -346,7 +347,7 @@ Transformation.prototype = {
 		//dump(">>> start() -- w: <" + w + ">\n");								// debug
 		let key = "";
 		const backspace = Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
-		if (!this.context.keyCode || this.context.keyCode != backspace ||
+		if (!this.context.keyCode || this.context.keyCode !== backspace ||
 			!this.context.shiftKey) {
 			key = fcc(this.context.which);
 		}
@@ -379,19 +380,19 @@ Transformation.prototype = {
 	convertCustomChars: function (word, key, pos) {
 		let uw = up(word), uk = up(key);
 		
-		if (/^[0-9]+.$/.test(word) || word == "\u20ab") {	// ₫
+		if (/^[0-9]+.$/.test(word) || word === "\u20ab") {	// ₫
 			let lastChar = word.substr(-1);
-			if (lastChar == "\u0111" /* đ */ && uk == this.method.D) {
+			if (lastChar === "\u0111" /* đ */ && uk === this.method.D) {
 				// Convert [number]đ (case-sensitive) into the đồng sign.
 				this.splice(pos - 1, 1, "\u20ab");	// ₫
 				this.changed = true;
 			}
-			else if (lastChar == "\u20ab" /* ₫ */ && uk == this.method.D) {
+			else if (lastChar === "\u20ab" /* ₫ */ && uk === this.method.D) {
 				// On repeat, pull the underline out from under the Đ.
 				this.splice(pos - 1, 1, "d" + key);
 				this.changed = true;
 			}
-			else if (lastChar == "\u20ab" /* ₫ */ && uk == this.method.Z) {
+			else if (lastChar === "\u20ab" /* ₫ */ && uk === this.method.Z) {
 				// On remove, revert to a D.
 				this.splice(pos - 1, 1, "d");
 				this.changed = true;
@@ -400,17 +401,17 @@ Transformation.prototype = {
 		}
 		
 		if (this.context.informal || !this.context.ckSpell) {
-			if (uw == "NG" && uk == this.method.X) {
+			if (uw === "NG" && uk === this.method.X) {
 				// Convert NG to use a combining diacritic.
 				this.splice(pos, 0, "\u0303");
 				this.changed = true;
 			}
-			else if (uw == "NG\u0303" && uk == this.method.X) {
+			else if (uw === "NG\u0303" && uk === this.method.X) {
 				// On repeat, pull the tilde out.
 				this.splice(pos - 1, 1, key);
 				this.changed = true;
 			}
-			else if (uw == "NG\u0303" && uk == this.method.Z) {
+			else if (uw === "NG\u0303" && uk === this.method.Z) {
 				// On remove, revert to a G.
 				this.splice(pos - 1, 1, "");
 				this.changed = true;
@@ -423,12 +424,11 @@ Transformation.prototype = {
 	 * @param k	{string}	The character equivalent of the pressed key.
 	 */
 	findC: function (w, k, sf) {
-		let method = this.context.method;
-		if (this.methodIsVIQR() && w.substr(-1) == "\\") {
+		if (this.methodIsVIQR() && w.substr(-1) === "\\") {
 			return [1, k.charCodeAt(0)];
 		}
-		let str = "", res, cc = "", pc = "", vowA = [], s = upperLower("\u00c2\u0102\u00ca\u00d4\u01a0\u01af"), c = 0, dn = false, uw = up(w), tv, g;	// ÂĂÊÔƠƯ
-		let h, uc;
+		let str = "", res, cc = "", pc = "", vowA = [], s = upperLower("\u00c2\u0102\u00ca\u00d4\u01a0\u01af"), c = 0, uw = up(w), tv;	// ÂĂÊÔƠƯ
+		let uc;
 		for (let g = 0; g < sf.length; g++) {
 			str += nan(sf[g]) ? sf[g] : fcc(sf[g]);
 		}
@@ -436,13 +436,13 @@ Transformation.prototype = {
 		
 		if (this.method.DAWEO.indexOf(uk) >= 0) {
 			// Horned diphthongs and triphthongs
-			if (uk == this.method.moc) {
-				if (w2.indexOf("UU") >= 0 && this.tw5 != dont[1]) {
-					if (w2.substr(-2) != "UU") return false;
+			if (uk === this.method.moc) {
+				if (w2.indexOf("UU") >= 0 && this.tw5 !== dont[1]) {
+					if (w2.substr(-2) !== "UU") return false;
 					res = 2;
 				}
 				else if (w2.indexOf("UOU") >= 0) {
-					if (w2.substr(-3) != "UOU") return false;
+					if (w2.substr(-3) !== "UOU") return false;
 					res = 2;
 				}
 			}
@@ -452,20 +452,20 @@ Transformation.prototype = {
 					cc = w.substr(-g, 1);
 					pc = up(w.substr(-g - 1, 1));
 					uc = up(cc);
-					if (this.tw5 == this.unV(pc + uc) &&
+					if (this.tw5 === this.unV(pc + uc) &&
 						dont.indexOf(this.tw5) >= 0) {
 						continue;
 					}
 					if (str.indexOf(uc) >= 0) {
-						if ((uk == this.method.moc && this.unV(uc) == "U" && up(this.unV(w.substr(-g + 1, 1))) == "A") ||
-							(uk == this.method.trang && this.unV(uc) == "A" && this.unV(pc) == "U")) {
-							tv = 1 + (this.unV(uc) != "U");
+						if ((uk === this.method.moc && this.unV(uc) === "U" && up(this.unV(w.substr(-g + 1, 1))) === "A") ||
+							(uk === this.method.trang && this.unV(uc) === "A" && this.unV(pc) === "U")) {
+							tv = 1 + (this.unV(uc) !== "U");
 							let ccc = up(w.substr(-g - tv, 1));
-							if(ccc != "Q") {
+							if(ccc !== "Q") {
 								res = g + tv - 1;
-							} else if(uk == this.method.trang) {
+							} else if(uk === this.method.trang) {
 								res = g;
-							} else if(this.method.moc != this.method.trang) {
+							} else if(this.method.moc !== this.method.trang) {
 								return false;
 							}
 						} else {
@@ -475,10 +475,10 @@ Transformation.prototype = {
 							break;
 						}
 					} else if(DAWEOFA.indexOf(uc) >= 0) {
-						if(uk == this.method.D) {
-							if(cc == "\u0111") {	// đ
+						if(uk === this.method.D) {
+							if(cc === "\u0111") {	// đ
 								res = [g, 'd'];
-							} else if(cc == "\u0110") {	// Đ
+							} else if(cc === "\u0110") {	// Đ
 								res = [g, 'D'];
 							}
 						} else {
@@ -490,49 +490,51 @@ Transformation.prototype = {
 			}
 		}
 		
-		let tE = "", tEC;
-		if (uk != this.method.Z && this.method.DAWEO.indexOf(uk) < 0) {
+		let tE = "";
+		if (uk !== this.method.Z && this.method.DAWEO.indexOf(uk) < 0) {
 			tE = this.retKC(uk, true);
 		}
-		if (this.method.DAWEO.indexOf(uk) < 0) for (let g = 1; g <= w.length; g++) {
-			cc = up(w.substr(-g, 1));
-			pc = up(w.substr(-g - 1, 1));
-			if(str.indexOf(cc) >= 0) {
-				if(cc == 'U') {
-					if(pc != 'Q') {
+		if (this.method.DAWEO.indexOf(uk) < 0) {
+			for (let g = 1; g <= w.length; g++) {
+				cc = up(w.substr(-g, 1));
+				pc = up(w.substr(-g - 1, 1));
+				if(str.indexOf(cc) >= 0) {
+					if(cc === 'U') {
+						if(pc !== 'Q') {
+							c++;
+							vowA.push(g);
+						}
+					} else if(cc === 'I') {
+						if((pc !== 'G') || (c <= 0)) {
+							c++;
+							vowA.push(g);
+						}
+					} else {
 						c++;
 						vowA.push(g);
 					}
-				} else if(cc == 'I') {
-					if((pc != 'G') || (c <= 0)) {
-						c++;
-						vowA.push(g);
+				}
+				else if (uk !== this.method.Z) {
+					let h = this.repSign(k).indexOf(w.charCodeAt(w.length - g));
+					if (h >= 0) {
+						if (this.ckspell(w, k)) return false;
+						return [g, tE.charCodeAt(h % 24)];
 					}
-				} else {
-					c++;
-					vowA.push(g);
-				}
-			}
-			else if (uk != this.method.Z) {
-				let h = this.repSign(k).indexOf(w.charCodeAt(w.length - g));
-				if (h >= 0) {
-					if (this.ckspell(w, k)) return false;
-					return [g, tE.charCodeAt(h % 24)];
-				}
-				for (let h = 0; h < tE.length; h++) {
-					if(tE.charCodeAt(h) == w.charCodeAt(w.length - g)) {
-						return [g, skey_str[h]];
+					for (let h = 0; h < tE.length; h++) {
+						if(tE.charCodeAt(h) === w.charCodeAt(w.length - g)) {
+							return [g, skey_str[h]];
+						}
 					}
 				}
 			}
 		}
-		if (uk != this.method.Z && typeof(res) != 'object' &&
+		if (uk !== this.method.Z && typeof(res) !== 'object' &&
 			this.ckspell(w, k)) {
 			return false;
 		}
 		if (this.method.DAWEO.indexOf(uk) < 0) {
 			for (let g = 1; g <= w.length; g++) {
-				if (uk != this.method.Z && s.indexOf(w.substr(-g, 1)) >= 0) {
+				if (uk !== this.method.Z && s.indexOf(w.substr(-g, 1)) >= 0) {
 					return g;
 				}
 				if (tE.indexOf(w.substr(-g, 1)) >= 0) {
@@ -542,8 +544,8 @@ Transformation.prototype = {
 			}
 		}
 		if (res) return res;
-		if (c == 1 || uk == this.method.Z) return vowA.length && vowA[0];
-		else if (c == 2) {
+		if (c === 1 || uk === this.method.Z) return vowA.length && vowA[0];
+		else if (c === 2) {
 			let upW = up(w);
 			if (!this.context.oldAccent && /(?:UY|O[AE]) ?$/.test(upW)) {
 				return vowA[0];
@@ -558,7 +560,7 @@ Transformation.prototype = {
 			}
 			return vowA[1];
 		}
-		else if (c == 3) return vowA[1];
+		else if (c === 3) return vowA[1];
 		return false;
 	},
 	
@@ -576,22 +578,23 @@ Transformation.prototype = {
 		let replaceBy;
 		let wfix;
 		if(!nan(c)) {
-			replaceBy = fcc(c), wfix = up(this.unV(fcc(c)));
+			replaceBy = fcc(c);
+			wfix = up(this.unV(fcc(c)));
 			this.changed = true;
 		} else {
 			replaceBy = c;
-			if((up(c) == "O") && this.whit) {
+			if((up(c) === "O") && this.whit) {
 				bb=true;
 			}
 		}
 		let r;
-		if (up(val.substr(pos - 1, 1)) == 'U' && pos < this.startLength - 1 && up(val.substr(pos - 2, 1)) != 'Q') {
-			if (wfix == "\u01a0" /* Ơ */ || bb) {
-				r = (val.substr(pos - 1, 1) == 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
+		if (up(val.substr(pos - 1, 1)) === 'U' && pos < this.startLength - 1 && up(val.substr(pos - 2, 1)) !== 'Q') {
+			if (wfix === "\u01a0" /* Ơ */ || bb) {
+				r = (val.substr(pos - 1, 1) === 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
 			}
 			if (bb) {
 				this.changed = true;
-				replaceBy = (c == "o") ? "\u01a1" /* ơ */ : "\u01a0" /* Ơ */;
+				replaceBy = (c === "o") ? "\u01a1" /* ơ */ : "\u01a0" /* Ơ */;
 			}
 		}
 		if (r) {
@@ -613,7 +616,7 @@ Transformation.prototype = {
 		let pC = w.substr(-pos, 1);
 		for (let g = 0; g < sf.length; g++) {
 			let cmp = nan(sf[g]) ? pC : pC.charCodeAt(0);
-			if (cmp == sf[g]) {
+			if (cmp === sf[g]) {
 				let c = nan(by[g]) ? by[g].charCodeAt(0) : by[g];
 				return this.replaceChar(i - pos, c);
 			}
@@ -628,12 +631,12 @@ Transformation.prototype = {
 	 */
 	main: function (w, k, i, a, noNormC) {
 		let uk = up(k), got = false, t = intersperseLowerUpper("daaoueo");
-		let by = [], sf = [], method = this.context.method, h, g;
-		if (method == 0) {
-			if (a[0] == "9") method = 2;
-			else if (a.length > 3 && a[4] == "+") method = 3;
-			else if (a.length > 3 && a[4] == "*") method = 4;
-			else if (a[0] == "D") method = 1;
+		let by = [], sf = [], method = this.context.method, h;
+		if (method === 0) {
+			if (a[0] === "9") method = 2;
+			else if (a.length > 3 && a[4] === "+") method = 3;
+			else if (a.length > 3 && a[4] === "*") method = 4;
+			else if (a[0] === "D") method = 1;
 		}
 		this.method = [
 			null,
@@ -644,7 +647,7 @@ Transformation.prototype = {
 		][method];
 		
 		// Diacritic removal
-		if (k == "") {
+		if (k === "") {
 			k = this.method.Z;
 			uk = up(k);
 		}
@@ -653,7 +656,7 @@ Transformation.prototype = {
 			this.sr(w,k,i);
 			got=true;
 		}
-		else if (uk == this.method.Z) {
+		else if (uk === this.method.Z) {
 			sf = this.repSign(null);
 			for(h = 0; h < english.length; h++) {
 				sf.push(lowen.charCodeAt(h), english.charCodeAt(h));
@@ -662,13 +665,13 @@ Transformation.prototype = {
 			got = true;
 		}
 		else for (h = 0; h < a.length; h++) {
-			if (a[h] == uk) {
+			if (a[h] === uk) {
 				got = true;
 				by = by.concat(bya[h]);
 				sf = sf.concat(sfa[h]);
 			}
 		}
-		if (uk == this.method.moc) this.whit = true;
+		if (uk === this.method.moc) this.whit = true;
 		if (got) return this.DAWEOZ(k, w, by, sf, i, uk);
 		if (noNormC) return "";
 		return this.normC(w, k, i);
@@ -688,8 +691,8 @@ Transformation.prototype = {
 	 * 						empty string for diacritic removal.
 	 */
 	normC: function (w, k, i) {
-		if (k == "") k = this.method.Z;
-		if (k[0] == " ") return "";
+		if (k === "") k = this.method.Z;
+		if (k[0] === " ") return "";
 		let uk = up(k);
 		if (alphabet.indexOf(uk) < 0 && this.D2.indexOf(uk) < 0) return w;
 		let u = this.repSign(null);
@@ -729,7 +732,7 @@ Transformation.prototype = {
 		let kA = [this.method.A, this.method.moc, this.method.trang,
 				  this.method.E, this.method.O];
 		for (let i = 0; i < kA.length; i++) {
-			if (k != kA[i]) continue;
+			if (k !== kA[i]) continue;
 			
 			let posCC = ccA[i].indexOf(cc);
 			if (posCC < 0) continue;
@@ -784,7 +787,7 @@ Transformation.prototype = {
 	repSign: function (k) {
 		let u = [];
 		for (let a = 0; a < 5; a++) {
-			if (!k || this.method.SFJRX[a] != up(k)) {
+			if (!k || this.method.SFJRX[a] !== up(k)) {
 				u = u.concat(this.retKC(this.method.SFJRX[a]));
 			}
 		}
@@ -818,12 +821,12 @@ Transformation.prototype = {
 		}
 		let t = w.substr(-pos, 1);
 		let u = this.retKC(up(k));
-		if (t != up(t)) return u[lC];
+		if (t !== up(t)) return u[lC];
 		return u[uC];
 	},
 };
 
-return Transformation;
+return _Transformation;
 
 })();
 
@@ -873,7 +876,7 @@ AVIMTransformerService.prototype = {
 			return result;
 		}
 	},
-}
+};
 
 // Factory
 let AVIMTransformerServiceFactory = {
@@ -918,6 +921,8 @@ function NSGetModule(compMgr, fileSpec) {
 
 function NSGetFactory(cid) {
 	let cidStr = cid.toString();
+/* jshint -W116 */
 	if (cidStr == CLASS_ID) return AVIMTransformerServiceFactory;
+/* jshint +W116 */
 	throw Components.results.NS_ERROR_FACTORY_NOT_REGISTERED;
-};
+}

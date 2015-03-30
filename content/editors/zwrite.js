@@ -1,6 +1,6 @@
-"use strict";
-
+/* global _avim_applyKey, _avim_evtInfo, _avim_textChanged:true, Selection, Op, editor, NODE_TYPE */
 (function () {
+"use strict";
 
 let cursor = editor.doc.cursor;
 if (!cursor || !cursor.isCollapsed()) return;
@@ -20,7 +20,7 @@ let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 	which: _avim_evtInfo[1],
 	shiftKey: _avim_evtInfo[2],
 }));
-if (newWord && newWord != word) {
+if (newWord && newWord !== word) {
 	//dump(">>> zwrite.js -- Replacing <" + word + "> with <" + newWord + ">\n");	// debug
 	
 	Selection.deleteContents(selectionStart, selectionEnd);

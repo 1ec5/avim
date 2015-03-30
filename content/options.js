@@ -1,17 +1,12 @@
+/* global avim */
 "use strict";
 
 /**
  * A controller for the AVIM Options panel.
  */
 function AVIMOptionsPanel() {
-// $if{Debug}
-	// If true, AVIM displays a typing test suite. The variable is set at build
-	// time by build.sh.
-	const DEBUG = true;
-// $endif{}
-	
-	const Cc = Components.classes;
-	const Ci = Components.interfaces;
+	//const Cc = Components.classes;
+	//const Ci = Components.interfaces;
 	
 	const broadcasterIds = {
 		disabled: "disabled-bc",
@@ -91,7 +86,7 @@ function AVIMOptionsPanel() {
 	 */
 	let idListController = {
 		supportsCommand: function(cmd) {
-			return /* cmd == "cmd_delete" || */ cmd == "cmd_selectAll";
+			return /* cmd === "cmd_delete" || */ cmd === "cmd_selectAll";
 		},
 		isCommandEnabled: function(cmd) {
 			if (!$(idListId)) return false;
@@ -100,7 +95,7 @@ function AVIMOptionsPanel() {
 				//case "cmd_delete":
 				//	return $(idListId).selectedCount;
 				case "cmd_selectAll":
-					return document.activeElement == $(idListId);
+					return document.activeElement === $(idListId);
 			}
 			return false;
 		},
@@ -188,7 +183,7 @@ function AVIMOptionsPanel() {
 		let idList = $(idListId);
 		let pref = $(prefIds.ignoredIds);
 		if (!idList || !pref) return undefined;
-		if (ids == undefined)
+		if (ids === undefined)
 			ids = pref.value;
 		
 		// Clear the list.
@@ -228,7 +223,7 @@ function AVIMOptionsPanel() {
 		if (!bc || !pref) return;
 		
 		let enabled = $(prefIds.enabled).value;
-		let auto = pref.value == 0;
+		let auto = pref.value === 0;
 		bc.setAttribute("disabled", "" + (!enabled || !auto));
 	};
 	
@@ -336,7 +331,7 @@ function AVIMOptionsPanel() {
 		let button = $(resetButtonId);
 		if (!pref || !button) return;
 		
-		button.disabled = pref.defaultValue == pref.value;
+		button.disabled = pref.defaultValue === pref.value;
 	};
 	
 	/**
@@ -346,7 +341,7 @@ function AVIMOptionsPanel() {
 		if (!$(paneIds.blacklist) || !$(idListId)) return;
 		
 		let pref = $(prefIds.ignoredIds);
-		if (!pref || pref.defaultValue == pref.value) return;
+		if (!pref || pref.defaultValue === pref.value) return;
 		
 		this.updateIgnoredIds(pref.defaultValue);
 		$(paneIds.blacklist).userChangedValue($(idListId));

@@ -1,6 +1,7 @@
 // XPCOM component to attach AVIM onto every XUL window and dialog box
 // Inspired by the userChrome.js extension by Simon Bünzli
 // <http://mozilla.zeniko.ch/userchrome.js.html>
+/* exported NSGetModule, NSGetFactory */
 "use strict";
 
 const gCc = Components.classes;
@@ -34,7 +35,7 @@ function AVIMOverlayObserver(aWindow) {
  * @param data		{string}	
  */
 AVIMOverlayObserver.prototype.observe = function (subject, topic, data) {
-	if (topic != "xul-overlay-merged" && topic != "sb-overlay-load") return;
+	if (topic !== "xul-overlay-merged" && topic !== "sb-overlay-load") return;
 	if (!this.window) return;
 	
 	// Force AVIM's status bar panel to display the current input method.
@@ -116,7 +117,7 @@ AVIM.prototype.onWindowOpen = function (window) {
 	let handleEvent = function (event) {
 		let doc = event.originalTarget;
 //		dump("onWindowOpen: " + doc.location + "\n");						// debug
-		if (doc.location && doc.location.protocol == "chrome:" &&
+		if (doc.location && doc.location.protocol === "chrome:" &&
 			doc.contentType && xulTypes.indexOf(doc.contentType) >= 0 &&
 			manifestUrls.indexOf(doc.location.href) < 0) {
 			// Attaching an observer to loadOverlay() crashes Mozilla 1.8.x.
@@ -155,6 +156,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
 	
 	const observerSvc = gCc["@mozilla.org/observer-service;1"]
 		.getService(gCi.nsIObserverService);
+/* jshint -W086 */
 	switch (topic) {
 		case "profile-after-change":
 			if (this.didObserveStartup) break;
@@ -172,6 +174,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
 			this.onWindowOpen(subject);
 //			break;
 	}
+/* jshint +W086 */
 };
 
 /**
@@ -246,6 +249,8 @@ function NSGetModule(compMgr, fileSpec) {
 
 function NSGetFactory(cid) {
 	let cidStr = cid.toString();
+/* jshint -W116 */
 	if (cidStr == CLASS_ID) return AVIMFactory;
+/* jshint +W116 */
 	throw Components.results.NS_ERROR_FACTORY_NOT_REGISTERED;
 }

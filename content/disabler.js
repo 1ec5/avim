@@ -1,3 +1,4 @@
+/* global CHIM, ON_OFF:true, changeMode, setTypingMode, setMethod, _e_, vnMethod, VKSetMethod, disabledScripts */
 "use strict";
 
 (function () {
@@ -66,7 +67,7 @@ const disablers = {
 		win.on_off = 0;
 	},
 	Mudim: function(marker) {
-		if (parseInt(marker.method) == 0) return;
+		if (parseInt(marker.method) === 0) return;
 		if ("Toggle" in marker) marker.Toggle();
 		else CHIM.Toggle();
 	},
@@ -82,9 +83,10 @@ const disablers = {
 	VietIMEW: function() {
 		if (!("VietIME" in window)) return;
 		for (let memName in window) {
-			let mem = window[memName];
-			if ("setTelexMode" in mem && "setNormalMode" in mem) {
-				mem.setNormalMode();
+			if (window.propertyIsEnumerable(memName) &&
+				"setTelexMode" in window[memName] &&
+				"setNormalMode" in window[memName]) {
+				window[memName].setNormalMode();
 				break;
 			}
 		}
@@ -106,7 +108,9 @@ const disablers = {
 		}
 	},
 	xvnkb: function() {
-		if (parseInt(vnMethod) != 0) VKSetMethod(0);
+/* jshint -W064 */
+		if (parseInt(vnMethod) !== 0) VKSetMethod(0);
+/* jshint +W064 */
 	}
 };
 const markers = {

@@ -1,6 +1,5 @@
-"use strict";
-
 (function (context) {
+"use strict";
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -13,7 +12,7 @@ const nsTransferable = CC("@mozilla.org/widget/transferable;1",
  * A wrapper around nsITransferable that sets the source in order to respect
  * Private Browsing Mode.
  */
-function Transferable(win) {
+function makeTransferable(win) {
 	let xfer = nsTransferable();
 	if ("init" in xfer) {
 		if (win instanceof Ci.nsIDOMWindow) {
@@ -34,7 +33,7 @@ const tip = "@mozilla.org/text-input-processor;1" in Cc &&
  * @param evt		{object}	The keyPress event.
  */
 function KixProxy(evt) {
-	if (evt.keyCode == evt.DOM_VK_BACK_SPACE && !evt.shiftKey) {
+	if (evt.keyCode === evt.DOM_VK_BACK_SPACE && !evt.shiftKey) {
 		throw "Backspace.";
 	}
 	
@@ -48,7 +47,7 @@ function KixProxy(evt) {
 					   //"sendCompositionEvent" in winUtils &&
 					   "sendContentCommandEvent" in winUtils)) {
 		// Parts of the API are only available starting in Gecko 1.9 or 2.0.
-		throw "Can't issue native events."
+		throw "Can't issue native events.";
 	}
 	
 	let frame = win.frameElement;
@@ -67,8 +66,8 @@ function KixProxy(evt) {
 		return frameDoc.querySelectorAll(overlaySelector).length;
 	};
 	
-	const isMac = win.navigator.platform == "MacPPC" ||
-		win.navigator.platform == "MacIntel";
+	const isMac = win.navigator.platform === "MacPPC" ||
+		win.navigator.platform === "MacIntel";
 	
 	const tablePropsSel = "[role='menuitem'][aria-disabled='false'] " +
 		"[aria-label^='Table properties']";
@@ -93,7 +92,7 @@ function KixProxy(evt) {
 	 * Returns whether a resizable (i.e., non-text) object is selected.
 	 */
 	this.isObjectSelected = function () {
-		return itemType != drawingItemType && itemType != presItemType &&
+		return itemType !== drawingItemType && itemType !== presItemType &&
 			frameDoc.querySelector(altTextSel);
 	};
 	
@@ -120,9 +119,11 @@ function KixProxy(evt) {
 //		dump("KixProxy.selectPrecedingWord()\n");								// debug
 		let key = (isMac || !toLineStart) ?
 			evt.DOM_VK_LEFT : evt.DOM_VK_HOME;
+/* jshint -W016 */
 		let modifiers = (isMac || toLineStart) ?
 			evt.SHIFT_MASK : (evt.CONTROL_MASK | evt.SHIFT_MASK);
 		if (isMac) modifiers |= toLineStart ? evt.META_MASK : evt.ALT_MASK;
+/* jshint +W016 */
 		winUtils.sendKeyEvent("keypress", key, 0, modifiers);
 	};
 	
@@ -137,7 +138,7 @@ function KixProxy(evt) {
 										  board.kGlobalClipboard)) {
 			return false;
 		}
-		let xfer = Transferable(frameDoc.defaultView);
+		let xfer = makeTransferable(frameDoc.defaultView);
 		// TODO: Use the text/html flavor to retain formatting.
 		xfer.addDataFlavor("text/unicode");
 		board.getData(xfer, board.kGlobalClipboard);
@@ -152,7 +153,7 @@ function KixProxy(evt) {
 		if (!xfer) return "";
 		
 		// https://developer.mozilla.org/en/Using_the_Clipboard
-		let str = new Object(), len = new Object();
+		let str = {}, len = {};
 		try {
 			xfer.getTransferData("text/unicode", str, len);
 		}
@@ -165,7 +166,7 @@ function KixProxy(evt) {
 		// text/unicode is apparently stored as UTF-16.
 		str = str && str.data.substring(0, len.value / 2);
 		// BOM can occur at the beginning of the document.
-		return str != "\ufeff" && str;
+		return str !== "\ufeff" && str;
 	};
 	
 	/**
@@ -267,7 +268,7 @@ function KixProxy(evt) {
 	 */
 	this.commit = function() {
 //		dump("KixProxy.commit -- value: <" + this.value + ">; oldValue: <" + this.oldValue + ">\n");	// debug
-		if (this.value == this.oldValue) {
+		if (this.value === this.oldValue) {
 			if (this.value) this.revertSelection();
 			return false;
 		}
@@ -328,7 +329,7 @@ context.lazyHandlers.kix = function (evt) {
 	// avoid dropping any clipboard data.
 	const board = Cc["@mozilla.org/widget/clipboard;1"]
 		.getService(Ci.nsIClipboard);
-	let xfer = Transferable(doc.defaultView);
+	let xfer = makeTransferable(doc.defaultView);
 	let flavors = [
 		// /widget/public/nsITransferable.idl
 		"text/plain",				// kTextMime
@@ -378,7 +379,7 @@ context.lazyHandlers.kix = function (evt) {
 		board.setData(xfer, null, board.kGlobalClipboard);
 		
 		// Clear the clipboard.
-		//let xfer = Transferable(doc.defaultView);
+		//let xfer = makeTransferable(doc.defaultView);
 		//let board = Cc["@mozilla.org/widget/clipboard;1"]
 		//	.getService(Ci.nsIClipboard);
 		//board.setData(xfer, null, board.kGlobalClipboard);

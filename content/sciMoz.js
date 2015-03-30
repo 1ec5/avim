@@ -1,6 +1,5 @@
-"use strict";
-
 (function (context) {
+"use strict";
 
 /**
  * Returns the current position of the cursor in the given SciMoz plugin object.
@@ -18,11 +17,11 @@ function getCursorPosition(scintilla, selId, lineNum) {
 	if ((selId || 0) >= scintilla.selections) return -1;
 	
 	// Rectangular selection
-	if (lineNum != undefined) {
+	if (lineNum !== undefined) {
 		let caretPos = scintilla.getSelectionNCaret(0);
 		let colNum = scintilla.getColumn(caretPos);
 		let anchorPos = scintilla.getSelectionNAnchor(0);
-		if (colNum != scintilla.getColumn(anchorPos)) return -1;
+		if (colNum !== scintilla.getColumn(anchorPos)) return -1;
 		
 		let linePos = scintilla.positionFromLine(lineNum);
 		caretPos = scintilla.findColumn(lineNum, colNum);
@@ -31,7 +30,7 @@ function getCursorPosition(scintilla, selId, lineNum) {
 	}
 	
 	let caretPos = scintilla.getSelectionNCaret(selId || 0);
-	if (caretPos != scintilla.getSelectionNAnchor(selId || 0)) return -1;
+	if (caretPos !== scintilla.getSelectionNAnchor(selId || 0)) return -1;
 	lineNum = scintilla.lineFromPosition(caretPos);
 	let linePos = scintilla.positionFromLine(lineNum);
 	return scintilla.charPosAtPosition(caretPos) -
@@ -53,7 +52,7 @@ function getLine(scintilla, selId, lineNum) {
 	if ((selId || 0) >= scintilla.selections) return -1;
 	
 	// Non-rectangular selection
-	if (lineNum == undefined) {
+	if (lineNum === undefined) {
 		let caretPos = scintilla.getSelectionNCaret(selId || 0);
 		lineNum = scintilla.lineFromPosition(caretPos);
 	}
@@ -80,8 +79,8 @@ function SciMozProxy(elt, selId, lineNum) {
 //	dump("---SciMozProxy---\n");												// debug
 	
 	// Save the current selection.
-	let selectionIsRectangle = elt.selectionMode == elt.SC_SEL_RECTANGLE ||
-		elt.selectionMode == elt.SC_SEL_THIN;
+	let selectionIsRectangle = elt.selectionMode === elt.SC_SEL_RECTANGLE ||
+		elt.selectionMode === elt.SC_SEL_THIN;
 	if (selectionIsRectangle) {
 		this.oldSelectionStart = {
 			line: elt.lineFromPosition(elt.rectangularSelectionAnchor),
@@ -101,7 +100,7 @@ function SciMozProxy(elt, selId, lineNum) {
 	this.selectionEnd = this.selectionStart;
 //	dump("\tselectionStart: " + this.selectionStart + "\n");					// debug
 	if (this.selectionStart < 0) return;
-	this.oldLine = getLine(elt, selId, lineNum)
+	this.oldLine = getLine(elt, selId, lineNum);
 	let word = context.lastWordInString(this.oldLine.substr(0, this.selectionStart));
 	this.value = word;
 //	dump("\t<" + this.value + ">\n");											// debug
@@ -137,7 +136,7 @@ function SciMozProxy(elt, selId, lineNum) {
 	 * @returns {boolean}	True if the text changed.
 	 */
 	this.commit = function() {
-		if (this.value == word) return false;
+		if (this.value === word) return false;
 		
 		// Select the word up to the cursor.
 		if (!selectionIsRectangle) {
@@ -162,8 +161,8 @@ function SciMozProxy(elt, selId, lineNum) {
 		if (selectionIsRectangle) {
 			// If we're on the last line of the selection, move the caret.
 			let colChange = 0;
-			if (lineNum == Math.max(this.oldSelectionStart.line,
-									this.oldSelectionEnd.line)) {
+			if (lineNum === Math.max(this.oldSelectionStart.line,
+									 this.oldSelectionEnd.line)) {
 				colChange = this.value.length - word.length;
 			}
 			
@@ -202,8 +201,8 @@ context.lazyHandlers.sciMoz = function (evt) {
 		
 		// Komodo only seems to support one selection at a time, but it does
 		// support rectangular selection.
-		let selectionIsRectangle = elt.selectionMode == elt.SC_SEL_RECTANGLE ||
-			elt.selectionMode == elt.SC_SEL_THIN;
+		let selectionIsRectangle = elt.selectionMode === elt.SC_SEL_RECTANGLE ||
+			elt.selectionMode === elt.SC_SEL_THIN;
 		if (selectionIsRectangle) {
 			let startLine = elt.lineFromPosition(elt.rectangularSelectionAnchor);
 			let endLine = elt.lineFromPosition(elt.rectangularSelectionCaret);
@@ -243,10 +242,9 @@ context.lazyHandlers.sciMoz = function (evt) {
 	if (anyChanged) {
 		evt.handled = true;
 		evt.stopPropagation();
-		updateContainer(elt, elt);
 		return false;
 	}
 	return true;
 };
-	
+
 })(this);

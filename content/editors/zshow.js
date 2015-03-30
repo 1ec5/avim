@@ -1,6 +1,6 @@
-"use strict";
-
+/* globals _avim_applyKey, _avim_evtInfo, _avim_textChanged:true, ShapeEditor */
 (function () {
+"use strict";
 
 let editor = ShapeEditor.text.editor;
 let cursorIndex = editor && editor.cursor.getIndex();
@@ -21,7 +21,7 @@ let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 	which: _avim_evtInfo[1],
 	shiftKey: _avim_evtInfo[2],
 }));
-if (newWord && newWord != word) {
+if (newWord && newWord !== word) {
 	//dump(">>> zshow.js -- Replacing <" + word + "> with <" + newWord + ">\n");	// debug
 	
 	for (let i = 0; i < selectionStart; i++) editor.backspace();

@@ -1,6 +1,8 @@
 // In strict mode, the call to _executeCommand() fails because a reentrancy
 // check fails and diagnostic code attempts to build a stack using
 // argument.caller.
+/* jshint strict:false */
+/* global _avim_lastWordInString, _avim_applyKey, _avim_evtInfo, _avim_textChanged:true, GSAUI, GSWP, GSK, GSD, GSWP */
 //"use strict";
 
 (function () {
@@ -27,7 +29,7 @@ let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 	which: _avim_evtInfo[1],
 	shiftKey: _avim_evtInfo[2],
 }));
-if (newWord && newWord != word) {
+if (newWord && newWord !== word) {
 	//dump(">>> Replacing <" + word + "> with <" + newWord + ">\n");				// debug
 	
 	let editor = GSK.DocumentViewController.currentController

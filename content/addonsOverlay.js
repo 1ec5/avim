@@ -1,3 +1,4 @@
+/* global URI_NOTIFICATION_ICON_WARNING */
 "use strict";
 
 (function () {
@@ -89,7 +90,7 @@ function MudimMonitor() {
 		while (enumerator.hasMoreElements()) {
 			let win = enumerator.getNext();
 			try {
-				if (parseInt(win.Mudim.method) != 0) win.CHIM.Toggle();
+				if (parseInt(win.Mudim.method) !== 0) win.CHIM.Toggle();
 			}
 			catch (e) {}
 		}
@@ -159,7 +160,7 @@ function MudimMonitor() {
 	 * @param data		{string}	the name of the preference that changed.
 	 */
 	this.observe = function(subject, topic, data) {
-		if (topic != "nsPref:changed") return;
+		if (topic !== "nsPref:changed") return;
 		this.getPrefs(data);
 	};
 }

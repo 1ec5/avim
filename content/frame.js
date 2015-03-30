@@ -1,6 +1,6 @@
+/* global avim, sendSyncMessage, addMessageListener */
+(function (/* msgMgr */) {
 "use strict";
-
-(function (msgMgr) {
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -57,8 +57,8 @@ function quoteJS(str) {
  */
 function methodIsVIQR() {
 	if (AVIMConfig.method > 2) return true;
-	return AVIMConfig.method == 0 && (AVIMConfig.autoMethods.viqr ||
-									  AVIMConfig.autoMethods.viqrStar);
+	return AVIMConfig.method === 0 && (AVIMConfig.autoMethods.viqr ||
+									   AVIMConfig.autoMethods.viqrStar);
 }
 
 /**
@@ -283,7 +283,7 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	 *
 	 * @returns {boolean}	False always.
 	 */
-	this.merge = function(aTransaction) {
+	this.merge = function (aTransaction) {
 		return false;
 	};
 	
@@ -295,7 +295,7 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	 * 						otherwise.
 	 */
 	this.QueryInterface = function(iid) {
-		if (iid == Ci.nsITransaction || iid == Ci.nsISupports) return this;
+		if (iid === Ci.nsITransaction || iid === Ci.nsISupports) return this;
 		return null;
 	};
 }
@@ -325,12 +325,12 @@ function splice(outer, evt) {
 	let result = {};
 	let editor = getEditor(outer);
 	let sel = editor && editor.selection;
-	if (!sel || sel.rangeCount != 1 || !sel.isCollapsed) return result;
+	if (!sel || sel.rangeCount !== 1 || !sel.isCollapsed) return result;
 	let node = sel.anchorNode;
 	// In Midas, clicking the end of the line takes the selection out of any
 	// text node into the document at large. (#69) When an element is selected,
 	// anchorOffset is the number of child nodes preceding the selection.
-	if (node == editor.rootElement && sel.anchorOffset) {
+	if (node === editor.rootElement && sel.anchorOffset) {
 		node = node.childNodes[sel.anchorOffset - 1];
 		if (node.data) sel.collapse(node, node.data.length);
 	}
@@ -350,7 +350,7 @@ function splice(outer, evt) {
 		if ("maxLength" in outer && outer.maxLength !== -1) {
 			result.value = result.value.substr(0, outer.maxLength - wordStart);
 		}
-		if ("value" in result && result.value != word) {
+		if ("value" in result && result.value !== word) {
 			let txn = new SpliceTxn(outer, node, wordStart, word.length,
 									result.value);
 			editor.doTransaction(txn);
@@ -431,7 +431,7 @@ function findIgnore(el) {
 	let win = el.ownerDocument && el.ownerDocument.defaultView;
 	if (!win || !win.getComputedStyle) return false;
 	let mode = win.getComputedStyle(el, null).getPropertyValue("ime-mode");
-	return mode == "disabled";
+	return mode === "disabled";
 }
 
 /**
@@ -476,12 +476,12 @@ function handleKeyPress(evt) {
 //	dump("AVIM.handleKeyPress -- target: " + elt.tagName + "; code: " + evt.which + "\n");	// debug
 	if (findIgnore(evt.target) || !elt.type) return false;
 	let isHTML = htmlTypes.indexOf(elt.type) >= 0 ||
-		(elt.type == "password" && AVIMConfig.passwords) ||
-		(elt.type == "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
-							   AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
-		(elt.type == "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
-								 AVIMConfig.exclude.indexOf("e-mail") < 0));
-	if (!isHTML || elt.selectionStart != elt.selectionEnd) return false;
+		(elt.type === "password" && AVIMConfig.passwords) ||
+		(elt.type === "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
+								AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
+		(elt.type === "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
+								  AVIMConfig.exclude.indexOf("e-mail") < 0));
+	if (!isHTML || elt.selectionStart !== elt.selectionEnd) return false;
 	
 	let result = splice(elt, evt);
 	if (result.changed) {
@@ -723,7 +723,7 @@ function disableOthers(doc) {
 	if (!AVIMConfig.onOff || !AVIMConfig.disabledScripts.enabled) return;
 	
 	// Avoid disabling other IME extensions.
-	if (doc.location.protocol == "chrome:") return;
+	if (doc.location.protocol === "chrome:") return;
 	
 	// Since wrappedJSObject is only safe in Firefox 3 and above, sandbox all
 	// operations on it.
@@ -754,12 +754,12 @@ function checkCode(evt) {
 	let code = evt.which;
 	return !AVIMConfig.onOff ||
 		(code < evt.DOM_VK_INSERT &&
-		 code != evt.DOM_VK_BACK_SPACE &&
-		 code != evt.DOM_VK_PRINT &&
-		 /* code != evt.DOM_VK_SPACE && */
-		 code != evt.DOM_VK_RIGHT && code != evt.DOM_VK_DOWN &&
-		 code != evt.DOM_VK_EXECUTE) ||
-		code == evt.DOM_VK_SCROLL_LOCK;
+		 code !== evt.DOM_VK_BACK_SPACE &&
+		 code !== evt.DOM_VK_PRINT &&
+		 /* code !== evt.DOM_VK_SPACE && */
+		 code !== evt.DOM_VK_RIGHT && code !== evt.DOM_VK_DOWN &&
+		 code !== evt.DOM_VK_EXECUTE) ||
+		code === evt.DOM_VK_SCROLL_LOCK;
 }
 
 addEventListener("keydown", function (evt) {
@@ -768,7 +768,7 @@ addEventListener("keydown", function (evt) {
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
 	if (evt.ctrlKey || evt.metaKey || evt.altKey || checkCode(evt)) return;
 	let doc = evt.target.ownerDocument;
-	if (isChrome && doc.defaultView == window) {
+	if (isChrome && doc.defaultView === window) {
 		doc = evt.originalTarget.ownerDocument;
 	}
 	disableOthers(doc);
@@ -784,7 +784,7 @@ addEventListener("keypress", function (evt) {
 	let origTarget = evt.originalTarget;
 	if (isChrome && origTarget.localName === "browser") return;
 	let doc = target.ownerDocument;
-	if (isChrome && doc.defaultView == window) {
+	if (isChrome && doc.defaultView === window) {
 		doc = origTarget.ownerDocument;
 	}
 	
@@ -793,7 +793,7 @@ addEventListener("keypress", function (evt) {
 	let koView = koManager && koManager.currentView;
 	let scintilla = koView && koView.scintilla;
 	if (scintilla && scintilla.inputField &&
-		origTarget == scintilla.inputField.inputField) {
+		origTarget === scintilla.inputField.inputField) {
 		handleSciMoz(evt);
 		return;
 	}
@@ -824,13 +824,13 @@ addEventListener("keypress", function (evt) {
 		}
 		
 		// Ymacs
-		if ((tagName == "html" || tagName == "body") &&
+		if ((tagName === "html" || tagName === "body") &&
 			handleYmacs(evt)) {
 			return;
 		}
 		
 		// ACE editor
-		if (tagName == "textarea" && handleAce(evt)) return;
+		if (tagName === "textarea" && handleAce(evt)) return;
 	}
 	catch (exc) {
 // $if{Debug}
@@ -843,9 +843,9 @@ addEventListener("keypress", function (evt) {
 	
 	// Rich text editors
 	let wysiwyg =
-		(doc.designMode && doc.designMode.toLowerCase() == "on") ||
+		(doc.designMode && doc.designMode.toLowerCase() === "on") ||
 		(target.contentEditable &&
-		 target.contentEditable.toLowerCase() == "true");
+		 target.contentEditable.toLowerCase() === "true");
 	if (wysiwyg) ifMoz(evt);
 	// Plain text editors
 	else handleKeyPress(evt);

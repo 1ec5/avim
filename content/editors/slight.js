@@ -1,6 +1,6 @@
-"use strict";
-
+/* global _avim_findIgnore, _avim_lastWordInString, _avim_applyKey */
 (function () {
+"use strict";
 
 /**
  * Returns the Gecko-compatible virtual key code for the given Silverlight
@@ -58,7 +58,7 @@ function keyDown(sender, evt) {
 		};
 		evtProxy.which = evtProxy.charCode;
 		
-		if (!evtProxy.charCode || evtProxy.charCode == 0xff) {
+		if (!evtProxy.charCode || evtProxy.charCode === 0xff) {
 			setTimeout(function () {
 				eatChar(ctl, evtProxy);
 			}, 0);
@@ -66,7 +66,7 @@ function keyDown(sender, evt) {
 		}
 		
 		let [newWord, changed] = JSON.parse(_avim_applyKey(word, evtProxy));
-		if (changed || (newWord && newWord != word)) {
+		if (changed || (newWord && newWord !== word)) {
 			if (!changed) newWord += String.fromCharCode(evtProxy.charCode);
 			let numExtraChars = newWord.length - word.length;
 			let tooLong = ctl.maxLength &&
@@ -109,12 +109,12 @@ function eatChar(ctl, evtProxy) {
 		// Override the event proxy's key code using the last character.
 		let text = ctl.text;
 		evtProxy.which = evtProxy.charCode = text.charCodeAt(selStart - 1);
-		if (evtProxy.charCode == 0xff) return;
+		if (evtProxy.charCode === 0xff) return;
 		
 		// Exclude the last character from the word.
 		let word = _avim_lastWordInString(text.substr(0, selStart - 1));
 		let [newWord, changed] = word && JSON.parse(_avim_applyKey(word, evtProxy));
-		if (changed || (newWord && newWord != word)) {
+		if (changed || (newWord && newWord !== word)) {
 			if (!changed) newWord += text[selStart - 1];
 			let numExtraChars = newWord.length - word.length;
 			let tooLong = ctl.maxLength &&
