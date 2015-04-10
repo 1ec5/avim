@@ -1,3 +1,5 @@
+"use strict";
+
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 function AssertionError(options) {
 	this.name = "AssertionError";
@@ -24,7 +26,7 @@ let assert = {
 							  assert.claims * 1000) / 10;
 		print("-".repeat(80));
 		print(assert.errors.length + " error" +
-			  (assert.errors.length == 1 ? "" : "s") + " (" + rate +
+			  (assert.errors.length === 1 ? "" : "s") + " (" + rate +
 			  "% passing)");
 		for (let i = 0; i < assert.errors.length; i++) print(assert.errors[i]);
 		assert.errors = [];
@@ -44,7 +46,7 @@ let assert = {
 	
 	equal: function (actual, expected, message) {
 		assert.claims++;
-		if (actual != expected) {
+		if (actual !== expected) {
 			assert.errors.push(new AssertionError({
 				message: message,
 				actual: actual,
@@ -55,7 +57,7 @@ let assert = {
 	
 	notEqual: function (actual, notExpected, message) {
 		assert.claims++;
-		if (actual == expected) {
+		if (actual === notExpected) {
 			assert.errors.push(new AssertionError({
 				message: message,
 				actual: actual,

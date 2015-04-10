@@ -1,3 +1,4 @@
+/* global avim */
 "use strict";
 
 /**
@@ -6,9 +7,9 @@
 function AVIMTester() {
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
-	const Cu = Components.utils;
+	//const Cu = Components.utils;
 	
-	const inputFileBoxId = "input-file";
+	//const inputFileBoxId = "input-file";
 	const inputTextBoxId = "input-textbox";
 	
 //	const moveBackCheckId = "moveback-check";
@@ -16,8 +17,8 @@ function AVIMTester() {
 	const progressBarId = "run-progress";
 	
 	const resultsTreeId = "results-tree";
-	const resultsColIds = ["results-word-col", "results-input-col",
-						   "results-output-col", "results-result-col"];
+	//const resultsColIds = ["results-word-col", "results-input-col",
+	//					   "results-output-col", "results-result-col"];
 	
 	const sequences = {
 		"a": "a", "á": "a'", "à": "a`", "ã": "a~", "ả": "a?", "ạ": "a.",
@@ -78,8 +79,8 @@ function AVIMTester() {
 		fp.appendFilters(Ci.nsIFilePicker.filterText);
 		
 		let rv = fp.show();
-		if (rv != Ci.nsIFilePicker.returnOK &&
-			rv != Ci.nsIFilePicker.returnReplace) {
+		if (rv !== Ci.nsIFilePicker.returnOK &&
+			rv !== Ci.nsIFilePicker.returnReplace) {
 			return "";
 		}
 		
@@ -122,7 +123,7 @@ function AVIMTester() {
 							  .getBranch("extensions.avim.");
 		let method = prefs.getIntPref("method");
 		let methodName = methodNames[method];
-		if (methodName != "auto") return methodName;
+		if (methodName !== "auto") return methodName;
 		
 		let autoMethods = [prefs.getBoolPref("auto.telex"),
 						   prefs.getBoolPref("auto.vni"),
@@ -156,24 +157,24 @@ function AVIMTester() {
 		for (let i = 0; i < viqrWord.length; i++) {
 			let cur = viqrWord[i];
 			// Special-case "d" because it can also appear by itself.
-			if (cur.toLowerCase() == "d") {
-				if (i && cur.toLowerCase() == viqrWord[i - 1].toLowerCase()) {
+			if (cur.toLowerCase() === "d") {
+				if (i && cur.toLowerCase() === viqrWord[i - 1].toLowerCase()) {
 					accents.push(cur);
 					circumVowels.push(null);
 				}
 				else letters.push(cur);
 			}
 			// "+" should already be duplicated if necessary.
-			else if (cur == "+" && accents.indexOf("+") >= 0) continue;
+			else if (cur === "+" && accents.indexOf("+") >= 0) continue;
 			else if ("'`?~.^+(d".indexOf(cur) >= 0) {
 				accents.push(cur);
-				circumVowels.push((i && cur == "^") ? viqrWord[i - 1] : null);
+				circumVowels.push((i && cur === "^") ? viqrWord[i - 1] : null);
 			}
 			else letters.push(cur);
 		}
 		
 		// Convert word to given method.
-		if (method != "viqr") {
+		if (method !== "viqr") {
 			let transAccents = [];
 			for (let i = 0; i < accents.length; i++) {
 				let trans = methodMap[method][accents[i]];
@@ -219,7 +220,7 @@ function AVIMTester() {
 		}
 		
 		let tree = document.getElementById(resultsTreeId);
-		let doesMatch = inputTextBox.value == word;
+		let doesMatch = inputTextBox.value === word;
 		this.results.push([word, keys, inputTextBox.value, doesMatch]);
 		let numResults = this.results.length;
 		tree.treeBoxObject.rowCountChanged(numResults - 1, 1);
@@ -279,7 +280,7 @@ function AVIMTester() {
 				let rowData = controller.results[row];
 				if (!rowData) return null;
 				let cellData = rowData[column.index];
-				if (column.index == 3) return cellData ? "Passed" : "Failed";
+				if (column.index === 3) return cellData ? "Passed" : "Failed";
 				return rowData[column.index];
 			},
 			setTree: function (treebox) {
@@ -302,7 +303,7 @@ function AVIMTester() {
 			},
 			getRowProperties: function (row) {},
 			getCellProperties: function (row, col, props) {
-				if (col.index != 3) return undefined;
+				if (col.index !== 3) return undefined;
 				let propName = controller.results[row][3] ? "pass" : "fail";
 				if (props) props.AppendElement(atomService.getAtom(propName));
 				return propName;
@@ -334,6 +335,7 @@ function AVIMTester() {
 if (window && !("tester" in window)) {
 	window.tester = new AVIMTester();
 	addEventListener("load", function (e) {
+		/* global tester */
 		tester.init();
 	}, false);
 }

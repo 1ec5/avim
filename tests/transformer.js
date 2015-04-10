@@ -1,3 +1,5 @@
+/* global load, AVIMTransformerService, assert, -Components, -dump */
+/* exported Components, dump, okApplyKey */
 "use strict";
 
 // Global objects required by transformer.js

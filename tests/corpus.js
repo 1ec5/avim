@@ -1,3 +1,4 @@
+/* global load, applyKey, scriptArgs, read, quit, putstr, assert, -status */
 "use strict";
 
 const DESCRIPTION = "Test AVIM against a wordlist";
@@ -85,22 +86,22 @@ function prepareWord(word, method) {
 	for (let i = 0; i < viqrWord.length; i++) {
 		let cur = viqrWord[i];
 		// Special-case "d" because it can also appear by itself.
-		if (cur.toLowerCase() == "d") {
-			if (i && cur.toLowerCase() == viqrWord[i - 1].toLowerCase()) {
+		if (cur.toLowerCase() === "d") {
+			if (i && cur.toLowerCase() === viqrWord[i - 1].toLowerCase()) {
 				accents.push(cur);
 				circumVowels.push(null);
 			}
 			else letters.push(cur);
 		}
 		// "+" should already be duplicated if necessary.
-		else if (cur == "+" && accents.indexOf("+") >= 0) continue;
+		else if (cur === "+" && accents.indexOf("+") >= 0) continue;
 		else if ("'`?~.^+(d".indexOf(cur) >= 0) {
 			accents.push(cur);
-			circumVowels.push((i && cur == "^") ? viqrWord[i - 1] : null);
+			circumVowels.push((i && cur === "^") ? viqrWord[i - 1] : null);
 		}
 		else {
-			if (method == "telex" && letters.length &&
-				letters[letters.length - 1].toLowerCase() == cur.toLowerCase() &&
+			if (method === "telex" && letters.length &&
+				letters[letters.length - 1].toLowerCase() === cur.toLowerCase() &&
 				"aeo".indexOf(cur.toLowerCase()) >= 0) {
 				letters.push(cur);
 			}
@@ -109,7 +110,7 @@ function prepareWord(word, method) {
 	}
 	
 	// Convert word to given method.
-	if (method != "viqr") {
+	if (method !== "viqr") {
 		let transAccents = [];
 		for (let i = 0; i < accents.length; i++) {
 			let trans = methodMap[method][accents[i]];
@@ -151,7 +152,7 @@ let totalTests = (methodNames.length - 1) * words.length;
 for (let i = 1; i < methodNames.length; i++) {
 	prefs.method = i;
 	for (let j = 0; j < words.length; j++) {
-		if (!(++finishedTests % Math.round(totalTests / screenWidth))) {
+		if (++finishedTests % Math.round(totalTests / screenWidth) === 0) {
 			putstr("\r" + progressBar(finishedTests / totalTests));
 		}
 		let word = words[j];

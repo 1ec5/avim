@@ -1,3 +1,4 @@
+/* global scriptArgs, quit, load, okApplyKey, assert, -status */
 "use strict";
 
 const DESCRIPTION = "Run AVIM string manipulation tests";
