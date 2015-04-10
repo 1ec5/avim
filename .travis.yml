@@ -8,13 +8,13 @@ before_script:
   - wget -P /tmp/avim -N https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/jsshell-linux-x86_64.zip
   - unzip -d /tmp/js /tmp/avim/jsshell-linux-x86_64.zip
   - export PATH=$PATH:/tmp/js
-  - git clone https://github.com/1ec5/hunspell-vi.git tests/hunspell-vi
+  - git clone https://github.com/1ec5/hunspell-vi.git /tmp/hunspell-vi
 script:
   - jshint .
   - python build.py
   - cd tests/
   - js -b -s test.js
-  - js -b -s corpus.js hunspell-vi/dictionaries/vi-DauCu.dic -w hunspell-vi/tools/irregulars.txt
+  - js -b -s corpus.js /tmp/hunspell-vi/dictionaries/vi-DauCu.dic -w /tmp/hunspell-vi/tools/irregulars.txt
 sudo: false
 cache:
   directories:

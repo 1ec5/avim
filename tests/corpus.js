@@ -1,4 +1,4 @@
-/* global load, applyKey, scriptArgs, read, quit, putstr, assert, -status */
+/* global load, applyKey, scriptArgs, read, quit, putstr, assert, Set, -status */
 "use strict";
 
 const DESCRIPTION = "Test AVIM against a wordlist";
