@@ -2,7 +2,7 @@
 "use strict";
 
 const DESCRIPTION = "Test AVIM against a wordlist";
-const USAGE = "js24 -b -s corpus.js /path/to/corpus.txt";
+const USAGE = "js24 -b -s corpus.js /path/to/corpus.txt -w /path/to/whitelist.txt";
 
 load("assert.js");
 load("transformer.js");
@@ -138,9 +138,22 @@ function applyKeys(keys) {
 	return word;
 }
 
-let src = scriptArgs.length && ["-?", "--help"].indexOf(scriptArgs[0]) < 0 &&
-	read(scriptArgs[0]);
-let words = src && src.split(/\s+/);
+let words = [];
+let okWords = new Set();
+for (let i = 0; i < scriptArgs.length; i++) {
+	let arg = scriptArgs[i];
+	if (!arg || ["-?", "--help"].indexOf(arg) >= 0) continue;
+	
+	if (arg === '-w' && ++i < scriptArgs.length) {
+		let src = read(scriptArgs[i]);
+		for (let word of src ? src.split(/\s+/) : []) okWords.add(word);
+	}
+	else {
+		let src = read(arg);
+		if (src) Array.prototype.push.apply(words, src.split(/\s+/));
+	}
+}
+
 if (!words.length) {
 	print(DESCRIPTION);
 	print("Usage: " + USAGE);
@@ -148,7 +161,7 @@ if (!words.length) {
 }
 
 let finishedTests = 0;
-let totalTests = (methodNames.length - 1) * words.length;
+let totalTests = (methodNames.length - 1) * (words.length - okWords.size);
 for (let i = 1; i < methodNames.length; i++) {
 	prefs.method = i;
 	for (let j = 0; j < words.length; j++) {
@@ -156,7 +169,7 @@ for (let i = 1; i < methodNames.length; i++) {
 			putstr("\r" + progressBar(finishedTests / totalTests));
 		}
 		let word = words[j];
-		if (!word) continue;
+		if (!word || okWords.has(word)) continue;
 		let keys = prepareWord(word, methodNames[prefs.method]);
 		assert.equal(applyKeys(keys), word, keys);
 	}
