@@ -7,3 +7,7 @@ install:
 script:
   - "jshint ."
   - "python build.py"
+sudo: false
+cache:
+  directories:
+    - $HOME/.cache/pip
