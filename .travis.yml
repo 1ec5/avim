@@ -1,13 +1,20 @@
 language: python
 python:
-  - "2.7"
+  - 2.7
 install:
-  - "pip install -r requirements.txt"
-  - "npm install -g jshint"
+  - pip install -r requirements.txt
+  - npm install -g jshint
+before_script:
+  - wget -P /tmp/avim -N https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/jsshell-linux-x86_64.zip
+  - unzip -d /tmp/js /tmp/avim/jsshell-linux-x86_64.zip
+  - export PATH=$PATH:/tmp/js
 script:
-  - "jshint ."
-  - "python build.py"
+  - jshint .
+  - python build.py
+  - cd tests/
+  - js -b -s test.js
 sudo: false
 cache:
   directories:
     - $HOME/.cache/pip
+    - /tmp/avim
