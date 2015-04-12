@@ -99,6 +99,32 @@ AVIM.getOverlayUrl = function (windowUrl) {
 	}
 };
 
+const subscriptLoader = gCc["@mozilla.org/moz/jssubscript-loader;1"]
+	.getService(gCi.mozIJSSubScriptLoader);
+
+/**
+ * Loads a script at the given URI.
+ *
+ * @param uri		{string}	Location of the script.
+ * @param target	{object}	A collection of properties to expose to the
+ * 								script as its globals.
+ * 
+ * @see http://dxr.mozilla.org/mozilla-central/source/addon-sdk/source/lib/sdk/content/sandbox.js (importScripts())
+ */
+function loadSubScript(uri, target) {
+	if ("loadSubScriptWithOptions" in subscriptLoader) {
+		let options = {
+			charset: "UTF-8",
+// $if{Debug}
+			ignoreCache: true,
+// $endif{}
+		};
+		if (target) options.target = target;
+		subscriptLoader.loadSubScriptWithOptions(uri, options);
+	}
+	else subscriptLoader.loadSubScript(uri, target, "UTF-8");
+}
+
 /**
  * Loads the AVIM overlay onto the given window.
  *
@@ -108,7 +134,7 @@ AVIM.prototype.onWindowOpen = function (window) {
 	let xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
 	// List any chrome: URLs special-cased in chrome.manifest.
 	let manifestUrls = [
-		"chrome://browser/content/browser.xul",
+		//"chrome://browser/content/browser.xul",
 		"chrome://browser/content/preferences/preferences.xul",
 		"chrome://messenger/content/preferences/preferences.xul",
 		"chrome://dta/content/preferences/prefs.xul",
@@ -120,15 +146,10 @@ AVIM.prototype.onWindowOpen = function (window) {
 		if (doc.location && doc.location.protocol === "chrome:" &&
 			doc.contentType && xulTypes.indexOf(doc.contentType) >= 0 &&
 			manifestUrls.indexOf(doc.location.href) < 0) {
-			// Attaching an observer to loadOverlay() crashes Mozilla 1.8.x.
-			let xulVersion = gCc["@mozilla.org/xre/app-info;1"]
-				.getService(gCi.nsIXULAppInfo).platformVersion;
-			let overlayObserver = null;
-			if (parseFloat(xulVersion) >= 1.9) {
-				overlayObserver = new AVIMOverlayObserver(window);
-			}
-			doc.loadOverlay(AVIM.getOverlayUrl(doc.location.href),
-							overlayObserver);
+			let win = doc.defaultView;
+			loadSubScript("chrome://avim/content/avim.js", win || {});
+			loadSubScript("chrome://avim/content/frame.js", win || {});
+			win.avim.buildUI();
 		}
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 	};

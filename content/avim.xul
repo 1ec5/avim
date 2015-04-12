@@ -3,48 +3,6 @@
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript;version=1.7" src="chrome://avim/content/avim.js" />
-	<script type="application/x-javascript;version=1.7" src="chrome://avim/content/frame.js" />
-	
-	<commandset>
-		<command id="avim-enabled-cmd" oncommand="avim.toggle(); event.stopPropagation();" />
-		<command id="avim-method-cmd" oncommand="avim.setMethod(this.value || this.getAttribute('value')); event.stopPropagation();" />
-		<command id="avim-prev-method-cmd" oncommand="avim.cycleMethod(-1);" />
-		<command id="avim-next-method-cmd" oncommand="avim.cycleMethod(1);" />
-		<command id="avim-spell-cmd" oncommand="avim.toggleSpell(); event.stopPropagation();" />
-		<command id="avim-oldaccents-cmd" oncommand="avim.toggleDauCu(); event.stopPropagation();" />
-	</commandset>
-	
-	<keyset>
-		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="avim.toggle();" />
-		
-		<!-- Input methods -->
-		<key id="avim-prev-method-key" modifiers="&avim-prev-method.modifiers;" key="&avim-prev-method.key;" command="avim-prev-method-cmd" />
-		<key id="avim-next-method-key" modifiers="&avim-next-method.modifiers;" key="&avim-next-method.key;" command="avim-next-method-cmd" />
-		
-		<!-- Options -->
-		<key id="avim-spell-key" modifiers="&avim-spell.modifiers;" key="&avim-spell.key;" command="avim-spell-cmd" />
-		<key id="avim-oldaccents-key" modifiers="&avim-oldaccents.modifiers;" key="&avim-oldaccents.key;" command="avim-oldaccents-cmd" />
-	</keyset>
-	
-	<broadcasterset>
-		<!-- A label isn't specified here, because then it can't be overridden by the <toolbarbutton>. -->
-		<broadcaster id="avim-enabled-bc" accesskey="&avim-enabled.accesskey;" autocheck="false" command="avim-enabled-cmd" />
-		
-		<!-- Input methods -->
-		<broadcaster id="avim-auto-bc" label="&avim-auto.label;" accesskey="&avim-auto.accesskey;" autocheck="false" value="0" command="avim-method-cmd" />
-		<broadcaster id="avim-telex-bc" label="&avim-telex.label;" accesskey="&avim-telex.accesskey;" autocheck="false" value="1" command="avim-method-cmd" />
-		<broadcaster id="avim-vni-bc" label="&avim-vni.label;" accesskey="&avim-vni.accesskey;" autocheck="false" value="2" command="avim-method-cmd" />
-		<broadcaster id="avim-viqr-bc" label="&avim-viqr.label;" accesskey="&avim-viqr.accesskey;" autocheck="false" value="3" command="avim-method-cmd" />
-		<broadcaster id="avim-viqr-star-bc" label="&avim-viqr-star.label;" accesskey="&avim-viqr-star.accesskey;" autocheck="false" value="4" command="avim-method-cmd" />
-		
-		<!-- Options -->
-		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" statustext="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
-		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" statustext="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
-		
-		<broadcaster id="avim-status-bc" label="&AVIM.label;" />
-	</broadcasterset>
-	
 	<popupset>
 		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
 		<menupopup id="avim-status-popup" position="before_end">
@@ -65,6 +23,15 @@
 		</menupopup>
 	</popupset>
 	
+	<popupset id="mainPopupSet">
+		<panel id="avim-toggle-panel" animate="open" flip="slide" noautofocus="true" position="bottomcenter topright" type="arrow">
+			<hbox align="center">
+				<image id="avim-toggle-icon" />
+				<label id="avim-toggle-label" />
+			</hbox>
+		</panel>
+	</popupset>
+	
 	<!-- Toolbar button -->
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="avim-tb" class="toolbarbutton-1" type="menu-button" label="&AVIM.label;" tooltip="avim-status-tooltip" autocheck="false" command="avim-enabled-cmd" observes="avim-status-bc">
@@ -73,32 +40,4 @@
 			</menupopup>
 		</toolbarbutton>
 	</toolbarpalette>
-	
-	<!-- Edit > Vietnamese Input -->
-	<!-- Copied in communicatorOverlay.xul, composerOverlay.xul, komodoOverlay.xul, and moz20Overlay.xul -->
-	<menupopup id="menu_EditPopup">
-		<menuseparator id="avim-separator" />
-		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
-			<menupopup id="avim-menu-popup">
-				<menuitem id="avim-menu-enabled" type="checkbox" label="&avim-enabled.label;" key="avim-enabled-key" observes="avim-enabled-bc" />
-				
-				<!-- Input methods -->
-				<menuseparator id="avim-menu-methods-separator" />
-				<menuitem id="avim-menu-auto" name="viet_method" type="radio" key="avim-auto-key" observes="avim-auto-bc" />
-				<menuitem id="avim-menu-telex" name="viet_method" type="radio" key="avim-telex-key" observes="avim-telex-bc" />
-				<menuitem id="avim-menu-vni" name="viet_method" type="radio" key="avim-vni-key" observes="avim-vni-bc" />
-				<menuitem id="avim-menu-viqr" name="viet_method" type="radio" key="avim-viqr-key" observes="avim-viqr-bc" />
-				<menuitem id="avim-menu-viqr-star" name="viet_method" type="radio" key="avim-viqr-star-key" observes="avim-viqr-star-bc" />
-				
-				<menuseparator id="avim-menu-cycle-separator" />
-				<menuitem id="avim-menu-prev-method" label="&avim-menu-prev-method.label;" accesskey="&avim-menu-prev-method.accesskey;" key="avim-prev-method-key" command="avim-prev-method-cmd" />
-				<menuitem id="avim-menu-next-method" label="&avim-menu-next-method.label;" accesskey="&avim-menu-next-method.accesskey;" key="avim-next-method-key" command="avim-next-method-cmd" />
-				
-				<!-- Options -->
-				<menuseparator id="avim-menu-options-separator" />
-				<menuitem id="avim-menu-spell" key="avim-spell-key" observes="avim-spell-bc" />
-				<menuitem id="avim-menu-oldaccents" key="avim-oldaccents-key" observes="avim-oldaccents-bc" />
-			</menupopup>
-		</menu>
-	</menupopup>
 </overlay>

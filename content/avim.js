@@ -18,7 +18,11 @@ function AVIM()	{
 	
 	// IDs of user interface elements
 	const commandIds = {
-		method: "avim-method-cmd",
+		auto: "avim-auto-cmd",
+		telex: "avim-telex-cmd",
+		vni: "avim-vni-cmd",
+		viqr: "avim-viqr-cmd",
+		viqrStar: "avim-viqr-star-cmd",
 		prevMethod: "avim-prev-method-cmd",
 		nextMethod: "avim-next-method-cmd",
 		spell: "avim-spell-cmd",
@@ -240,6 +244,181 @@ function AVIM()	{
 		else elt.removeAttribute("checked");
 	}
 	
+	this.buildUI = function () {
+		// Commands and broadcasters
+		let methodCmd = function (evt, methodId) {
+			avim.setMethod(methodId);
+			evt.stopPropagation();
+		};
+		let cmds = {
+			enabled: function (evt) {
+				avim.toggle();
+				evt.stopPropagation();
+			},
+			auto: function (evt) {
+				methodCmd(0);
+			},
+			telex: function (evt) {
+				methodCmd(1);
+			},
+			vni: function (evt) {
+				methodCmd(2);
+			},
+			viqr: function (evt) {
+				methodCmd(3);
+			},
+			"viqr-star": function (evt) {
+				methodCmd(4);
+			},
+			"prev-method": function (evt) {
+				avim.cycleMethod(-1);
+			},
+			"next-method": function (evt) {
+				avim.cycleMethod(1);
+			},
+			spell: function (evt) {
+				avim.toggleSpell();
+				evt.stopPropagation();
+			},
+			oldaccents: function (evt) {
+				avim.toggleDauCu();
+				evt.stopPropagation();
+			},
+			status: null,
+		};
+		let cmdSetElt = document.createElement("commandset");
+		let bcSetElt = document.createElement("broadcasterset");
+		for (let cmdName in cmds) {
+			if (!cmds.propertyIsEnumerable(cmdName)) continue;
+			
+			let cmdElt = document.createElement("command");
+			cmdElt.id = "avim-" + cmdName + "-cmd";
+			if (cmds[cmdName]) {
+				cmdElt.addEventListener("command", cmds[cmdName], false);
+			}
+			cmdElt.setAttribute("oncommand", "return false;");
+			cmdSetElt.appendChild(cmdElt);
+			
+			let bcElt = document.createElement("broadcaster");
+			bcElt.id = "avim-" + cmdName + "-bc";
+			if (cmds[cmdName]) bcElt.setAttribute("command", cmdElt.id);
+			bcSetElt.appendChild(bcElt);
+		}
+		document.documentElement.appendChild(cmdSetElt);
+		document.documentElement.appendChild(bcSetElt);
+		
+		// Shortcut keys
+		// TODO: Get from .properties
+		let keys = {
+			enabled: ["accel alt", "V"],
+			"prev-method": ["accel", ":"],
+			"next-method": ["accel", ";"],
+			spell: ["accel alt", "S"],
+			oldaccents: ["accel alt", ";"],
+		};
+		let keySetElt = document.createElement("keyset");
+		for (let keyName in keys) {
+			if (!keys.propertyIsEnumerable(keyName)) continue;
+			
+			let keyElt = document.createElement("key");
+			keyElt.id = "avim-" + keyName + "-key";
+			keyElt.setAttribute("modifiers", keys[keyName][0]);
+			keyElt.setAttribute("key", keys[keyName][1]);
+			keyElt.setAttribute("command", "avim-" + keyName + "-cmd");
+			keySetElt.appendChild(keyElt);
+		}
+		document.documentElement.appendChild(keySetElt);
+		
+		// Menu
+		let items = [
+			{
+				id: "enabled",
+				type: "checkbox",
+			},
+			null,
+			{
+				id: "auto",
+				type: "radio",
+				group: "method",
+				value: 0,
+			},
+			{
+				id: "telex",
+				type: "radio",
+				group: "method",
+				value: 1,
+			},
+			{
+				id: "vni",
+				type: "radio",
+				group: "method",
+				value: 2,
+			},
+			{
+				id: "viqr",
+				type: "radio",
+				group: "method",
+				value: 3,
+			},
+			{
+				id: "viqr-star",
+				type: "radio",
+				group: "method",
+				value: 4,
+			},
+			null,
+			{
+				id: "prev-method",
+			},
+			{
+				id: "next-method",
+			},
+			null,
+			{
+				id: "spell",
+				type: "checkbox",
+			},
+			{
+				id: "oldaccents",
+				type: "checkbox",
+			},
+		];
+		
+		let editMenuElt = $("menu_EditPopup");
+		if (editMenuElt) {
+			let sepElt = document.createElement("menuseparator");
+			sepElt.id = "avim-separator";
+			editMenuElt.appendChild(sepElt);
+			
+			let popupElt = document.createElement("menupopup");
+			popupElt.id = "avim-menu-popup";
+			items.forEach(function (item) {
+				if (!item) {
+					popupElt.appendChild(document.createElement("menuseparator"));
+					return;
+				}
+				
+				let itemElt = document.createElement("menuitem");
+				itemElt.id = "avim-menu-" + item.id;
+				if (item.type) itemElt.setAttribute("type", item.type);
+				if (item.group) itemElt.setAttribute("name", item.group);
+				if (item.value) itemElt.setAttribute("value", item.value);
+				itemElt.setAttribute("label", item.id);	// TODO: Get from .properties
+				itemElt.setAttribute("key", "avim-" + item.id + "-key");
+				itemElt.setAttribute("autocheck", false);
+				itemElt.observes = "avim-" + item.id + "-bc";
+				popupElt.appendChild(itemElt);
+			});
+			
+			let menuElt = document.createElement("menu");
+			menuElt.id = "avim-menu";
+			menuElt.setAttribute("label", "Vietnamese Input");
+			menuElt.setAttribute("accesskey", "V");
+			menuElt.appendChild(popupElt);
+			editMenuElt.appendChild(menuElt);
+		}
+	};
+	
 	/**
 	 * Updates the XUL menus and status bar panel to reflect AVIM's current
 	 * state.
@@ -249,7 +428,10 @@ function AVIM()	{
 		let enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
 			setCheckedState(enabledBcId, AVIMConfig.onOff);
-			$("avim-status-enabled").setAttribute("avim-accel", isMac ? "mac" : "");
+			let enabledItem = $("avim-status-enabled");
+			if (enabledItem) {
+				enabledItem.setAttribute("avim-accel", isMac ? "mac" : "");
+			}
 		}
 		
 		// Disable methods and options if AVIM is disabled
@@ -634,14 +816,22 @@ function AVIM()	{
 		return false;
 	};
 	
-	const xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
+	let applyKey;
+	if (Cc["@1ec5.org/avim/transformer;1"]) {
+		applyKey = Cc["@1ec5.org/avim/transformer;1"].getService()
+			.wrappedJSObject.applyKey;
+	}
+	else if ("import" in Components.utils) {
+		applyKey = Cu.import("resource://avim-components/transformer.js", this)
+			.applyKey;
+	}
 	
 	/**
 	 * First responder for keypress messages from frame scripts.
 	 */
 	this.onFrameKeyPress = function (msg) {
 		let evt = msg.data.evt;
-		let result = xformer.applyKey(msg.data.prefix, {
+		let result = applyKey(msg.data.prefix, {
 			method: AVIMConfig.method,
 			autoMethods: AVIMConfig.autoMethods,
 			ckSpell: AVIMConfig.ckSpell,
