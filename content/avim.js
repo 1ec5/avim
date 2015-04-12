@@ -307,26 +307,26 @@ function AVIM()	{
 		document.documentElement.appendChild(cmdSetElt);
 		document.documentElement.appendChild(bcSetElt);
 		
+		// String bundle
+		let sbElt = document.createElement("stringbundle");
+		sbElt.id = "avim-sb";
+		sbElt.src = "chrome://avim/locale/avim.properties";
+		let sbSetElt = document.createElement("stringbundleset");
+		sbSetElt.appendChild(sbElt);
+		document.documentElement.appendChild(sbSetElt);
+		
 		// Shortcut keys
-		// TODO: Get from .properties
-		let keys = {
-			enabled: ["accel alt", "V"],
-			"prev-method": ["accel", ":"],
-			"next-method": ["accel", ";"],
-			spell: ["accel alt", "S"],
-			oldaccents: ["accel alt", ";"],
-		};
+		let keys = ["enabled", "prev-method", "next-method", "spell", "oldaccents"];
 		let keySetElt = document.createElement("keyset");
-		for (let keyName in keys) {
-			if (!keys.propertyIsEnumerable(keyName)) continue;
-			
+		keys.forEach(function (key) {
 			let keyElt = document.createElement("key");
-			keyElt.id = "avim-" + keyName + "-key";
-			keyElt.setAttribute("modifiers", keys[keyName][0]);
-			keyElt.setAttribute("key", keys[keyName][1]);
-			keyElt.setAttribute("command", "avim-" + keyName + "-cmd");
+			keyElt.id = "avim-" + key + "-key";
+			keyElt.setAttribute("modifiers",
+								sbElt.getString("avim-" + key + ".modifiers"));
+			keyElt.setAttribute("key", sbElt.getString("avim-" + key + ".key"));
+			keyElt.setAttribute("command", "avim-" + key + "-cmd");
 			keySetElt.appendChild(keyElt);
-		}
+		});
 		document.documentElement.appendChild(keySetElt);
 		
 		// Menu
@@ -403,7 +403,8 @@ function AVIM()	{
 				if (item.type) itemElt.setAttribute("type", item.type);
 				if (item.group) itemElt.setAttribute("name", item.group);
 				if (item.value) itemElt.setAttribute("value", item.value);
-				itemElt.setAttribute("label", item.id);	// TODO: Get from .properties
+				itemElt.setAttribute("label",
+									 sbElt.getString("avim-" + item.id + ".label"));
 				itemElt.setAttribute("key", "avim-" + item.id + "-key");
 				itemElt.setAttribute("autocheck", false);
 				itemElt.observes = "avim-" + item.id + "-bc";
@@ -412,7 +413,7 @@ function AVIM()	{
 			
 			let menuElt = document.createElement("menu");
 			menuElt.id = "avim-menu";
-			menuElt.setAttribute("label", "Vietnamese Input");
+			menuElt.setAttribute("label", sbElt.getString(menuElt.id + ".label"));
 			menuElt.setAttribute("accesskey", "V");
 			menuElt.appendChild(popupElt);
 			editMenuElt.appendChild(menuElt);
