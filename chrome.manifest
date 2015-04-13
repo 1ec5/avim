@@ -36,13 +36,6 @@ overlay	chrome://avim/content/optionsOverlay.xul	chrome://browser/content/macBro
 style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
 style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
 
-# $if{Debug}
-overlay	chrome://avim/content/test/tester.xul	chrome://browser/content/macBrowserOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}	os=Darwin	appversion>=3.0a1pre
-overlay	chrome://avim/content/test/tester.xul	chrome://browser/content/macBrowserOverlay.xul		application={a463f10c-3994-11da-9945-000d60ca027b}	os=Darwin
-style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/preferences.css	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
-style	chrome://avim/content/test/tester.xul	chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
-# $endif{}
-
 ### Firefox ####################################################################
 
 # Add-ons window
