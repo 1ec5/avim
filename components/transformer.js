@@ -1,4 +1,4 @@
-/* exported EXPORTED_SYMBOLS, NSGetModule, NSGetFactory */
+/* exported EXPORTED_SYMBOLS, applyKey, NSGetModule, NSGetFactory */
 "use strict";
 
 const EXPORTED_SYMBOLS = ["applyKey"];

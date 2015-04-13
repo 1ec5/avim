@@ -1,3 +1,4 @@
+/* global Services, APP_SHUTDOWN */
 /* exported startup, shutdown, install, uninstall */
 "use strict";
 
@@ -8,15 +9,28 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/Services.jsm");
 
 // https://developer.mozilla.org/en-US/Add-ons/How_to_convert_an_overlay_extension_to_restartless#Step_4.3A_Manually_handle_default_preferences
-function getGenericPref(branch, prefName) {
-	switch (branch.getPrefType(prefName)) {
-		default:
-		case 0:   return undefined;                      // PREF_INVALID
-		case 32:  return getUCharPref(prefName,branch);  // PREF_STRING
-		case 64:  return branch.getIntPref(prefName);    // PREF_INT
-		case 128: return branch.getBoolPref(prefName);   // PREF_BOOL
-	}
+///// Unicode getCharPref
+//function getUCharPref(prefName, branch) {
+//	branch = branch ? branch : Services.prefs;
+//	return branch.getComplexValue(prefName, Ci.nsISupportsString).data;
+//}
+/// Unicode setCharPref
+function setUCharPref(prefName, text, branch) {
+	var string = Cc["@mozilla.org/supports-string;1"]
+		.createInstance(Ci.nsISupportsString);
+	string.data = text;
+	branch = branch ? branch : Services.prefs;
+	branch.setComplexValue(prefName, Ci.nsISupportsString, string);
 }
+//function getGenericPref(branch, prefName) {
+//	switch (branch.getPrefType(prefName)) {
+//		default:
+//		case 0:   return undefined;                      // PREF_INVALID
+//		case 32:  return getUCharPref(prefName,branch);  // PREF_STRING
+//		case 64:  return branch.getIntPref(prefName);    // PREF_INT
+//		case 128: return branch.getBoolPref(prefName);   // PREF_BOOL
+//	}
+//}
 function setGenericPref(branch, prefName, prefValue) {
 	switch (typeof prefValue) {
 		case "string":
@@ -33,19 +47,6 @@ function setGenericPref(branch, prefName, prefValue) {
 function setDefaultPref(prefName, prefValue) {
 	var defaultBranch = Services.prefs.getDefaultBranch(null);
 	setGenericPref(defaultBranch, prefName, prefValue);
-}
-/// Unicode getCharPref
-function getUCharPref(prefName, branch) {
-	branch = branch ? branch : Services.prefs;
-	return branch.getComplexValue(prefName, Ci.nsISupportsString).data;
-}
-/// Unicode setCharPref
-function setUCharPref(prefName, text, branch) {
-	var string = Cc["@mozilla.org/supports-string;1"]
-		.createInstance(Ci.nsISupportsString);
-	string.data = text;
-	branch = branch ? branch : Services.prefs;
-	branch.setComplexValue(prefName, Ci.nsISupportsString, string);
 }
 
 /**
