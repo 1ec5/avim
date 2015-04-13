@@ -238,104 +238,16 @@ function AVIM()	{
 		this.setStatusPanel(!AVIMConfig.statusBarPanel);
 	};
 	
-	function setCheckedState(elt, checked) {
-		if (!elt) return;
-		if (checked) elt.setAttribute("checked", "true");
-		else elt.removeAttribute("checked");
-	}
-	
-	this.buildUI = function () {
-		// Commands and broadcasters
-		let methodCmd = function (evt, methodId) {
-			avim.setMethod(methodId);
-			evt.stopPropagation();
-		};
-		let cmds = {
-			enabled: function (evt) {
-				avim.toggle();
-				evt.stopPropagation();
-			},
-			auto: function (evt) {
-				methodCmd(0);
-			},
-			telex: function (evt) {
-				methodCmd(1);
-			},
-			vni: function (evt) {
-				methodCmd(2);
-			},
-			viqr: function (evt) {
-				methodCmd(3);
-			},
-			"viqr-star": function (evt) {
-				methodCmd(4);
-			},
-			"prev-method": function (evt) {
-				avim.cycleMethod(-1);
-			},
-			"next-method": function (evt) {
-				avim.cycleMethod(1);
-			},
-			spell: function (evt) {
-				avim.toggleSpell();
-				evt.stopPropagation();
-			},
-			oldaccents: function (evt) {
-				avim.toggleDauCu();
-				evt.stopPropagation();
-			},
-			status: null,
-		};
-		let cmdSetElt = document.createElement("commandset");
-		let bcSetElt = document.createElement("broadcasterset");
-		for (let cmdName in cmds) {
-			if (!cmds.propertyIsEnumerable(cmdName)) continue;
-			
-			let cmdElt = document.createElement("command");
-			cmdElt.id = "avim-" + cmdName + "-cmd";
-			if (cmds[cmdName]) {
-				cmdElt.addEventListener("command", cmds[cmdName], false);
-			}
-			cmdElt.setAttribute("oncommand", "return false;");
-			cmdSetElt.appendChild(cmdElt);
-			
-			let bcElt = document.createElement("broadcaster");
-			bcElt.id = "avim-" + cmdName + "-bc";
-			if (cmds[cmdName]) bcElt.setAttribute("command", cmdElt.id);
-			bcSetElt.appendChild(bcElt);
-		}
-		document.documentElement.appendChild(cmdSetElt);
-		document.documentElement.appendChild(bcSetElt);
-		
-		// String bundle
-		let sbElt = document.createElement("stringbundle");
-		sbElt.id = "avim-sb";
-		sbElt.src = "chrome://avim/locale/avim.properties";
-		let sbSetElt = document.createElement("stringbundleset");
-		sbSetElt.appendChild(sbElt);
-		document.documentElement.appendChild(sbSetElt);
-		
-		// Shortcut keys
-		let keys = ["enabled", "prev-method", "next-method", "spell", "oldaccents"];
-		let keySetElt = document.createElement("keyset");
-		keys.forEach(function (key) {
-			let keyElt = document.createElement("key");
-			keyElt.id = "avim-" + key + "-key";
-			keyElt.setAttribute("modifiers",
-								sbElt.getString("avim-" + key + ".modifiers"));
-			keyElt.setAttribute("key", sbElt.getString("avim-" + key + ".key"));
-			keyElt.setAttribute("command", "avim-" + key + "-cmd");
-			keySetElt.appendChild(keyElt);
-		});
-		document.documentElement.appendChild(keySetElt);
-		
-		// Menu
-		let items = [
+	function createMenuPopup(name, basic) {
+		const items = [
 			{
 				id: "enabled",
 				type: "checkbox",
+				default: true,
 			},
-			null,
+			{
+				separator: true,
+			},
 			{
 				id: "auto",
 				type: "radio",
@@ -366,14 +278,21 @@ function AVIM()	{
 				group: "method",
 				value: 4,
 			},
-			null,
+			{
+				separator: true,
+				basic: false,
+			},
 			{
 				id: "prev-method",
+				basic: false,
 			},
 			{
 				id: "next-method",
+				basic: false,
 			},
-			null,
+			{
+				separator: true,
+			},
 			{
 				id: "spell",
 				type: "checkbox",
@@ -384,41 +303,176 @@ function AVIM()	{
 			},
 		];
 		
+		let sbElt = $("avim-sb");
+		let popupElt = document.createElement("menupopup");
+		popupElt.id = "avim-" + name + "-popup";
+		items.forEach(function (item) {
+			if (basic && "basic" in item && item.basic === false) return;
+			if (item.separator) {
+				popupElt.appendChild(document.createElement("menuseparator"));
+				return;
+			}
+			
+			let itemElt = document.createElement("menuitem");
+			itemElt.id = "avim-" + name + "-" + item.id;
+			if (item.type) itemElt.setAttribute("type", item.type);
+			if (item.group) itemElt.setAttribute("name", item.group);
+			if (item.value) itemElt.setAttribute("value", item.value);
+			if (!basic) itemElt.setAttribute("key", "avim-" + item.id + "-key");
+			itemElt.setAttribute("autocheck", false);
+			itemElt.setAttribute("command", "avim-" + item.id + "-cmd");
+			itemElt.observes = "avim-" + item.id + "-bc";
+			if (basic && item.default) itemElt.setAttribute("default", true);
+			popupElt.appendChild(itemElt);
+		});
+		return popupElt;
+	}
+	
+	this.buildUI = function () {
+		// String bundle
+		let sbElt = document.createElement("stringbundle");
+		sbElt.id = "avim-sb";
+		sbElt.src = "chrome://avim/locale/avim.properties";
+		let sbSetElt = document.createElement("stringbundleset");
+		sbSetElt.appendChild(sbElt);
+		document.documentElement.appendChild(sbSetElt);
+		
+		// Commands and broadcasters
+		let methodCmd = function (evt, methodId) {
+			avim.setMethod(methodId);
+			evt.stopPropagation();
+		};
+		let cmds = {
+			enabled: function (evt) {
+				avim.toggle();
+				evt.stopPropagation();
+			},
+			auto: function (evt) {
+				methodCmd(evt, 0);
+			},
+			telex: function (evt) {
+				methodCmd(evt, 1);
+			},
+			vni: function (evt) {
+				methodCmd(evt, 2);
+			},
+			viqr: function (evt) {
+				methodCmd(evt, 3);
+			},
+			"viqr-star": function (evt) {
+				methodCmd(evt, 4);
+			},
+			"prev-method": function (evt) {
+				avim.cycleMethod(-1);
+			},
+			"next-method": function (evt) {
+				avim.cycleMethod(1);
+			},
+			spell: function (evt) {
+				avim.toggleSpell();
+				evt.stopPropagation();
+			},
+			oldaccents: function (evt) {
+				avim.toggleDauCu();
+				evt.stopPropagation();
+			},
+			status: {
+				label: sbElt.getString("AVIM.label"),
+			},
+		};
+		let cmdSetElt = document.createElement("commandset");
+		let bcSetElt = document.createElement("broadcasterset");
+		for (let cmdName in cmds) {
+			if (!cmds.propertyIsEnumerable(cmdName)) continue;
+			
+			let cmdElt = document.createElement("command");
+			cmdElt.id = "avim-" + cmdName + "-cmd";
+			let bcElt = document.createElement("broadcaster");
+			bcElt.id = "avim-" + cmdName + "-bc";
+			if (typeof cmds[cmdName] === "function") {
+				cmdElt.addEventListener("command", cmds[cmdName], false);
+				cmdElt.setAttribute("oncommand", "return false;");
+				
+				bcElt.setAttribute("command", cmdElt.id);
+				bcElt.setAttribute("label",
+								   sbElt.getString("avim-" + cmdName + ".label"));
+				bcElt.setAttribute("accesskey",
+								   sbElt.getString("avim-" + cmdName + ".accesskey"));
+			}
+			else if (cmds[cmdName].label) {
+				bcElt.setAttribute("label", cmds[cmdName].label);
+			}
+			cmdSetElt.appendChild(cmdElt);
+			bcSetElt.appendChild(bcElt);
+		}
+		document.documentElement.appendChild(cmdSetElt);
+		document.documentElement.appendChild(bcSetElt);
+		
+		// Shortcut keys
+		let keys = ["enabled", "prev-method", "next-method", "spell", "oldaccents"];
+		let keySetElt = document.createElement("keyset");
+		keys.forEach(function (key) {
+			let keyElt = document.createElement("key");
+			keyElt.id = "avim-" + key + "-key";
+			keyElt.setAttribute("modifiers",
+								sbElt.getString("avim-" + key + ".modifiers"));
+			keyElt.setAttribute("key", sbElt.getString("avim-" + key + ".key"));
+			keyElt.setAttribute("command", "avim-" + key + "-cmd");
+			keySetElt.appendChild(keyElt);
+		});
+		document.documentElement.appendChild(keySetElt);
+		
+		// Popups
+		let popupSetElt = document.createElement("popupset");
+		let popupElt = createMenuPopup("status", true);
+		popupElt.position = "before_end";
+		popupSetElt.appendChild(popupElt);
+		document.documentElement.appendChild(popupSetElt);
+		
+		// Menu
 		let editMenuElt = $("menu_EditPopup");
 		if (editMenuElt) {
 			let sepElt = document.createElement("menuseparator");
 			sepElt.id = "avim-separator";
 			editMenuElt.appendChild(sepElt);
 			
-			let popupElt = document.createElement("menupopup");
-			popupElt.id = "avim-menu-popup";
-			items.forEach(function (item) {
-				if (!item) {
-					popupElt.appendChild(document.createElement("menuseparator"));
-					return;
-				}
-				
-				let itemElt = document.createElement("menuitem");
-				itemElt.id = "avim-menu-" + item.id;
-				if (item.type) itemElt.setAttribute("type", item.type);
-				if (item.group) itemElt.setAttribute("name", item.group);
-				if (item.value) itemElt.setAttribute("value", item.value);
-				itemElt.setAttribute("label",
-									 sbElt.getString("avim-" + item.id + ".label"));
-				itemElt.setAttribute("key", "avim-" + item.id + "-key");
-				itemElt.setAttribute("autocheck", false);
-				itemElt.observes = "avim-" + item.id + "-bc";
-				popupElt.appendChild(itemElt);
-			});
-			
 			let menuElt = document.createElement("menu");
 			menuElt.id = "avim-menu";
 			menuElt.setAttribute("label", sbElt.getString(menuElt.id + ".label"));
-			menuElt.setAttribute("accesskey", "V");
+			menuElt.setAttribute("accesskey",
+								 sbElt.getString(menuElt.id + ".accesskey"));
+			let popupElt = createMenuPopup("menu", false);
 			menuElt.appendChild(popupElt);
 			editMenuElt.appendChild(menuElt);
 		}
+		
+		// Toolbar button
+		let tbPaletteElt = $("BrowserToolbarPalette");
+		if (tbPaletteElt) {
+			let tbBtnElt = document.createElement("toolbarbutton");
+			tbBtnElt.id = "avim-tb";
+			tbBtnElt.className = "toolbarbutton-1";
+			tbBtnElt.setAttribute("type", "menu-button");
+			tbBtnElt.label = sbElt.getString("AVIM.label");
+			tbBtnElt.setAttribute("tooltiptext", sbElt.getString("AVIM.label"));
+			tbBtnElt.autoCheck = false;
+			tbBtnElt.setAttribute("command", "avim-enabled-cmd");
+			tbBtnElt.observes = "avim-status-bc";
+			tbBtnElt.appendChild(createMenuPopup("tb", true));
+			tbPaletteElt.appendChild(tbBtnElt);
+			
+			let enabledItemElt = $("avim-tb-enabled");
+			enabledItemElt.setAttribute("avim-accel", isMac ? "mac" : "");
+			enabledItemElt.removeEventListener("command", cmds.enabled, false);
+			enabledItemElt.setAttribute("oncommand", "");
+		}
 	};
+	
+	function setCheckedState(elt, checked) {
+		if (!elt) return;
+		if (checked) elt.setAttribute("checked", "true");
+		else elt.removeAttribute("checked");
+	}
 	
 	/**
 	 * Updates the XUL menus and status bar panel to reflect AVIM's current
@@ -429,10 +483,6 @@ function AVIM()	{
 		let enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
 			setCheckedState(enabledBcId, AVIMConfig.onOff);
-			let enabledItem = $("avim-status-enabled");
-			if (enabledItem) {
-				enabledItem.setAttribute("avim-accel", isMac ? "mac" : "");
-			}
 		}
 		
 		// Disable methods and options if AVIM is disabled
@@ -464,33 +514,6 @@ function AVIM()	{
 		panelBc.setAttribute("avim-disabled", "" + !AVIMConfig.onOff);
 		// Ignored by toolbar button.
 		panelBc.setAttribute("avim-hidden", "" + !AVIMConfig.statusBarPanel);
-	};
-	
-	/**
-	 * Populates the given XUL menu popup with the contents of its parent
-	 * element’s context menu popup.
-	 */
-	this.buildPopup = function (popup) {
-		this.updateUI();
-		
-		let mainPopupId = popup.getAttribute("avim-popupsource");
-		let mainPopup = $(mainPopupId);
-		if (!mainPopup) return;
-		
-		let items = [];
-		for (let item = mainPopup.firstChild; item; item = item.nextSibling) {
-			let clone = item.cloneNode(false);
-			if (clone.id) clone.id += "-dynamic";
-			items.push(clone);
-		}
-		if (!items.length) return;
-		
-		items[0].setAttribute("default", "true");
-		
-		while (popup.firstChild) popup.removeChild(popup.firstChild);
-		for (let i = 0; i < items.length; i++) {
-			popup.appendChild(items[i]);
-		}
 	};
 	
 	// Integration with Mozilla preferences service

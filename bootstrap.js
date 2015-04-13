@@ -30,7 +30,7 @@ function setGenericPref(branch, prefName, prefValue) {
 			break;
 	}
 }
-function setDefaultPref(prefName,prefValue) {
+function setDefaultPref(prefName, prefValue) {
 	var defaultBranch = Services.prefs.getDefaultBranch(null);
 	setGenericPref(defaultBranch, prefName, prefValue);
 }
@@ -72,24 +72,33 @@ function loadSubScript(uri, target) {
 }
 
 function loadOverlays(win, topic, data) {
-	if (win.frameElement) return;
-	win.addEventListener("DOMContentLoaded", function loadOverlay(evt) {
-		const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
-		let doc = evt.originalTarget;
-		if (doc.location && doc.location.protocol === "chrome:" &&
-			doc.contentType && xulTypes.indexOf(doc.contentType) >= 0) {
-			let win = doc.defaultView;
-			loadSubScript("chrome://avim/content/avim.js", win || {});
-			loadSubScript("chrome://avim/content/frame.js", win || {});
-            win.avim.buildUI();
-		}
+	let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
+    let styleUri = Services.io.newURI("chrome://avim/content/skin/avim.css",
+                                      null, null);
+    
+    win.addEventListener("DOMContentLoaded", function loadOverlay(evt) {
 		win.removeEventListener("DOMContentLoaded", loadOverlay, true);
+        const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
+        let doc = evt.originalTarget;
+        if (win.frameElement || !doc.location ||
+            doc.location.protocol !== "chrome:" || !doc.contentType ||
+            xulTypes.indexOf(doc.contentType) < 0) {
+            return;
+        }
+        
+        winUtils.loadSheet(styleUri, winUtils.AUTHOR_SHEET);
+        
+		loadSubScript("chrome://avim/content/avim.js", win || {});
+        loadSubScript("chrome://avim/content/frame.js", win || {});
+        win.avim.buildUI();
 	}, true);
 	win.addEventListener("AVIM:shutdown", function unloadOverlay(evt) {
 		win.removeEventListener("AVIM:shutdown", unloadOverlay);
 		win.messageManager.removeMessageListener("AVIM:keypress",
 												 win.avim.onFrameKeyPress);
 		win.avim.unregisterPrefs();
+        
+        winUtils.removeSheet(styleUri, winUtils.AUTHOR_SHEET);
 	}, false);
 }
 
@@ -111,21 +120,23 @@ function startup(data, reason) {
     loadSubScript("resource://avim-preferences/avim.js", {
         pref: setDefaultPref,
     });
-	
-	Services.ww.registerNotification(loadOverlays);
+    
+    Services.ww.registerNotification(loadOverlays);
 }
 
 function shutdown(data, reason) {
+    if (reason === APP_SHUTDOWN) return;
+    
 	Services.ww.unregisterNotification(loadOverlays);
 	Services.obs.notifyObservers("AVIM:shutdown");
-	resProtocol.setSubstitution("avim-components", null);
+    Services.obs.notifyObservers(null, "chrome-flush-caches", null);
+    
+    resProtocol.setSubstitution("avim-components", null);
 	resProtocol.setSubstitution("avim-preferences", null);
 }
 
 function install(data, reason) {
-	
 }
 
 function uninstall(data, reason) {
-	
 }

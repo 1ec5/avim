@@ -69,11 +69,11 @@ toolbarpaletteitem[place="palette"] > #avim-tb .toolbarbutton-icon {
 	display: none;
 }
 
-:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic) :-moz-any(.menu-accel, .menu-iconic-accel)::before {
+:-moz-any(#avim-status-enabled, #avim-tb-enabled) :-moz-any(.menu-accel, .menu-iconic-accel)::before {
 	content: "Ctrl Ctrl";
 }
 
-:-moz-any(#avim-status-enabled, #avim-status-enabled-dynamic)[avim-accel="mac"] :-moz-any(.menu-accel, .menu-iconic-accel)::before {
+:-moz-any(#avim-status-enabled, #avim-tb-enabled)[avim-accel="mac"] :-moz-any(.menu-accel, .menu-iconic-accel)::before {
 	content: "\2303\2303";
 }
 

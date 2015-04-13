@@ -4,26 +4,6 @@
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 	<popupset>
-		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
-		<menupopup id="avim-status-popup" position="before_end">
-			<menuitem id="avim-status-enabled" type="checkbox" label="&avim-enabled.label;" observes="avim-enabled-bc" />
-			
-			<!-- Input methods -->
-			<menuseparator id="avim-status-methods-separator" />
-			<menuitem id="avim-status-auto" name="viet_method" type="radio" observes="avim-auto-bc" />
-			<menuitem id="avim-status-telex" name="viet_method" type="radio" observes="avim-telex-bc" />
-			<menuitem id="avim-status-vni" name="viet_method" type="radio" observes="avim-vni-bc" />
-			<menuitem id="avim-status-viqr" name="viet_method" type="radio" observes="avim-viqr-bc" />
-			<menuitem id="avim-status-viqr-star" name="viet_method" type="radio" observes="avim-viqr-star-bc" />
-			
-			<!-- Options -->
-			<menuseparator id="avim-status-options-separator" />
-			<menuitem id="avim-status-spell" observes="avim-spell-bc" />
-			<menuitem id="avim-status-oldaccents" observes="avim-oldaccents-bc" />
-		</menupopup>
-	</popupset>
-	
-	<popupset id="mainPopupSet">
 		<panel id="avim-toggle-panel" animate="open" flip="slide" noautofocus="true" position="bottomcenter topright" type="arrow">
 			<hbox align="center">
 				<image id="avim-toggle-icon" />
