@@ -238,6 +238,23 @@ function AVIM()	{
 		this.setStatusPanel(!AVIMConfig.statusBarPanel);
 	};
 	
+	const stringSvc = Cc["@mozilla.org/intl/stringbundle;1"]
+		.getService(Ci.nsIStringBundleService);
+	let stringBundle = stringSvc.createBundle("chrome://avim/locale/avim.properties");
+	
+	/**
+	 * Returns a string with the given name from the main string bundle.
+	 */
+	function getString(name) {
+		return stringBundle.GetStringFromName(name);
+	}
+	
+	/**
+	 * Creates and returns a <menupopup> element with an ID based on the given
+	 * name.
+	 *
+	 * @param {string}	basic	True for a minimal menu; false otherwise.
+	 */
 	function createMenuPopup(name, basic) {
 		const items = [
 			{
@@ -303,7 +320,6 @@ function AVIM()	{
 			},
 		];
 		
-		let sbElt = $("avim-sb");
 		let popupElt = document.createElement("menupopup");
 		popupElt.id = "avim-" + name + "-popup";
 		items.forEach(function (item) {
@@ -328,15 +344,10 @@ function AVIM()	{
 		return popupElt;
 	}
 	
+	/**
+	 * Constructs the extension’s user interface.
+	 */
 	this.buildUI = function () {
-		// String bundle
-		let sbElt = document.createElement("stringbundle");
-		sbElt.id = "avim-sb";
-		sbElt.src = "chrome://avim/locale/avim.properties";
-		let sbSetElt = document.createElement("stringbundleset");
-		sbSetElt.appendChild(sbElt);
-		document.documentElement.appendChild(sbSetElt);
-		
 		// Commands and broadcasters
 		let methodCmd = function (evt, methodId) {
 			avim.setMethod(methodId);
@@ -377,7 +388,7 @@ function AVIM()	{
 				evt.stopPropagation();
 			},
 			status: {
-				label: sbElt.getString("AVIM.label"),
+				label: getString("AVIM.label"),
 			},
 		};
 		let cmdSetElt = document.createElement("commandset");
@@ -395,9 +406,9 @@ function AVIM()	{
 				
 				bcElt.setAttribute("command", cmdElt.id);
 				bcElt.setAttribute("label",
-								   sbElt.getString("avim-" + cmdName + ".label"));
+								   getString("avim-" + cmdName + ".label"));
 				bcElt.setAttribute("accesskey",
-								   sbElt.getString("avim-" + cmdName + ".accesskey"));
+								   getString("avim-" + cmdName + ".accesskey"));
 			}
 			else if (cmds[cmdName].label) {
 				bcElt.setAttribute("label", cmds[cmdName].label);
@@ -416,8 +427,8 @@ function AVIM()	{
 			let keyElt = document.createElement("key");
 			keyElt.id = "avim-" + key + "-key";
 			keyElt.setAttribute("modifiers",
-								sbElt.getString("avim-" + key + ".modifiers"));
-			keyElt.setAttribute("key", sbElt.getString("avim-" + key + ".key"));
+								getString("avim-" + key + ".modifiers"));
+			keyElt.setAttribute("key", getString("avim-" + key + ".key"));
 			keyElt.setAttribute("command", "avim-" + key + "-cmd");
 			keySetElt.appendChild(keyElt);
 		});
@@ -426,8 +437,27 @@ function AVIM()	{
 		// Popups
 		let popupSetElt = document.createElement("popupset");
 		let popupElt = createMenuPopup("status", true);
-		popupElt.position = "before_end";
+		popupElt.setAttribute("position", "before_end");
 		popupSetElt.appendChild(popupElt);
+		
+		let imgElt = document.createElement("image");
+		imgElt.id = "avim-toggle-icon";
+		let labelElt = document.createElement("label");
+		labelElt.id = "avim-toggle-label";
+		let hboxElt = document.createElement("hbox");
+		hboxElt.align = "center";
+		hboxElt.appendChild(imgElt);
+		hboxElt.appendChild(labelElt);
+		let hangerElt = document.createElement("panel");
+		hangerElt.id = "avim-toggle-panel";
+		hangerElt.setAttribute("animate", "open");
+		hangerElt.setAttribute("flip", "slide");
+		hangerElt.setAttribute("noautofocus", true);
+		hangerElt.setAttribute("position", "bottomcenter topright");
+		hangerElt.setAttribute("type", "arrow");
+		hangerElt.appendChild(hboxElt);
+		popupSetElt.appendChild(hangerElt);
+		
 		document.documentElement.appendChild(popupSetElt);
 		
 		// Menu
@@ -439,9 +469,9 @@ function AVIM()	{
 			
 			let menuElt = document.createElement("menu");
 			menuElt.id = "avim-menu";
-			menuElt.setAttribute("label", sbElt.getString(menuElt.id + ".label"));
+			menuElt.setAttribute("label", getString(menuElt.id + ".label"));
 			menuElt.setAttribute("accesskey",
-								 sbElt.getString(menuElt.id + ".accesskey"));
+								 getString(menuElt.id + ".accesskey"));
 			let popupElt = createMenuPopup("menu", false);
 			menuElt.appendChild(popupElt);
 			editMenuElt.appendChild(menuElt);
@@ -454,8 +484,8 @@ function AVIM()	{
 			tbBtnElt.id = "avim-tb";
 			tbBtnElt.className = "toolbarbutton-1";
 			tbBtnElt.setAttribute("type", "menu-button");
-			tbBtnElt.label = sbElt.getString("AVIM.label");
-			tbBtnElt.setAttribute("tooltiptext", sbElt.getString("AVIM.label"));
+			tbBtnElt.label = getString("AVIM.label");
+			tbBtnElt.setAttribute("tooltiptext", getString("AVIM.label"));
 			tbBtnElt.autoCheck = false;
 			tbBtnElt.setAttribute("command", "avim-enabled-cmd");
 			tbBtnElt.observes = "avim-status-bc";
@@ -472,7 +502,7 @@ function AVIM()	{
 		if (statusBarElt) {
 			let panelElt = document.createElement("statusbarpanel");
 			panelElt.id = "avim-status";
-			panelElt.setAttribute("tooltiptext", sbElt.getString("AVIM.label"));
+			panelElt.setAttribute("tooltiptext", getString("AVIM.label"));
 			panelElt.setAttribute("popup", "avim-status-popup");
 			panelElt.observes = "avim-status-bc";
 			statusBarElt.appendChild(panelElt);
