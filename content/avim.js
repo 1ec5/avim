@@ -461,7 +461,9 @@ function AVIM()	{
 		document.documentElement.appendChild(popupSetElt);
 		
 		// Menu
-		let editMenuElt = $("menu_EditPopup");
+		let editMenuElt = $("menu_EditPopup") || $("editMenuPopup") ||
+			$("mppEdit") || $("edit-menupopup") || $("edEditMenuPopup") ||
+			$("popup_edit") || $("menu_Edit_Popup");
 		if (editMenuElt) {
 			let sepElt = document.createElement("menuseparator");
 			sepElt.id = "avim-separator";
@@ -469,16 +471,26 @@ function AVIM()	{
 			
 			let menuElt = document.createElement("menu");
 			menuElt.id = "avim-menu";
-			menuElt.setAttribute("label", getString(menuElt.id + ".label"));
+			menuElt.setAttribute("label", getString("avim-menu.label"));
 			menuElt.setAttribute("accesskey",
 								 getString(menuElt.id + ".accesskey"));
-			let popupElt = createMenuPopup("menu", false);
-			menuElt.appendChild(popupElt);
+			menuElt.appendChild(createMenuPopup("menu", false));
 			editMenuElt.appendChild(menuElt);
 		}
 		
+		// App menu
+		let appPaneElt = $("appmenuPrimaryPane");
+		if (appPaneElt) {
+			let menuElt = document.createElement("menu");
+			menuElt.id = "avim-appmenu";
+			menuElt.setAttribute("label", getString("avim-menu.label"));
+			menuElt.appendChild(createMenuPopup("appmenu", true));
+			appPaneElt.insertBefore(menuElt, $("appmenu_find").nextSibling);
+		}
+		
 		// Toolbar button
-		let tbPaletteElt = $("BrowserToolbarPalette");
+		let tbPaletteElt = $("BrowserToolbarPalette") || $("MsgComposeToolbarPalette");
+		let fennecTbElt = $("browser-controls");
 		if (tbPaletteElt) {
 			let tbBtnElt = document.createElement("toolbarbutton");
 			tbBtnElt.id = "avim-tb";
@@ -496,9 +508,20 @@ function AVIM()	{
 			enabledItemElt.removeEventListener("command", cmds.enabled, false);
 			enabledItemElt.setAttribute("oncommand", "");
 		}
+		else if (fennecTbElt) {
+			let tbBtnElt = document.createElement("toolbarbutton");
+			tbBtnElt.id = "avim-tb-enabled";
+			tbBtnElt.className = "avim-tb button-dark button-control panel-row-button button-control";
+			tbBtnElt.setAttribute("type", "checkbox");
+			tbBtnElt.label = getString("AVIM.label");
+			tbBtnElt.observes = "avim-status-bc";
+			tbBtnElt.style.pointerEvents = "inherit";
+			fennecTbElt.insertBefore(tbBtnElt, $("tool-panel-open"));
+		}
 		
 		// Status bar panel
-		let statusBarElt = $("status-bar");
+		let statusBarElt = $("addon-bar") || $("status-bar") ||
+			$("statusbar") || $("statusbarviewbox");
 		if (statusBarElt) {
 			let panelElt = document.createElement("statusbarpanel");
 			panelElt.id = "avim-status";
