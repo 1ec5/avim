@@ -130,32 +130,25 @@ function loadSubScript(uri, target) {
  *
  * @param window	{object}	the window onto which AVIM should be attached.
  */
-AVIM.prototype.onWindowOpen = function (window) {
-	let xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
-	// List any chrome: URLs special-cased in chrome.manifest.
-	let manifestUrls = [
-		//"chrome://browser/content/browser.xul",
-		"chrome://browser/content/preferences/preferences.xul",
-		"chrome://messenger/content/preferences/preferences.xul",
-		"chrome://dta/content/preferences/prefs.xul",
-		"chrome://tabmixplus/content/preferences/preferences.xul",
-	];
-	let handleEvent = function (event) {
-		let doc = event.originalTarget;
-//		dump("onWindowOpen: " + doc.location + "\n");						// debug
-		if (doc.location && doc.location.protocol === "chrome:" &&
-			doc.contentType && xulTypes.indexOf(doc.contentType) >= 0 &&
-			manifestUrls.indexOf(doc.location.href) < 0) {
-			let win = doc.defaultView;
-			loadSubScript("chrome://avim/content/avim.js", win || {});
-			loadSubScript("chrome://avim/content/frame.js", win || {});
-			win.avim.buildUI();
-		}
+AVIM.prototype.onWindowOpen = function (win) {
+	if (win.frameElement) return;
+	let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
+    let styleUri = Services.io.newURI("chrome://avim/content/skin/avim.css",
+                                      null, null);
+    win.addEventListener("DOMContentLoaded", function (event) {
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
-	};
-	if (!window.frameElement) {
-		window.addEventListener("DOMContentLoaded", handleEvent, true);
-	}
+		const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
+		let doc = event.originalTarget;
+		if (!doc.location || doc.location.protocol !== "chrome:" ||
+			!doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
+			return;
+		}
+		
+		winUtils.loadSheet(styleUri, winUtils.AUTHOR_SHEET);
+		
+		loadSubScript("chrome://avim/content/avim.js", win || {});
+		loadSubScript("chrome://avim/content/frame.js", win || {});
+	}, true);
 };
 
 /**
