@@ -125,6 +125,9 @@ function loadSubScript(uri, target) {
 	else subscriptLoader.loadSubScript(uri, target, "UTF-8");
 }
 
+const ioSvc = gCc["@mozilla.org/network/io-service;1"]
+	.getService(gCi.nsIIOService);
+
 /**
  * Loads the AVIM overlay onto the given window.
  *
@@ -132,10 +135,10 @@ function loadSubScript(uri, target) {
  */
 AVIM.prototype.onWindowOpen = function (win) {
 	if (win.frameElement) return;
-	let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
-    let styleUri = Services.io.newURI("chrome://avim/content/skin/avim.css",
-                                      null, null);
-    win.addEventListener("DOMContentLoaded", function (event) {
+	let winUtils = win.getInterface(gCi.nsIDOMWindowUtils);
+    let styleUri = ioSvc.newURI("chrome://avim/content/skin/avim.css",
+								null, null);
+    win.addEventListener("DOMContentLoaded", function handleEvent(event) {
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 		const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
 		let doc = event.originalTarget;
