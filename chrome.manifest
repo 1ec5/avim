@@ -11,12 +11,6 @@ locale	avim	vi		locale/vi/
 locale	avim	zh-CN	locale/zh-CN/
 # locale	avim	zh-TW	locale/zh-TW/
 
-skin	avim	classic/1.0		skin/classic/
-skin	avim	charamel		skin/charamel/
-skin	avim	silvermel		skin/charamel/
-
-style	chrome://mozapps/content/extensions/extensions.xul	chrome://avim/skin/options.css
-
 component	{ee7dd176-a684-4dc0-8613-62ddaef5378f}	components/avim.js
 component	{4A373444-8A2A-4641-ADD5-897A88D05185}	components/transformer.js
 
