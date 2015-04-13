@@ -24,7 +24,7 @@ load("../components/transformer.js");
 
 let xformer = new AVIMTransformerService();
 
-function applyKey(word, keyChar, prefs) {
+function testApplyKey(word, keyChar, prefs) {
 	//print("Applying " + keyChar + " to " + word);								// debug
 	let result = xformer.applyKey(word, {
 		method: prefs.method,
@@ -44,6 +44,6 @@ function applyKey(word, keyChar, prefs) {
 }
 
 function okApplyKey(prefs, word, keyChar, expected) {
-	assert.equal(applyKey(word, keyChar, prefs), expected,
+	assert.equal(testApplyKey(word, keyChar, prefs), expected,
 				 "Applying " + keyChar + " to " + word);
 }
