@@ -11,7 +11,7 @@ let AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 function AVIM()	{
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
-//	const Cu = Components.utils;
+	const Cu = Components.utils;
 	const CC = Components.Constructor;
 	
 	const PREF_VERSION = 1;
@@ -407,6 +407,7 @@ function AVIM()	{
 		}
 		document.documentElement.appendChild(cmdSetElt);
 		document.documentElement.appendChild(bcSetElt);
+		$("avim-enabled-bc").setAttribute("avim-accel", isMac ? "mac" : "");
 		
 		// Shortcut keys
 		let keys = ["enabled", "prev-method", "next-method", "spell", "oldaccents"];
@@ -462,9 +463,19 @@ function AVIM()	{
 			tbPaletteElt.appendChild(tbBtnElt);
 			
 			let enabledItemElt = $("avim-tb-enabled");
-			enabledItemElt.setAttribute("avim-accel", isMac ? "mac" : "");
 			enabledItemElt.removeEventListener("command", cmds.enabled, false);
 			enabledItemElt.setAttribute("oncommand", "");
+		}
+		
+		// Status bar panel
+		let statusBarElt = $("status-bar");
+		if (statusBarElt) {
+			let panelElt = document.createElement("statusbarpanel");
+			panelElt.id = "avim-status";
+			panelElt.setAttribute("tooltiptext", sbElt.getString("AVIM.label"));
+			panelElt.setAttribute("popup", "avim-status-popup");
+			panelElt.observes = "avim-status-bc";
+			statusBarElt.appendChild(panelElt);
 		}
 	};
 	
@@ -845,7 +856,7 @@ function AVIM()	{
 		applyKey = Cc["@1ec5.org/avim/transformer;1"].getService()
 			.wrappedJSObject.applyKey;
 	}
-	else if ("import" in Components.utils) {
+	else if ("import" in Cu) {
 		applyKey = Cu.import("resource://avim-components/transformer.js", this)
 			.applyKey;
 	}
