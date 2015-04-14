@@ -79,9 +79,8 @@ function loadOverlay(win) {
     const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
     let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
     let doc = win.document;
-    if (!doc.location ||
-        doc.location.protocol !== "chrome:" || !doc.contentType ||
-        xulTypes.indexOf(doc.contentType) < 0) {
+    if (!doc.location || doc.location.protocol !== "chrome:" ||
+        !doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
         return;
     }
     

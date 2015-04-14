@@ -498,9 +498,18 @@ function AVIM()	{
 		}
 		
 		// Toolbar button
-		let tbPaletteElt = $("BrowserToolbarPalette") || $("MsgComposeToolbarPalette");
+		let tbElt = $("BrowserToolbarPalette") || $("MsgComposeToolbarPalette");
+		if (!tbElt) {
+			let tbElts = document.getElementsByTagName("toolbar");
+			for (let i = 0; i < tbElts.length; i++) {
+				if (tbElts[i].getAttribute("currentset").indexOf("avim-tb") >= 0) {
+					tbElt = tbElts[i].customizationTarget || tbElts[i];
+					break;
+				}
+			}
+		}
 		let fennecTbElt = $("browser-controls");
-		if (tbPaletteElt) {
+		if (tbElt) {
 			let tbBtnElt = document.createElement("toolbarbutton");
 			tbBtnElt.id = "avim-tb";
 			tbBtnElt.className = "avim-owned toolbarbutton-1";
@@ -511,7 +520,7 @@ function AVIM()	{
 			tbBtnElt.setAttribute("command", "avim-enabled-cmd");
 			tbBtnElt.observes = "avim-status-bc";
 			tbBtnElt.appendChild(createMenuPopup("tb", true));
-			tbPaletteElt.appendChild(tbBtnElt);
+			tbElt.appendChild(tbBtnElt);
 			
 			let enabledItemElt = $("avim-tb-enabled");
 			enabledItemElt.removeEventListener("command", cmds.enabled, false);
@@ -531,7 +540,7 @@ function AVIM()	{
 		// Status bar panel
 		let statusBarElt = $("addon-bar") || $("status-bar") ||
 			$("statusbar") || $("statusbarviewbox");
-		if (statusBarElt) {
+		if (statusBarElt && !statusBarElt.getAttribute("toolbar-delegate")) {
 			let panelElt = document.createElement("statusbarpanel");
 			panelElt.id = "avim-status";
 			panelElt.className = "avim-owned";
@@ -986,7 +995,7 @@ function AVIM()	{
 	function installToolbarButton(toolbarId, id, afterId) {
 		if (!$(id)) {
 			let toolbar = $(toolbarId);
-			let target = $(toolbarId + "-customization-target") || toolbar;
+			let target = toolbar.customizationTarget || toolbar;
 			
 			// If no afterId is given, then append the item to the toolbar
 			let before = null;
@@ -1052,9 +1061,11 @@ let unload = function (evt) {
 	}
 	removeEventListener("keydown", keydown, true);
 	removeEventListener("keypress", keypress, true);
-	avim.destroyUI();
-	avim.unregisterPrefs();
-	delete win.avim;
+	if ("avim" in win) {
+		avim.destroyUI();
+		avim.unregisterPrefs();
+		delete win.avim;
+	}
 };
 addEventListener("unload", unload, false);
 addEventListener("AVIM:shutdown", unload, false);
