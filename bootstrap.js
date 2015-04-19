@@ -74,7 +74,6 @@ function loadSubScript(uri, target) {
 
 function loadOverlay(win) {
     const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
-    let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
     let doc = win.document;
     if (!doc.location || doc.location.protocol !== "chrome:" ||
         !doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
@@ -87,7 +86,6 @@ function loadOverlay(win) {
 
 function loadOverlays(win, topic, data) {
     if (win.frameElement) return;
-	let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
     win.addEventListener("DOMContentLoaded", function doLoadOverlay(evt) {
         win.removeEventListener(evt.type, doLoadOverlay, true);
         loadOverlay(win);
