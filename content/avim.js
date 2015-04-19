@@ -555,6 +555,7 @@ function AVIM()	{
 	 * Removes all the elements that were added to the document by buildUI().
 	 */
 	this.destroyUI = function () {
+		if (!("getElementsByClassName" in document)) return;
 		let elts = document.getElementsByClassName("avim-owned");
 		for (let i = elts.length - 1; i >= 0; i--) {
 			let elt = elts[i];
@@ -1021,52 +1022,74 @@ function AVIM()	{
 			this.setPrefs("prefVersion");
 		}
 	};
+	
+	let onKeyDown = function (evt) {
+		avim.onKeyDown(evt);
+	};
+	let onKeyPress = function (evt) {
+		avim.onKeyPress(evt);
+	};
+	let onFrameKeyPress = function (evt) {
+		avim.onFrameKeyPress(evt);
+	};
+	let onFrameReadyForPrefs = function (evt) {
+		avim.onFrameReadyForPrefs(evt);
+	};
+	
+	this.load = function () {
+		this.buildUI();
+		this.registerPrefs();
+		this.updateUI();
+		this.doFirstRun();
+		
+		addEventListener("keydown", onKeyDown, true);
+		addEventListener("keypress", onKeyPress, true);
+		
+		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
+			messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
+			messageManager.addMessageListener("AVIM:readyforprefs",
+											  onFrameReadyForPrefs);
+			messageManager.addMessageListener("AVIM:keypress", onFrameKeyPress);
+		}
+	};
+	
+	this.unload = function () {
+		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
+			messageManager.sendAsyncMessage("AVIM:shutdown");
+			messageManager.removeDelayedFrameScript("chrome://avim/content/frame.js");
+			messageManager.removeMessageListener("AVIM:keypress",
+												 onFrameKeyPress);
+			messageManager.removeMessageListener("AVIM:readyforprefs",
+												 onFrameReadyForPrefs);
+		}
+		removeEventListener("keydown", onKeyDown, true);
+		removeEventListener("keypress", onKeyPress, true);
+		
+		this.destroyUI();
+		this.unregisterPrefs();
+	};
 }
 
 (function (win) {
 
-if ("avim" in win || win.frameElement) return;
-
-win.avim = new AVIM();
-
-avim.buildUI();
-avim.registerPrefs();
-avim.updateUI();
-avim.doFirstRun();
-
-let keydown = function (evt) {
-	avim.onKeyDown(evt);
-};
-addEventListener("keydown", keydown, true);
-let keypress = function (evt) {
-	avim.onKeyPress(evt);
-};
-addEventListener("keypress", keypress, true);
-
-let isElectrolyzed = "gMultiProcessBrowser" in win && win.gMultiProcessBrowser;
-if (isElectrolyzed) {
-	messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
-	messageManager.addMessageListener("AVIM:readyforprefs",
-									  avim.onFrameReadyForPrefs);
-	messageManager.addMessageListener("AVIM:keypress", avim.onFrameKeyPress);
-}
+if (win.frameElement) return;
 
 let unload = function (evt) {
 	removeEventListener(evt.type, unload, false);
-	
-	if (isElectrolyzed) {
-		messageManager.sendAsyncMessage("AVIM:shutdown");
-		messageManager.removeDelayedFrameScript("chrome://avim/content/frame.js");
-		messageManager.removeMessageListener("AVIM:keypress", avim.onFrameKeyPress);
-	}
-	removeEventListener("keydown", keydown, true);
-	removeEventListener("keypress", keypress, true);
-	if ("avim" in win) {
-		avim.destroyUI();
-		avim.unregisterPrefs();
+	if ("avim" in win && win.avim) {
+		avim.unload();
 		delete win.avim;
 	}
 };
+
+if ("avim" in win && win.avim) {
+	avim.unload();
+	delete win.avim;
+}
+
+win.avim = new AVIM();
+avim.load();
+
 addEventListener("unload", unload, false);
 addEventListener("AVIM:shutdown", unload, false);
 

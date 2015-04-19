@@ -72,9 +72,6 @@ function loadSubScript(uri, target) {
 	else Services.scriptloader.loadSubScript(uri, target, "UTF-8");
 }
 
-let styleUri = Services.io.newURI("chrome://avim/content/skin/avim.css",
-                                  null, null);
-
 function loadOverlay(win) {
     const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
     let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
@@ -83,8 +80,6 @@ function loadOverlay(win) {
         !doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
         return;
     }
-    
-    winUtils.loadSheet(styleUri, winUtils.AUTHOR_SHEET);
     
     loadSubScript("chrome://avim/content/avim.js", win || {});
     loadSubScript("chrome://avim/content/frame.js", win || {});
@@ -99,12 +94,16 @@ function loadOverlays(win, topic, data) {
     }, true);
 	win.addEventListener("AVIM:shutdown", function unloadOverlay(evt) {
 		win.removeEventListener(evt.type, unloadOverlay, false);
-        winUtils.removeSheet(styleUri, winUtils.AUTHOR_SHEET);
 	}, false);
 }
 
 const resProtocol = Services.io.getProtocolHandler("resource")
     .QueryInterface(Ci.nsIResProtocolHandler);
+
+const styleSvc = Cc["@mozilla.org/content/style-sheet-service;1"]
+	.getService(Ci.nsIStyleSheetService);
+const styleUri = Services.io.newURI("chrome://avim/content/skin/avim.css",
+									null, null);
 
 function startup(data, reason) {
 	let aliasFile = Cc["@mozilla.org/file/local;1"]
@@ -122,6 +121,8 @@ function startup(data, reason) {
         pref: setDefaultPref,
     });
     
+	styleSvc.loadAndRegisterSheet(styleUri, styleSvc.AUTHOR_SHEET);
+    
     let wins = Services.ww.getWindowEnumerator();
     while (wins.hasMoreElements()) {
         loadOverlay(wins.getNext().QueryInterface(Ci.nsIDOMWindow));
@@ -138,6 +139,9 @@ function shutdown(data, reason) {
         let win = wins.getNext().QueryInterface(Ci.nsIDOMWindow);
         win.dispatchEvent(new Event("AVIM:shutdown"));
     }
+	
+	styleSvc.unregisterSheet(styleUri, styleSvc.AUTHOR_SHEET);
+	
     Services.obs.notifyObservers(null, "chrome-flush-caches", null);
     
     resProtocol.setSubstitution("avim-components", null);
