@@ -126,11 +126,19 @@ function startup(data, reason) {
         loadOverlay(wins.getNext().QueryInterface(Ci.nsIDOMWindow));
     }
     Services.ww.registerNotification(loadOverlays);
+	
+	if (reason === ADDON_INSTALL || reason === ADDON_ENABLE) {
+		let topWindow = Services.wm.getMostRecentWindow(null);
+		if (topWindow) {
+			topWindow.avim.playCueAfterToggle();
+			topWindow.avim.showTogglePopup(true);
+		}
+	}
 }
 
 function shutdown(data, reason) {
     if (reason === APP_SHUTDOWN) return;
-    
+	
 	Services.ww.unregisterNotification(loadOverlays);
 	let wins = Services.ww.getWindowEnumerator();
     while (wins.hasMoreElements()) {

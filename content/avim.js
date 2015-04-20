@@ -86,31 +86,24 @@ function AVIM()	{
 	this.popupFadeTimer = 0;
 	
 	/**
-	 * Plays a sound to alert the user that AVIM's settings have changed, in
-	 * case all the UI is hidden.
+	 * Display a popup next to the application menu if AVIM’s toolbar button
+	 * isn’t visible.
 	 */
-	this.playCueAfterToggle = function (volume) {
-		let enabled = AVIMConfig.onOff;
-		if (this.onCue) this.onCue.pause();
-		if (this.offCue) this.offCue.pause();
-		
-		if (volume === undefined) volume = AVIMConfig.volume;
-		volume = clamp(volume / 100, 0, 1);
-		
-		// Display a popup next to the application menu if AVIM’s toolbar button
-		// isn’t visible.
+	this.showTogglePopup = function (onTbBtn) {
 		let tb = $("avim-tb");
 		let tbAreaType = tb && tb.getAttribute("cui-areatype");
 		let panel = $("avim-toggle-panel");
 		let appMenuTbItem = $("PanelUI-menu-button");
-		if (panel && appMenuTbItem && tbAreaType !== "toolbar") {
+		let anchor;
+		if (onTbBtn) anchor = (tb && tbAreaType !== "toolbar") ? tb : appMenuTbItem;
+		else if (!tb || tbAreaType !== "toolbar") anchor = appMenuTbItem;
+		if (panel && anchor) {
 			let bc = $(broadcasterIds.methods[AVIMConfig.method]);
 			let methodName = bc.getAttribute("label");
 			let lbl = $("avim-toggle-label");
 			lbl.value = methodName;
-			lbl.setAttribute("avim-disabled", "" + !enabled);
-			panel.openPopup(appMenuTbItem, "bottomcenter topright", 0, 0, false,
-							false);
+			lbl.setAttribute("avim-disabled", "" + !AVIMConfig.onOff);
+			panel.openPopup(anchor, "bottomcenter topright", 0, 0, false, false);
 			clearTimeout(this.popupFadeTimer);
 			this.popupFadeTimer = setTimeout(function () {
 				$("avim-toggle-panel").hidePopup(true);
@@ -122,6 +115,19 @@ function AVIM()	{
 				};
 			}
 		}
+	};
+	
+	/**
+	 * Plays a sound to alert the user that AVIM's settings have changed, in
+	 * case all the UI is hidden.
+	 */
+	this.playCueAfterToggle = function (volume) {
+		let enabled = AVIMConfig.onOff;
+		if (this.onCue) this.onCue.pause();
+		if (this.offCue) this.offCue.pause();
+		
+		if (volume === undefined) volume = AVIMConfig.volume;
+		volume = clamp(volume / 100, 0, 1);
 		
 		if (enabled && !this.onCue) {
 			this.onCue = new Audio("chrome://avim/content/on.wav");
@@ -928,6 +934,7 @@ function AVIM()	{
 					avim.stopListeningForCtrl();
 					avim.toggle(true);
 					avim.playCueAfterToggle();
+					avim.showTogglePopup(false);
 				}
 			}
 			else avim.stopListeningForCtrl();
