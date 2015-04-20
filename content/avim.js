@@ -518,7 +518,7 @@ function AVIM()	{
 		if (tbElt) {
 			let tbBtnElt = document.createElement("toolbarbutton");
 			tbBtnElt.id = "avim-tb";
-			tbBtnElt.className = "avim-owned toolbarbutton-1";
+			tbBtnElt.className = "avim-owned toolbarbutton-1 chromeclass-toolbar-additional";
 			tbBtnElt.setAttribute("type", "menu-button");
 			tbBtnElt.label = getString("AVIM.label");
 			tbBtnElt.setAttribute("tooltiptext", getString("AVIM.label"));
