@@ -1,4 +1,4 @@
-/* global Services, APP_SHUTDOWN */
+/* global Services, ADDON_INSTALL, ADDON_ENABLE, APP_SHUTDOWN */
 /* exported startup, shutdown, install, uninstall */
 "use strict";
 
