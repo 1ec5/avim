@@ -128,6 +128,10 @@ function loadSubScript(uri, target) {
 const ioSvc = gCc["@mozilla.org/network/io-service;1"]
 	.getService(gCi.nsIIOService);
 
+const styleSvc = gCc["@mozilla.org/content/style-sheet-service;1"]
+	.getService(gCi.nsIStyleSheetService);
+const styleUri = ioSvc.newURI("chrome://avim/content/skin/avim.css", null, null);
+
 /**
  * Loads the AVIM overlay onto the given window.
  *
@@ -135,10 +139,7 @@ const ioSvc = gCc["@mozilla.org/network/io-service;1"]
  */
 AVIM.prototype.onWindowOpen = function (win) {
 	if (win.frameElement) return;
-	let winUtils = win.getInterface(gCi.nsIDOMWindowUtils);
-    let styleUri = ioSvc.newURI("chrome://avim/content/skin/avim.css",
-								null, null);
-    win.addEventListener("DOMContentLoaded", function handleEvent(event) {
+	win.addEventListener("DOMContentLoaded", function handleEvent(event) {
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 		const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
 		let doc = event.originalTarget;
@@ -146,8 +147,6 @@ AVIM.prototype.onWindowOpen = function (win) {
 			!doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
 			return;
 		}
-		
-		winUtils.loadSheet(styleUri, winUtils.AUTHOR_SHEET);
 		
 		loadSubScript("chrome://avim/content/avim.js", win || {});
 		loadSubScript("chrome://avim/content/frame.js", win || {});
@@ -182,6 +181,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
 			observerSvc.addObserver(this, "domwindowopened", false);
 			observerSvc.addObserver(this, "quit-application", false);
 			this.didObserveStartup = true;
+			styleSvc.loadAndRegisterSheet(styleUri, styleSvc.AUTHOR_SHEET);
 			break;
 		case "quit-application":
 			observerSvc.removeObserver(this, "domwindowopened", false);
