@@ -106,7 +106,8 @@ function AVIM()	{
 			panel.openPopup(anchor, "bottomcenter topright", 0, 0, false, false);
 			clearTimeout(this.popupFadeTimer);
 			this.popupFadeTimer = setTimeout(function () {
-				$("avim-toggle-panel").hidePopup(true);
+				let popup = $("avim-toggle-panel");
+				if (popup) popup.hidePopup(true);
 			}, 2000 /* ms */);
 			if (!panel.onpopuphiding) {
 				panel.onpopuphiding = function (/* evt */) {
@@ -504,33 +505,60 @@ function AVIM()	{
 		}
 		
 		// Toolbar button
-		let tbElt = $("BrowserToolbarPalette") || $("MsgComposeToolbarPalette");
-		if (!tbElt) {
-			let tbElts = document.getElementsByTagName("toolbar");
-			for (let i = 0; i < tbElts.length; i++) {
-				if (tbElts[i].getAttribute("currentset").indexOf("avim-tb") >= 0) {
-					tbElt = tbElts[i].customizationTarget || tbElts[i];
+		let tbxElt = window.gNavToolbox || $("navigator-toolbox") || $("compose-toolbox");
+		let paletteElt = tbxElt && tbxElt.palette;
+		if (tbxElt && !paletteElt) {
+			for (let i = 0; i < tbxElt.children.length; i++) {
+				let child = tbxElt.children[i];
+				if (child.localName === "toolbarpalette") {
+					paletteElt = child;
 					break;
 				}
 			}
 		}
-		let fennecTbElt = $("browser-controls");
+		let tbElt;
+		let tbNextElt;
+		if ("querySelector" in document) {
+			tbElt = document.querySelector("[currentset^='avim-tb,']," +
+										   "[currentset*=',avim-tb,']," +
+										   "[currentset$=',avim-tb']");
+		}
+		else {
+			let tbElts = document.getElementsByTagName("toolbar");
+			for (let i = 0; i < tbElts.length; i++) {
+				let currentSet = tbElts[i].getAttribute("currentset") || "";
+				let match = currentSet.match(/(?:^|,)avim-tb(?:$|,)/);
+				if (match) {
+					tbElt = tbElts[i];
+				}
+			}
+		}
 		if (tbElt) {
+			let currentSet = tbElt && tbElt.getAttribute("currentset").split(",");
+			for (let i = currentSet.indexOf("avim-tb") + 1; i < currentSet.length; i++) {
+				if ((tbNextElt = $(currentSet[i]))) break;
+			}
+		}
+		let fennecTbElt = $("browser-controls");
+		if (paletteElt || tbElt) {
 			let tbBtnElt = document.createElement("toolbarbutton");
 			tbBtnElt.id = "avim-tb";
 			tbBtnElt.className = "avim-owned toolbarbutton-1 chromeclass-toolbar-additional";
 			tbBtnElt.setAttribute("type", "menu-button");
 			tbBtnElt.label = getString("AVIM.label");
-			tbBtnElt.setAttribute("tooltiptext", getString("AVIM.label"));
+			tbBtnElt.setAttribute("tooltiptext", tbBtnElt.label);
 			tbBtnElt.autoCheck = false;
 			tbBtnElt.setAttribute("command", "avim-enabled-cmd");
 			tbBtnElt.observes = "avim-status-bc";
 			tbBtnElt.appendChild(createMenuPopup("tb", true));
-			tbElt.appendChild(tbBtnElt);
+			if (paletteElt) paletteElt.appendChild(tbBtnElt);
+			if (tbElt) tbElt.insertItem(tbBtnElt.id, tbNextElt || null);
 			
 			let enabledItemElt = $("avim-tb-enabled");
-			enabledItemElt.removeEventListener("command", cmds.enabled, false);
-			enabledItemElt.setAttribute("oncommand", "");
+			if (enabledItemElt) {
+				enabledItemElt.removeEventListener("command", cmds.enabled, false);
+				enabledItemElt.setAttribute("oncommand", "");
+			}
 		}
 		else if (fennecTbElt) {
 			let tbBtnElt = document.createElement("toolbarbutton");
@@ -562,11 +590,33 @@ function AVIM()	{
 	 */
 	this.destroyUI = function () {
 		if (!("getElementsByClassName" in document)) return;
-		let elts = document.getElementsByClassName("avim-owned");
-		for (let i = elts.length - 1; i >= 0; i--) {
-			let elt = elts[i];
-			if (elt.parentNode) elt.parentNode.removeChild(elt);
-		}
+		let getOwnedElts = function (rootElt) {
+			if (!rootElt) return;
+			if ("querySelectorAll" in rootElt) {
+				return rootElt.querySelectorAll(".avim-owned");
+			}
+			if ("getElementsByClassName" in rootElt) {
+				return rootElt.getElementsByClassName("avim-owned");
+			}
+		};
+		let removeElts = function (elts) {
+			if (!elts) return;
+			for (let i = elts.length - 1; i >= 0; i--) {
+				let elt = elts[i];
+				if (elt.parentNode) elt.parentNode.removeChild(elt);
+			}
+		};
+		removeElts(getOwnedElts(document));
+		
+		let tbxElt = window.gNavToolbox || $("navigator-toolbox") || $("compose-toolbox");
+		removeElts(getOwnedElts(tbxElt && tbxElt.palette));
+		
+		//let panelMultiViewElt = $("PanelUI-multiView");
+		//if (panelMultiViewElt) {
+		//	let elt = document.getAnonymousElementByAttribute(panelMultiViewElt,
+		//													  "id", "avim-tb");
+		//	if (elt && elt.parentNode) elt.parentNode.removeChild(elt);
+		//}
 	};
 	
 	function setCheckedState(elt, checked) {
@@ -1044,8 +1094,8 @@ function AVIM()	{
 	};
 	
 	this.load = function () {
-		this.buildUI();
 		this.registerPrefs();
+		this.buildUI();
 		this.updateUI();
 		this.doFirstRun();
 		

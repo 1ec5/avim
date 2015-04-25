@@ -86,13 +86,10 @@ function loadOverlay(win) {
 
 function loadOverlays(win, topic, data) {
     if (win.frameElement) return;
-    win.addEventListener("DOMContentLoaded", function doLoadOverlay(evt) {
+    win.addEventListener("load", function doLoadOverlay(evt) {
         win.removeEventListener(evt.type, doLoadOverlay, true);
-        loadOverlay(win);
+		loadOverlay(win);
     }, true);
-	win.addEventListener("AVIM:shutdown", function unloadOverlay(evt) {
-		win.removeEventListener(evt.type, unloadOverlay, false);
-	}, false);
 }
 
 const resProtocol = Services.io.getProtocolHandler("resource")
