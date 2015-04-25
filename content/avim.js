@@ -90,13 +90,19 @@ function AVIM()	{
 	 * isn’t visible.
 	 */
 	this.showTogglePopup = function (onTbBtn) {
-		let tb = $("avim-tb");
-		let tbAreaType = tb && tb.getAttribute("cui-areatype");
+		let tbBtn = $("avim-tb");
+		let tbAreaType = tbBtn && tbBtn.getAttribute("cui-areatype");
 		let panel = $("avim-toggle-panel");
 		let appMenuTbItem = $("PanelUI-menu-button");
 		let anchor;
-		if (onTbBtn) anchor = tbAreaType === "toolbar" ? tb : appMenuTbItem;
-		else if (!tb || tbAreaType !== "toolbar") anchor = appMenuTbItem;
+		if (tbAreaType === "toolbar") {
+			let overflowedTbId = tbBtn.parentNode.getAttribute("overflowfortoolbar");
+			let overflowBtnId = overflowedTbId &&
+				$(overflowedTbId).getAttribute("overflowbutton");
+			if (overflowBtnId) anchor = $(overflowBtnId)
+			else if (onTbBtn) anchor = tbBtn;
+		}
+		else if (tbAreaType !== "toolbar") anchor = appMenuTbItem;
 		if (panel && anchor) {
 			let bc = $(broadcasterIds.methods[AVIMConfig.method]);
 			let methodName = bc.getAttribute("label");
