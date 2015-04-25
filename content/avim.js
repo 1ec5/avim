@@ -99,7 +99,7 @@ function AVIM()	{
 			let overflowedTbId = tbBtn.parentNode.getAttribute("overflowfortoolbar");
 			let overflowBtnId = overflowedTbId &&
 				$(overflowedTbId).getAttribute("overflowbutton");
-			if (overflowBtnId) anchor = $(overflowBtnId)
+			if (overflowBtnId) anchor = $(overflowBtnId);
 			else if (onTbBtn) anchor = tbBtn;
 		}
 		else if (tbAreaType !== "toolbar") anchor = appMenuTbItem;
