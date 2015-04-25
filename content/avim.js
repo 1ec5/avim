@@ -95,7 +95,7 @@ function AVIM()	{
 		let panel = $("avim-toggle-panel");
 		let appMenuTbItem = $("PanelUI-menu-button");
 		let anchor;
-		if (onTbBtn) anchor = (tb && tbAreaType !== "toolbar") ? tb : appMenuTbItem;
+		if (onTbBtn) anchor = tbAreaType === "toolbar" ? tb : appMenuTbItem;
 		else if (!tb || tbAreaType !== "toolbar") anchor = appMenuTbItem;
 		if (panel && anchor) {
 			let bc = $(broadcasterIds.methods[AVIMConfig.method]);
@@ -352,6 +352,21 @@ function AVIM()	{
 	}
 	
 	/**
+	 * Returns the window’s <toolbarpalette> element.
+	 */
+	function getToolbarPalette() {
+		let tbxElt = window.gNavToolbox || $("navigator-toolbox") || $("compose-toolbox");
+		if (!tbxElt) return null;
+		let paletteElt = tbxElt.palette;
+		if (paletteElt) return paletteElt;
+		for (let i = 0; i < tbxElt.children.length; i++) {
+			let child = tbxElt.children[i];
+			if (child.localName === "toolbarpalette") return child;
+		}
+		return null;
+	}
+	
+	/**
 	 * Constructs the extension’s user interface.
 	 *
 	 * Elements created by this method are removed from the document by
@@ -505,46 +520,40 @@ function AVIM()	{
 		}
 		
 		// Toolbar button
-		let tbxElt = window.gNavToolbox || $("navigator-toolbox") || $("compose-toolbox");
-		let paletteElt = tbxElt && tbxElt.palette;
-		if (tbxElt && !paletteElt) {
-			for (let i = 0; i < tbxElt.children.length; i++) {
-				let child = tbxElt.children[i];
-				if (child.localName === "toolbarpalette") {
-					paletteElt = child;
-					break;
-				}
-			}
-		}
+		let paletteElt = getToolbarPalette();
+		let CustomizableUI = window.CustomizableUI;
 		let tbElt;
 		let tbNextElt;
-		if ("querySelector" in document) {
-			tbElt = document.querySelector("[currentset^='avim-tb,']," +
-										   "[currentset*=',avim-tb,']," +
-										   "[currentset$=',avim-tb']");
-		}
-		else {
-			let tbElts = document.getElementsByTagName("toolbar");
-			for (let i = 0; i < tbElts.length; i++) {
-				let currentSet = tbElts[i].getAttribute("currentset") || "";
-				let match = currentSet.match(/(?:^|,)avim-tb(?:$|,)/);
-				if (match) {
-					tbElt = tbElts[i];
+		if (CustomizableUI) {
+			if ("querySelector" in document) {
+				tbElt = document.querySelector("[currentset^='avim-tb,']," +
+											   "[currentset*=',avim-tb,']," +
+											   "[currentset$=',avim-tb']");
+			}
+			else {
+				let tbElts = document.getElementsByTagName("toolbar");
+				for (let i = 0; i < tbElts.length; i++) {
+					let currentSet = tbElts[i].getAttribute("currentset") || "";
+					let match = currentSet.match(/(?:^|,)avim-tb(?:$|,)/);
+					if (match) {
+						tbElt = tbElts[i];
+					}
 				}
 			}
-		}
-		if (tbElt) {
-			let currentSet = tbElt && tbElt.getAttribute("currentset").split(",");
-			for (let i = currentSet.indexOf("avim-tb") + 1; i < currentSet.length; i++) {
-				if ((tbNextElt = $(currentSet[i]))) break;
+			if (tbElt) {
+				let currentSet = tbElt && tbElt.getAttribute("currentset").split(",");
+				for (let i = currentSet.indexOf("avim-tb") + 1; i < currentSet.length; i++) {
+					if ((tbNextElt = $(currentSet[i]))) break;
+				}
 			}
 		}
 		let fennecTbElt = $("browser-controls");
-		if (paletteElt || tbElt) {
+		if (paletteElt || tbElt || CustomizableUI) {
 			let tbBtnElt = document.createElement("toolbarbutton");
 			tbBtnElt.id = "avim-tb";
 			tbBtnElt.className = "avim-owned toolbarbutton-1 chromeclass-toolbar-additional";
 			tbBtnElt.setAttribute("type", "menu-button");
+			tbBtnElt.setAttribute("removable", "true");
 			tbBtnElt.label = getString("AVIM.label");
 			tbBtnElt.setAttribute("tooltiptext", tbBtnElt.label);
 			tbBtnElt.autoCheck = false;
@@ -552,7 +561,15 @@ function AVIM()	{
 			tbBtnElt.observes = "avim-status-bc";
 			tbBtnElt.appendChild(createMenuPopup("tb", true));
 			if (paletteElt) paletteElt.appendChild(tbBtnElt);
-			if (tbElt) tbElt.insertItem(tbBtnElt.id, tbNextElt || null);
+			if (CustomizableUI) {
+				let placement = CustomizableUI.getPlacementOfWidget(tbBtnElt.id);
+				if (placement) {
+					CustomizableUI.addWidgetToArea(tbBtnElt.id, placement.area,
+												   placement.position);
+					CustomizableUI.ensureWidgetPlacedInWindow(tbBtnElt.id, window);
+				}
+			}
+			else if (tbElt) tbElt.insertItem(tbBtnElt.id, tbNextElt || null);
 			
 			let enabledItemElt = $("avim-tb-enabled");
 			if (enabledItemElt) {
@@ -595,9 +612,7 @@ function AVIM()	{
 			if ("querySelectorAll" in rootElt) {
 				return rootElt.querySelectorAll(".avim-owned");
 			}
-			if ("getElementsByClassName" in rootElt) {
-				return rootElt.getElementsByClassName("avim-owned");
-			}
+			return rootElt.getElementsByClassName("avim-owned");
 		};
 		let removeElts = function (elts) {
 			if (!elts) return;
@@ -607,16 +622,16 @@ function AVIM()	{
 			}
 		};
 		removeElts(getOwnedElts(document));
+		removeElts(getOwnedElts(getToolbarPalette()));
 		
-		let tbxElt = window.gNavToolbox || $("navigator-toolbox") || $("compose-toolbox");
-		removeElts(getOwnedElts(tbxElt && tbxElt.palette));
-		
-		//let panelMultiViewElt = $("PanelUI-multiView");
-		//if (panelMultiViewElt) {
-		//	let elt = document.getAnonymousElementByAttribute(panelMultiViewElt,
-		//													  "id", "avim-tb");
-		//	if (elt && elt.parentNode) elt.parentNode.removeChild(elt);
-		//}
+		// The application menu doesn’t get notified to remove the toolbar item
+		// for some reason.
+		let panelMultiViewElt = $("PanelUI-multiView");
+		if (panelMultiViewElt) {
+			let elt = document.getAnonymousElementByAttribute(panelMultiViewElt,
+															  "id", "avim-tb");
+			if (elt && elt.parentNode) elt.parentNode.removeChild(elt);
+		}
 	};
 	
 	function setCheckedState(elt, checked) {
@@ -1093,6 +1108,9 @@ function AVIM()	{
 		avim.onFrameReadyForPrefs(evt);
 	};
 	
+	/**
+	 * Set up UI and register event listeners.
+	 */
 	this.load = function () {
 		this.registerPrefs();
 		this.buildUI();
@@ -1110,6 +1128,9 @@ function AVIM()	{
 		}
 	};
 	
+	/**
+	 * Tear down UI and unregister event listeners.
+	 */
 	this.unload = function () {
 		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
 			messageManager.sendAsyncMessage("AVIM:shutdown");
