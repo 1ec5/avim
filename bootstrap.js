@@ -84,12 +84,16 @@ function loadOverlay(win) {
     loadSubScript("chrome://avim/content/frame.js", win || {});
 }
 
-function loadOverlays(win, topic, data) {
+function onWindowOpen(win, topic, data) {
     if (win.frameElement) return;
     win.addEventListener("load", function doLoadOverlay(evt) {
         win.removeEventListener(evt.type, doLoadOverlay, true);
 		loadOverlay(win);
-    }, true);
+	}, true);
+}
+
+function onAddonsOpen(win, topic, data) {
+	loadSubScript("chrome://avim/content/addonsOverlay.js", win || {});
 }
 
 const resProtocol = Services.io.getProtocolHandler("resource")
@@ -122,7 +126,8 @@ function startup(data, reason) {
     while (wins.hasMoreElements()) {
         loadOverlay(wins.getNext().QueryInterface(Ci.nsIDOMWindow));
     }
-    Services.ww.registerNotification(loadOverlays);
+    Services.ww.registerNotification(onWindowOpen);
+	Services.obs.addObserver(onAddonsOpen, "EM-loaded", false);
 	
 	if (reason === ADDON_INSTALL || reason === ADDON_ENABLE) {
 		let topWindow = Services.wm.getMostRecentWindow(null);
@@ -136,7 +141,8 @@ function startup(data, reason) {
 function shutdown(data, reason) {
     if (reason === APP_SHUTDOWN) return;
 	
-	Services.ww.unregisterNotification(loadOverlays);
+	Services.obs.removeObserver(onAddonsOpen, "EM-loaded");
+	Services.ww.unregisterNotification(onWindowOpen);
 	let wins = Services.ww.getWindowEnumerator();
     while (wins.hasMoreElements()) {
         let win = wins.getNext().QueryInterface(Ci.nsIDOMWindow);

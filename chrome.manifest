@@ -30,12 +30,6 @@ overlay	chrome://avim/content/optionsOverlay.xul	chrome://browser/content/macBro
 style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
 style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
 
-### Firefox ####################################################################
-
-# Add-ons window
-overlay	chrome://mozapps/content/extensions/extensions.xul		chrome://avim/content/addonsOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
-overlay	about:addons											chrome://avim/content/addonsOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
-
 ### Fennec #####################################################################
 
 # Preferences pane

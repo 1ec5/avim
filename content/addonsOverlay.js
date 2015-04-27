@@ -19,7 +19,6 @@ function MudimMonitor() {
 	const avimEnabledId = "enabled";
 	const mudimMethodId = "settings.method";
 	
-	const stringBundleId = "avim-bundle";
 	const noteValue = "mudim-note";
 	
 	const notificationBoxId = "addonsMsg";
@@ -106,6 +105,10 @@ function MudimMonitor() {
 			browserWin.gBrowser.getNotificationBox();
 	}
 	
+	const stringSvc = Cc["@mozilla.org/intl/stringbundle;1"]
+		.getService(Ci.nsIStringBundleService);
+	let stringBundle = stringSvc.createBundle("chrome://avim/locale/options.properties");
+	
 	/**
 	 * Displays a notification that Mudim is enabled.
 	 */
@@ -113,14 +116,13 @@ function MudimMonitor() {
 		let noteBox = getNotificationBox();
 		if (!noteBox || noteBox.getNotificationWithValue(noteValue)) return;
 		
-		let stringBundle = $(stringBundleId);
 		if (!stringBundle) return;
 		
-		let noteLabel = stringBundle.getString("mudim-note.label");
+		let noteLabel = stringBundle.GetStringFromName("mudim-note.label");
 		let noteBtns = [{
-			accessKey: stringBundle.getString("mudim-button.accesskey"),
+			accessKey: stringBundle.GetStringFromName("mudim-button.accesskey"),
 			callback: this.disableMudim,
-			label: stringBundle.getString("mudim-button.label"),
+			label: stringBundle.GetStringFromName("mudim-button.label"),
 			popup: null
 		}];
 		let icon = "URI_NOTIFICATION_ICON_WARNING" in window &&
@@ -170,8 +172,10 @@ addEventListener("load", function load() {
 	removeEventListener("load", load, false);
 	mudimMonitor.registerPrefs();
 }, false);
-addEventListener("unload", function unload() {
+let unload = function unload() {
 	removeEventListener("unload", unload, false);
 	mudimMonitor.unregisterPrefs();
-}, false);
+};
+addEventListener("unload", unload, false);
+addEventListener("AVIM:shutdown", unload, false);
 })();

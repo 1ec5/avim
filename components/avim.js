@@ -143,13 +143,18 @@ AVIM.prototype.onWindowOpen = function (win) {
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
 		const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
 		let doc = event.originalTarget;
-		if (!doc.location || doc.location.protocol !== "chrome:" ||
-			!doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
+		if (!win || !doc.location || !doc.contentType ||
+			xulTypes.indexOf(doc.contentType) < 0) {
 			return;
 		}
 		
-		loadSubScript("chrome://avim/content/avim.js", win || {});
-		loadSubScript("chrome://avim/content/frame.js", win || {});
+		if (doc.location.protocol === "chrome:") {
+			loadSubScript("chrome://avim/content/avim.js", win);
+			loadSubScript("chrome://avim/content/frame.js", win);
+		}
+		if (doc.location.href === "chrome://mozapps/content/extensions/extensions.xul") {
+			loadSubScript("chrome://avim/content/addonsOverlay.xul", win);
+		}
 	}, true);
 };
 
