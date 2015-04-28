@@ -379,6 +379,8 @@ function AVIM()	{
 	 * destroyUI().
 	 */
 	this.buildUI = function () {
+		this.destroyUI();
+		
 		// Commands and broadcasters
 		let methodCmd = function (evt, methodId) {
 			avim.setMethod(methodId);
@@ -606,6 +608,8 @@ function AVIM()	{
 			panelElt.observes = "avim-status-bc";
 			statusBarElt.appendChild(panelElt);
 		}
+		
+		this.updateUI();
 	};
 	
 	/**
@@ -1120,7 +1124,6 @@ function AVIM()	{
 	this.load = function () {
 		this.registerPrefs();
 		this.buildUI();
-		this.updateUI();
 		this.doFirstRun();
 		
 		addEventListener("keydown", onKeyDown, true);

@@ -72,16 +72,34 @@ function loadSubScript(uri, target) {
 	else Services.scriptloader.loadSubScript(uri, target, "UTF-8");
 }
 
+const ffxID = "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
+const flockID = "{a463f10c-3994-11da-9945-000d60ca027b}";
+
+function hasMacBrowserOverlay() {
+	return Services.appinfo.OS === "Darwin" &&
+		(Services.appinfo.ID === ffxID || Services.appinfo.ID === flockID);
+}
+
 function loadOverlay(win) {
     const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
     let doc = win.document;
-    if (!doc.location || doc.location.protocol !== "chrome:" ||
+    if (!win || !doc.location || doc.location.protocol !== "chrome:" ||
         !doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
         return;
     }
     
-    loadSubScript("chrome://avim/content/avim.js", win || {});
-    loadSubScript("chrome://avim/content/frame.js", win || {});
+    loadSubScript("chrome://avim/content/avim.js", win);
+    loadSubScript("chrome://avim/content/frame.js", win);
+	
+	if (doc.location.href.match(/^chrome:\/\/avim\/content\//) &&
+		hasMacBrowserOverlay()) {
+		doc.loadOverlay("chrome://browser/content/macBrowserOverlay.xul", null);
+		
+		let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
+		let styleUri = Services.io.newURI("chrome://browser/skin/preferences/preferences.css",
+										  null, null);
+		winUtils.loadSheet(styleUri, winUtils.AUTHOR_SHEET);
+	}
 }
 
 function onWindowOpen(win, topic, data) {

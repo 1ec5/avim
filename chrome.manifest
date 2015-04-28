@@ -19,17 +19,6 @@ contract	@1ec5.org/avim/transformer;1	{4A373444-8A2A-4641-ADD5-897A88D05185}
 
 category	profile-after-change	AVIM	@1ec5.org/avim;1
 
-### AVIM #######################################################################
-
-# Mac menu bar in Firefox
-overlay	chrome://avim/content/optionsOverlay.xul	chrome://browser/content/macBrowserOverlay.xul		application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}	os=Darwin	appversion>=3.0a1pre
-# Mac menu bar in Flock
-overlay	chrome://avim/content/optionsOverlay.xul	chrome://browser/content/macBrowserOverlay.xul		application={a463f10c-3994-11da-9945-000d60ca027b}	os=Darwin
-
-# Padding and font sizes
-style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={ec8030f7-c20a-464f-9b0e-13a3a9e97384}
-style	chrome://avim/content/optionsOverlay.xul	chrome://browser/skin/preferences/preferences.css	application={a463f10c-3994-11da-9945-000d60ca027b}
-
 ### Fennec #####################################################################
 
 # Preferences pane
