@@ -86,7 +86,7 @@ function loadOverlay(win) {
 
 function onWindowOpen(win, topic, data) {
     if (win.frameElement) return;
-    win.addEventListener("load", function doLoadOverlay(evt) {
+    win.addEventListener("DOMContentLoaded", function doLoadOverlay(evt) {
         win.removeEventListener(evt.type, doLoadOverlay, true);
 		loadOverlay(win);
 	}, true);
