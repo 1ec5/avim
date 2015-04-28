@@ -492,7 +492,7 @@ def main():
 
     # Files
     jar_path = path.join(chrome_dir, "%s.jar" % package_name)
-    root_files = ROOT_FILES.extend(["install.rdf", "chrome.manifest"])
+    root_files = ROOT_FILES.extend(["install.rdf", "chrome.manifest", "bootstrap.js"])
     omit_files = [".DS_Store", "Thumbs.db", ".gitattributes", ".gitignore"]
     if CONFIG is not BuildConfig.L10N:
         omit_files.extend(L10N_FILES)

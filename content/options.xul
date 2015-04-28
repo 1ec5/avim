@@ -58,11 +58,6 @@
 				</menupopup>
 			</menulist>
 			<button id="method-config-button" label="&method-config-button.label;" accesskey="&method-config-button.accesskey;" observes="custom-method-bc" oncommand="optionsPanel.openMethodConfig();" />
-			
-<!-- $if{Debug} -->
-			<spacer flex="1" />
-			<button id="tester-button" label="&tester-button.label;" accesskey="&tester-button.accesskey;" oncommand="optionsPanel.openTester();" />
-<!-- $endif{} -->
 		</hbox>
 		
 		<separator class="thin" />

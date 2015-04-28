@@ -11,14 +11,18 @@ let AVIMConfig = {autoMethods: {}, disabledScripts: {}};
 function AVIM()	{
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
-//	const Cu = Components.utils;
+	const Cu = Components.utils;
 	const CC = Components.Constructor;
 	
 	const PREF_VERSION = 1;
 	
 	// IDs of user interface elements
 	const commandIds = {
-		method: "avim-method-cmd",
+		auto: "avim-auto-cmd",
+		telex: "avim-telex-cmd",
+		vni: "avim-vni-cmd",
+		viqr: "avim-viqr-cmd",
+		viqrStar: "avim-viqr-star-cmd",
 		prevMethod: "avim-prev-method-cmd",
 		nextMethod: "avim-next-method-cmd",
 		spell: "avim-spell-cmd",
@@ -82,6 +86,45 @@ function AVIM()	{
 	this.popupFadeTimer = 0;
 	
 	/**
+	 * Display a popup next to the application menu if AVIM’s toolbar button
+	 * isn’t visible.
+	 */
+	this.showTogglePopup = function (onTbBtn) {
+		let tbBtn = $("avim-tb");
+		let tbAreaType = tbBtn && tbBtn.getAttribute("cui-areatype");
+		let panel = $("avim-toggle-panel");
+		let appMenuTbItem = $("PanelUI-menu-button");
+		let anchor;
+		if (tbAreaType === "toolbar") {
+			let overflowedTbId = tbBtn.parentNode.getAttribute("overflowfortoolbar");
+			let overflowBtnId = overflowedTbId &&
+				$(overflowedTbId).getAttribute("overflowbutton");
+			if (overflowBtnId) anchor = $(overflowBtnId);
+			else if (onTbBtn) anchor = tbBtn;
+		}
+		else if (tbAreaType !== "toolbar") anchor = appMenuTbItem;
+		if (panel && anchor) {
+			let bc = $(broadcasterIds.methods[AVIMConfig.method]);
+			let methodName = bc.getAttribute("label");
+			let lbl = $("avim-toggle-label");
+			lbl.value = methodName;
+			lbl.setAttribute("avim-disabled", "" + !AVIMConfig.onOff);
+			panel.openPopup(anchor, "bottomcenter topright", 0, 0, false, false);
+			clearTimeout(this.popupFadeTimer);
+			this.popupFadeTimer = setTimeout(function () {
+				let popup = $("avim-toggle-panel");
+				if (popup) popup.hidePopup(true);
+			}, 2000 /* ms */);
+			if (!panel.onpopuphiding) {
+				panel.onpopuphiding = function (/* evt */) {
+					if (this.popupFadeTimer) clearTimeout(this.popupFadeTimer);
+					this.popupFadeTimer = 0;
+				};
+			}
+		}
+	};
+	
+	/**
 	 * Plays a sound to alert the user that AVIM's settings have changed, in
 	 * case all the UI is hidden.
 	 */
@@ -92,32 +135,6 @@ function AVIM()	{
 		
 		if (volume === undefined) volume = AVIMConfig.volume;
 		volume = clamp(volume / 100, 0, 1);
-		
-		// Display a popup next to the application menu if AVIM’s toolbar button
-		// isn’t visible.
-		let tb = $("avim-tb");
-		let tbAreaType = tb && tb.getAttribute("cui-areatype");
-		let panel = $("avim-toggle-panel");
-		let appMenuTbItem = $("PanelUI-menu-button");
-		if (panel && appMenuTbItem && tbAreaType !== "toolbar") {
-			let bc = $(broadcasterIds.methods[AVIMConfig.method]);
-			let methodName = bc.getAttribute("label");
-			let lbl = $("avim-toggle-label");
-			lbl.value = methodName;
-			lbl.setAttribute("avim-disabled", "" + !enabled);
-			panel.openPopup(appMenuTbItem, "bottomcenter topright", 0, 0, false,
-							false);
-			clearTimeout(this.popupFadeTimer);
-			this.popupFadeTimer = setTimeout(function () {
-				$("avim-toggle-panel").hidePopup(true);
-			}, 2000 /* ms */);
-			if (!panel.onpopuphiding) {
-				panel.onpopuphiding = function (/* evt */) {
-					if (this.popupFadeTimer) clearTimeout(this.popupFadeTimer);
-					this.popupFadeTimer = 0;
-				};
-			}
-		}
 		
 		if (enabled && !this.onCue) {
 			this.onCue = new Audio("chrome://avim/content/on.wav");
@@ -234,6 +251,399 @@ function AVIM()	{
 		this.setStatusPanel(!AVIMConfig.statusBarPanel);
 	};
 	
+	const stringSvc = Cc["@mozilla.org/intl/stringbundle;1"]
+		.getService(Ci.nsIStringBundleService);
+	let stringBundle = stringSvc.createBundle("chrome://avim/locale/avim.properties");
+	
+	/**
+	 * Returns a string with the given name from the main string bundle.
+	 */
+	function getString(name) {
+		return stringBundle.GetStringFromName(name);
+	}
+	
+	/**
+	 * Creates and returns a <menupopup> element with an ID based on the given
+	 * name.
+	 *
+	 * @param {string}	basic	True for a minimal menu; false otherwise.
+	 */
+	function createMenuPopup(name, basic) {
+		const items = [
+			{
+				id: "enabled",
+				type: "checkbox",
+				default: true,
+			},
+			{
+				separator: true,
+			},
+			{
+				id: "auto",
+				type: "radio",
+				group: "method",
+				value: 0,
+			},
+			{
+				id: "telex",
+				type: "radio",
+				group: "method",
+				value: 1,
+			},
+			{
+				id: "vni",
+				type: "radio",
+				group: "method",
+				value: 2,
+			},
+			{
+				id: "viqr",
+				type: "radio",
+				group: "method",
+				value: 3,
+			},
+			{
+				id: "viqr-star",
+				type: "radio",
+				group: "method",
+				value: 4,
+			},
+			{
+				separator: true,
+				basic: false,
+			},
+			{
+				id: "prev-method",
+				basic: false,
+			},
+			{
+				id: "next-method",
+				basic: false,
+			},
+			{
+				separator: true,
+			},
+			{
+				id: "spell",
+				type: "checkbox",
+			},
+			{
+				id: "oldaccents",
+				type: "checkbox",
+			},
+		];
+		
+		let popupElt = document.createElement("menupopup");
+		popupElt.id = "avim-" + name + "-popup";
+		items.forEach(function (item) {
+			if (basic && "basic" in item && item.basic === false) return;
+			if (item.separator) {
+				popupElt.appendChild(document.createElement("menuseparator"));
+				return;
+			}
+			
+			let itemElt = document.createElement("menuitem");
+			itemElt.id = "avim-" + name + "-" + item.id;
+			if (item.type) itemElt.setAttribute("type", item.type);
+			if (item.group) itemElt.setAttribute("name", item.group);
+			if (item.value) itemElt.setAttribute("value", item.value);
+			if (!basic) itemElt.setAttribute("key", "avim-" + item.id + "-key");
+			itemElt.setAttribute("autocheck", false);
+			itemElt.setAttribute("command", "avim-" + item.id + "-cmd");
+			itemElt.observes = "avim-" + item.id + "-bc";
+			if (basic && item.default) itemElt.setAttribute("default", true);
+			popupElt.appendChild(itemElt);
+		});
+		return popupElt;
+	}
+	
+	/**
+	 * Returns the window’s <toolbarpalette> element.
+	 */
+	function getToolbarPalette() {
+		let tbxElt = window.gNavToolbox || $("navigator-toolbox") || $("compose-toolbox");
+		if (!tbxElt) return null;
+		let paletteElt = tbxElt.palette;
+		if (paletteElt) return paletteElt;
+		for (let i = 0; i < tbxElt.children.length; i++) {
+			let child = tbxElt.children[i];
+			if (child.localName === "toolbarpalette") return child;
+		}
+		return null;
+	}
+	
+	/**
+	 * Constructs the extension’s user interface.
+	 *
+	 * Elements created by this method are removed from the document by
+	 * destroyUI().
+	 */
+	this.buildUI = function () {
+		this.destroyUI();
+		
+		// Commands and broadcasters
+		let methodCmd = function (evt, methodId) {
+			avim.setMethod(methodId);
+			evt.stopPropagation();
+		};
+		let cmds = {
+			enabled: function (evt) {
+				avim.toggle();
+				evt.stopPropagation();
+			},
+			auto: function (evt) {
+				methodCmd(evt, 0);
+			},
+			telex: function (evt) {
+				methodCmd(evt, 1);
+			},
+			vni: function (evt) {
+				methodCmd(evt, 2);
+			},
+			viqr: function (evt) {
+				methodCmd(evt, 3);
+			},
+			"viqr-star": function (evt) {
+				methodCmd(evt, 4);
+			},
+			"prev-method": function (evt) {
+				avim.cycleMethod(-1);
+			},
+			"next-method": function (evt) {
+				avim.cycleMethod(1);
+			},
+			spell: function (evt) {
+				avim.toggleSpell();
+				evt.stopPropagation();
+			},
+			oldaccents: function (evt) {
+				avim.toggleDauCu();
+				evt.stopPropagation();
+			},
+			status: {
+				label: getString("AVIM.label"),
+			},
+		};
+		let cmdSetElt = document.createElement("commandset");
+		cmdSetElt.className = "avim-owned";
+		let bcSetElt = document.createElement("broadcasterset");
+		bcSetElt.className = "avim-owned";
+		for (let cmdName in cmds) {
+			if (!cmds.propertyIsEnumerable(cmdName)) continue;
+			
+			let cmdElt = document.createElement("command");
+			cmdElt.id = "avim-" + cmdName + "-cmd";
+			let bcElt = document.createElement("broadcaster");
+			bcElt.id = "avim-" + cmdName + "-bc";
+			if (typeof cmds[cmdName] === "function") {
+				cmdElt.addEventListener("command", cmds[cmdName], false);
+				cmdElt.setAttribute("oncommand", "return false;");
+				
+				bcElt.setAttribute("command", cmdElt.id);
+				bcElt.setAttribute("label",
+								   getString("avim-" + cmdName + ".label"));
+				bcElt.setAttribute("accesskey",
+								   getString("avim-" + cmdName + ".accesskey"));
+			}
+			else if (cmds[cmdName].label) {
+				bcElt.setAttribute("label", cmds[cmdName].label);
+			}
+			cmdSetElt.appendChild(cmdElt);
+			bcSetElt.appendChild(bcElt);
+		}
+		document.documentElement.appendChild(cmdSetElt);
+		document.documentElement.appendChild(bcSetElt);
+		$("avim-enabled-bc").setAttribute("avim-accel", isMac ? "mac" : "");
+		
+		// Shortcut keys
+		let keys = ["enabled", "prev-method", "next-method", "spell", "oldaccents"];
+		let keySetElt = document.createElement("keyset");
+		keySetElt.className = "avim-owned";
+		keys.forEach(function (key) {
+			let keyElt = document.createElement("key");
+			keyElt.id = "avim-" + key + "-key";
+			keyElt.setAttribute("modifiers",
+								getString("avim-" + key + ".modifiers"));
+			keyElt.setAttribute("key", getString("avim-" + key + ".key"));
+			keyElt.setAttribute("command", "avim-" + key + "-cmd");
+			keySetElt.appendChild(keyElt);
+		});
+		document.documentElement.appendChild(keySetElt);
+		
+		// Popups
+		let popupSetElt = document.createElement("popupset");
+		let popupElt = createMenuPopup("status", true);
+		popupElt.setAttribute("position", "before_end");
+		popupSetElt.appendChild(popupElt);
+		
+		let imgElt = document.createElement("image");
+		imgElt.id = "avim-toggle-icon";
+		let labelElt = document.createElement("label");
+		labelElt.id = "avim-toggle-label";
+		let hboxElt = document.createElement("hbox");
+		hboxElt.align = "center";
+		hboxElt.appendChild(imgElt);
+		hboxElt.appendChild(labelElt);
+		let hangerElt = document.createElement("panel");
+		hangerElt.id = "avim-toggle-panel";
+		hangerElt.setAttribute("animate", "open");
+		hangerElt.setAttribute("flip", "slide");
+		hangerElt.setAttribute("noautofocus", true);
+		hangerElt.setAttribute("position", "bottomcenter topright");
+		hangerElt.setAttribute("type", "arrow");
+		hangerElt.appendChild(hboxElt);
+		popupSetElt.appendChild(hangerElt);
+		
+		popupSetElt.className = "avim-owned";
+		document.documentElement.appendChild(popupSetElt);
+		
+		// Menu
+		let editMenuElt = $("menu_EditPopup") || $("editMenuPopup") ||
+			$("mppEdit") || $("edit-menupopup") || $("edEditMenuPopup") ||
+			$("popup_edit") || $("menu_Edit_Popup");
+		if (editMenuElt) {
+			let sepElt = document.createElement("menuseparator");
+			sepElt.id = "avim-separator";
+			editMenuElt.appendChild(sepElt);
+			
+			let menuElt = document.createElement("menu");
+			menuElt.id = "avim-menu";
+			menuElt.className = "avim-owned";
+			menuElt.setAttribute("label", getString("avim-menu.label"));
+			menuElt.setAttribute("accesskey",
+								 getString(menuElt.id + ".accesskey"));
+			menuElt.appendChild(createMenuPopup("menu", false));
+			editMenuElt.appendChild(menuElt);
+		}
+		
+		// App menu
+		let appPaneElt = $("appmenuPrimaryPane");
+		if (appPaneElt) {
+			let menuElt = document.createElement("menu");
+			menuElt.id = "avim-appmenu";
+			menuElt.className = "avim-owned";
+			menuElt.setAttribute("label", getString("avim-menu.label"));
+			menuElt.appendChild(createMenuPopup("appmenu", true));
+			appPaneElt.insertBefore(menuElt, $("appmenu_find").nextSibling);
+		}
+		
+		// Toolbar button
+		let paletteElt = getToolbarPalette();
+		let CustomizableUI = window.CustomizableUI;
+		let tbElt;
+		let tbNextElt;
+		if (CustomizableUI) {
+			if ("querySelector" in document) {
+				tbElt = document.querySelector("[currentset^='avim-tb,']," +
+											   "[currentset*=',avim-tb,']," +
+											   "[currentset$=',avim-tb']");
+			}
+			else {
+				let tbElts = document.getElementsByTagName("toolbar");
+				for (let i = 0; i < tbElts.length; i++) {
+					let currentSet = tbElts[i].getAttribute("currentset") || "";
+					let match = currentSet.match(/(?:^|,)avim-tb(?:$|,)/);
+					if (match) {
+						tbElt = tbElts[i];
+					}
+				}
+			}
+			if (tbElt) {
+				let currentSet = tbElt && tbElt.getAttribute("currentset").split(",");
+				for (let i = currentSet.indexOf("avim-tb") + 1; i < currentSet.length; i++) {
+					if ((tbNextElt = $(currentSet[i]))) break;
+				}
+			}
+		}
+		let fennecTbElt = $("browser-controls");
+		if (paletteElt || tbElt || CustomizableUI) {
+			let tbBtnElt = document.createElement("toolbarbutton");
+			tbBtnElt.id = "avim-tb";
+			tbBtnElt.className = "avim-owned toolbarbutton-1 chromeclass-toolbar-additional";
+			tbBtnElt.setAttribute("type", "menu-button");
+			tbBtnElt.setAttribute("removable", "true");
+			tbBtnElt.label = getString("AVIM.label");
+			tbBtnElt.setAttribute("tooltiptext", tbBtnElt.label);
+			tbBtnElt.autoCheck = false;
+			tbBtnElt.setAttribute("command", "avim-enabled-cmd");
+			tbBtnElt.observes = "avim-status-bc";
+			tbBtnElt.appendChild(createMenuPopup("tb", true));
+			if (paletteElt) paletteElt.appendChild(tbBtnElt);
+			if (CustomizableUI) {
+				let placement = CustomizableUI.getPlacementOfWidget(tbBtnElt.id);
+				if (placement) {
+					CustomizableUI.addWidgetToArea(tbBtnElt.id, placement.area,
+												   placement.position);
+					CustomizableUI.ensureWidgetPlacedInWindow(tbBtnElt.id, window);
+				}
+			}
+			else if (tbElt) tbElt.insertItem(tbBtnElt.id, tbNextElt || null);
+			
+			let enabledItemElt = $("avim-tb-enabled");
+			if (enabledItemElt) {
+				enabledItemElt.removeEventListener("command", cmds.enabled, false);
+				enabledItemElt.setAttribute("oncommand", "");
+			}
+		}
+		else if (fennecTbElt) {
+			let tbBtnElt = document.createElement("toolbarbutton");
+			tbBtnElt.id = "avim-tb-enabled";
+			tbBtnElt.className = "avim-owned avim-tb button-dark button-control panel-row-button button-control";
+			tbBtnElt.setAttribute("type", "checkbox");
+			tbBtnElt.label = getString("AVIM.label");
+			tbBtnElt.observes = "avim-status-bc";
+			tbBtnElt.style.pointerEvents = "inherit";
+			fennecTbElt.insertBefore(tbBtnElt, $("tool-panel-open"));
+		}
+		
+		// Status bar panel
+		let statusBarElt = $("addon-bar") || $("status-bar") ||
+			$("statusbar") || $("statusbarviewbox");
+		if (statusBarElt && !statusBarElt.getAttribute("toolbar-delegate")) {
+			let panelElt = document.createElement("statusbarpanel");
+			panelElt.id = "avim-status";
+			panelElt.className = "avim-owned";
+			panelElt.setAttribute("tooltiptext", getString("AVIM.label"));
+			panelElt.setAttribute("popup", "avim-status-popup");
+			panelElt.observes = "avim-status-bc";
+			statusBarElt.appendChild(panelElt);
+		}
+		
+		this.updateUI();
+	};
+	
+	/**
+	 * Removes all the elements that were added to the document by buildUI().
+	 */
+	this.destroyUI = function () {
+		if (!("getElementsByClassName" in document)) return;
+		let getOwnedElts = function (rootElt) {
+			if (!rootElt) return;
+			if ("querySelectorAll" in rootElt) {
+				return rootElt.querySelectorAll(".avim-owned");
+			}
+			return rootElt.getElementsByClassName("avim-owned");
+		};
+		let removeElts = function (elts) {
+			if (!elts) return;
+			for (let i = elts.length - 1; i >= 0; i--) {
+				let elt = elts[i];
+				if (elt.parentNode) elt.parentNode.removeChild(elt);
+			}
+		};
+		removeElts(getOwnedElts(document));
+		removeElts(getOwnedElts(getToolbarPalette()));
+		
+		// The application menu doesn’t get notified to remove the toolbar item
+		// for some reason.
+		let panelMultiViewElt = $("PanelUI-multiView");
+		if (panelMultiViewElt) {
+			let elt = document.getAnonymousElementByAttribute(panelMultiViewElt,
+															  "id", "avim-tb");
+			if (elt && elt.parentNode) elt.parentNode.removeChild(elt);
+		}
+	};
+	
 	function setCheckedState(elt, checked) {
 		if (!elt) return;
 		if (checked) elt.setAttribute("checked", "true");
@@ -249,7 +659,6 @@ function AVIM()	{
 		let enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
 			setCheckedState(enabledBcId, AVIMConfig.onOff);
-			$("avim-status-enabled").setAttribute("avim-accel", isMac ? "mac" : "");
 		}
 		
 		// Disable methods and options if AVIM is disabled
@@ -281,33 +690,6 @@ function AVIM()	{
 		panelBc.setAttribute("avim-disabled", "" + !AVIMConfig.onOff);
 		// Ignored by toolbar button.
 		panelBc.setAttribute("avim-hidden", "" + !AVIMConfig.statusBarPanel);
-	};
-	
-	/**
-	 * Populates the given XUL menu popup with the contents of its parent
-	 * element’s context menu popup.
-	 */
-	this.buildPopup = function (popup) {
-		this.updateUI();
-		
-		let mainPopupId = popup.getAttribute("avim-popupsource");
-		let mainPopup = $(mainPopupId);
-		if (!mainPopup) return;
-		
-		let items = [];
-		for (let item = mainPopup.firstChild; item; item = item.nextSibling) {
-			let clone = item.cloneNode(false);
-			if (clone.id) clone.id += "-dynamic";
-			items.push(clone);
-		}
-		if (!items.length) return;
-		
-		items[0].setAttribute("default", "true");
-		
-		while (popup.firstChild) popup.removeChild(popup.firstChild);
-		for (let i = 0; i < items.length; i++) {
-			popup.appendChild(items[i]);
-		}
 	};
 	
 	// Integration with Mozilla preferences service
@@ -627,6 +1009,7 @@ function AVIM()	{
 					avim.stopListeningForCtrl();
 					avim.toggle(true);
 					avim.playCueAfterToggle();
+					avim.showTogglePopup(false);
 				}
 			}
 			else avim.stopListeningForCtrl();
@@ -634,14 +1017,22 @@ function AVIM()	{
 		return false;
 	};
 	
-	const xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
+	let applyKey;
+	if (Cc["@1ec5.org/avim/transformer;1"]) {
+		applyKey = Cc["@1ec5.org/avim/transformer;1"].getService()
+			.wrappedJSObject.applyKey;
+	}
+	else if ("import" in Cu) {
+		applyKey = Cu.import("resource://avim-components/transformer.js", this)
+			.applyKey;
+	}
 	
 	/**
 	 * First responder for keypress messages from frame scripts.
 	 */
 	this.onFrameKeyPress = function (msg) {
 		let evt = msg.data.evt;
-		let result = xformer.applyKey(msg.data.prefix, {
+		let result = applyKey(msg.data.prefix, {
 			method: AVIMConfig.method,
 			autoMethods: AVIMConfig.autoMethods,
 			ckSpell: AVIMConfig.ckSpell,
@@ -687,7 +1078,7 @@ function AVIM()	{
 	function installToolbarButton(toolbarId, id, afterId) {
 		if (!$(id)) {
 			let toolbar = $(toolbarId);
-			let target = $(toolbarId + "-customization-target") || toolbar;
+			let target = toolbar.customizationTarget || toolbar;
 			
 			// If no afterId is given, then append the item to the toolbar
 			let before = null;
@@ -713,40 +1104,80 @@ function AVIM()	{
 			this.setPrefs("prefVersion");
 		}
 	};
+	
+	let onKeyDown = function (evt) {
+		avim.onKeyDown(evt);
+	};
+	let onKeyPress = function (evt) {
+		avim.onKeyPress(evt);
+	};
+	let onFrameKeyPress = function (evt) {
+		avim.onFrameKeyPress(evt);
+	};
+	let onFrameReadyForPrefs = function (evt) {
+		avim.onFrameReadyForPrefs(evt);
+	};
+	
+	/**
+	 * Set up UI and register event listeners.
+	 */
+	this.load = function () {
+		this.registerPrefs();
+		this.buildUI();
+		this.doFirstRun();
+		
+		addEventListener("keydown", onKeyDown, true);
+		addEventListener("keypress", onKeyPress, true);
+		
+		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
+			messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
+			messageManager.addMessageListener("AVIM:readyforprefs",
+											  onFrameReadyForPrefs);
+			messageManager.addMessageListener("AVIM:keypress", onFrameKeyPress);
+		}
+	};
+	
+	/**
+	 * Tear down UI and unregister event listeners.
+	 */
+	this.unload = function () {
+		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
+			messageManager.sendAsyncMessage("AVIM:shutdown");
+			messageManager.removeDelayedFrameScript("chrome://avim/content/frame.js");
+			messageManager.removeMessageListener("AVIM:keypress",
+												 onFrameKeyPress);
+			messageManager.removeMessageListener("AVIM:readyforprefs",
+												 onFrameReadyForPrefs);
+		}
+		removeEventListener("keydown", onKeyDown, true);
+		removeEventListener("keypress", onKeyPress, true);
+		
+		this.destroyUI();
+		this.unregisterPrefs();
+	};
 }
 
 (function (win) {
 
-if ("avim" in win || win.frameElement) return;
+if (win.frameElement) return;
+
+let unload = function (evt) {
+	removeEventListener(evt.type, unload, false);
+	if ("avim" in win && win.avim) {
+		avim.unload();
+		delete win.avim;
+	}
+};
+
+if ("avim" in win && win.avim) {
+	avim.unload();
+	delete win.avim;
+}
 
 win.avim = new AVIM();
-addEventListener("load", function load(/* evt */) {
-	removeEventListener("load", load, false);
-	
-	avim.registerPrefs();
-	avim.updateUI();
-	avim.doFirstRun();
-	
-	addEventListener("keydown", function (evt) {
-		avim.onKeyDown(evt);
-	}, true);
-	addEventListener("keypress", function (evt) {
-		avim.onKeyPress(evt);
-	}, true);
-	
-	if ("gMultiProcessBrowser" in win && win.gMultiProcessBrowser) {
-		messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
-		messageManager.addMessageListener("AVIM:readyforprefs",
-										  avim.onFrameReadyForPrefs);
-		messageManager.addMessageListener("AVIM:keypress", avim.onFrameKeyPress);
-	}
-	
-	addEventListener("unload", function unload(/* evt */) {
-		removeEventListener("unload", unload, false);
-		messageManager.removeMessageListener("AVIM:keypress",
-											 avim.onFrameKeyPress);
-		avim.unregisterPrefs();
-	}, false);
-}, false);
+avim.load();
+
+addEventListener("unload", unload, false);
+addEventListener("AVIM:shutdown", unload, false);
 
 })(window);

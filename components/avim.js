@@ -99,43 +99,83 @@ AVIM.getOverlayUrl = function (windowUrl) {
 	}
 };
 
+const subscriptLoader = gCc["@mozilla.org/moz/jssubscript-loader;1"]
+	.getService(gCi.mozIJSSubScriptLoader);
+
+/**
+ * Loads a script at the given URI.
+ *
+ * @param uri		{string}	Location of the script.
+ * @param target	{object}	A collection of properties to expose to the
+ * 								script as its globals.
+ * 
+ * @see http://dxr.mozilla.org/mozilla-central/source/addon-sdk/source/lib/sdk/content/sandbox.js (importScripts())
+ */
+function loadSubScript(uri, target) {
+	if ("loadSubScriptWithOptions" in subscriptLoader) {
+		let options = {
+			charset: "UTF-8",
+// $if{Debug}
+			ignoreCache: true,
+// $endif{}
+		};
+		if (target) options.target = target;
+		subscriptLoader.loadSubScriptWithOptions(uri, options);
+	}
+	else subscriptLoader.loadSubScript(uri, target, "UTF-8");
+}
+
+const appInfoSvc = gCc["@mozilla.org/xre/app-info;1"]
+	.getService(gCi.nsIXULAppInfo);
+const ffxID = "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
+const flockID = "{a463f10c-3994-11da-9945-000d60ca027b}";
+
+function hasMacBrowserOverlay() {
+	return appInfoSvc.OS === "Darwin" &&
+		((appInfoSvc.ID === ffxID && parseFloat(appInfoSvc.version) >= 3) ||
+		 appInfoSvc.ID === flockID);
+}
+
+const ioSvc = gCc["@mozilla.org/network/io-service;1"]
+	.getService(gCi.nsIIOService);
+
 /**
  * Loads the AVIM overlay onto the given window.
  *
  * @param window	{object}	the window onto which AVIM should be attached.
  */
-AVIM.prototype.onWindowOpen = function (window) {
-	let xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
-	// List any chrome: URLs special-cased in chrome.manifest.
-	let manifestUrls = [
-		"chrome://browser/content/browser.xul",
-		"chrome://browser/content/preferences/preferences.xul",
-		"chrome://messenger/content/preferences/preferences.xul",
-		"chrome://dta/content/preferences/prefs.xul",
-		"chrome://tabmixplus/content/preferences/preferences.xul",
-	];
-	let handleEvent = function (event) {
-		let doc = event.originalTarget;
-//		dump("onWindowOpen: " + doc.location + "\n");						// debug
-		if (doc.location && doc.location.protocol === "chrome:" &&
-			doc.contentType && xulTypes.indexOf(doc.contentType) >= 0 &&
-			manifestUrls.indexOf(doc.location.href) < 0) {
-			// Attaching an observer to loadOverlay() crashes Mozilla 1.8.x.
-			let xulVersion = gCc["@mozilla.org/xre/app-info;1"]
-				.getService(gCi.nsIXULAppInfo).platformVersion;
-			let overlayObserver = null;
-			if (parseFloat(xulVersion) >= 1.9) {
-				overlayObserver = new AVIMOverlayObserver(window);
-			}
-			doc.loadOverlay(AVIM.getOverlayUrl(doc.location.href),
-							overlayObserver);
-		}
+AVIM.prototype.onWindowOpen = function (win) {
+	if (win.frameElement) return;
+	win.addEventListener("DOMContentLoaded", function handleEvent(event) {
 		window.removeEventListener("DOMContentLoaded", handleEvent, true);
-	};
-	if (!window.frameElement) {
-		window.addEventListener("DOMContentLoaded", handleEvent, true);
-	}
+		const xulTypes = ["text/xul", "application/vnd.mozilla.xul+xml"];
+		let doc = event.originalTarget;
+		if (!win || !doc.location || doc.location.protocol !== "chrome:" ||
+			!doc.contentType || xulTypes.indexOf(doc.contentType) < 0) {
+			return;
+		}
+		
+		loadSubScript("chrome://avim/content/avim.js", win);
+		loadSubScript("chrome://avim/content/frame.js", win);
+		
+		if (doc.location.href === "chrome://mozapps/content/extensions/extensions.xul") {
+			loadSubScript("chrome://avim/content/addonsOverlay.xul", win);
+		}
+		if (doc.location.href.match(/^chrome:\/\/avim\/content\//) &&
+			hasMacBrowserOverlay()) {
+			doc.loadOverlay("chrome://browser/content/macBrowserOverlay.xul", null);
+			
+			let winUtils = win.getInterface(gCi.nsIDOMWindowUtils);
+			let styleUri = ioSvc.newURI("chrome://browser/skin/preferences/preferences.css",
+										null, null);
+			winUtils.loadSheet(styleUri, winUtils.AUTHOR_SHEET);
+		}
+	}, true);
 };
+
+const styleSvc = gCc["@mozilla.org/content/style-sheet-service;1"]
+	.getService(gCi.nsIStyleSheetService);
+const styleUri = ioSvc.newURI("chrome://avim/content/skin/avim.css", null, null);
 
 /**
  * Listens for window load events.
@@ -149,11 +189,6 @@ AVIM.prototype.observe = function (subject, topic, data) {
 		.getService(gCi.nsIXULRuntime);
 	if (xreSvc.inSafeMode) return;
 	
-	// Songbird's chrome.manifest functionality works just fine.
-	//let id =
-	//	gCc["@mozilla.org/xre/app-info;1"].getService(gCi.nsIXULAppInfo).ID;
-	//if (id == "songbird@songbirdnest.com") return;
-	
 	const observerSvc = gCc["@mozilla.org/observer-service;1"]
 		.getService(gCi.nsIObserverService);
 /* jshint -W086 */
@@ -165,6 +200,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
 			observerSvc.addObserver(this, "domwindowopened", false);
 			observerSvc.addObserver(this, "quit-application", false);
 			this.didObserveStartup = true;
+			styleSvc.loadAndRegisterSheet(styleUri, styleSvc.AUTHOR_SHEET);
 			break;
 		case "quit-application":
 			observerSvc.removeObserver(this, "domwindowopened", false);

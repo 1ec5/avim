@@ -1,5 +1,7 @@
-/* exported NSGetModule, NSGetFactory */
+/* exported EXPORTED_SYMBOLS, applyKey, NSGetModule, NSGetFactory */
 "use strict";
+
+const EXPORTED_SYMBOLS = ["applyKey"];
 
 const /* Cc = Components.classes, */
 	  Ci = Components.interfaces,
@@ -877,6 +879,8 @@ AVIMTransformerService.prototype = {
 		}
 	},
 };
+
+let applyKey = AVIMTransformerService.prototype.applyKey;
 
 // Factory
 let AVIMTransformerServiceFactory = {

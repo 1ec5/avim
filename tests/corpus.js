@@ -1,4 +1,4 @@
-/* global load, applyKey, scriptArgs, read, quit, putstr, assert, Set, -status */
+/* global load, testApplyKey, scriptArgs, read, quit, putstr, assert, Set, -status */
 "use strict";
 
 const DESCRIPTION = "Test AVIM against a wordlist";
@@ -130,10 +130,10 @@ function prepareWord(word, method) {
  * @param word	{string}	The Unicode-encoded goal word.
  * @param keys	{string}	The keystrokes to press.
  */
-function applyKeys(keys) {
+function testApplyKeys(keys) {
 	let word = keys[0];
 	for (let i = 1; i < keys.length && word; i++) {
-		word = applyKey(word, keys[i], prefs);
+		word = testApplyKey(word, keys[i], prefs);
 	}
 	return word;
 }
@@ -171,7 +171,7 @@ for (let i = 1; i < methodNames.length; i++) {
 		let word = words[j];
 		if (!word || okWords.has(word)) continue;
 		let keys = prepareWord(word, methodNames[prefs.method]);
-		assert.equal(applyKeys(keys), word, keys);
+		assert.equal(testApplyKeys(keys), word, keys);
 	}
 }
 putstr("\r");

@@ -31,10 +31,6 @@ function AVIMOptionsPanel() {
 		volume: "volume-pref"
 	};
 	
-// $if{Debug}
-	const testerUrl = "chrome://avim/content/test/tester.xul";
-// $endif{}
-	
 	const ignoreButtonId = "ignore-button";
 	const ignoreTextBoxId = "ignore-text";
 	const idListId = "ignoredids-list";
@@ -378,15 +374,6 @@ function AVIMOptionsPanel() {
 		let url = stringBundle.getString("avim-preferences.helpurl");
 		if (url) window.open(url);
 	};
-	
-// $if{Debug}
-	/**
-	 * Opens the test suite window.
-	 */
-	this.openTester = function() {
-		document.documentElement.openWindow("avim:tester", testerUrl, "", null);
-	};
-// $endif{}
 	
 	/**
 	 * Initializes the AVIM Options panel's controller. This method should only

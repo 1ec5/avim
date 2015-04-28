@@ -73,6 +73,18 @@ function lastWordInString(str) {
 	return match && match[0];
 }
 
+/**
+ * Registers a listener for an event type and causes it to be automatically
+ * unregistered when the extension is shut down.
+ */
+function addDisposableEventListener(type, listener, useCapture) {
+	addEventListener(type, listener, useCapture);
+	addEventListener("AVIM:shutdown", function disposeEventListener(evt) {
+		removeEventListener("AVIM:shutdown", disposeEventListener, false);
+		removeEventListener(type, listener, useCapture);
+	}, false);
+}
+
 const subscriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"]
 	.getService(Ci.mozIJSSubScriptLoader);
 
@@ -702,7 +714,7 @@ function registerSlights() {
 	
 	// This is the same event that gPluginHandler listens for to show and hide
 	// Click-to-Play.
-	addEventListener("PluginInstantiated", function (evt) {
+	addDisposableEventListener("PluginInstantiated", function (evt) {
 		let plugin = evt.originalTarget;
 		if ("querySelectorAll" in plugin.ownerDocument &&
 			plugin instanceof Ci.nsIObjectLoadingContent &&
@@ -762,7 +774,7 @@ function checkCode(evt) {
 		code === evt.DOM_VK_SCROLL_LOCK;
 }
 
-addEventListener("keydown", function (evt) {
+addDisposableEventListener("keydown", function (evt) {
 	//dump("AVIM.onKeyDown -- code: " + String.fromCharCode(evt.which) + " #" + evt.which +
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
@@ -774,7 +786,7 @@ addEventListener("keydown", function (evt) {
 	disableOthers(doc);
 }, true);
 
-addEventListener("keypress", function (evt) {
+addDisposableEventListener("keypress", function (evt) {
 	//dump("AVIM.onKeyPress -- isChrome: " + isChrome + "; code: " + String.fromCharCode(evt.which) + " #" + evt.which +
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
