@@ -165,7 +165,7 @@ AVIM.prototype.onWindowOpen = function (win) {
 			hasMacBrowserOverlay()) {
 			doc.loadOverlay("chrome://browser/content/macBrowserOverlay.xul", null);
 			
-			let winUtils = win.getInterface(Ci.nsIDOMWindowUtils);
+			let winUtils = win.getInterface(gCi.nsIDOMWindowUtils);
 			let styleUri = ioSvc.newURI("chrome://browser/skin/preferences/preferences.css",
 										null, null);
 			winUtils.loadSheet(styleUri, winUtils.AUTHOR_SHEET);
