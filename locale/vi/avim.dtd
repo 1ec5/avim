@@ -1,5 +1,5 @@
 ﻿<!ENTITY AVIM.label "AVIM">
-<!ENTITY avim-menu.label "Gõ Tiếng Việt">
+<!ENTITY avim-menu.label "Gõ tiếng Việt">
 <!ENTITY avim-menu.accesskey "V">
 
 <!ENTITY avim-enabled.modifiers "accel,alt">
@@ -22,18 +22,18 @@
 <!ENTITY avim-viqr-star.label "VIQR*">
 <!ENTITY avim-viqr-star.accesskey "R">
 
-<!ENTITY avim-menu-prev-method.label "Kiểu Gõ Trước">
+<!ENTITY avim-menu-prev-method.label "Kiểu gõ trước">
 <!ENTITY avim-menu-prev-method.accesskey "g">
-<!ENTITY avim-menu-next-method.label "Kiểu Gõ Sau">
+<!ENTITY avim-menu-next-method.label "Kiểu gõ sau">
 <!ENTITY avim-menu-next-method.accesskey "S">
 
 <!ENTITY avim-spell.modifiers "accel,alt">
 <!ENTITY avim-spell.key "S">
-<!ENTITY avim-spell.label "Đúng Chính Tả">
+<!ENTITY avim-spell.label "Đúng chính Tả">
 <!ENTITY avim-spell.accesskey "c">
 <!ENTITY avim-spell.description "Chỉ bỏ dấu trên các từ tuân theo quy tắc tiếng Việt">
 <!ENTITY avim-oldaccents.modifiers "accel,alt">
 <!ENTITY avim-oldaccents.key ";">
-<!ENTITY avim-oldaccents.label "Bỏ dấu Kiểu cũ">
+<!ENTITY avim-oldaccents.label "Bỏ dấu kiểu cũ">
 <!ENTITY avim-oldaccents.accesskey "d">
 <!ENTITY avim-oldaccents.description "Bỏ dấu vào nguyên âm đầu tiên khi gặp nguyên âm đôi">
