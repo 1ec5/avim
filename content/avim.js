@@ -1142,7 +1142,7 @@ function AVIM()	{
 	 */
 	this.unload = function () {
 		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
-			messageManager.sendAsyncMessage("AVIM:shutdown");
+			messageManager.broadcastAsyncMessage("AVIM:shutdown");
 			messageManager.removeDelayedFrameScript("chrome://avim/content/frame.js");
 			messageManager.removeMessageListener("AVIM:keypress",
 												 onFrameKeyPress);
