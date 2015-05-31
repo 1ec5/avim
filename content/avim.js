@@ -1106,16 +1106,16 @@ function AVIM()	{
 	};
 	
 	let onKeyDown = function (evt) {
-		avim.onKeyDown(evt);
+		return avim.onKeyDown(evt);
 	};
 	let onKeyPress = function (evt) {
-		avim.onKeyPress(evt);
+		return avim.onKeyPress(evt);
 	};
 	let onFrameKeyPress = function (evt) {
-		avim.onFrameKeyPress(evt);
+		return avim.onFrameKeyPress(evt);
 	};
 	let onFrameReadyForPrefs = function (evt) {
-		avim.onFrameReadyForPrefs(evt);
+		return avim.onFrameReadyForPrefs(evt);
 	};
 	
 	/**
