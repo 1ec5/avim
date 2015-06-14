@@ -109,6 +109,27 @@ const methods = {
 	},
 };
 
+const imposters = {
+	\u01cd: "\u0102", \u01ce: "\u0103",	// Ǎǎ → Ăă
+	\u0202: "\u00c2", \u0203: "\u00e2",	// Ȃȃ → Ââ
+	\u00d0: "\u0110", \u00f0: "\u0111", \u0189: "\u0110", \u0256: "\u0111",	// ÐðƉɖ → ĐđĐđ
+	\u0206: "\u00ca", \u0207: "\u00ea",	// Ȇȇ → Êê
+	\u0131: "i",	// ı → i
+	\u020e: "\u00d4", \u020f: "\u00f4",	// Ȏȏ → Ôô
+};
+const imposterRe = /[\u01cd\u01ce\u0202\u0203\u00d0\u00f0\u0189\u0256\u0206\u0207\u0131\u020e\u020f]/g;	// ǍǎȂȃÐðƉɖȆȇıȎȏ
+
+/**
+ * Canonicalizes the string by replacing characters that look like
+ * Vietnamese characters. The returned string has the same length as the
+ * passed-in string.
+ */
+function replaceImposters(chars) {
+	return chars.replace(imposterRe, function (imposter) {
+		return imposters[imposter] || imposter;
+	});
+}
+
 /**
  * Returns the given word with all diacritical marks removed.
  *
@@ -127,7 +148,7 @@ function unV2(w) {
 
 function _Transformation(startValue, context) {
 /* jshint -W040 */
-	this.value = startValue;
+	this.value = replaceImposters(startValue);
 	this.startLength = this.value.length;
 	
 	this.context = {

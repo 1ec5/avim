@@ -91,6 +91,10 @@ okApplyKey(prefs, "khuyu", "?", "khuỷu");
 okApplyKey(prefs, "queo", ".", "quẹo");
 okApplyKey(prefs, "queue", ".", "queue.");	// #94
 
+okApplyKey(prefs, "Ðınh", "`", "Đình");	// #34
+okApplyKey(prefs, "ı", ".", "ị");	// #137
+//okApplyKey(prefs, "A\u0300", "'", "Á");	// #138
+
 prefs = {
 	method: 3 /* VIQR */,
 	ckSpell: false,
