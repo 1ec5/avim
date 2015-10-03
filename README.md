@@ -41,10 +41,9 @@ Tests
 
 The test harness requires [SpiderMonkey](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey), the command line interface to the JavaScript engine in Firefox:
 
-1. [Download SpiderMonkey](http://ftp.mozilla.org/pub/mozilla.org/js/) 24 or later. (If you’re feeling brave, you can also build and use [version 31rc0](https://groups.google.com/d/msg/mozilla.dev.tech.js-engine/lrVCmUuXkDk/TQtz8jJ54mMJ), which is closer to the version of Firefox most AVIM users are on.)
-1. Follow the instructions in the INSTALL file to build SpiderMonkey, then run `make install` to install it.
+1. Download [last night’s Developer Edition build](https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/): jsshell-_platform_.zip, where _platform_ is your operating system. (The latest [official release of SeaMonkey](http://ftp.mozilla.org/pub/mozilla.org/js/) is ancient but should work also.)
 1. Go to the tests/ directory in your checkout of this project.
-1. Run `js24 -b -s test.js`.
+1. Run `/path/to/js -b -s test.js`.
 
 The tests/ directory also contains corpus.js, useful for testing AVIM against a wordlist, such as those maintained by the [hunspell-vi](https://github.com/1ec5/hunspell-vi) project.
 
