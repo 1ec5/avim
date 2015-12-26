@@ -144,7 +144,7 @@ for (let i = 0; i < scriptArgs.length; i++) {
 	let arg = scriptArgs[i];
 	if (!arg || ["-?", "--help"].indexOf(arg) >= 0) continue;
 	
-	if (arg === '-w' && ++i < scriptArgs.length) {
+	if (arg === "-w" && ++i < scriptArgs.length) {
 		let src = read(scriptArgs[i]);
 		for (let word of src ? src.split(/\s+/) : []) okWords.add(word);
 	}

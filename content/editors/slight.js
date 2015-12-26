@@ -33,6 +33,49 @@ function virtualKey(keyCode, platformKeyCode, shiftKey) {
 }
 
 /**
+ * Handles miscellaneous key presses in Silverlight. This function is triggered
+ * as soon as the key goes up, and only responds if the key does not correspond
+ * to a virtual key. In that case, it uses the character immediately preceding
+ * the caret.
+ *
+ * @param ctl		{object}	A <TextBox> XAML element.
+ * @param evtProxy	{object}	An object imitating a keyUp event.
+ */
+function eatChar(ctl, evtProxy) {
+	try {
+		let selStart = ctl.selectionStart;
+		if (!selStart || ctl.selectionLength) return;
+		
+		// Override the event proxy's key code using the last character.
+		let text = ctl.text;
+		evtProxy.which = evtProxy.charCode = text.charCodeAt(selStart - 1);
+		if (evtProxy.charCode === 0xff) return;
+		
+		// Exclude the last character from the word.
+		let word = _avim_lastWordInString(text.substr(0, selStart - 1));
+		let [newWord, changed] = word && JSON.parse(_avim_applyKey(word, evtProxy));
+		if (changed || (newWord && newWord !== word)) {
+			if (!changed) newWord += text[selStart - 1];
+			let numExtraChars = newWord.length - word.length;
+			let tooLong = ctl.maxLength &&
+				text.length - 1 + numExtraChars > ctl.maxLength;
+			if (!tooLong) {
+				let wordStart = selStart - 1 - word.length;
+				ctl.text = text.substr(0, wordStart) + newWord +
+					text.substr(selStart);
+				ctl.selectionStart = selStart - 1 + numExtraChars;
+				ctl.selectionLength = 0;
+			}
+		}
+	}
+	catch(exc) {
+// $if{Debug}
+		throw ">>> eatChar -- " + exc;
+// $endif{}
+	}
+}
+
+/**
  * Handles key presses in Silverlight. This function is triggered as soon as the
  * key goes down.
  *
@@ -88,49 +131,6 @@ function keyDown(sender, evt) {
 	catch(exc) {
 // $if{Debug}
 		throw ">>> keyDown -- " + exc;
-// $endif{}
-	}
-}
-
-/**
- * Handles miscellaneous key presses in Silverlight. This function is triggered
- * as soon as the key goes up, and only responds if the key does not correspond
- * to a virtual key. In that case, it uses the character immediately preceding
- * the caret.
- *
- * @param ctl		{object}	A <TextBox> XAML element.
- * @param evtProxy	{object}	An object imitating a keyUp event.
- */
-function eatChar(ctl, evtProxy) {
-	try {
-		let selStart = ctl.selectionStart;
-		if (!selStart || ctl.selectionLength) return;
-		
-		// Override the event proxy's key code using the last character.
-		let text = ctl.text;
-		evtProxy.which = evtProxy.charCode = text.charCodeAt(selStart - 1);
-		if (evtProxy.charCode === 0xff) return;
-		
-		// Exclude the last character from the word.
-		let word = _avim_lastWordInString(text.substr(0, selStart - 1));
-		let [newWord, changed] = word && JSON.parse(_avim_applyKey(word, evtProxy));
-		if (changed || (newWord && newWord !== word)) {
-			if (!changed) newWord += text[selStart - 1];
-			let numExtraChars = newWord.length - word.length;
-			let tooLong = ctl.maxLength &&
-				text.length - 1 + numExtraChars > ctl.maxLength;
-			if (!tooLong) {
-				let wordStart = selStart - 1 - word.length;
-				ctl.text = text.substr(0, wordStart) + newWord +
-					text.substr(selStart);
-				ctl.selectionStart = selStart - 1 + numExtraChars;
-				ctl.selectionLength = 0;
-			}
-		}
-	}
-	catch(exc) {
-// $if{Debug}
-		throw ">>> eatChar -- " + exc;
 // $endif{}
 	}
 }

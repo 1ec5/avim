@@ -1,3 +1,4 @@
+/* jshint strict: implied */
 /* global pref */
 pref("extensions.avim.prefVersion", 0);
 /* Enabled */
