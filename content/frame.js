@@ -10,7 +10,7 @@ const iCloudHostname = "www.icloud.com";
 const GDocsHostname = "docs.google.com";
 const ZohoHostname = "docs.zoho.com";
 
-const isChrome = typeof(window) === "object";
+const isChrome = typeof window === "object";
 
 // Root for AVIM preferences
 let AVIMConfig;

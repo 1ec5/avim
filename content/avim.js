@@ -51,7 +51,7 @@ function AVIM()	{
 	 * A wrapper around nsISupportsString.
 	 */
 	function makeSupportsString(value) {
-		var cStr = nsSupportsString();
+		let cStr = nsSupportsString();
 		cStr.data = value;
 		return cStr;
 	}

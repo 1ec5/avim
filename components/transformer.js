@@ -1,3 +1,4 @@
+/* jshint maxdepth: 6 */
 /* exported NSGetModule, NSGetFactory */
 "use strict";
 
@@ -18,7 +19,7 @@ const fcc = String.fromCharCode,
 	  up = String.toUpperCase;
 
 function nan(w) {
-	return isNaN(w) || w === 'e';
+	return isNaN(w) || w === "e";
 }
 
 function codesFromChars(chars) {
@@ -50,7 +51,7 @@ const alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM ",
 	  skey2 = lowerUpper("aaaeeiooouuy").split(""),
 	  skey = codesFromChars(skey_str),
 	  db1 = [0x0111 /* "đ" */, 0x0110 /* "Đ" */],
-	  ds1 = ['d','D'],
+	  ds1 = ["d", "D"],
 	  os1 = intersperseLowerUpper("o\u01a1\u00f3\u00f2\u1ecd\u1ecf\u00f5\u1edb\u1edd\u1ee3\u1edf\u1ee1"),	// oơóòọỏõớờợởỡ
 	  ob1 = intersperseLowerUpper("\u00f4\u00f4\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7"),	// ôôốồộổỗốồộổỗ
 	  mocs1 = intersperseLowerUpper("o\u00f4u\u00f3\u00f2\u1ecd\u1ecf\u00f5\u00fa\u00f9\u1ee5\u1ee7\u0169\u1ed1\u1ed3\u1ed9\u1ed5\u1ed7"),	// oôuóòọỏõúùụủũốồộổỗ
@@ -275,7 +276,7 @@ _Transformation.prototype = {
 		let consRe = vDConsonant + "|[" + vSConsonant + "]";
 		let cons = new RegExp("^(?:" + consRe + ")").exec(tw);
 		if (cons && cons[0]) tw = tw.substr(cons[0].length);
-		twE=tw;
+		twE = tw;
 		
 		// Remove final consonants.
 		
@@ -482,30 +483,30 @@ _Transformation.prototype = {
 							(uk === this.method.trang && this.unV(uc) === "A" && this.unV(pc) === "U")) {
 							tv = 1 + (this.unV(uc) !== "U");
 							let ccc = up(w.substr(-g - tv, 1));
-							if(ccc !== "Q") {
+							if (ccc !== "Q") {
 								res = g + tv - 1;
-							} else if(uk === this.method.trang) {
+							} else if (uk === this.method.trang) {
 								res = g;
-							} else if(this.method.moc !== this.method.trang) {
+							} else if (this.method.moc !== this.method.trang) {
 								return false;
 							}
 						} else {
 							res = g;
 						}
-						if(!this.whit || (uw.indexOf("\u01af" /* Ư */) < 0) || (uw.indexOf("W") < 0)) {
+						if (!this.whit || uw.indexOf("\u01af" /* Ư */) < 0 || uw.indexOf("W") < 0) {
 							break;
 						}
-					} else if(DAWEOFA.indexOf(uc) >= 0) {
-						if(uk === this.method.D) {
-							if(cc === "\u0111") {	// đ
-								res = [g, 'd'];
-							} else if(cc === "\u0110") {	// Đ
-								res = [g, 'D'];
+					} else if (DAWEOFA.indexOf(uc) >= 0) {
+						if (uk === this.method.D) {
+							if (cc === "\u0111") {	// đ
+								res = [g, "d"];
+							} else if (cc === "\u0110") {	// Đ
+								res = [g, "D"];
 							}
 						} else {
 							res = this.DAWEOF(cc, uk, g);
 						}
-						if(res) break;
+						if (res) break;
 					}
 				}
 			}
@@ -519,14 +520,14 @@ _Transformation.prototype = {
 			for (let g = 1; g <= w.length; g++) {
 				cc = up(w.substr(-g, 1));
 				pc = up(w.substr(-g - 1, 1));
-				if(str.indexOf(cc) >= 0) {
-					if(cc === 'U') {
-						if(pc !== 'Q') {
+				if (str.indexOf(cc) >= 0) {
+					if (cc === "U") {
+						if (pc !== "Q") {
 							c++;
 							vowA.push(g);
 						}
-					} else if(cc === 'I') {
-						if((pc !== 'G') || (c <= 0)) {
+					} else if (cc === "I") {
+						if (pc !== "G" || c <= 0) {
 							c++;
 							vowA.push(g);
 						}
@@ -541,15 +542,15 @@ _Transformation.prototype = {
 						if (this.ckspell(w, k)) return false;
 						return [g, tE.charCodeAt(h % 24)];
 					}
-					for (let h = 0; h < tE.length; h++) {
-						if(tE.charCodeAt(h) === w.charCodeAt(w.length - g)) {
+					for (h = 0; h < tE.length; h++) {
+						if (tE.charCodeAt(h) === w.charCodeAt(w.length - g)) {
 							return [g, skey_str[h]];
 						}
 					}
 				}
 			}
 		}
-		if (uk !== this.method.Z && typeof(res) !== 'object' &&
+		if (uk !== this.method.Z && typeof res !== "object" &&
 			this.ckspell(w, k)) {
 			return false;
 		}
@@ -598,20 +599,20 @@ _Transformation.prototype = {
 		let bb = false;
 		let replaceBy;
 		let wfix;
-		if(!nan(c)) {
+		if (!nan(c)) {
 			replaceBy = fcc(c);
 			wfix = up(this.unV(fcc(c)));
 			this.changed = true;
 		} else {
 			replaceBy = c;
-			if((up(c) === "O") && this.whit) {
-				bb=true;
+			if (up(c) === "O" && this.whit) {
+				bb = true;
 			}
 		}
 		let r;
-		if (up(val.substr(pos - 1, 1)) === 'U' && pos < this.startLength - 1 && up(val.substr(pos - 2, 1)) !== 'Q') {
+		if (up(val.substr(pos - 1, 1)) === "U" && pos < this.startLength - 1 && up(val.substr(pos - 2, 1)) !== "Q") {
 			if (wfix === "\u01a0" /* Ơ */ || bb) {
-				r = (val.substr(pos - 1, 1) === 'u') ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
+				r = (val.substr(pos - 1, 1) === "u") ? "\u01b0" /* ư */ : "\u01af" /* Ư */;
 			}
 			if (bb) {
 				this.changed = true;
@@ -675,11 +676,11 @@ _Transformation.prototype = {
 		
 		if (this.method.SFJRX.indexOf(uk) >= 0) {
 			this.sr(w,k,i);
-			got=true;
+			got = true;
 		}
 		else if (uk === this.method.Z) {
 			sf = this.repSign(null);
-			for(h = 0; h < english.length; h++) {
+			for (h = 0; h < english.length; h++) {
 				sf.push(lowen.charCodeAt(h), english.charCodeAt(h));
 			}
 			by = skey.concat(skey, skey, skey, skey, t);
@@ -717,7 +718,7 @@ _Transformation.prototype = {
 		let uk = up(k);
 		if (alphabet.indexOf(uk) < 0 && this.D2.indexOf(uk) < 0) return w;
 		let u = this.repSign(null);
-		for(let j = 1; j <= w.length; j++) {
+		for (let j = 1; j <= w.length; j++) {
 			let h = u.indexOf(w.charCodeAt(w.length - j));
 			if (h < 0) continue;
 			
@@ -732,7 +733,7 @@ _Transformation.prototype = {
 			let end = this.startLength;
 			let pos = sp;
 			w = this.unV(w);
-			if(!this.changed) {
+			if (!this.changed) {
 				w += k;
 				pos += k.length;
 //				this.value = this.value.substr(0, sp) + k +
@@ -741,7 +742,7 @@ _Transformation.prototype = {
 				this.changed = true;
 			}
 			
-			if(!this.ckspell(w, fS)) {
+			if (!this.ckspell(w, fS)) {
 				this.replaceChar(i - j, c);
 				this.main(w, fS, pos, [this.method.D], false);
 			}
@@ -909,7 +910,7 @@ let AVIMTransformerServiceFactory = {
 	},
 };
 
-var AVIMTransformerServiceModule = {
+let AVIMTransformerServiceModule = {
 	registerSelf: function (compMgr, fileSpec, location, type) {
 		compMgr = compMgr.QueryInterface(Ci.nsIComponentRegistrar);
 		compMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID,
