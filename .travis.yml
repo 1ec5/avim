@@ -1,9 +1,11 @@
-language: python
+language: node_js
 python:
   - 2.7
+node_js:
+  - 4.1
 install:
-  - pip install -r requirements.txt
-  - npm install -g jshint
+  - pip install --user -r requirements.txt
+  - npm install -g jshint@">=2.9.1-rc2" addons-linter
 before_script:
   - wget -P /tmp/avim -N https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/jsshell-linux-x86_64.zip
   - unzip -d /tmp/js /tmp/avim/jsshell-linux-x86_64.zip
@@ -11,7 +13,9 @@ before_script:
   - git clone https://github.com/1ec5/hunspell-vi.git /tmp/hunspell-vi
 script:
   - jshint .
-  - python build.py
+  - python build.py -m
+  - addons-linter *.xpi
+  - addons-linter -o json *.xpi | grep '"count":0'
   - cd tests/
   - js -b -s test.js
   - js -b -s corpus.js /tmp/hunspell-vi/dictionaries/vi-DauCu.dic -w /tmp/hunspell-vi/tools/irregulars.txt
