@@ -253,16 +253,22 @@ function AVIM()	{
 		}
 		
 		// Disable methods and options if AVIM is disabled
-		for each (let cmdId in commandIds) {
-			if (!$(cmdId)) continue;
-			$(cmdId).setAttribute("disabled", "" + !AVIMConfig.onOff);
+		for (let k in commandIds) {
+			if (commandIds.propertyIsEnumerable(k)) {
+				let cmd = commandIds[k] && $(commandIds[k]);
+				if (cmd) {
+					cmd.setAttribute("disabled", "" + !AVIMConfig.onOff);
+				}
+			}
 		}
 		
 		// Method
-		for each (let bcId in broadcasterIds.methods) {
-			if (!$(bcId)) continue;
-			$(bcId).removeAttribute("checked");
-			$(bcId).removeAttribute("key");
+		for (let i = 0; i < broadcasterIds.methods.length; i++) {
+			let bc = $(broadcasterIds.methods[i]);
+			if (bc) {
+				bc.removeAttribute("checked");
+				bc.removeAttribute("key");
+			}
 		}
 		let selBc = $(broadcasterIds.methods[AVIMConfig.method]);
 		if (selBc) setCheckedState(selBc, true);
