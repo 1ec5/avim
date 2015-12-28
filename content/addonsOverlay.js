@@ -16,6 +16,8 @@ function MudimMonitor() {
 		.getService(Ci.nsIPrefService).getBranch("extensions.avim.");
 	const mudimPrefs = Cc["@mozilla.org/preferences-service;1"]
 		.getService(Ci.nsIPrefService).getBranch("chimmudim.");
+	const mudimPrefs2 = Cc["@mozilla.org/preferences-service;1"]
+		.getService(Ci.nsIPrefService).getBranch("mudimffxextensions.mudim.");
 	const avimEnabledId = "enabled";
 	const mudimMethodId = "settings.method";
 	
@@ -49,8 +51,10 @@ function MudimMonitor() {
 	this.registerPrefs = function() {
 		avimPrefs.QueryInterface(Ci.nsIPrefBranch2);
 		mudimPrefs.QueryInterface(Ci.nsIPrefBranch2);
+		mudimPrefs2.QueryInterface(Ci.nsIPrefBranch2);
 		avimPrefs.addObserver(avimEnabledId, this, false);
 		mudimPrefs.addObserver(mudimMethodId, this, false);
+		mudimPrefs2.addObserver(mudimMethodId, this, false);
 		this.getPrefs();
 	};
 	
@@ -60,6 +64,7 @@ function MudimMonitor() {
 	this.unregisterPrefs = function() {
 		avimPrefs.removeObserver(avimEnabledId, this);
 		mudimPrefs.removeObserver(mudimMethodId, this);
+		mudimPrefs2.removeObserver(mudimMethodId, this);
 	};
 	
 	/**
@@ -70,7 +75,8 @@ function MudimMonitor() {
 	 */
 	this.conflicts = function() {
 		return avimPrefs.getBoolPref(avimEnabledId) && this.mudim &&
-			this.mudim.enabled && mudimPrefs.getIntPref(mudimMethodId);
+			this.mudim.enabled && (mudimPrefs.getIntPref(mudimMethodId) ||
+								   mudimPrefs2.getIntPref(mudimMethodId));
 	};
 	
 	/**
@@ -94,6 +100,8 @@ function MudimMonitor() {
 			}
 			catch (e) {}
 		}
+		mudimPrefs.setIntPref(mudimMethodId, 0);
+		mudimPrefs2.setIntPref(mudimMethodId, 0);
 	};
 	
 	function getNotificationBox() {
