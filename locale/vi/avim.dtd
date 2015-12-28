@@ -29,7 +29,7 @@
 
 <!ENTITY avim-spell.modifiers "accel,alt">
 <!ENTITY avim-spell.key "S">
-<!ENTITY avim-spell.label "Đúng chính Tả">
+<!ENTITY avim-spell.label "Đúng chính tả">
 <!ENTITY avim-spell.accesskey "c">
 <!ENTITY avim-spell.description "Chỉ bỏ dấu trên các từ tuân theo quy tắc tiếng Việt">
 <!ENTITY avim-oldaccents.modifiers "accel,alt">
