@@ -315,6 +315,23 @@ function applyKey(word, evt) {
 }
 
 /**
+ * Returns the currently selected node in the given editor.
+ */
+function getSelectedNode(editor) {
+	let sel = editor && editor.selection;
+	if (!sel || sel.rangeCount !== 1 || !sel.isCollapsed) return null;
+	let node = sel.anchorNode;
+	// In Midas, clicking the end of the line takes the selection out of any
+	// text node into the document at large. (#69) When an element is selected,
+	// anchorOffset is the number of child nodes preceding the selection.
+	if (node === editor.rootElement && sel.anchorOffset) {
+		node = node.childNodes[sel.anchorOffset - 1];
+		if (node.data) sel.collapse(node, node.data.length);
+	}
+	return node;
+}
+
+/**
  * Edits the word before the caret according to the given key press event.
  *
  * @param outer	{object}	The DOM node being edited.
@@ -325,16 +342,8 @@ function splice(outer, evt) {
 	let result = {};
 	let editor = getEditor(outer);
 	let sel = editor && editor.selection;
-	if (!sel || sel.rangeCount !== 1 || !sel.isCollapsed) return result;
-	let node = sel.anchorNode;
-	// In Midas, clicking the end of the line takes the selection out of any
-	// text node into the document at large. (#69) When an element is selected,
-	// anchorOffset is the number of child nodes preceding the selection.
-	if (node === editor.rootElement && sel.anchorOffset) {
-		node = node.childNodes[sel.anchorOffset - 1];
-		if (node.data) sel.collapse(node, node.data.length);
-	}
-	if (!sel.anchorOffset || !node.data) return result;
+	let node = getSelectedNode(editor);
+	if (!node || !sel.anchorOffset || !node.data) return result;
 	
 	let word = lastWordInString(node.substringData(0, sel.anchorOffset));
 	result = word && applyKey(word, evt);
@@ -378,6 +387,24 @@ function splice(outer, evt) {
 	//txn = stack = prev = childStack = child = null;
 	
 	return result;
+}
+
+/**
+ * Splits the currently selected text node at the caret position so that
+ * subsequent input is treated as a new word.
+ * 
+ * @param outer	{object}	The DOM node being edited.
+ * @param evt	{Event}		The key press event.
+ */
+function createWordSegment(outer, evt) {
+	let win = (outer.ownerDocument && outer.ownerDocument.defaultView) || outer;
+	let editor = getEditor(outer);
+	let node = getSelectedNode(editor);
+	if (node instanceof win.Text) {
+		let sel = editor.selection;
+		let newNode = node.splitText(sel.anchorOffset);
+		sel.collapse(newNode, 0);
+	}
 }
 
 /**
@@ -455,6 +482,13 @@ function ifMoz(evt) {
 	if (findIgnore(elt)) return false;
 	if (win.frameElement && findIgnore(win.frameElement)) return false;
 	
+	if (evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
+		createWordSegment(win, evt);
+		evt.stopPropagation();
+		evt.preventDefault();
+		return false;
+	}
+	
 	let result = splice(win, evt);
 	if (result.changed) {
 		evt.stopPropagation();
@@ -482,6 +516,12 @@ function handleKeyPress(evt) {
 		(elt.type === "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
 								  AVIMConfig.exclude.indexOf("e-mail") < 0));
 	if (!isHTML || elt.selectionStart !== elt.selectionEnd) return false;
+	
+	if (evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
+		createWordSegment(elt, evt);
+		evt.preventDefault();
+		return false;
+	}
 	
 	let result = splice(elt, evt);
 	if (result.changed) {
@@ -756,7 +796,7 @@ function checkCode(evt) {
 		(code < evt.DOM_VK_INSERT &&
 		 code !== evt.DOM_VK_BACK_SPACE &&
 		 code !== evt.DOM_VK_PRINT &&
-		 /* code !== evt.DOM_VK_SPACE && */
+		 code !== evt.DOM_VK_SPACE &&
 		 code !== evt.DOM_VK_RIGHT && code !== evt.DOM_VK_DOWN &&
 		 code !== evt.DOM_VK_EXECUTE) ||
 		code === evt.DOM_VK_SCROLL_LOCK;
