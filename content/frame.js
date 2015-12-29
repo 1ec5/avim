@@ -803,10 +803,15 @@ function checkCode(evt) {
 		code === evt.DOM_VK_SCROLL_LOCK;
 }
 
+let isWaitingForShiftSpace = false;
+
 addEventListener("keydown", function (evt) {
 	//dump("AVIM.onKeyDown -- code: " + String.fromCharCode(evt.which) + " #" + evt.which +
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
+	if (evt.shiftKey && evt.which !== evt.DOM_VK_SPACE) {
+		isWaitingForShiftSpace = evt.which === evt.DOM_VK_SHIFT;
+	}
 	if (evt.ctrlKey || evt.metaKey || evt.altKey || checkCode(evt)) return;
 	let doc = evt.target.ownerDocument;
 	if (isChrome && doc.defaultView === window) {
@@ -820,6 +825,10 @@ addEventListener("keypress", function (evt) {
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
 	if (evt.ctrlKey || evt.metaKey || evt.altKey || checkCode(evt)) return;
+	if (!isWaitingForShiftSpace && evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
+		return;
+	}
+	isWaitingForShiftSpace = false;
 	
 	let target = evt.target;
 	let origTarget = evt.originalTarget;
@@ -890,6 +899,12 @@ addEventListener("keypress", function (evt) {
 	if (wysiwyg) ifMoz(evt);
 	// Plain text editors
 	else handleKeyPress(evt);
+}, true);
+
+addEventListener("keyup", function (evt) {
+	if (evt.which === evt.DOM_VK_SHIFT) {
+		isWaitingForShiftSpace = false;
+	}
 }, true);
 
 registerSlights();
