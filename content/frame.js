@@ -573,9 +573,15 @@ function handleLazily(evt, methodName, scriptName) {
  * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
  */
 function handleSciMoz(evt) {
-	return !findIgnore(evt.target) &&
-		handleLazily(evt, "sciMoz", "sciMoz");
+	return !findIgnore(evt.target) && handleLazily(evt, "sciMoz", "sciMoz");
 }
+handleSciMoz.isTarget = function (origTarget, doc) {
+	let koManager = isChrome && window.ko && ko.views && ko.views.manager;
+	let koView = koManager && koManager.currentView;
+	let scintilla = koView && koView.scintilla;
+	return scintilla && scintilla.inputField &&
+		origTarget === scintilla.inputField.inputField;
+};
 
 /**
  * Handles key presses in the Kix editor. This function is triggered as soon as
@@ -587,6 +593,11 @@ function handleSciMoz(evt) {
 function handleKix(evt) {
 	return handleLazily(evt, "kix", "kix");
 }
+handleKix.isTarget = function (origTarget, doc) {
+	return doc.defaultView.frameElement && doc.defaultView.parent &&
+		doc.defaultView.parent.location.hostname === GDocsHostname &&
+		origTarget.isContentEditable;
+};
 
 /**
  * Returns a parseable string representing the given KeyEvent.
@@ -644,20 +655,22 @@ function handleWithContentScript(elt, evt, scriptName) {
  * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
  */
 function handleAce(evt) {
-//		dump("AVIM.handleAce\n");												// debug
-	let elt = evt.originalTarget.parentNode;
-	// <pre class="ace-editor">
-	if (!("classList" in elt && elt.classList.contains("ace_editor") &&
-		  elt.classList.contains("ace_focus")) ||
-		!("querySelector" in elt.ownerDocument)) {
-		return false;
-	}
+//	dump("AVIM.handleAce\n");													// debug
 	if (findIgnore(evt.target)) return false;
-	
-//		dump("---AceProxy---\n");												// debug
+	let elt = evt.originalTarget.parentNode;
 	if (handleWithContentScript(elt, evt, "ace")) updateContainer(elt, elt);
 	return true;
 }
+handleAce.isTarget = function (origTarget, doc) {
+	// <pre class="ace-editor">
+	let tagName = origTarget.localName.toLowerCase();
+	let parent = origTarget.parentNode;
+	if (tagName !== "textarea") return false;
+	return "classList" in parent &&
+		parent.classList.contains("ace_editor") &&
+		parent.classList.contains("ace_focus") &&
+		"querySelector" in parent.ownerDocument;
+};
 
 /**
  * Handles key presses in the Ymacs editor. This function is triggered as soon
@@ -667,15 +680,17 @@ function handleAce(evt) {
  * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
  */
 function handleYmacs(evt) {
+//	dump("AVIM.handleYmacs\n");													// debug
 	let elt = evt.originalTarget;
-	let doc = elt.ownerDocument;
-	let frameContents = doc.getElementsByClassName("Ymacs-frame-content");
-	if (!frameContents.length) return false;
-	
-//		dump("AVIM.handleYmacs\n");												// debug
 	if (handleWithContentScript(elt, evt, "ymacs")) updateContainer(elt, elt);
 	return true;
 }
+handleYmacs.isTarget = function (origTarget, doc) {
+	let tagName = origTarget.localName.toLowerCase();
+	return (tagName === "html" || tagName === "body") &&
+		doc.getElementsByClassName("Ymacs-frame-content").length;
+};
+	
 
 /**
  * Handles key presses in Pages. This function is triggered as soon as the key
@@ -689,6 +704,10 @@ function handleCacTrang(evt) {
 	handleWithContentScript(evt.originalTarget, evt, "trang");
 	return true;
 }
+handleCacTrang.isTarget = function (origTarget, doc) {
+	return doc.location.hostname === iCloudHostname &&
+		origTarget.isContentEditable;
+};
 
 /**
  * Handles key presses in Zoho Writer. This function is triggered as soon as the
@@ -698,8 +717,7 @@ function handleCacTrang(evt) {
  * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
  */
 function handleZD(evt) {
-	let elt = evt.originalTarget;
-	let doc = elt.ownerDocument;
+	let doc = evt.originalTarget.ownerDocument;
 	let scriptName;
 	if (doc.getElementsByClassName("zw-page").length) scriptName = "zwrite";
 	else if (doc.getElementsByClassName("slide-parent-overlay").length) {
@@ -708,6 +726,26 @@ function handleZD(evt) {
 	else return false;
 	handleWithContentScript(evt.originalTarget, evt, scriptName);
 	return true;
+}
+handleZD.isTarget = function (origTarget, doc) {
+	return doc.location.hostname === ZohoHostname &&
+		origTarget.isContentEditable;
+};
+
+/// Available specialized editor handlers, in descending order of precedence.
+const specializedHandlers = [
+	handleSciMoz, handleCacTrang, handleKix, handleZD, handleYmacs, handleAce,
+];
+
+/**
+ * Returns a function that edits the current specialized editor.
+ */
+function getSpecializedHandler(origTarget, doc) {
+	for (let i = 0; i < specializedHandlers.length; i++) {
+		let handler = specializedHandlers[i];
+		if (handler.isTarget(origTarget, doc)) return handler;
+	}
+	return null;
 }
 
 // Silverlight applets
@@ -840,6 +878,7 @@ addEventListener("keypress", function (evt) {
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
 	if (evt.ctrlKey || evt.metaKey || evt.altKey || checkCode(evt)) return;
+	if (isChrome && evt.originalTarget.localName === "browser") return;
 	if (!isWaitingForShiftSpace && evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
 		return;
 	}
@@ -853,57 +892,16 @@ addEventListener("keypress", function (evt) {
 		doc = origTarget.ownerDocument;
 	}
 	
-	// SciMoz plugin
-	let koManager = isChrome && window.ko && ko.views && ko.views.manager;
-	let koView = koManager && koManager.currentView;
-	let scintilla = koView && koView.scintilla;
-	if (scintilla && scintilla.inputField &&
-		origTarget === scintilla.inputField.inputField) {
-		handleSciMoz(evt);
-		return;
-	}
-	
-	// Specialized Web editors
-	let tagName = origTarget.localName.toLowerCase();
+	let handler = getSpecializedHandler(origTarget, doc);
 	try {
-		// iCloud Pages
-		if (doc.location.hostname === iCloudHostname &&
-			origTarget.isContentEditable) {
-			handleCacTrang(evt);
-			return;
-		}
-		
-		// Google Kix
-		if (doc.defaultView.frameElement && doc.defaultView.parent &&
-			doc.defaultView.parent.location.hostname === GDocsHostname &&
-			origTarget.isContentEditable) {
-			handleKix(evt);
-			return;
-		}
-		
-		// Zoho Writer
-		if (doc.location.hostname === ZohoHostname &&
-			origTarget.isContentEditable) {
-			handleZD(evt);
-			return;
-		}
-		
-		// Ymacs
-		if ((tagName === "html" || tagName === "body") &&
-			handleYmacs(evt)) {
-			return;
-		}
-		
-		// ACE editor
-		if (tagName === "textarea" && handleAce(evt)) return;
-	}
-	catch (exc) {
+		if (handler) handler(evt);
+	} catch (exc) {
 // $if{Debug}
 		dump(">>> AVIM.onKeyPress -- error on line " + (exc && exc.lineNumber) +
 			 ": " + exc + "\n" + (exc && exc.stack) + "\n");
 // $endif{}
 		// Instead of returning here, try to handle it as a normal textbox.
-//			return false;
+//		return false;
 	}
 	
 	// Rich text editors
