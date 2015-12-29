@@ -494,7 +494,7 @@ function scrollToCaret(outer) {
  * Handles key presses for WYSIWYG HTML documents (editable through
  * Mozilla's Midas component).
  */
-function ifMoz(evt) {
+function handleWysiwyg(evt) {
 	let elt = evt.originalTarget;
 	let win = new XPCNativeWrapper(elt.ownerDocument.defaultView);
 	if (findIgnore(elt)) return;
@@ -517,7 +517,7 @@ function ifMoz(evt) {
 	}
 }
 
-function handleKeyPress(evt) {
+function handleHtmlInput(evt) {
 	// https://developer.mozilla.org/en/HTML/Element/input
 	// Supported <input> types are: text, search, password (if .passwords), url
 	// (if "url" or "urlbar" in .ignoredFieldIds), and email (if "e-mail" or
@@ -525,7 +525,7 @@ function handleKeyPress(evt) {
 	const htmlTypes = ["search", "text", "textarea"];
 	
 	let elt = evt.originalTarget;
-//	dump("AVIM.handleKeyPress -- target: " + elt.tagName + "; code: " + evt.which + "\n");	// debug
+//	dump("AVIM.handleHtmlInput -- target: " + elt.tagName + "; code: " + evt.which + "\n");	// debug
 	if (findIgnore(evt.target) || !elt.type) return;
 	let isHTML = htmlTypes.indexOf(elt.type) >= 0 ||
 		(elt.type === "password" && AVIMConfig.passwords) ||
@@ -553,51 +553,20 @@ let lazyHandlers = {};
 /**
  * Handles a keypress event on a custom editor type by lazily loading its
  * privileged subscript.
+ * 
+ * @param evt	{object}	The keypress event.
+ * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
  */
-function handleLazily(evt, methodName, scriptName) {
-	if (!(methodName in lazyHandlers)) {
+function handleLazily(evt, scriptName) {
+	if (!(scriptName in lazyHandlers)) {
 		loadSubScript("chrome://avim/content/" + scriptName + ".js", {
 			applyKey: applyKey,
 			lastWordInString: lastWordInString,
 			lazyHandlers: lazyHandlers,
 		});
 	}
-	return lazyHandlers[methodName](evt);
+	return lazyHandlers[scriptName](evt);
 }
-
-/**
- * Handles key presses in the SciMoz plugin. This function is triggered as soon
- * as the key goes up.
- *
- * @param evt	{object}	The keypress event.
- * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
- */
-function handleSciMoz(evt) {
-	return !findIgnore(evt.target) && handleLazily(evt, "sciMoz", "sciMoz");
-}
-handleSciMoz.isTarget = function (origTarget, doc) {
-	let koManager = isChrome && window.ko && ko.views && ko.views.manager;
-	let koView = koManager && koManager.currentView;
-	let scintilla = koView && koView.scintilla;
-	return scintilla && scintilla.inputField &&
-		origTarget === scintilla.inputField.inputField;
-};
-
-/**
- * Handles key presses in the Kix editor. This function is triggered as soon as
- * the key goes up.
- *
- * @param evt	{object}	The keypress event.
- * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
- */
-function handleKix(evt) {
-	return handleLazily(evt, "kix", "kix");
-}
-handleKix.isTarget = function (origTarget, doc) {
-	return doc.defaultView.frameElement && doc.defaultView.parent &&
-		doc.defaultView.parent.location.hostname === GDocsHostname &&
-		origTarget.isContentEditable;
-};
 
 /**
  * Returns a parseable string representing the given KeyEvent.
@@ -647,98 +616,86 @@ function handleWithContentScript(elt, evt, scriptName) {
 	return changed;
 }
 
-/**
- * Handles key presses in the Ace editor. This function is triggered as soon as
- * the key goes up.
- *
- * @param evt	{object}	The keypress event.
- * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
- */
-function handleAce(evt) {
-//	dump("AVIM.handleAce\n");													// debug
-	if (findIgnore(evt.target)) return false;
-	let elt = evt.originalTarget.parentNode;
-	if (handleWithContentScript(elt, evt, "ace")) updateContainer(elt, elt);
-	return true;
-}
-handleAce.isTarget = function (origTarget, doc) {
-	// <pre class="ace-editor">
-	let tagName = origTarget.localName.toLowerCase();
-	let parent = origTarget.parentNode;
-	if (tagName !== "textarea") return false;
-	return "classList" in parent &&
-		parent.classList.contains("ace_editor") &&
-		parent.classList.contains("ace_focus") &&
-		"querySelector" in parent.ownerDocument;
-};
-
-/**
- * Handles key presses in the Ymacs editor. This function is triggered as soon
- * as the key goes up.
- *
- * @param evt	{object}	The keypress event.
- * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
- */
-function handleYmacs(evt) {
-//	dump("AVIM.handleYmacs\n");													// debug
-	let elt = evt.originalTarget;
-	if (handleWithContentScript(elt, evt, "ymacs")) updateContainer(elt, elt);
-	return true;
-}
-handleYmacs.isTarget = function (origTarget, doc) {
-	let tagName = origTarget.localName.toLowerCase();
-	return (tagName === "html" || tagName === "body") &&
-		doc.getElementsByClassName("Ymacs-frame-content").length;
-};
-	
-
-/**
- * Handles key presses in Pages. This function is triggered as soon as the key
- * goes up.
- *
- * @param evt	{object}	The keypress event.
- * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
- */
-function handleCacTrang(evt) {
-	//dump(">>> AVIM.handleCacTrang\n");												// debug
-	handleWithContentScript(evt.originalTarget, evt, "trang");
-	return true;
-}
-handleCacTrang.isTarget = function (origTarget, doc) {
-	return doc.location.hostname === iCloudHostname &&
-		origTarget.isContentEditable;
-};
-
-/**
- * Handles key presses in Zoho Writer. This function is triggered as soon as the
- * key goes up.
- *
- * @param evt	{object}	The keypress event.
- * @returns {boolean}	True if AVIM plans to modify the input; false otherwise.
- */
-function handleZD(evt) {
-	let doc = evt.originalTarget.ownerDocument;
-	let scriptName;
-	if (doc.getElementsByClassName("zw-page").length) scriptName = "zwrite";
-	else if (doc.getElementsByClassName("slide-parent-overlay").length) {
-		scriptName = "zshow";
-	}
-	else return false;
-	handleWithContentScript(evt.originalTarget, evt, scriptName);
-	return true;
-}
-handleZD.isTarget = function (origTarget, doc) {
-	return doc.location.hostname === ZohoHostname &&
-		origTarget.isContentEditable;
-};
-
 /// Available specialized editor handlers, in descending order of precedence.
 const specializedHandlers = [
-	handleSciMoz, handleCacTrang, handleKix, handleZD, handleYmacs, handleAce,
+	// SciMoz plugin
+	{
+		lazyScriptName: "sciMoz",
+		targetIsIgnorable: true,
+		isTarget: function (origTarget, doc) {
+			let koManager = isChrome && window.ko && ko.views && ko.views.manager;
+			let koView = koManager && koManager.currentView;
+			let scintilla = koView && koView.scintilla;
+			return scintilla && scintilla.inputField &&
+				origTarget === scintilla.inputField.inputField;
+		},
+	},
+	// Pages
+	{
+		contentScriptName: "trang",
+		isTarget: function (origTarget, doc) {
+			return doc.location.hostname === iCloudHostname &&
+				origTarget.isContentEditable;
+		},
+	},
+	// Google Docs
+	{
+		lazyScriptName: "kix",
+		isTarget: function (origTarget, doc) {
+			return doc.defaultView.frameElement && doc.defaultView.parent &&
+				doc.defaultView.parent.location.hostname === GDocsHostname &&
+				origTarget.isContentEditable;
+		},
+	},
+	// Zoho Writer
+	{
+		contentScriptName: "zwrite",
+		isTarget: function (origTarget, doc) {
+			return doc.location.hostname === ZohoHostname &&
+				origTarget.isContentEditable &&
+				doc.getElementsByClassName("zw-page").length;
+		},
+	},
+	// Zoho Show
+	{
+		contentScriptName: "zshow",
+		isTarget: function (origTarget, doc) {
+			return doc.location.hostname === ZohoHostname &&
+				origTarget.isContentEditable &&
+				doc.getElementsByClassName("slide-parent-overlay").length;
+		},
+	},
+	// Ymacs editor
+	{
+		contentScriptName: "ymacs",
+		updatesContainer: true,
+		isTarget: function (origTarget, doc) {
+			let tagName = origTarget.localName.toLowerCase();
+			return (tagName === "html" || tagName === "body") &&
+				doc.getElementsByClassName("Ymacs-frame-content").length;
+		},
+	},
+	// Ace editor
+	{
+		contentScriptName: "ace",
+		targetsParent: true,
+		targetIsIgnorable: true,
+		updatesContainer: true,
+		isTarget: function (origTarget, doc) {
+			// <pre class="ace-editor">
+			let tagName = origTarget.localName.toLowerCase();
+			let parent = origTarget.parentNode;
+			if (tagName !== "textarea") return false;
+			return "classList" in parent &&
+				parent.classList.contains("ace_editor") &&
+				parent.classList.contains("ace_focus") &&
+				"querySelector" in parent.ownerDocument;
+		},
+	},
 ];
 
 /**
- * Returns a function that edits the current specialized editor.
+ * Returns a handler for editing the current specialized editor.
  */
 function getSpecializedHandler(origTarget, doc) {
 	for (let i = 0; i < specializedHandlers.length; i++) {
@@ -746,6 +703,23 @@ function getSpecializedHandler(origTarget, doc) {
 		if (handler.isTarget(origTarget, doc)) return handler;
 	}
 	return null;
+}
+
+/**
+ * Edits a specialized editor with the given handler and event.
+ */
+function handleSpecialized(handler, evt) {
+	if (!handler) return;
+	let origTarget = evt.originalTarget;
+	if (handler.targetIsIgnorable && findIgnore(evt.target)) return;
+	if (handler.lazyScriptName) handleLazily(evt, handler.lazyScriptName);
+	else if (handler.contentScriptName) {
+		let elt = handler.targetsParent ? origTarget.parentNode : origTarget;
+		if (handleWithContentScript(elt, evt, handler.contentScriptName) &&
+			handler.updatesContainer) {
+			updateContainer(elt, elt);
+		}
+	}
 }
 
 // Silverlight applets
@@ -859,7 +833,7 @@ function checkCode(evt) {
 let isWaitingForShiftSpace = false;
 
 addEventListener("keydown", function (evt) {
-	//dump("AVIM.onKeyDown -- code: " + String.fromCharCode(evt.which) + " #" + evt.which +
+	//dump("AVIM frame script keydown -- code: " + String.fromCharCode(evt.which) + " #" + evt.which +
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
 	if (evt.shiftKey && evt.which !== evt.DOM_VK_SPACE) {
@@ -874,7 +848,7 @@ addEventListener("keydown", function (evt) {
 }, true);
 
 addEventListener("keypress", function (evt) {
-	//dump("AVIM.onKeyPress -- isChrome: " + isChrome + "; code: " + String.fromCharCode(evt.which) + " #" + evt.which +
+	//dump("AVIM frame script keypress -- isChrome: " + isChrome + "; code: " + String.fromCharCode(evt.which) + " #" + evt.which +
 	//	 "; target: " + evt.target.nodeName + "." + evt.target.className + "#" + evt.target.id +
 	//	 "; originalTarget: " + evt.originalTarget.nodeName + "." + evt.originalTarget.className + "#" + evt.originalTarget.id + "\n");			// debug
 	if (evt.ctrlKey || evt.metaKey || evt.altKey || checkCode(evt)) return;
@@ -894,11 +868,12 @@ addEventListener("keypress", function (evt) {
 	
 	let handler = getSpecializedHandler(origTarget, doc);
 	try {
-		if (handler) handler(evt);
+		handleSpecialized(handler, evt);
 	} catch (exc) {
 // $if{Debug}
-		dump(">>> AVIM.onKeyPress -- error on line " + (exc && exc.lineNumber) +
-			 ": " + exc + "\n" + (exc && exc.stack) + "\n");
+		dump(">>> AVIM frame script keypress -- error on line " +
+			 (exc && exc.lineNumber) + ": " + exc + "\n" + (exc && exc.stack) +
+			 "\n");
 // $endif{}
 		// Instead of returning here, try to handle it as a normal textbox.
 //		return false;
@@ -909,9 +884,9 @@ addEventListener("keypress", function (evt) {
 		(doc.designMode && doc.designMode.toLowerCase() === "on") ||
 		(target.contentEditable &&
 		 target.contentEditable.toLowerCase() === "true");
-	if (wysiwyg) ifMoz(evt);
+	if (wysiwyg) handleWysiwyg(evt);
 	// Plain text editors
-	else handleKeyPress(evt);
+	else handleHtmlInput(evt);
 }, true);
 
 addEventListener("keyup", function (evt) {
