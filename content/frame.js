@@ -389,15 +389,30 @@ function splice(outer, evt) {
 	return result;
 }
 
+const focusMgr = Cc["@mozilla.org/focus-manager;1"].getService(Ci.nsIFocusManager);
+
+/**
+ * Returns the native (HTML, XUL) element that an editor is currently editing.
+ */
+function getEditedNativeElement() {
+	let dispatcher = isChrome ? window.document.commandDispatcher : focusMgr;
+	let elt = dispatcher.focusedElement;
+	let doc = dispatcher.focusedWindow.document;
+	
+	let wysiwyg = (doc.designMode && doc.designMode.toLowerCase() === "on") ||
+		(elt.contentEditable && elt.contentEditable.toLowerCase() === "true");
+	return wysiwyg ? new XPCNativeWrapper(doc.defaultView) : elt;
+}
+
 /**
  * Splits the currently selected text node at the caret position so that
  * subsequent input is treated as a new word.
  * 
  * @param outer	{object}	The DOM node being edited.
- * @param evt	{Event}		The key press event.
  * @returns {boolean}	True if a syllable break was inserted.
  */
-function insertSyllableBreak(outer, evt) {
+function insertSyllableBreak(outer) {
+	if (!outer) outer = getEditedNativeElement();
 	let win = (outer.ownerDocument && outer.ownerDocument.defaultView) || outer;
 	let editor = getEditor(outer);
 	let node = getSelectedNode(editor);
@@ -486,7 +501,7 @@ function ifMoz(evt) {
 	if (win.frameElement && findIgnore(win.frameElement)) return;
 	
 	if (evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
-		if (insertSyllableBreak(win, evt)) {
+		if (insertSyllableBreak(win)) {
 			evt.stopPropagation();
 			evt.preventDefault();
 		}
@@ -521,7 +536,7 @@ function handleKeyPress(evt) {
 	if (!isHTML || elt.selectionStart !== elt.selectionEnd) return;
 	
 	if (evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
-		if (insertSyllableBreak(elt, evt)) evt.preventDefault();
+		if (insertSyllableBreak(elt)) evt.preventDefault();
 		return;
 	}
 	
@@ -906,6 +921,17 @@ addEventListener("keyup", function (evt) {
 		isWaitingForShiftSpace = false;
 	}
 }, true);
+
+if (isChrome) {
+	avim.insertSyllableBreakInChrome = function () {
+		insertSyllableBreak();
+	};
+}
+else {
+	addMessageListener("AVIM:brokesyllable", function (msg) {
+		insertSyllableBreak();
+	});
+}
 
 registerSlights();
 

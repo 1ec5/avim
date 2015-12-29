@@ -38,3 +38,7 @@
 <!ENTITY avim-oldaccents.label "Vieux accents">
 <!ENTITY avim-oldaccents.accesskey "x">
 <!ENTITY avim-oldaccents.description "Mettre les marques d’accent sur la première voyelle, dans une diphtongue finale.">
+
+<!ENTITY avim-insert-syllable.label "Insérer un séparateur syllabique">
+<!ENTITY avim-insert-syllable.accesskey "y">
+<!ENTITY avim-insert-syllable.keytext "Espace">

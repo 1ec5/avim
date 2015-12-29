@@ -38,3 +38,7 @@
 <!ENTITY avim-oldaccents.label "Bỏ dấu kiểu cũ">
 <!ENTITY avim-oldaccents.accesskey "d">
 <!ENTITY avim-oldaccents.description "Bỏ dấu vào nguyên âm đầu tiên khi gặp nguyên âm đôi">
+
+<!ENTITY avim-insert-syllable.label "Ngắt âm tiết">
+<!ENTITY avim-insert-syllable.accesskey "N">
+<!ENTITY avim-insert-syllable.keytext "Dấu cách">

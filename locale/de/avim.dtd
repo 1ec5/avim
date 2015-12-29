@@ -41,3 +41,7 @@
 <!ENTITY avim-oldaccents.label "Klassische Akzente setzen">
 <!ENTITY avim-oldaccents.accesskey "K">
 <!ENTITY avim-oldaccents.description "Akzente über den ersten Vokal im endbetonten Diphthong setzen">
+
+<!ENTITY avim-insert-syllable.label "Silbengrenze einfügen">
+<!ENTITY avim-insert-syllable.accesskey "g">
+<!ENTITY avim-insert-syllable.keytext "Leertaste">

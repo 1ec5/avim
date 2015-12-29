@@ -35,3 +35,6 @@
 <!ENTITY avim-oldaccents.label "Oude Accenten">
 <!ENTITY avim-oldaccents.accesskey "O">
 <!ENTITY avim-oldaccents.description "Plaats accent op eerste klinker bij een dubbelklank">
+<!ENTITY avim-insert-syllable.label "Lettergreep-Einde Invoegen">
+<!ENTITY avim-insert-syllable.accesskey "L">
+<!ENTITY avim-insert-syllable.keytext "Spatie">

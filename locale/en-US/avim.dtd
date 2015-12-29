@@ -88,3 +88,12 @@
 <!ENTITY avim-oldaccents.accesskey "l">
 <!-- Description of the Edit > Vietnamese Input > Old Accents menu item. It may be displayed in the Add-on Bar when the user highlights the menu item. -->
 <!ENTITY avim-oldaccents.description "Place accent marks on the first vowel in a final diphthong">
+
+<!-- Text commands ========================================================= -->
+
+<!-- Label of the menu item for inserting a syllable break. This menu item appears under the Edit > Vietnamese Input menu, as well as in the Add-on Bar button's menu. Inserting a syllable break causes AVIM to treat the next character as the beginning of a new word for the purposes of spelling enforcement and diacritic placement. However, no visible character is inserted into the text field. -->
+<!ENTITY avim-insert-syllable.label "Insert Syllable Break">
+<!-- Mneumonic for the Edit > Vietnamese Input > Insert Syllable Break menu item. This string should contain a single character that also appears in avim-insert-syllable.label. On Windows, the user can press Alt+E, then V, then Y to select the menu item. This string is not used in Mac OS X. -->
+<!ENTITY avim-insert-syllable.accesskey "y">
+<!-- Text that should be displayed as the key binding for inserting a syllable break, minus the modifier key. Pressing the space bar while holding down Shift inserts a syllable break. This string does not affect the key binding, only the text that indicates the key binding. "Space" in this context means "space bar", but if possible, use a shorter term like "space" due to space constraints. -->
+<!ENTITY avim-insert-syllable.keytext "Space">

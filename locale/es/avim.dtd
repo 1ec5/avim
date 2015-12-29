@@ -38,3 +38,7 @@
 <!ENTITY avim-oldaccents.label "Acentos viejos">
 <!ENTITY avim-oldaccents.accesskey "j">
 <!ENTITY avim-oldaccents.description "Poner los accentos en la primera vocal de un diptongo">
+
+<!ENTITY avim-insert-syllable.label "Insertar ruptura silábica">
+<!ENTITY avim-insert-syllable.accesskey "p">
+<!ENTITY avim-insert-syllable.keytext "Espacio">

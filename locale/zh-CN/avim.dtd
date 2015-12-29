@@ -38,3 +38,7 @@
 <!ENTITY avim-oldaccents.label "旧重音">
 <!ENTITY avim-oldaccents.accesskey "L">
 <!ENTITY avim-oldaccents.description "在最后一个双元音的第一个元音字母上添加重音符号">
+
+<!ENTITY avim-insert-syllable.label "插入音节间断">
+<!ENTITY avim-insert-syllable.accesskey "Y">
+<!ENTITY avim-insert-syllable.keytext "空格键">

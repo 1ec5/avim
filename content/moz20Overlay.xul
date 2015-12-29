@@ -23,6 +23,10 @@
 				<menuseparator id="avim-appmenu-options-separator" />
 				<menuitem id="avim-appmenu-spell" key="avim-spell-key" observes="avim-spell-bc" />
 				<menuitem id="avim-appmenu-oldaccents" key="avim-oldaccents-key" observes="avim-oldaccents-bc" />
+				
+				<!-- Text commands -->
+				<menuseparator id="avim-menu-commands-separator" />
+				<menuitem id="avim-menu-insert-syllable" key="avim-insert-syllable-key" observes="avim-insert-syllable-bc" />
 			</menupopup>
 		</menu>
 	</vbox>

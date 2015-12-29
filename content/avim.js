@@ -228,10 +228,17 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Displays the status bar panel if currently hidden; hides it otherwise.
+	 * Inserts a syllable break at the insertion point in the current editor.
 	 */
-	this.toggleStatusPanel = function() {
-		this.setStatusPanel(!AVIMConfig.statusBarPanel);
+	this.insertSyllableBreak = function () {
+		let win = document.commandDispatcher.focusedWindow;
+		let elt = document.commandDispatcher.focusedElement;
+		if ((elt && elt.localName !== "browser") || win !== window) {
+			this.insertSyllableBreakInChrome();
+		}
+		else if ("gMultiProcessBrowser" in window && "messageManager" in elt) {
+			elt.messageManager.sendAsyncMessage("AVIM:brokesyllable");
+		}
 	};
 	
 	function setCheckedState(elt, checked) {
