@@ -395,8 +395,9 @@ function splice(outer, evt) {
  * 
  * @param outer	{object}	The DOM node being edited.
  * @param evt	{Event}		The key press event.
+ * @returns {boolean}	True if a syllable break was inserted.
  */
-function createWordSegment(outer, evt) {
+function insertSyllableBreak(outer, evt) {
 	let win = (outer.ownerDocument && outer.ownerDocument.defaultView) || outer;
 	let editor = getEditor(outer);
 	let node = getSelectedNode(editor);
@@ -404,7 +405,9 @@ function createWordSegment(outer, evt) {
 		let sel = editor.selection;
 		let newNode = node.splitText(sel.anchorOffset);
 		sel.collapse(newNode, 0);
+		return true;
 	}
+	return false;
 }
 
 /**
@@ -479,14 +482,15 @@ function scrollToCaret(outer) {
 function ifMoz(evt) {
 	let elt = evt.originalTarget;
 	let win = new XPCNativeWrapper(elt.ownerDocument.defaultView);
-	if (findIgnore(elt)) return false;
-	if (win.frameElement && findIgnore(win.frameElement)) return false;
+	if (findIgnore(elt)) return;
+	if (win.frameElement && findIgnore(win.frameElement)) return;
 	
 	if (evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
-		createWordSegment(win, evt);
-		evt.stopPropagation();
-		evt.preventDefault();
-		return false;
+		if (insertSyllableBreak(win, evt)) {
+			evt.stopPropagation();
+			evt.preventDefault();
+		}
+		return;
 	}
 	
 	let result = splice(win, evt);
@@ -496,7 +500,6 @@ function ifMoz(evt) {
 		updateContainer(null, elt.ownerDocument.documentElement);
 		scrollToCaret(win);
 	}
-	return !result.changed;
 }
 
 function handleKeyPress(evt) {
@@ -508,19 +511,18 @@ function handleKeyPress(evt) {
 	
 	let elt = evt.originalTarget;
 //	dump("AVIM.handleKeyPress -- target: " + elt.tagName + "; code: " + evt.which + "\n");	// debug
-	if (findIgnore(evt.target) || !elt.type) return false;
+	if (findIgnore(evt.target) || !elt.type) return;
 	let isHTML = htmlTypes.indexOf(elt.type) >= 0 ||
 		(elt.type === "password" && AVIMConfig.passwords) ||
 		(elt.type === "url" && (AVIMConfig.exclude.indexOf("url") < 0 ||
 								AVIMConfig.exclude.indexOf("urlbar") < 0)) ||
 		(elt.type === "email" && (AVIMConfig.exclude.indexOf("email") < 0 ||
 								  AVIMConfig.exclude.indexOf("e-mail") < 0));
-	if (!isHTML || elt.selectionStart !== elt.selectionEnd) return false;
+	if (!isHTML || elt.selectionStart !== elt.selectionEnd) return;
 	
 	if (evt.shiftKey && evt.which === evt.DOM_VK_SPACE) {
-		createWordSegment(elt, evt);
-		evt.preventDefault();
-		return false;
+		if (insertSyllableBreak(elt, evt)) evt.preventDefault();
+		return;
 	}
 	
 	let result = splice(elt, evt);
@@ -529,7 +531,6 @@ function handleKeyPress(evt) {
 		updateContainer(elt, elt);
 		scrollToCaret(elt);
 	}
-	return !result.changed;
 }
 
 let lazyHandlers = {};
