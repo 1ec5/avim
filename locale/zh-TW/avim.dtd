@@ -7,7 +7,7 @@
 <!ENTITY avim-enabled.label "已啟用">
 <!ENTITY avim-enabled.accesskey "E">
 <!ENTITY avim-enabled.description "啟用&AVIM.label;以輸入越南文">
-<!ENTITY avim-enabled.keytext "Ctrl+Ctrl">
+<!ENTITY avim-enabled.keytext "Ctrl Ctrl">
 <!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-next-method.modifiers "accel">

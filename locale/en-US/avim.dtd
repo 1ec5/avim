@@ -20,7 +20,7 @@
 <!ENTITY avim-enabled.description "Enable &AVIM.label; for Vietnamese input">
 
 <!-- Text that should be displayed as the key binding for toggling AVIM on and off. Pressing the Ctrl key twice in a row toggles AVIM on and off. This string does not affect the key binding, only the text that indicates the key binding. Only translate this string if Ctrl keys are typically labeled something other than "Ctrl" on physical keyboards in your region. On the Mac, this string is automatically replaced by "⌃⌃", per platform conventions. -->
-<!ENTITY avim-enabled.keytext "Ctrl+Ctrl">
+<!ENTITY avim-enabled.keytext "Ctrl Ctrl">
 
 <!-- Modifier keys that, in conjunction with avim-prev-method.key, switch to the previous input method listed in the Edit > Vietnamese Input menu. In this string, "accel" means Ctrl on Windows and Cmd on the Mac. Try to choose a keyboard shortcuts for avim-prev-method and avim-next-method that are close to each other, so the user can easily switch between input methods using the keyboard. For example, Ctrl+: and Ctrl+; (Cmd+: and Cmd+; on the Mac) were chosen for the English localization because ";" is the same as Shift+: on standard U.S. English keyboards. -->
 <!ENTITY avim-prev-method.modifiers "accel">

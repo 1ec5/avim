@@ -7,7 +7,7 @@
 <!ENTITY avim-enabled.label "Activada">
 <!ENTITY avim-enabled.accesskey "A">
 <!ENTITY avim-enabled.description "Activar &AVIM.label; para la entrada en vietnamita">
-<!ENTITY avim-enabled.keytext "Ctrl+Ctrl">
+<!ENTITY avim-enabled.keytext "Ctrl Ctrl">
 <!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-next-method.modifiers "accel">
