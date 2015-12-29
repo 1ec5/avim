@@ -249,7 +249,10 @@ function AVIM()	{
 		let enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
 			setCheckedState(enabledBcId, AVIMConfig.onOff);
-			$("avim-status-enabled").setAttribute("avim-accel", isMac ? "mac" : "");
+			if (isMac) {
+				let inlineKey = $("avim-enabled-key-inline");
+				inlineKey.setAttribute("keytext", "\u2303\u2303");
+			}
 		}
 		
 		// Disable methods and options if AVIM is disabled

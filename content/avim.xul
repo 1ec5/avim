@@ -17,6 +17,7 @@
 	
 	<keyset>
 		<key id="avim-enabled-key" modifiers="&avim-enabled.modifiers;" key="&avim-enabled.key;" oncommand="avim.toggle();" />
+		<key id="avim-enabled-key-inline" keytext="&avim-enabled.keytext;" />
 		
 		<!-- Input methods -->
 		<key id="avim-prev-method-key" modifiers="&avim-prev-method.modifiers;" key="&avim-prev-method.key;" command="avim-prev-method-cmd" />
@@ -48,7 +49,7 @@
 	<popupset>
 		<tooltip id="avim-status-tooltip" label="&AVIM.label;" />
 		<menupopup id="avim-status-popup" position="before_end">
-			<menuitem id="avim-status-enabled" type="checkbox" label="&avim-enabled.label;" observes="avim-enabled-bc" />
+			<menuitem id="avim-status-enabled" type="checkbox" label="&avim-enabled.label;" observes="avim-enabled-bc" key="avim-enabled-key-inline" />
 			
 			<!-- Input methods -->
 			<menuseparator id="avim-status-methods-separator" />

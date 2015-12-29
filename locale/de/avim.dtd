@@ -7,6 +7,7 @@
 <!ENTITY avim-enabled.label "Aktiviert">
 <!ENTITY avim-enabled.accesskey "A">
 <!ENTITY avim-enabled.description "&AVIM.label; für vietnamesische Eingabe aktivieren">
+<!ENTITY avim-enabled.keytext "Strg+Strg">
 
 <!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ";">

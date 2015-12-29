@@ -7,6 +7,7 @@
 <!ENTITY avim-enabled.label "Bật">
 <!ENTITY avim-enabled.accesskey "B">
 <!ENTITY avim-enabled.description "Bật lên &AVIM.label; để gõ tiếng Việt">
+<!ENTITY avim-enabled.keytext "Ctrl+Ctrl">
 <!ENTITY avim-prev-method.modifiers "accel">
 <!ENTITY avim-prev-method.key ":">
 <!ENTITY avim-next-method.modifiers "accel">
