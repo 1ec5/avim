@@ -921,11 +921,13 @@ if (isChrome) {
 	};
 }
 else {
+	let listener = function (msg) {
+		let txtEvt = msg.name.match(/^AVIM:(.+)/)[1];
+		textEventHandlers[txtEvt]();
+	};
 	for (let txtEvt in textEventHandlers) {
 		if (textEventHandlers.propertyIsEnumerable(txtEvt)) {
-			addMessageListener("AVIM:" + txtEvt, function (msg) {
-				textEventHandlers[txtEvt]();
-			});
+			addMessageListener("AVIM:" + txtEvt, listener);
 		}
 	}
 }

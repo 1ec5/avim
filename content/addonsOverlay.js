@@ -163,7 +163,7 @@ function ExtensionMonitor() {
 			case "mudim-note": return thisMonitor.disableMudim();
 			case "typing-vietnamese-note": return thisMonitor.disableTV();
 		}
-	};
+	}
 	
 	function getNotificationBox() {
 		if ($(notificationBoxId)) return $(notificationBoxId);
