@@ -38,3 +38,5 @@
 <!ENTITY avim-insert-syllable.label "Lettergreep-Einde Invoegen">
 <!ENTITY avim-insert-syllable.accesskey "L">
 <!ENTITY avim-insert-syllable.keytext "Spatie">
+<!ENTITY avim-delete-diacritic.label "Diakritisch Teken Verwijderen">
+<!ENTITY avim-delete-diacritic.accesskey "D">

@@ -32,6 +32,7 @@
 				<!-- Text commands -->
 				<menuseparator id="avim-menu-commands-separator" />
 				<menuitem id="avim-menu-insert-syllable" key="avim-insert-syllable-key" observes="avim-insert-syllable-bc" />
+				<menuitem id="avim-menu-delete-diacritic" key="avim-delete-diacritic-key" observes="avim-delete-diacritic-bc" />
 			</menupopup>
 		</menu>
 	</menupopup>

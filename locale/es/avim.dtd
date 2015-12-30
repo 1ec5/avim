@@ -42,3 +42,5 @@
 <!ENTITY avim-insert-syllable.label "Insertar ruptura silábica">
 <!ENTITY avim-insert-syllable.accesskey "p">
 <!ENTITY avim-insert-syllable.keytext "Espacio">
+<!ENTITY avim-delete-diacritic.label "Borrar signo diacrítico">
+<!ENTITY avim-delete-diacritic.accesskey "B">

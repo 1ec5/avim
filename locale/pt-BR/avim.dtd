@@ -37,6 +37,9 @@
 <!ENTITY avim-oldaccents.label "Acentuação tradicional">
 <!ENTITY avim-oldaccents.accesskey "c">
 <!ENTITY avim-oldaccents.description "Colocar acento na primeira vogal de um ditongo final">
+
 <!ENTITY avim-insert-syllable.label "Inserir separador de silábas">
 <!ENTITY avim-insert-syllable.accesskey "s">
 <!ENTITY avim-insert-syllable.keytext "Espaço">
+<!ENTITY avim-delete-diacritic.label "Apagar acento diacrítico">
+<!ENTITY avim-delete-diacritic.accesskey "d">

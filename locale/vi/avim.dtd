@@ -42,3 +42,5 @@
 <!ENTITY avim-insert-syllable.label "Ngắt âm tiết">
 <!ENTITY avim-insert-syllable.accesskey "N">
 <!ENTITY avim-insert-syllable.keytext "Dấu cách">
+<!ENTITY avim-delete-diacritic.label "Xóa dấu phụ">
+<!ENTITY avim-delete-diacritic.accesskey "p">

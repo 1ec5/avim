@@ -42,3 +42,5 @@
 <!ENTITY avim-insert-syllable.label "插入音節間斷">
 <!ENTITY avim-insert-syllable.accesskey "Y">
 <!ENTITY avim-insert-syllable.keytext "空格鍵">
+<!ENTITY avim-delete-diacritic.label "刪除附加符號">
+<!ENTITY avim-delete-diacritic.accesskey "D">

@@ -28,6 +28,10 @@
 				<menuseparator id="avim-menu-options-separator" />
 				<menuitem id="avim-menu-spell" key="avim-spell-key" observes="avim-spell-bc" />
 				<menuitem id="avim-menu-oldaccents" key="avim-oldaccents-key" observes="avim-oldaccents-bc" />
+				
+				<!-- Text commands -->
+				<menuseparator id="avim-menu-commands-separator" />
+				<menuitem id="avim-menu-delete-diacritic" key="avim-delete-diacritic-key" observes="avim-delete-diacritic-bc" />
 			</menupopup>
 		</menu>
 	</menupopup>

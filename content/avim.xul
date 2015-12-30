@@ -13,7 +13,8 @@
 		<command id="avim-next-method-cmd" oncommand="avim.cycleMethod(1);" />
 		<command id="avim-spell-cmd" oncommand="avim.toggleSpell(); event.stopPropagation();" />
 		<command id="avim-oldaccents-cmd" oncommand="avim.toggleDauCu(); event.stopPropagation();" />
-		<command id="avim-insert-syllable-cmd" oncommand="avim.insertSyllableBreak(); event.stopPropagation();" />
+		<command id="avim-insert-syllable-cmd" oncommand="avim.sendTextEvent('brokesyllable');" />
+		<command id="avim-delete-diacritic-cmd" oncommand="avim.sendTextEvent('deleteddiacritic');" />
 	</commandset>
 	
 	<keyset>
@@ -31,6 +32,7 @@
 		<!-- Text commands -->
 		<!-- key must contain two spaces to overcome a bug in nsMenuBarX::CreateNativeAppMenuItem() (widget/cocoa/nsMenuBarX.mm) in which a single space is treated as no key at all on the Mac. keytext is required because XUL menus display an invisible space instead of the word "Space". -->
 		<key id="avim-insert-syllable-key" modifiers="shift" key="  " keytext="&avim-insert-syllable.keytext;" />
+		<key id="avim-delete-diacritic-key" modifiers="shift" keycode="VK_BACK" />
 	</keyset>
 	
 	<broadcasterset>
@@ -50,6 +52,7 @@
 		
 		<!-- Text commands -->
 		<broadcaster id="avim-insert-syllable-bc" label="&avim-insert-syllable.label;" accesskey="&avim-insert-syllable.accesskey;" command="avim-insert-syllable-cmd" />
+		<broadcaster id="avim-delete-diacritic-bc" label="&avim-delete-diacritic.label;" accesskey="&avim-delete-diacritic.accesskey;" command="avim-delete-diacritic-cmd" />
 		
 		<broadcaster id="avim-status-bc" label="&AVIM.label;" />
 	</broadcasterset>
@@ -84,7 +87,7 @@
 	</toolbarpalette>
 	
 	<!-- Edit > Vietnamese Input -->
-	<!-- Copied in blueGriffonOverlay.xul, calendarOverlay.xul, composerOverlay.xul, komodoOverlay.xul, moz20Overlay.xul, and navigatorOverlay.xul -->
+	<!-- Copied in blueGriffonOverlay.xul, calendarOverlay.xul, collabOverlay.xul, composerOverlay.xul, komodoOverlay.xul, moz20Overlay.xul, and navigatorOverlay.xul -->
 	<menupopup id="menu_EditPopup">
 		<menuseparator id="avim-separator" />
 		<menu id="avim-menu" label="&avim-menu.label;" accesskey="&avim-menu.accesskey;">
@@ -111,6 +114,7 @@
 				<!-- Text commands -->
 				<menuseparator id="avim-menu-commands-separator" />
 				<menuitem id="avim-menu-insert-syllable" key="avim-insert-syllable-key" observes="avim-insert-syllable-bc" />
+				<menuitem id="avim-menu-delete-diacritic" key="avim-delete-diacritic-key" observes="avim-delete-diacritic-bc" />
 			</menupopup>
 		</menu>
 	</menupopup>

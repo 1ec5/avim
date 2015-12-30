@@ -228,16 +228,18 @@ function AVIM()	{
 	};
 	
 	/**
-	 * Inserts a syllable break at the insertion point in the current editor.
+	 * Sends a text event to the relevant frame script.
+	 *
+	 * @param txtEvt	{String}	Name of the text event.
 	 */
-	this.insertSyllableBreak = function () {
+	this.sendTextEvent = function (txtEvt) {
 		let win = document.commandDispatcher.focusedWindow;
 		let elt = document.commandDispatcher.focusedElement;
 		if ((elt && elt.localName !== "browser") || win !== window) {
-			this.insertSyllableBreakInChrome();
+			this.doTextCommand(txtEvt);
 		}
 		else if ("gMultiProcessBrowser" in window && "messageManager" in elt) {
-			elt.messageManager.sendAsyncMessage("AVIM:brokesyllable");
+			elt.messageManager.sendAsyncMessage("AVIM:" + txtEvt);
 		}
 	};
 	

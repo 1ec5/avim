@@ -45,3 +45,6 @@
 <!ENTITY avim-insert-syllable.label "Silbengrenze einfügen">
 <!ENTITY avim-insert-syllable.accesskey "g">
 <!ENTITY avim-insert-syllable.keytext "Leertaste">
+
+<!ENTITY avim-delete-diacritic.label "Diakritische Zeichen löschen">
+<!ENTITY avim-delete-diacritic.accesskey "D">

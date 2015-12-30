@@ -42,3 +42,5 @@
 <!ENTITY avim-insert-syllable.label "Insérer un séparateur syllabique">
 <!ENTITY avim-insert-syllable.accesskey "y">
 <!ENTITY avim-insert-syllable.keytext "Espace">
+<!ENTITY avim-delete-diacritic.label "Supprimer un diacritique">
+<!ENTITY avim-delete-diacritic.accesskey "d">

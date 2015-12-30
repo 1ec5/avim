@@ -409,10 +409,9 @@ function getEditedNativeElement() {
  */
 function insertSyllableBreak(outer) {
 	if (!outer) outer = getEditedNativeElement();
-	let win = (outer.ownerDocument && outer.ownerDocument.defaultView) || outer;
 	let editor = getEditor(outer);
 	let node = getSelectedNode(editor);
-	if (node instanceof win.Text) {
+	if (node instanceof Ci.nsIDOMText) {
 		let sel = editor.selection;
 		let word = lastWordInString(node.substringData(0, sel.anchorOffset));
 		if (word) {
@@ -422,6 +421,22 @@ function insertSyllableBreak(outer) {
 		}
 	}
 	return false;
+}
+
+/**
+ * Deletes a diacritic from the word immediately preceding the insertion point.
+ */
+function deleteDiacritic() {
+	let outer = getEditedNativeElement();
+	let editor = getEditor(outer);
+	let node = getSelectedNode(editor);
+	if (node instanceof Ci.nsIDOMText) {
+		splice(outer, {
+			keyCode: Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE,
+			which: Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE,
+			shiftKey: true,
+		});
+	}
 }
 
 /**
@@ -894,15 +909,25 @@ addEventListener("keyup", function (evt) {
 	}
 }, true);
 
+//* Text event types mapped to functions that perform text commands.
+const textEventHandlers = {
+	brokesyllable: insertSyllableBreak,
+	deleteddiacritic: deleteDiacritic,
+};
+
 if (isChrome) {
-	avim.insertSyllableBreakInChrome = function () {
-		insertSyllableBreak();
+	avim.doTextCommand = function (txtCmd) {
+		textEventHandlers[txtCmd]();
 	};
 }
 else {
-	addMessageListener("AVIM:brokesyllable", function (msg) {
-		insertSyllableBreak();
-	});
+	for (let txtEvt in textEventHandlers) {
+		if (textEventHandlers.propertyIsEnumerable(txtEvt)) {
+			addMessageListener("AVIM:" + txtEvt, function (msg) {
+				textEventHandlers[txtEvt]();
+			});
+		}
+	}
 }
 
 registerSlights();
