@@ -346,10 +346,12 @@ function splice(outer, evt) {
 	if (!node || !sel.anchorOffset || !node.data) return result;
 	
 	let word = lastWordInString(node.substringData(0, sel.anchorOffset));
+	let key = String.fromCharCode(evt.which);
 	result = word && applyKey(word, evt);
 	//dump("AVIM.splice -- editor: " + editor +
-	//	 "; old word: " + word + "; new word: " + (result && result.value) + "\n");	// debug
-	if (!result) return result;
+	//	 "; old word: " + word + "; key: " + key +
+	//	 "; new word: " + (result && result.value) + "\n");						// debug
+	if (!result || (word && result.value === word + key)) return {};
 	
 	// Carry out the transaction.
 	// (#123) convertCustomChars() can increase the word length.
