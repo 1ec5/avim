@@ -352,40 +352,16 @@ function splice(outer, evt) {
 	if (!result) return result;
 	
 	// Carry out the transaction.
-	if (editor.beginTransaction) editor.beginTransaction();
-	try {
-		// (#123) convertCustomChars() can increase the word length.
-		let wordStart = sel.anchorOffset - word.length;
-		if ("maxLength" in outer && outer.maxLength !== -1) {
-			result.value = result.value.substr(0, outer.maxLength - wordStart);
-		}
-		if ("value" in result && result.value !== word) {
-			let txn = new SpliceTxn(outer, node, wordStart, word.length,
-									result.value);
-			editor.doTransaction(txn);
-		}
+	// (#123) convertCustomChars() can increase the word length.
+	let wordStart = sel.anchorOffset - word.length;
+	if ("maxLength" in outer && outer.maxLength !== -1) {
+		result.value = result.value.substr(0, outer.maxLength - wordStart);
 	}
-	finally {
-		// If we don't put this line in a finally clause, an error carrying out
-		// the transaction will render the application inoperable.
-		if (editor.endTransaction) editor.endTransaction();
+	if ("value" in result && result.value !== word) {
+		let txn = new SpliceTxn(outer, node, wordStart, word.length,
+								result.value);
+		editor.doTransaction(txn);
 	}
-	
-	//// Coalesce the transaction with an existing one.
-	//// Assuming transactions are batched at most one level deep.
-	//let stack = editor.transactionManager.getUndoList();
-	//let txnIndex = stack.numItems - 1;
-	//let prev = stack.getItem(txnIndex);
-	//let childStack;
-	//if (!prev) {
-	//	childStack = stack.getChildListForItem(txnIndex);
-	//	dump("AVIM.splice() -- childStack.numItems: " + childStack.getNumChildrenForItem(txnIndex) + "\n");	// debug
-	//	child = childStack.getItem(childStack.numItems - 1);
-	//}
-	//prev.merge(txn);
-	//// Clean up refcounted transactions.
-	//txn = stack = prev = childStack = child = null;
-	
 	return result;
 }
 
@@ -616,7 +592,7 @@ function handleWithContentScript(elt, evt, scriptName) {
 	return changed;
 }
 
-/// Available specialized editor handlers, in descending order of precedence.
+//* Available specialized editor handlers, in descending order of precedence.
 const specializedHandlers = [
 	// SciMoz plugin
 	{
