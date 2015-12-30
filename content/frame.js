@@ -240,32 +240,38 @@ function getEditor(el) {
  * @implements Components.interfaces.nsISupports
  */
 function SpliceTxn(outer, node, pos, len, repl) {
+	this.wrappedJSObject = this;
 	//* @type Boolean
 	this.isTransient = false;
 	
+	this.node = node;
+	this.pos = pos;
+	this.len = len;
+	this.repl = repl;
 	let editor = getEditor(outer);
 	let sel = editor && editor.selection;
 	this.startOffset = sel && sel.anchorOffset;
 	
 	/**
-	 * Shift the selection to the right by the given number of characters.
+	 * Shifts the selection to the right by the given number of characters.
 	 *
 	 * @param numChars	{number}	The number of characters to shift.
 	 */
 	this.shiftSelection = function(numChars) {
 		let editor = getEditor(outer);
 		let sel = editor && editor.selection;
-		sel.collapse(node, this.startOffset + numChars);
+		sel.collapse(this.node, this.startOffset + numChars);
 	};
 	
 	/**
 	 * Replaces a substring in the text node with the given substitution.
 	 */
 	this.doTransaction = this.redoTransaction = function() {
-		this.orig = node.substringData(pos, len);
-		node.deleteData(pos, len);
-		node.insertData(pos, repl);
-		this.shiftSelection(repl.length - len);
+		this.orig = this.node.substringData(this.pos, this.len);
+		// (#105) replaceData() messes up Facebook, so delete then insert.
+		this.node.deleteData(this.pos, this.len);
+		this.node.insertData(this.pos, this.repl);
+		this.shiftSelection(this.repl.length - this.len);
 	};
 	
 	/**
@@ -273,18 +279,30 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	 */
 	this.undoTransaction = function() {
 		//node.replaceData(pos, repl.length, this.orig);
-		node.deleteData(pos, repl.length);
-		node.insertData(pos, this.orig);
+		this.node.deleteData(this.pos, this.repl.length);
+		this.node.insertData(this.pos, this.orig);
 		this.shiftSelection(0);
 	};
 	
 	/**
-	 * Always fails to merge this transaction into the given transaction.
+	 * Merges the given transaction into this transaction, but only if both are
+	 * SpliceTxns operating on the same word.
 	 *
-	 * @returns {boolean}	False always.
+	 * @returns {boolean}	True if the transactions were merged.
 	 */
-	this.merge = function (aTransaction) {
-		return false;
+	this.merge = function (aTxn) {
+		if (!("wrappedJSObject" in aTxn &&
+			  aTxn.wrappedJSObject instanceof SpliceTxn)) {
+			return false;
+		}
+		aTxn = aTxn.wrappedJSObject;
+		if (node !== aTxn.node && this.pos !== aTxn.pos) return false;
+		//dump(">>> before -- repl: " + this.repl + "; len: " + this.len + "; startOffset: " + this.startOffset + "\n");	// debug
+		this.repl = aTxn.repl;
+		this.len = aTxn.len;
+		this.startOffset = aTxn.startOffset;
+		//dump("\tafter -- repl: " + this.repl + "; len: " + this.len + "; startOffset: " + this.startOffset + "\n");	// debug
+		return true;
 	};
 	
 	/**
