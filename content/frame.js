@@ -414,9 +414,12 @@ function insertSyllableBreak(outer) {
 	let node = getSelectedNode(editor);
 	if (node instanceof win.Text) {
 		let sel = editor.selection;
-		let newNode = node.splitText(sel.anchorOffset);
-		sel.collapse(newNode, 0);
-		return true;
+		let word = lastWordInString(node.substringData(0, sel.anchorOffset));
+		if (word) {
+			let newNode = node.splitText(sel.anchorOffset);
+			sel.collapse(newNode, 0);
+			return true;
+		}
 	}
 	return false;
 }
