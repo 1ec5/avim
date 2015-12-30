@@ -228,7 +228,7 @@ function getEditor(el) {
 /**
  * Transaction that replaces a particular substring in a text node, keeping the
  * caret at the end of the modified word for user convenience. Based on
- * <http://weblogs.mozillazine.org/weirdal/archives/txMgr_transition.txt>.
+ * <http://web.archive.org/web/20090512163928/http://weblogs.mozillazine.org/weirdal/archives/txMgr_transition.txt>.
  *
  * @param outer	{object}	A DOM node able to modify the selection range.
  * @param node	{object}	The DOM text node to be modified.
