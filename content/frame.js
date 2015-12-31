@@ -1,5 +1,5 @@
 /* global avim, sendSyncMessage, addMessageListener */
-(function (/* msgMgr */) {
+(function (msgMgr) {
 "use strict";
 
 const Cc = Components.classes;
@@ -415,7 +415,7 @@ function getEditedNativeElement() {
  * @param word	{string}	The syllable to overlay.
  */
 function insertSyllableOverlay(node, word) {
-	let win = isChrome ? window : content;
+	let win = isChrome ? window : msgMgr.content;
 	let doc = win.document;
 	if (!doc) return;
 	let winUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
