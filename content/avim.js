@@ -258,10 +258,8 @@ function AVIM()	{
 		let enabledBcId = $(broadcasterIds.enabled);
 		if (enabledBcId) {
 			setCheckedState(enabledBcId, AVIMConfig.onOff);
-			if (isMac) {
-				let inlineKey = $("avim-enabled-key-inline");
-				inlineKey.setAttribute("keytext", "\u2303\u2303");
-			}
+			let inlineKey = isMac && $("avim-enabled-key-inline");
+			if (inlineKey) inlineKey.setAttribute("keytext", "\u2303\u2303");
 		}
 		
 		// Disable methods and options if AVIM is disabled
@@ -752,7 +750,8 @@ addEventListener("load", function load(/* evt */) {
 		avim.onKeyPress(evt);
 	}, true);
 	
-	if ("gMultiProcessBrowser" in win && win.gMultiProcessBrowser) {
+	let isE10s = "gMultiProcessBrowser" in win && win.gMultiProcessBrowser;
+	if (isE10s) {
 		messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
 		messageManager.addMessageListener("AVIM:readyforprefs",
 										  avim.onFrameReadyForPrefs);
@@ -761,8 +760,10 @@ addEventListener("load", function load(/* evt */) {
 	
 	addEventListener("unload", function unload(/* evt */) {
 		removeEventListener("unload", unload, false);
-		messageManager.removeMessageListener("AVIM:keypress",
-											 avim.onFrameKeyPress);
+		if (isE10s) {
+			messageManager.removeMessageListener("AVIM:keypress",
+												 avim.onFrameKeyPress);
+		}
 		avim.unregisterPrefs();
 	}, false);
 }, false);

@@ -3,15 +3,14 @@
 <!DOCTYPE overlay SYSTEM "chrome://avim/locale/avim.dtd">
 
 <overlay id="avim-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript;version=1.7" src="chrome://avim/content/avim.js" />
-	<script type="application/x-javascript;version=1.7" src="chrome://avim/content/frame.js" />
-	
 	<commandset id="baseMenuCommandSet">
 		<command id="avim-enabled-cmd" oncommand="avim.toggle();" />
 		<command id="avim-prev-method-cmd" oncommand="avim.cycleMethod(-1);" />
 		<command id="avim-next-method-cmd" oncommand="avim.cycleMethod(1);" />
 		<command id="avim-spell-cmd" oncommand="avim.toggleSpell();" />
 		<command id="avim-oldaccents-cmd" oncommand="avim.toggleDauCu();" />
+		<command id="avim-insert-syllable-cmd" oncommand="avim.sendTextEvent('brokesyllable');" />
+		<command id="avim-delete-diacritic-cmd" oncommand="avim.sendTextEvent('deleteddiacritic');" />
 	</commandset>
 	
 	<keyset id="baseMenuKeyset">
@@ -24,6 +23,10 @@
 		<!-- Options -->
 		<key id="avim-spell-key" modifiers="&avim-spell.modifiers;" key="&avim-spell.key;" command="avim-spell-cmd" />
 		<key id="avim-oldaccents-key" modifiers="&avim-oldaccents.modifiers;" key="&avim-oldaccents.key;" command="avim-oldaccents-cmd" />
+		
+		<!-- Text commands -->
+		<key id="avim-insert-syllable-key" modifiers="shift" key=" " keytext="&avim-insert-syllable.keytext;" />
+		<key id="avim-delete-diacritic-key" modifiers="shift" keycode="VK_BACK" />
 	</keyset>
 	
 	<broadcasterset id="mainBroadcasterSet">
@@ -40,6 +43,12 @@
 		<!-- Options -->
 		<broadcaster id="avim-spell-bc" name="avim-spell" type="checkbox" label="&avim-spell.label;" accesskey="&avim-spell.accesskey;" statustext="&avim-spell.description;" autocheck="false" command="avim-spell-cmd" />
 		<broadcaster id="avim-oldaccents-bc" name="avim-oldaccents" type="checkbox" label="&avim-oldaccents.label;" accesskey="&avim-oldaccents.accesskey;" statustext="&avim-oldaccents.description;" autocheck="false" command="avim-oldaccents-cmd" />
+		
+		<!-- Text commands -->
+		<broadcaster id="avim-insert-syllable-bc" label="&avim-insert-syllable.label;" accesskey="&avim-insert-syllable.accesskey;" command="avim-insert-syllable-cmd" />
+		<broadcaster id="avim-delete-diacritic-bc" label="&avim-delete-diacritic.label;" accesskey="&avim-delete-diacritic.accesskey;" command="avim-delete-diacritic-cmd" />
+		
+		<broadcaster id="avim-status-bc" label="&AVIM.label;" />
 	</broadcasterset>
 	
 	<!-- Toolbar buttons -->

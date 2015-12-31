@@ -392,7 +392,8 @@ function splice(outer, evt) {
 	return result;
 }
 
-const focusMgr = Cc["@mozilla.org/focus-manager;1"].getService(Ci.nsIFocusManager);
+const focusMgr = Cc["@mozilla.org/focus-manager;1"] &&
+	Cc["@mozilla.org/focus-manager;1"].getService(Ci.nsIFocusManager);
 
 /**
  * Returns the native (HTML, XUL) element that an editor is currently editing.
@@ -420,6 +421,7 @@ function insertSyllableOverlay(node, word) {
 	if (!doc) return;
 	let winUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
 		.getInterface(Ci.nsIDOMWindowUtils);
+	if (!("sendQueryContentEvent" in winUtils)) return;
 	
 	// Get the word's bounding rect relative to the outermost window's viewport
 	// (which may be confined to the browser in e10s).
@@ -432,12 +434,10 @@ function insertSyllableOverlay(node, word) {
 												  sel.offset - word.length,
 												  word.length, 0, 0);
 	// sendQueryContentEvent() returns metrics in LayoutDevice pixels.
-	let scale = 1 / winUtils.screenPixelsPerCSSPixel;
-	
-	// To ensure visibility regardless of the background, use the effective text
-	// color as the outline color.
-	let color = winUtils.getVisitedDependentComputedStyle(node.parentElement,
-														  null, "color");
+	let scale = 1;
+	if ("screenPixelsPerCSSPixel" in winUtils) {
+		scale /= winUtils.screenPixelsPerCSSPixel;
+	}
 	
 	let overlay = doc.createElementNS(HTML_NS, "div");
 	// Subject the overlay to AVIM's user agent stylesheet.
@@ -446,7 +446,14 @@ function insertSyllableOverlay(node, word) {
 	overlay.style.top = textRect.top * scale + "px";
 	overlay.style.width = textRect.width * scale + "px";
 	overlay.style.height = textRect.height * scale + "px";
-	overlay.style.outlineColor = color;
+	
+	if ("getVisitedDependentComputedStyle" in winUtils) {
+		// To ensure visibility regardless of the background, use the effective
+		// text color as the outline color.
+		let color = winUtils.getVisitedDependentComputedStyle(node.parentElement,
+															  null, "color");
+		overlay.style.outlineColor = color;
+	}
 	
 	// Document.insertAnonymousContent() is unavailable in XUL, but that's OK
 	// because extensions and themes are unlikely to muck with the overlay.
@@ -952,8 +959,8 @@ addEventListener("keypress", function (evt) {
 		doc = origTarget.ownerDocument;
 	}
 	
-	let handler = getSpecializedHandler(origTarget, doc);
 	try {
+		let handler = getSpecializedHandler(origTarget, doc);
 		handleSpecialized(handler, evt);
 	} catch (exc) {
 // $if{Debug}
