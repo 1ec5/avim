@@ -6,9 +6,16 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
+const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+const HTML_NS = "http://www.w3.org/1999/xhtml";
+
 const iCloudHostname = "www.icloud.com";
 const GDocsHostname = "docs.google.com";
 const ZohoHostname = "docs.zoho.com";
+
+//* {number} Milliseconds between the insertion of a syllable break and the
+//* removal of the syllable overlay from the document.
+const syllableOverlayLifetime = 1000 /* ms */;
 
 const isChrome = typeof window === "object";
 
@@ -401,6 +408,70 @@ function getEditedNativeElement() {
 }
 
 /**
+ * Inserts an element into the outermost document that overlays the syllable
+ * immediately to the left of the insertion point.
+ *
+ * @param node	{Text}		The text node containing the syllable to overlay.
+ * @param word	{string}	The syllable to overlay.
+ */
+function insertSyllableOverlay(node, word) {
+	let win = isChrome ? window : content;
+	let doc = win.document;
+	if (!doc) return;
+	let winUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
+		.getInterface(Ci.nsIDOMWindowUtils);
+	
+	// Get the word's bounding rect relative to the outermost window's viewport
+	// (which may be confined to the browser in e10s).
+	// The editor's selection indices are relative to the start of the text
+	// node, but sendQueryContentEvent() wants indices relative to the start of
+	// the node's wholetext.
+	let sel = winUtils.sendQueryContentEvent(winUtils.QUERY_SELECTED_TEXT, 0, 0,
+											 0, 0);
+	let textRect = winUtils.sendQueryContentEvent(winUtils.QUERY_TEXT_RECT,
+												  sel.offset - word.length,
+												  word.length, 0, 0);
+	// sendQueryContentEvent() returns metrics in LayoutDevice pixels.
+	let scale = 1 / winUtils.screenPixelsPerCSSPixel;
+	
+	// To ensure visibility regardless of the background, use the effective text
+	// color as the outline color.
+	let color = winUtils.getVisitedDependentComputedStyle(node.parentElement,
+														  null, "color");
+	
+	let overlay = doc.createElementNS(HTML_NS, "div");
+	// Subject the overlay to AVIM's user agent stylesheet.
+	overlay.className = "avim-syllable-overlay";
+	overlay.style.left = textRect.left * scale + "px";
+	overlay.style.top = textRect.top * scale + "px";
+	overlay.style.width = textRect.width * scale + "px";
+	overlay.style.height = textRect.height * scale + "px";
+	overlay.style.outlineColor = color;
+	
+	// Document.insertAnonymousContent() is unavailable in XUL, but that's OK
+	// because extensions and themes are unlikely to muck with the overlay.
+	if (doc.documentElement && doc.documentElement.namespaceURI === XUL_NS) {
+		doc.documentElement.appendChild(overlay);
+		setTimeout(function (doc, overlay) {
+			if (doc && doc.documentElement && overlay) {
+				doc.documentElement.removeChild(overlay);
+			}
+		}, syllableOverlayLifetime, doc, overlay);
+	}
+	else if ("insertAnonymousContent" in doc) {
+		let anonOverlay = doc.insertAnonymousContent(overlay);
+		setTimeout(function (doc, anonOverlay) {
+			try {
+				if (doc && anonOverlay) doc.removeAnonymousContent(anonOverlay);
+			}
+			catch (exc) {
+				// Swallow any "can't access dead object" exception.
+			}
+		}, syllableOverlayLifetime, doc, anonOverlay);
+	}
+}
+
+/**
  * Splits the currently selected text node at the caret position so that
  * subsequent input is treated as a new word.
  * 
@@ -415,6 +486,7 @@ function insertSyllableBreak(outer) {
 		let sel = editor.selection;
 		let word = lastWordInString(node.substringData(0, sel.anchorOffset));
 		if (word) {
+			insertSyllableOverlay(node, word);
 			let newNode = node.splitText(sel.anchorOffset);
 			sel.collapse(newNode, 0);
 			return true;

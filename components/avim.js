@@ -64,6 +64,19 @@ AVIM.prototype.QueryInterface = function(iid) {
 };
 
 /**
+ * Registers a custom user agent style sheet that applies globally. This method
+ * should be called only once.
+ */
+AVIM.prototype.registerAgentStyleSheet = function () {
+	const sheetSvc = gCc["@mozilla.org/content/style-sheet-service;1"]
+		.getService(gCi.nsIStyleSheetService);
+	const ioSvc = gCc["@mozilla.org/network/io-service;1"]
+		.getService(gCi.nsIIOService);
+	let uri = ioSvc.newURI("chrome://avim/content/skin/ua.css", null, null);
+	sheetSvc.loadAndRegisterSheet(uri, sheetSvc.AGENT_SHEET);
+};
+
+/**
  * Returns the chrome: URL of the overlay that corresponds to the window at the
  * given URL.
  *
@@ -164,6 +177,7 @@ AVIM.prototype.observe = function (subject, topic, data) {
 		case "app-startup":
 			observerSvc.addObserver(this, "domwindowopened", false);
 			observerSvc.addObserver(this, "quit-application", false);
+			this.registerAgentStyleSheet();
 			this.didObserveStartup = true;
 			break;
 		case "quit-application":

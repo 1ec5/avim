@@ -1,0 +1,16 @@
+@namespace xul url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+:-moz-native-anonymous .avim-syllable-overlay, xul|* > .avim-syllable-overlay {
+	position: fixed;
+	outline: 0.5px solid;
+	animation: 0.2s ease-in-out 0.8s gone;
+	/* largest positive value of a signed 32-bit integer; same as div:-moz-native-anonymous.moz-accessiblecaret > div.bar in ua.css */
+	z-index: 2147483647;
+	pointer-events: none;
+}
+
+@keyframes gone {
+	to {
+		opacity: 0;
+	}
+}
