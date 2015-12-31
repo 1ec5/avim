@@ -123,6 +123,7 @@ AVIM.prototype.onWindowOpen = function (window) {
 	let manifestUrls = [
 		"chrome://browser/content/browser.xul",
 		"chrome://browser/content/preferences/preferences.xul",
+		"chrome://messenger/content/messenger.xul",
 		"chrome://messenger/content/preferences/preferences.xul",
 		"chrome://dta/content/preferences/prefs.xul",
 		"chrome://tabmixplus/content/preferences/preferences.xul",
