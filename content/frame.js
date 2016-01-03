@@ -209,27 +209,29 @@ function Sandbox(principal) {
  * @returns	{object}	The associated nsIEditor instance.
  */
 function getEditor(el) {
-	if (!el) return undefined;
+	if (!el) return null;
+	let editor;
 	try {
-		return el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
+		editor = el.QueryInterface(Ci.nsIDOMNSEditableElement).editor;
 	}
 	catch (e) {}
 	try {
-		return el.QueryInterface(Ci.nsIEditor).editor;
+		editor = editor || el.QueryInterface(Ci.nsIEditor).editor;
 	}
 	catch (e) {}
 	try {
-		// http://osdir.com/ml/mozilla.devel.editor/2004-10/msg00017.html
-		let webNavigation = el.QueryInterface(Ci.nsIInterfaceRequestor)
-			.getInterface(Ci.nsIWebNavigation);
-		let editingSession = webNavigation
-			.QueryInterface(Ci.nsIInterfaceRequestor)
-			.getInterface(Ci.nsIEditingSession);
-		return editingSession.getEditorForWindow(el);
+		if (!editor) {
+			// http://osdir.com/ml/mozilla.devel.editor/2004-10/msg00017.html
+			let webNavigation = el.QueryInterface(Ci.nsIInterfaceRequestor)
+				.getInterface(Ci.nsIWebNavigation);
+			let editingSession = webNavigation
+				.QueryInterface(Ci.nsIInterfaceRequestor)
+				.getInterface(Ci.nsIEditingSession);
+			return editingSession.getEditorForWindow(el);
+		}
 	}
 	catch (e) {}
-//	dump("AVIM.getEditor -- couldn't get editor: " + e + "\n");		// debug
-	return undefined;
+	return editor.isDocumentEditable ? editor : null;
 }
 
 /**
@@ -267,7 +269,7 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	this.shiftSelection = function(numChars) {
 		let editor = getEditor(outer);
 		let sel = editor && editor.selection;
-		sel.collapse(this.node, this.startOffset + numChars);
+		if (sel) sel.collapse(this.node, this.startOffset + numChars);
 	};
 	
 	/**
