@@ -50,17 +50,6 @@
 			if (textarea) textarea.value += "\n" + lipsum;
 		}
 		
-		var iframeId = "test-iframe";
-		function loadIframe() {
-			var iframe = document.getElementById(iframeId);
-			if (!iframe) return;
-			var doc = iframe.contentDocument;
-			var textarea = doc.createElement("textarea");
-			textarea.style.height = textarea.style.width = "99%";
-			doc.body.appendChild(textarea);
-		}
-		addEventListener("load", loadIframe, false);
-		
 		var midasId = "test-midas";
 		function loadMidas() {
 			var midas = document.getElementById(midasId);
@@ -155,9 +144,9 @@
 </section>
 
 <section>
-  <h3><label for="test-iframe">Text area inside an inline frame</label></h3>
+  <h3><label for="test-iframe">Text area inside a frame</label></h3>
   
-  <iframe id="test-iframe" class="wide tall"></iframe>
+  <iframe id="test-iframe" src="data:text/html,&lt;frameset>&lt;frame src='data:text/html,&amp;lt;textarea style=&amp;apos;width: 99%; height: 99%;&amp;apos;>' />&lt;/frameset>" sandbox="allow-same-origin" class="wide tall"></iframe>
   <p class="fine-print">Many Web applications embed textboxes within many levels of nested frames. Support for inline frames is crucial for sites like Gmail.</p>
 </section>
 
