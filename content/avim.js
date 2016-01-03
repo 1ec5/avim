@@ -1,4 +1,4 @@
-/* global messageManager, avim, getIMEStatus:true */
+/* global messageManager, avim, gFindBar, getIMEStatus:true */
 "use strict";
 
 /**
@@ -677,6 +677,50 @@ function AVIM()	{
 		return AVIMConfig;
 	};
 	
+	this.onFind = function (evt) {
+		if (!AVIMConfig.onOff) return;
+		let findBar = evt.originalTarget;
+		let msgMgr = findBar && findBar.browser.messageManager;
+		msgMgr.sendAsyncMessage("AVIM:" + evt.type, {
+			query: evt.detail.query,
+			caseSensitive: evt.detail.caseSensitive,
+			highlightAll: evt.detail.highlightAll,
+			findPrevious: evt.detail.findPrevious,
+		});
+		evt.preventDefault();
+	};
+	
+	const findEventTypes = [
+		"find",
+		"findagain",
+		"highlightallchange",
+		"findcasesensitivitychange",
+	];
+	
+	this.registerFindBar = function () {
+		if (!("gFindBar" in window && "updateControlState" in gFindBar &&
+			  "messageManager" in window)) {
+			return;
+		}
+		
+		messageManager.loadFrameScript("chrome://avim/content/finder.js", true);
+		for (let i = 0; i < findEventTypes.length; i++) {
+			gFindBar.addEventListener("find" + findEventTypes[i], this.onFind,
+									  true);
+		}
+	};
+	
+	this.unregisterFindBar = function () {
+		if (!("gFindBar" in window && "updateControlState" in gFindBar &&
+			  "messageManager" in window)) {
+			return;
+		}
+		
+		for (let i = 0; i < findEventTypes.length; i++) {
+			gFindBar.removeEventListener("find" + findEventTypes[i], this.onFind);
+		}
+	};
+	
 	// IME and DiMENSiON extension
 	if ("getIMEStatus" in window) {
 		let getStatus = getIMEStatus;
@@ -740,6 +784,7 @@ addEventListener("load", function load(/* evt */) {
 	removeEventListener("load", load, false);
 	
 	avim.registerPrefs();
+	avim.registerFindBar();
 	avim.updateUI();
 	avim.doFirstRun();
 	
@@ -765,6 +810,7 @@ addEventListener("load", function load(/* evt */) {
 												 avim.onFrameKeyPress);
 		}
 		avim.unregisterPrefs();
+		avim.unregisterFindBar();
 	}, false);
 }, false);
 
