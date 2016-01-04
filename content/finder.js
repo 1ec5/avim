@@ -8,18 +8,6 @@ const Ci = Components.interfaces;
 
 const isChrome = typeof window === "object";
 
-// Root for AVIM preferences
-let AVIMConfig;
-if (isChrome) AVIMConfig = avim.onFrameReadyForPrefs();
-else {
-	let results = sendSyncMessage("AVIM:readyforprefs");
-	if (results) AVIMConfig = results[0];
-	addMessageListener("AVIM:prefschanged", function (msg) {
-		//dump(">>> Received AVIM:prefschanged -- AVIMConfig: " + msg.data + "\n");		// debug
-		AVIMConfig = msg.data;
-	});
-}
-
 addEventListener("find", function (evt) {
 	dump(">>> find event: " + evt.detail.query + "\n");								// debug
 }, true);
@@ -123,14 +111,21 @@ function getNodeIterator(win, rootElt, pattern) {
 	let whatToShow = NF.SHOW_ELEMENT | NF.SHOW_TEXT;
 	/* jshint bitwise: true */
 	return doc.createNodeIterator(rootElt, whatToShow, function (node) {
+		// #text
 		if (node.nodeType === 3) {
-			return pattern.test(getNormalizedContent(node)) ? NF.FILTER_ACCEPT : NF.FILTER_REJECT;
+			return pattern.test(getNormalizedContent(node)) ? NF.FILTER_ACCEPT :
+				NF.FILTER_REJECT;
 		}
-		// TODO: frames
+		// <frame>, <iframe>, <object>
+		if ("contentDocument" in node) return NF.FILTER_ACCEPT;
+		// <input type="text"> etc.
 		if ("mozIsTextField" in node) {
-			return node.mozIsTextField(true) ? NF.FILTER_ACCEPT : NF.FILTER_REJECT;
+			return node.mozIsTextField(true) ? NF.FILTER_ACCEPT :
+				NF.FILTER_REJECT;
 		}
-		return (node instanceof win.HTMLTextAreaElement) ? NF.FILTER_ACCEPT : NF.FILTER_REJECT;
+		// <textarea>
+		return (node instanceof win.HTMLTextAreaElement) ? NF.FILTER_ACCEPT :
+			NF.FILTER_REJECT;
 	});
 }
 
@@ -148,6 +143,16 @@ function getEditor(elt) {
 	catch (e) {}
 	try {
 		return elt.QueryInterface(Ci.nsIEditor).editor;
+	}
+	catch (e) {}
+	try {
+		// http://osdir.com/ml/mozilla.devel.editor/2004-10/msg00017.html
+		let webNavigation = elt.QueryInterface(Ci.nsIInterfaceRequestor)
+			.getInterface(Ci.nsIWebNavigation);
+		let editingSession = webNavigation
+			.QueryInterface(Ci.nsIInterfaceRequestor)
+			.getInterface(Ci.nsIEditingSession);
+		return editingSession.getEditorForWindow(elt);
 	}
 	catch (e) {}
 	return null;
@@ -169,9 +174,18 @@ function findAll(win, sel, pattern, rootElt, callback) {
 	let iter = getNodeIterator(win, rootElt, pattern);
 	let node;
 	while ((node = iter.nextNode())) {
+		let editor;
+		let result;
 		if (node.nodeType === 1) {
-			let editor = getEditor(node);
-			if (editor) {
+			// <frame>, <iframe>, <object>
+			if ("contentDocument" in node) {
+				let rootElt = node.contentDocument;
+				if (findAll(win, sel, pattern, rootElt, callback) === false) {
+					return false;
+				}
+			}
+			// <input>, <textarea>
+			else if ((editor = getEditor(node))) {
 				let sel = editor.selectionController
 					.getSelection(Ci.nsISelectionController.SELECTION_FIND);
 				let rootElt = editor.rootElement;
@@ -180,15 +194,12 @@ function findAll(win, sel, pattern, rootElt, callback) {
 				}
 			}
 		}
-		// TODO: frames
-		else {
-			let result = pattern.exec(getNormalizedContent(node));
-			if (result) {
-				let range = win.document.createRange();
-				range.setStart(node, result.index);
-				range.setEnd(node, result.index + result[0].length);
-				if (callback(sel, range) === false) return false;
-			}
+		// #text
+		else if ((result = pattern.exec(getNormalizedContent(node)))) {
+			let range = win.document.createRange();
+			range.setStart(node, result.index);
+			range.setEnd(node, result.index + result[0].length);
+			if (callback(sel, range) === false) return false;
 		}
 	}
 	return true;
@@ -204,15 +215,14 @@ function onHighlightAllChange(options) {
 	let controller = getSelectionController(isChrome ? window : content);
 	// TODO: Editable node listeners
 	// _getEditableNode: https://dxr.mozilla.org/mozilla-central/source/toolkit/modules/Finder.jsm#693
-	let sel = controller && controller.getSelection(Ci.nsISelectionController.SELECTION_FIND);
+	let sel = controller &&
+		controller.getSelection(Ci.nsISelectionController.SELECTION_FIND);
 	if (!sel) return;
 	
 	let win = isChrome ? window : content;
 	let doc = win.document;
 	
 	let foldPattern = getFoldPattern(query, options.caseSensitive);
-	//dump(">>> findhighlightallchange event -- query: " + query +
-	//	 "; foldPattern: " + foldPattern + "\n");							// debug
 	sel.removeAllRanges();
 	findAll(win, sel, foldPattern, doc.documentElement, function (sel, range) {
 		sel.addRange(range);
