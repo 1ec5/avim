@@ -102,13 +102,16 @@ function getNormalizedContent(node) {
  * 
  * @param {Element} rootElt Root element to traverse.
  * @param {RegExp} pattern Regular expression for filtering text nodes by.
+ * @param {Boolean} showTxt True to traverse text and element nodes; false to
+ * 	only traverse element nodes.
  * @returns {NodeIterator} Node iterator for finding the given pattern.
  */
-function getNodeIterator(win, rootElt, pattern) {
+function getNodeIterator(win, rootElt, pattern, showTxt) {
 	let doc = win.document;
 	const NF = win.NodeFilter;
 	/* jshint bitwise: false */
-	let whatToShow = NF.SHOW_ELEMENT | NF.SHOW_TEXT;
+	let whatToShow = NF.SHOW_ELEMENT;
+	if (showTxt) whatToShow |= NF.SHOW_TEXT;
 	/* jshint bitwise: true */
 	return doc.createNodeIterator(rootElt, whatToShow, function (node) {
 		// #text
@@ -164,14 +167,17 @@ function getEditor(elt) {
  *
  * @param {RegExp} pattern Regular expression for filtering text nodes by.
  * @param {Element} rootElt Root element to traverse.
- * @param {Function(Selection, Range) => Boolean} callback Function to call each
- * 	time a node matches. Return the literal |false| to stop the traversal.
+ * @param {Function(Selection) => Boolean} onEditor Function to call each time a
+ * 	new editor is encountered. Return the literal |false| to stop the traversal.
+ * @param {Function(Selection, Range) => Boolean} onResult Optional function to
+ * 	call each time a node matches. Return the literal |false| to stop the
+ * 	traversal.
  * @param {Boolean} True if the entire root element was traversed.
  */
-function findAll(win, sel, pattern, rootElt, callback) {
+function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
 	if (!rootElt || !sel) return true;
 	
-	let iter = getNodeIterator(win, rootElt, pattern);
+	let iter = getNodeIterator(win, rootElt, pattern, onResult);
 	let node;
 	while ((node = iter.nextNode())) {
 		let editor;
@@ -181,27 +187,31 @@ function findAll(win, sel, pattern, rootElt, callback) {
 			if ((editor = getEditor(node.contentWindow || node))) {
 				let sel = editor.selectionController
 					.getSelection(Ci.nsISelectionController.SELECTION_FIND);
+				if (onEditor(sel) === false) return false;
+				
 				let rootElt = editor.rootElement;
-				if (findAll(win, sel, pattern, rootElt, callback) === false) {
+				if (findAll(win, sel, pattern, rootElt, onEditor, onResult) ===
+					false) {
 					return false;
 				}
 			}
 			// <frame>, <iframe>, <object>
 			else if ("contentDocument" in node) {
 				let rootElt = node.contentDocument;
-				if (findAll(win, sel, pattern, rootElt, callback) === false) {
+				if (findAll(win, sel, pattern, rootElt, onEditor, onResult) ===
+					false) {
 					return false;
 				}
 			}
 		}
 		// #text
-		else {
+		else if (onResult) {
 			pattern.lastIndex = 0;
 			while ((result = pattern.exec(getNormalizedContent(node)))) {
 				let range = win.document.createRange();
 				range.setStart(node, result.index);
 				range.setEnd(node, result.index + result[0].length);
-				if (callback(sel, range) === false) return false;
+				if (onResult(sel, range) === false) return false;
 			}
 		}
 	}
@@ -227,7 +237,9 @@ function onHighlightAllChange(options) {
 	
 	let foldPattern = getFoldPattern(query, options.caseSensitive);
 	sel.removeAllRanges();
-	findAll(win, sel, foldPattern, doc.documentElement, function (sel, range) {
+	findAll(win, sel, foldPattern, doc.documentElement, function (sel) {
+		sel.removeAllRanges();
+	}, options.highlightAll && function (sel, range) {
 		sel.addRange(range);
 	});
 }
