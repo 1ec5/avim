@@ -118,8 +118,8 @@ function getNodeIterator(win, rootElt, pattern, showTxt) {
 	return doc.createNodeIterator(rootElt, whatToShow, function (node) {
 		// #text
 		if (node.nodeType === 3) {
-			return pattern.test(getNormalizedContent(node)) ? NF.FILTER_ACCEPT :
-				NF.FILTER_REJECT;
+			return (pattern && pattern.test(getNormalizedContent(node))) ?
+				NF.FILTER_ACCEPT : NF.FILTER_REJECT;
 		}
 		// <frame>, <iframe>, <object>
 		if ("contentDocument" in node) return NF.FILTER_ACCEPT;
@@ -169,15 +169,15 @@ function getEditor(elt) {
  *
  * @param {RegExp} pattern Regular expression for filtering text nodes by.
  * @param {Element} rootElt Root element to traverse.
- * @param {Function?(Selection) => Boolean?} onEditor Function to call each time
- * 	a new editor is encountered. Return the literal |false| to stop the
- * 	traversal.
+ * @param {Function?(Selection) => Boolean?} onSelection Function to call each
+ * 	time a new |Selection| is encountered. Return the literal |false| to stop
+ * 	the traversal.
  * @param {Function?(Selection, Range) => Boolean?} onResult Function to call
  * 	each time a node matches. Return the literal |false| to stop the traversal.
  * @param {Boolean} True if the entire root element was traversed.
  */
-function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
-	if (!rootElt || !sel || !pattern) return true;
+function _forEachResult(win, sel, pattern, rootElt, onSelection, onResult) {
+	if (!rootElt || !sel) return true;
 	
 	let iter = getNodeIterator(win, rootElt, pattern, onResult);
 	let node;
@@ -191,7 +191,9 @@ function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
 				rootElt = editor.rootElement;
 				childSel = editor.selectionController
 					.getSelection(Ci.nsISelectionController.SELECTION_FIND);
-				if (onEditor && onEditor(childSel) === false) return false;
+				if (onSelection && onSelection(childSel) === false) {
+					return false;
+				}
 			}
 			// <frame>, <iframe>, <object>
 			else if ("contentDocument" in node) {
@@ -202,13 +204,13 @@ function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
 				}
 			}
 			
-			if (findAll(win, childSel, pattern, rootElt, onEditor, onResult) ===
-				false) {
+			if (_forEachResult(win, childSel, pattern, rootElt, onSelection,
+							   onResult) === false) {
 				return false;
 			}
 		}
 		// #text
-		else if (onResult) {
+		else if (pattern && onResult) {
 			pattern.lastIndex = 0;
 			let result;
 			while ((result = pattern.exec(getNormalizedContent(node)))) {
@@ -223,18 +225,23 @@ function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
 }
 
 /**
- * Highlights all matches in the document according to the given options.
+ * Recursively visits each matching text node in the given root element and any
+ * editors associated with its descendant elements.
  *
- * @param {Object} Serialized find event object.
+ * @param {Object} options Serialized find event object.
+ * @param {Function?(Selection) => Boolean?} onSelection Function to call each
+ * 	time a new |Selection| is encountered. Return the literal |false| to stop
+ * 	the traversal.
+ * @param {Function?(Selection, Range) => Boolean?} onResult Function to call
+ * 	each time a node matches. Return the literal |false| to stop the traversal.
+ * @param {Boolean} True if the entire root element was traversed.
  */
-function onHighlightAllChange(options) {
+function forEachResult(options, onSelection, onResult) {
 	let query = options.query;
 	let controller = getSelectionController(isChrome ? window : content);
-	// TODO: Editable node listeners
-	// _getEditableNode: https://dxr.mozilla.org/mozilla-central/source/toolkit/modules/Finder.jsm#693
 	let sel = controller &&
 		controller.getSelection(Ci.nsISelectionController.SELECTION_FIND);
-	if (!sel) return;
+	if (!sel || (onSelection && onSelection(sel) === false)) return true;
 	
 	let win = isChrome ? window : content;
 	let doc = win.document;
@@ -245,9 +252,59 @@ function onHighlightAllChange(options) {
 		rootElt = rootElt.body;
 	}
 	
+	return _forEachResult(win, sel, foldPattern, rootElt, onSelection,
+						  onResult);
+}
+
+/**
+ * Finds the first match in the document according to the given options.
+ *
+ * @param {Object} Serialized find event object.
+ */
+function onFind(options) {
 	let found = false;
-	sel.removeAllRanges();
-	findAll(win, sel, foldPattern, rootElt, function (sel) {
+	forEachResult(options, function (sel) {
+		sel.removeAllRanges();
+	}, function (sel, range) {
+		if (!found) {
+			found = true;
+			sel.addRange(range);
+		}
+	});
+	
+	sendAsyncMessage("AVIM:findupdatecontrolstate", {
+		result: found ? Ci.nsITypeAheadFind.FIND_FOUND :
+			Ci.nsITypeAheadFind.FIND_NOTFOUND,
+		findPrevious: false,
+	});
+}
+
+/**
+ * Counts the matches in the document according to the given options.
+ *
+ * @param {Object} Serialized find event object.
+ */
+function onFindMatchesCount(options) {
+	// TODO: matchesCountLimit
+	let count = 0;
+	forEachResult(options, null, function (sel, range) {
+		count++;
+	});
+	
+	sendAsyncMessage("AVIM:findmatchescountresult", {
+		total: count,
+		current: count,	// TODO: Keep track of current match.
+	});
+}
+
+/**
+ * Highlights all matches in the document according to the given options.
+ *
+ * @param {Object} Serialized find event object.
+ */
+function onHighlightAllChange(options) {
+	let found = false;
+	forEachResult(options, function (sel) {
 		sel.removeAllRanges();
 	}, options.highlightAll && function (sel, range) {
 		found = true;
@@ -263,33 +320,14 @@ function onHighlightAllChange(options) {
 	}
 }
 
-function onFindMatchesCount(options) {
-	// TODO: matchesCountLimit
-	let query = options.query;
-	let controller = getSelectionController(isChrome ? window : content);
-	let sel = controller &&
-		controller.getSelection(Ci.nsISelectionController.SELECTION_FIND);
-	if (!sel) return;
-	
-	let win = isChrome ? window : content;
-	let doc = win.document;
-	let foldPattern = getFoldPattern(query, options.caseSensitive);
-	let rootElt = doc;
-	if (rootElt && rootElt instanceof win.HTMLDocument) {
-		// Can’t select in text nodes in <head>.
-		rootElt = rootElt.body;
-	}
-	
-	let count = 0;
-	findAll(win, sel, foldPattern, rootElt, null, function (sel, range) {
-		count++;
-	});
-	
-	sendAsyncMessage("AVIM:findmatchescountresult", {
-		total: count,
-		current: count,	// TODO: Keep track of current match.
-	});
-}
+addMessageListener("AVIM:find", function (msg) {
+	dump(">>> " + msg.name + " -- query: " + msg.data.query + "\n");			// debug
+	onFind(msg.data);
+}, true);
+
+//addMessageListener("AVIM:findagain", function (msg) {
+//	dump(">>> " + msg.name + " -- query: " + msg.data.query + "\n");			// debug
+//}, true);
 
 addMessageListener("AVIM:findmatchescount", function (msg) {
 	dump(">>> " + msg.name + " -- query: " + msg.data.query + "\n");			// debug
