@@ -18,7 +18,7 @@ else {
 		AVIMConfig = msg.data;
 	});
 }
-AVIMConfig.newAccentRe = new RegExp("(?:o([aàảãáạ])|o([eèẻẽéẹ])|u([yỳỷỹýỵ]))(?=[^" +
+AVIMConfig.newAccentRe = new RegExp("(?:o([àảãáạ])|o([èẻẽéẹ])|u([ỳỷỹýỵ]))(?=[^" +
 									AVIMConfig.wordChars + "]|$)", "g");
 
 //* {Object} Mapping from base letters to variants with more diacritics.
@@ -80,10 +80,8 @@ function getSelectionController(win) {
 function toTraditional(query) {
 	return query.replace(AVIMConfig.newAccentRe, function (vowels, oa, oe, uy) {
 		let mid = vowels[0];
-		let old = vowels[1];
-		let end = oa ? "a" : (oe ? "e" : (uy ? "y" : old));
-		return (mid + charsByBase[mid])[(end + charsByBase[end]).indexOf(old)] +
-			end;
+		let end = oa ? "a" : (oe ? "e" : (uy ? "y" : vowels[1]));
+		return charsByBase[mid][charsByBase[end].indexOf(vowels[1])] + end;
 	});
 }
 
