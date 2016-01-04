@@ -1,4 +1,4 @@
-/* global content, addMessageListener */
+/* global content, addMessageListener, sendAsyncMessage */
 (function (msgMgr) {
 "use strict";
 
@@ -96,7 +96,6 @@ function getFoldPattern(query, caseSensitive) {
  * @see #getFoldPattern
  */
 function getNormalizedContent(node) {
-	// Includes some special cases from nsFind::Find().
 	if (!node.data) return "";
 	return node.data.replace(/\u00ad/g /* shy */, "").replace(/\s/g, " ")
 		.replace(/[“”]/g, "\"").replace(/[‘’]/g, "'");
@@ -168,8 +167,8 @@ function getEditor(elt) {
 }
 
 /**
- * Visits each matching text node in the given root element and any editors
- * associated with its descendant elements.
+ * Recursively visits each matching text node in the given root element and any
+ * editors associated with its descendant elements.
  *
  * @param {RegExp} pattern Regular expression for filtering text nodes by.
  * @param {Element} rootElt Root element to traverse.
@@ -236,14 +235,24 @@ function onHighlightAllChange(options) {
 	
 	let win = isChrome ? window : content;
 	let doc = win.document;
-	
 	let foldPattern = getFoldPattern(query, options.caseSensitive);
+	
+	let found = false;
 	sel.removeAllRanges();
 	findAll(win, sel, foldPattern, doc.documentElement, function (sel) {
 		sel.removeAllRanges();
 	}, options.highlightAll && function (sel, range) {
+		found = true;
 		sel.addRange(range);
 	});
+	
+	if (options.highlightAll) {
+		sendAsyncMessage("AVIM:findupdatecontrolstate", {
+			result: found ? Ci.nsITypeAheadFind.FIND_FOUND :
+				Ci.nsITypeAheadFind.FIND_NOTFOUND,
+			findPrevious: false,
+		});
+	}
 }
 
 addMessageListener("AVIM:findhighlightallchange", function (msg) {
