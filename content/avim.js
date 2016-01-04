@@ -696,11 +696,21 @@ function AVIM()	{
 		}
 	};
 	
+	this.onFindMatchesCountResult = function (msg) {
+		if ("gFindBar" in window) {
+			gFindBar.onMatchesCountResult({
+				total: msg.data.total,
+				current: msg.data.current,
+			});
+		}
+	};
+	
 	const findEventTypes = [
-		"find",
-		"findagain",
+		//"",
+		//"again",
+		"matchescount",
 		"highlightallchange",
-		"findcasesensitivitychange",
+		//"casesensitivitychange",
 	];
 	
 	this.registerFindBar = function () {
@@ -716,6 +726,8 @@ function AVIM()	{
 		}
 		messageManager.addMessageListener("AVIM:findupdatecontrolstate",
 										  this.onFindUpdateControlState);
+		messageManager.addMessageListener("AVIM:findmatchescountresult",
+										  this.onFindMatchesCountResult);
 	};
 	
 	this.unregisterFindBar = function () {
@@ -729,6 +741,8 @@ function AVIM()	{
 		}
 		messageManager.removeMessageListener("AVIM:findupdatecontrolstate",
 											 this.onFindUpdateControlState);
+		messageManager.removeMessageListener("AVIM:findmatchescountresult",
+											 this.onFindMatchesCountResult);
 	};
 	
 	// IME and DiMENSiON extension

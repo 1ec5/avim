@@ -8,10 +8,6 @@ const Ci = Components.interfaces;
 
 const isChrome = typeof window === "object";
 
-addEventListener("find", function (evt) {
-	dump(">>> find event: " + evt.detail.query + "\n");								// debug
-}, true);
-
 //* {Object} Mapping from base letters to variants with more diacritics.
 const charsByBase = {
 	a: "àảãáạăằẳẵắặâầẩẫấậ", "ă": "ằẳẵắặ", "â": "ầẩẫấậ",
@@ -76,6 +72,7 @@ function getSelectionController(win) {
  * @see #getNormalizedContent
  */
 function getFoldPattern(query, caseSensitive) {
+	if (!query) return null;
 	let src = query.replace(baseRunPattern, function (base, offset, whole) {
 		let chars = base[0].toLowerCase();
 		chars += charsByBase[chars];
@@ -180,7 +177,7 @@ function getEditor(elt) {
  * @param {Boolean} True if the entire root element was traversed.
  */
 function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
-	if (!rootElt || !sel) return true;
+	if (!rootElt || !sel || !pattern) return true;
 	
 	let iter = getNodeIterator(win, rootElt, pattern, onResult);
 	let node;
@@ -197,7 +194,13 @@ function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
 				if (onEditor && onEditor(childSel) === false) return false;
 			}
 			// <frame>, <iframe>, <object>
-			else if ("contentDocument" in node) rootElt = node.contentDocument;
+			else if ("contentDocument" in node) {
+				rootElt = node.contentDocument;
+				if (rootElt && rootElt instanceof win.HTMLDocument) {
+					// Can’t select in text nodes in <head>.
+					rootElt = rootElt.body;
+				}
+			}
 			
 			if (findAll(win, childSel, pattern, rootElt, onEditor, onResult) ===
 				false) {
@@ -236,10 +239,15 @@ function onHighlightAllChange(options) {
 	let win = isChrome ? window : content;
 	let doc = win.document;
 	let foldPattern = getFoldPattern(query, options.caseSensitive);
+	let rootElt = doc;
+	if (rootElt && rootElt instanceof win.HTMLDocument) {
+		// Can’t select in text nodes in <head>.
+		rootElt = rootElt.body;
+	}
 	
 	let found = false;
 	sel.removeAllRanges();
-	findAll(win, sel, foldPattern, doc.documentElement, function (sel) {
+	findAll(win, sel, foldPattern, rootElt, function (sel) {
 		sel.removeAllRanges();
 	}, options.highlightAll && function (sel, range) {
 		found = true;
@@ -255,8 +263,41 @@ function onHighlightAllChange(options) {
 	}
 }
 
+function onFindMatchesCount(options) {
+	// TODO: matchesCountLimit
+	let query = options.query;
+	let controller = getSelectionController(isChrome ? window : content);
+	let sel = controller &&
+		controller.getSelection(Ci.nsISelectionController.SELECTION_FIND);
+	if (!sel) return;
+	
+	let win = isChrome ? window : content;
+	let doc = win.document;
+	let foldPattern = getFoldPattern(query, options.caseSensitive);
+	let rootElt = doc;
+	if (rootElt && rootElt instanceof win.HTMLDocument) {
+		// Can’t select in text nodes in <head>.
+		rootElt = rootElt.body;
+	}
+	
+	let count = 0;
+	findAll(win, sel, foldPattern, rootElt, null, function (sel, range) {
+		count++;
+	});
+	
+	sendAsyncMessage("AVIM:findmatchescountresult", {
+		total: count,
+		current: count,	// TODO: Keep track of current match.
+	});
+}
+
+addMessageListener("AVIM:findmatchescount", function (msg) {
+	dump(">>> " + msg.name + " -- query: " + msg.data.query + "\n");			// debug
+	onFindMatchesCount(msg.data);
+}, true);
+
 addMessageListener("AVIM:findhighlightallchange", function (msg) {
-	// msg.name
+	dump(">>> " + msg.name + " -- query: " + msg.data.query + "\n");			// debug
 	onHighlightAllChange(msg.data);
 }, true);
 
