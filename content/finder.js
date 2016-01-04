@@ -14,14 +14,19 @@ addEventListener("find", function (evt) {
 
 //* {Object} Mapping from base letters to variants with more diacritics.
 const charsByBase = {
-	a: "aàảãáạăằẳẵắặâầẩẫấậ", "ă": "ăằẳẵắặ", "â": "âầẩẫấậ",
-	d: "dđ₫",
-	e: "eèẻẽéẹêềểễếệ", "ê": "êềểễếệ",
-	g: "g̃",
-	i: "iìỉĩíị",
-	o: "oòỏõóọôồổỗốộơờởỡớợ", "ô": "ôồổỗốộ", "ơ": "ơờởỡớợ",
-	u: "uùủũúụưừửữứự", "ư": "ưừửữứự",
-	y: "yỳỷỹýỵ",
+	a: "àảãáạăằẳẵắặâầẩẫấậ", "ă": "ằẳẵắặ", "â": "ầẩẫấậ",
+	"à": "ằầ", "ả": "ẳẩ", "ã": "ẵẫ", "á": "ắấ", "ạ": "ặậ",
+	d: "đ₫",
+	"đ": "₫",
+	e: "èẻẽéẹêềểễếệ", "ê": "ềểễếệ",
+	"è": "ề", "ẻ": "ể", "ẽ": "ễ", "é": "ế", "ẹ": "ệ",
+	g: "\u0303",
+	i: "ìỉĩíị",
+	o: "òỏõóọôồổỗốộơờởỡớợ", "ô": "ồổỗốộ", "ơ": "ờởỡớợ",
+	"ò": "ồờ", "ỏ": "ổở", "õ": "ỗỡ", "ó": "ốớ", "ọ": "ộợ",
+	u: "ùủũúụưừửữứự", "ư": "ừửữứự",
+	"ù": "ùừ", "ủ": "ủử", "ũ": "ũữ", "ú": "úứ", "ụ": "ụự",
+	y: "ỳỷỹýỵ",
 };
 
 /**
@@ -72,7 +77,8 @@ function getSelectionController(win) {
  */
 function getFoldPattern(query, caseSensitive) {
 	let src = query.replace(baseRunPattern, function (base, offset, whole) {
-		let chars = charsByBase[base[0].toLowerCase()];
+		let chars = base[0].toLowerCase();
+		chars += charsByBase[chars];
 		if (base[0] === base[0].toUpperCase()) chars = chars.toUpperCase();
 		let pattern = "[" + chars + "]";
 		if (base.length > 1) pattern += "{" + base.length + "}";
