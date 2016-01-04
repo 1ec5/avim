@@ -30,21 +30,7 @@ else {
 		AVIMConfig = msg.data;
 	});
 }
-
-// Include characters from major scripts that separate words with a space.
-const wordChars =
-	"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
-	"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
-	"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
-		"\ua720-\ua7ff\uab30-\uab6f\ufb00-\ufb4f" +	// Latin
-	"\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff" +	// Arabic
-	"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
-	"\u0900-\u097f\u1cd0-\u1cff" +	// Devanagari
-	"\u02b0-\u02ff" +	// spacing modifier letters
-	"0-9" +	// numerals
-	"₫\u0303" +	// miscellaneous Vietnamese characters
-	"’";	// word-inner punctuation not found in Vietnamese
-const wordRe = new RegExp("[" + wordChars + "]*$");
+AVIMConfig.wordRe = new RegExp("[" + AVIMConfig.wordChars + "]*$");
 
 /**
  * Returns the JavaScript string literal representing the given string.
@@ -76,7 +62,7 @@ function methodIsVIQR() {
 function lastWordInString(str) {
 	if (!str) return "";
 	if (str.substr(-1) === "\\" && methodIsVIQR()) return "\\";
-	let match = wordRe.exec(str);
+	let match = AVIMConfig.wordRe.exec(str);
 	return match && match[0];
 }
 

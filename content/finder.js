@@ -1,4 +1,4 @@
-/* global content, addMessageListener, sendAsyncMessage */
+/* global avim, content, addMessageListener, sendSyncMessage, sendAsyncMessage */
 (function (msgMgr) {
 "use strict";
 
@@ -7,6 +7,19 @@ const Ci = Components.interfaces;
 //const Cu = Components.utils;
 
 const isChrome = typeof window === "object";
+
+// Root for AVIM preferences
+let AVIMConfig;
+if (isChrome) AVIMConfig = avim.onFrameReadyForPrefs();
+else {
+	let results = sendSyncMessage("AVIM:readyforprefs");
+	if (results) AVIMConfig = results[0];
+	addMessageListener("AVIM:prefschanged", function (msg) {
+		AVIMConfig = msg.data;
+	});
+}
+AVIMConfig.newAccentRe = new RegExp("(?:o([aàảãáạ])|o([eèẻẽéẹ])|u([yỳỷỹýỵ]))(?=[^" +
+									AVIMConfig.wordChars + "]|$)", "g");
 
 //* {Object} Mapping from base letters to variants with more diacritics.
 const charsByBase = {
@@ -62,6 +75,19 @@ function getSelectionController(win) {
 }
 
 /**
+ * Converts the given string from reformed to traditional diacritic placement.
+ */
+function toTraditional(query) {
+	return query.replace(AVIMConfig.newAccentRe, function (vowels, oa, oe, uy) {
+		let mid = vowels[0];
+		let old = vowels[1];
+		let end = oa ? "a" : (oe ? "e" : (uy ? "y" : old));
+		return (mid + charsByBase[mid])[(end + charsByBase[end]).indexOf(old)] +
+			end;
+	});
+}
+
+/**
  * Returns a regular expression that matches the given string plus any
  * variations with more (but not fewer) Vietnamese diacritics. Also normalizes
  * the query string per the special cases in nsFind::Find().
@@ -73,7 +99,8 @@ function getSelectionController(win) {
  */
 function getFoldPattern(query, caseSensitive) {
 	if (!query) return null;
-	let src = query.replace(baseRunPattern, function (base, offset, whole) {
+	let src = toTraditional(query).replace(baseRunPattern,
+										   function (base, offset, whole) {
 		let chars = base[0].toLowerCase();
 		chars += charsByBase[chars];
 		if (base[0] === base[0].toUpperCase()) chars = chars.toUpperCase();
@@ -94,8 +121,8 @@ function getFoldPattern(query, caseSensitive) {
  */
 function getNormalizedContent(node) {
 	if (!node.data) return "";
-	return node.data.replace(/\u00ad/g /* shy */, "").replace(/\s/g, " ")
-		.replace(/[“”]/g, "\"").replace(/[‘’]/g, "'");
+	return toTraditional(node.data).replace(/\u00ad/g /* shy */, "")
+		.replace(/\s/g, " ").replace(/[“”]/g, "\"").replace(/[‘’]/g, "'");
 }
 
 /**

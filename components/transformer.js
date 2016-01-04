@@ -12,6 +12,20 @@ const CLASS_ID = Components.ID("{4A373444-8A2A-4641-ADD5-897A88D05185}"),
 	  CLASS_NAME = "AVIM text transformer service",
 	  CONTRACT_ID = "@1ec5.org/avim/transformer;1";
 
+// Include characters from major scripts that separate words with a space.
+const wordChars =
+	"\u0400-\u052f\u2de0-\u2dff\ua640-\ua69f" +	// Cyrillic
+	"\u0370-\u03ff\u1f00-\u1fff" +	// Greek
+	"A-Za-zÀ-ÖØ-öø-\u02af\u1d00-\u1dbf\u1e00-\u1eff\u2c60-\u2c7f" +
+		"\ua720-\ua7ff\uab30-\uab6f\ufb00-\ufb4f" +	// Latin
+	"\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff" +	// Arabic
+	"\u0590-\u05ff\ufb1d-\ufb40" +	// Hebrew
+	"\u0900-\u097f\u1cd0-\u1cff" +	// Devanagari
+	"\u02b0-\u02ff" +	// spacing modifier letters
+	"0-9" +	// numerals
+	"₫\u0303" +	// miscellaneous Vietnamese characters
+	"’";	// word-inner punctuation not found in Vietnamese
+
 let Transformation = (function () {
 
 // Some shortcuts for brevity.
@@ -869,6 +883,12 @@ AVIMTransformerService.prototype = {
 		if (iid.equals(Ci.nsISupports)) return this;
 		throw Components.results.NS_ERROR_NO_INTERFACE;
 	},
+	
+	/**
+	 * {String} Regular expression character class matching all characters
+	 * considered to be word characters by this extension.
+	 */
+	wordChars: wordChars,
 	
 	/**
 	 * Applies the information in the context object to a prefix string. The

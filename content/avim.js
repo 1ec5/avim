@@ -342,6 +342,11 @@ function AVIM()	{
 		prefs.QueryInterface(Ci.nsIPrefBranch2);
 		prefs.addObserver("", this, false);
 		this.getPrefs();
+		
+		if ("messageManager" in window) {
+			messageManager.addMessageListener("AVIM:readyforprefs",
+											  avim.onFrameReadyForPrefs);
+		}
 	};
 	
 	/**
@@ -364,7 +369,7 @@ function AVIM()	{
 		this.getPrefs(data);
 		this.updateUI();
 		
-		if ("gMultiProcessBrowser" in window && window.gMultiProcessBrowser) {
+		if ("messageManager" in window) {
 			messageManager.broadcastAsyncMessage("AVIM:prefschanged", AVIMConfig);
 		}
 	};
@@ -651,6 +656,7 @@ function AVIM()	{
 	};
 	
 	const xformer = Cc["@1ec5.org/avim/transformer;1"].getService().wrappedJSObject;
+	AVIMConfig.wordChars = xformer.wordChars;
 	
 	/**
 	 * First responder for keypress messages from frame scripts.
@@ -822,8 +828,6 @@ addEventListener("load", function load(/* evt */) {
 	let isE10s = "gMultiProcessBrowser" in win && win.gMultiProcessBrowser;
 	if (isE10s) {
 		messageManager.loadFrameScript("chrome://avim/content/frame.js", true);
-		messageManager.addMessageListener("AVIM:readyforprefs",
-										  avim.onFrameReadyForPrefs);
 		messageManager.addMessageListener("AVIM:keypress", avim.onFrameKeyPress);
 	}
 	
