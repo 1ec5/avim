@@ -167,11 +167,11 @@ function getEditor(elt) {
  *
  * @param {RegExp} pattern Regular expression for filtering text nodes by.
  * @param {Element} rootElt Root element to traverse.
- * @param {Function(Selection) => Boolean} onEditor Function to call each time a
- * 	new editor is encountered. Return the literal |false| to stop the traversal.
- * @param {Function(Selection, Range) => Boolean} onResult Optional function to
- * 	call each time a node matches. Return the literal |false| to stop the
+ * @param {Function?(Selection) => Boolean?} onEditor Function to call each time
+ * 	a new editor is encountered. Return the literal |false| to stop the
  * 	traversal.
+ * @param {Function?(Selection, Range) => Boolean?} onResult Function to call
+ * 	each time a node matches. Return the literal |false| to stop the traversal.
  * @param {Boolean} True if the entire root element was traversed.
  */
 function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
@@ -180,33 +180,29 @@ function findAll(win, sel, pattern, rootElt, onEditor, onResult) {
 	let iter = getNodeIterator(win, rootElt, pattern, onResult);
 	let node;
 	while ((node = iter.nextNode())) {
-		let editor;
-		let result;
 		if (node.nodeType === 1) {
+			let editor;
+			let rootElt;
+			let childSel = sel;
 			// <input>, <textarea>, Midas
 			if ((editor = getEditor(node.contentWindow || node))) {
-				let sel = editor.selectionController
+				rootElt = editor.rootElement;
+				childSel = editor.selectionController
 					.getSelection(Ci.nsISelectionController.SELECTION_FIND);
-				if (onEditor(sel) === false) return false;
-				
-				let rootElt = editor.rootElement;
-				if (findAll(win, sel, pattern, rootElt, onEditor, onResult) ===
-					false) {
-					return false;
-				}
+				if (onEditor && onEditor(childSel) === false) return false;
 			}
 			// <frame>, <iframe>, <object>
-			else if ("contentDocument" in node) {
-				let rootElt = node.contentDocument;
-				if (findAll(win, sel, pattern, rootElt, onEditor, onResult) ===
-					false) {
-					return false;
-				}
+			else if ("contentDocument" in node) rootElt = node.contentDocument;
+			
+			if (findAll(win, childSel, pattern, rootElt, onEditor, onResult) ===
+				false) {
+				return false;
 			}
 		}
 		// #text
 		else if (onResult) {
 			pattern.lastIndex = 0;
+			let result;
 			while ((result = pattern.exec(getNormalizedContent(node)))) {
 				let range = win.document.createRange();
 				range.setStart(node, result.index);
