@@ -1,4 +1,4 @@
-/* global avim, content, sendSyncMessage, addMessageListener */
+/* global content, addMessageListener */
 (function (msgMgr) {
 "use strict";
 
