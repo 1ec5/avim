@@ -120,8 +120,8 @@ function getNodeIterator(win, rootElt, pattern) {
 		if ("contentDocument" in node) return NF.FILTER_ACCEPT;
 		// <input type="text"> etc.
 		if ("mozIsTextField" in node) {
-			return node.mozIsTextField(true) ? NF.FILTER_ACCEPT :
-				NF.FILTER_REJECT;
+			return node.mozIsTextField(true /* no passwords */) ?
+				NF.FILTER_ACCEPT : NF.FILTER_REJECT;
 		}
 		// <textarea>
 		return (node instanceof win.HTMLTextAreaElement) ? NF.FILTER_ACCEPT :
@@ -177,18 +177,21 @@ function findAll(win, sel, pattern, rootElt, callback) {
 		let editor;
 		let result;
 		if (node.nodeType === 1) {
-			// <frame>, <iframe>, <object>
-			if ("contentDocument" in node) {
-				let rootElt = node.contentDocument;
+			// Midas
+			let editor = "contentWindow" in node &&
+				getEditor(node.contentWindow);
+			// <input>, <textarea>
+			if ((editor = editor || getEditor(node))) {
+				let sel = editor.selectionController
+					.getSelection(Ci.nsISelectionController.SELECTION_FIND);
+				let rootElt = editor.rootElement;
 				if (findAll(win, sel, pattern, rootElt, callback) === false) {
 					return false;
 				}
 			}
-			// <input>, <textarea>
-			else if ((editor = getEditor(node))) {
-				let sel = editor.selectionController
-					.getSelection(Ci.nsISelectionController.SELECTION_FIND);
-				let rootElt = editor.rootElement;
+			// <frame>, <iframe>, <object>, Midas
+			else if ("contentDocument" in node) {
+				let rootElt = node.contentDocument;
 				if (findAll(win, sel, pattern, rootElt, callback) === false) {
 					return false;
 				}
