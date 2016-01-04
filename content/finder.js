@@ -78,7 +78,7 @@ function getFoldPattern(query, caseSensitive) {
 		if (base.length > 1) pattern += "{" + base.length + "}";
 		return pattern;
 	}).replace(/[“”]/g, "\"").replace(/[‘’]/g, "'");
-	return new RegExp(src, caseSensitive ? "" : "i");
+	return new RegExp(src, caseSensitive ? "g" : "gi");
 }
 
 /**
@@ -177,11 +177,8 @@ function findAll(win, sel, pattern, rootElt, callback) {
 		let editor;
 		let result;
 		if (node.nodeType === 1) {
-			// Midas
-			let editor = "contentWindow" in node &&
-				getEditor(node.contentWindow);
-			// <input>, <textarea>
-			if ((editor = editor || getEditor(node))) {
+			// <input>, <textarea>, Midas
+			if ((editor = getEditor(node.contentWindow || node))) {
 				let sel = editor.selectionController
 					.getSelection(Ci.nsISelectionController.SELECTION_FIND);
 				let rootElt = editor.rootElement;
@@ -189,7 +186,7 @@ function findAll(win, sel, pattern, rootElt, callback) {
 					return false;
 				}
 			}
-			// <frame>, <iframe>, <object>, Midas
+			// <frame>, <iframe>, <object>
 			else if ("contentDocument" in node) {
 				let rootElt = node.contentDocument;
 				if (findAll(win, sel, pattern, rootElt, callback) === false) {
@@ -198,11 +195,14 @@ function findAll(win, sel, pattern, rootElt, callback) {
 			}
 		}
 		// #text
-		else if ((result = pattern.exec(getNormalizedContent(node)))) {
-			let range = win.document.createRange();
-			range.setStart(node, result.index);
-			range.setEnd(node, result.index + result[0].length);
-			if (callback(sel, range) === false) return false;
+		else {
+			pattern.lastIndex = 0;
+			while ((result = pattern.exec(getNormalizedContent(node)))) {
+				let range = win.document.createRange();
+				range.setStart(node, result.index);
+				range.setEnd(node, result.index + result[0].length);
+				if (callback(sel, range) === false) return false;
+			}
 		}
 	}
 	return true;
