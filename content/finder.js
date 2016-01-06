@@ -105,6 +105,8 @@ function getFoldPattern(query, caseSensitive) {
 		let pattern = "[" + chars + "]";
 		if (base.length > 1) pattern += "{" + base.length + "}";
 		return pattern;
+	}).replace(/\s+/g, function (spaces) {
+		return " {" + spaces.length + ",}";
 	}).replace(/[“”]/g, "\"").replace(/[‘’]/g, "'");
 	return new RegExp(src, caseSensitive ? "g" : "gi");
 }
