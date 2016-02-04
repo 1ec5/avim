@@ -165,6 +165,13 @@
 </section>
 
 <section>
+  <h3><label for="test-readonly">Read-only field</label></h3>
+  
+  <input id="test-readonly" type="text" readonly="readonly" value="d" />
+  <p class="fine-print">Webpage authors can turn off editing in a text field without disabling selection, using the <code>readonly</code> attribute. <acronym title="Advanced Vietnamese Input Method">AVIM</acronym> respects this attribute. Other <acronym title="input method editor" class="initialism">IME</acronym>s don’t, allowing you to accidentally turn a “d” into a “đ”, for instance, but not allowing you to change it back.</p>
+</section>
+
+<section>
   <h3><label for="test-ime-mode">Disabling <acronym title="input method editor">IME</acronym>s using <acronym title="Cascading Style Sheets">CSS</acronym></label></h3>
   
   <input id="test-ime-mode" type="text" style="ime-mode: disabled;" />

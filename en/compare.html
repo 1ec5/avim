@@ -74,7 +74,6 @@
 		#windows-chrome.collapsed ~ .cat-windows-chrome,
 		#extensions.collapsed ~ .cat-extensions,
 		#web-apps.collapsed ~ .cat-web-apps,
-		#textboxes.collapsed ~ .cat-textboxes,
 		#rich-textboxes.collapsed ~ .cat-rich-textboxes,
 		#plugins.collapsed ~ .cat-plugins,
 		#code-editors.collapsed ~ .cat-code-editors,
@@ -224,7 +223,7 @@
             <th colspan="3" id="chrome-colgroup">Chromium extensions</th>
         </tr>
         <tr>
-            <th class="avim"><a href="http://avim.1ec5.org/" rel="bookmark" title="AVIM cho Firefox"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> for Firefox</a> 5.5.0</th>
+            <th class="avim"><a href="http://avim.1ec5.org/" rel="bookmark" title="AVIM cho Firefox"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> for Firefox</a> 5.6.0</th>
             <th class="mudim"><a href="https://addons.mozilla.org/en-US/firefox/addon/mudim/?src=external-avim.1ec5.org-compare" rel="bookmark" title="Firefox Add-ons: Mudim"><acronym title="Mudzot&rsquo;s Input Method">Mudim</acronym></a> 0.9</th>
             <th class="typingviet"><a href="https://addons.mozilla.org/en-US/firefox/addon/typing-vietnamese/?src=external-avim.1ec5.org-compare" rel="bookmark" title="Firefox Add-ons: Typing Vietnamese">Typing Vietnamese</a> 2.0.1.1</th>
             <th class="chim"><a href="http://xvnkb.sourceforge.net/chim/mozilla/" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM/Mozilla"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 1.0</th>
@@ -241,7 +240,7 @@
     <tbody>
         <tr class="cat-general">
             <td>Last released</td>
-            <td class="avim"><time datetime="2015-03-30T08:26:19Z">December 19, 2014</time></td>
+            <td class="avim"><time datetime="2016-02-04T06:44:40Z">February 4<sup>th</sup>, 2016</time></td>
             <td class="mudim"><time datetime="2015-06-07T18:51:22Z">June 7<sup>th</sup>, 2015</time></td>
             <td class="typingviet"><time datetime="2015-02-23T02:57:24Z">February 23<sup>rd</sup>, 2015</time></td>
             <td class="chim"><time datetime="2006-07-09">July 9<sup>th</sup>, 2006</time></td>
@@ -256,7 +255,7 @@
         </tr>
         <tr class="cat-general">
             <td>Download size</td>
-            <td class="avim">67.0&nbsp;<abbr title="kilobytes">kB</abbr></td>
+            <td class="avim">70.9&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="mudim">26.5&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="typingviet">27.4&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="chim">9.7&nbsp;<abbr title="kilobytes">kB</abbr></td>
@@ -271,7 +270,7 @@
         </tr>
         <tr class="cat-general">
             <td>Size after installation</td>
-            <td class="avim">97.5&nbsp;<abbr title="kilobytes">kB</abbr></td>
+            <td class="avim">101,9&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="mudim">30.7&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="typingviet">27.4&nbsp;<abbr title="kilobytes">kB</abbr></td>
             <td class="chim">10.2&nbsp;<abbr title="kilobytes">kB</abbr></td>
@@ -1038,6 +1037,21 @@
 			<td class="vietinput yes">Yes</td>
 		</tr>
 		<tr class="cat-output">
+			<td><a href="http://vny2k.net/vny2k/CaitoCachVietTiengViet-UniEng.htm">Vietnamese2020</a></td>
+			<td class="avim yes">Yes</td>
+			<td class="mudim no">No</td>
+			<td class="typingviet no">No</td>
+			<td class="chim no">No</td>
+			<td class="viettyping no">No</td>
+			<td class="vport no">No</td>
+			<td class="myavim no">No</td>
+			<td class="instcode no">No</td>
+			<td class="avim-chrome no">No</td>
+			<td class="google no">No</td>
+			<td class="chrominom no">No</td>
+			<td class="vietinput no">No</td>
+		</tr>
+		<tr class="cat-output">
 			<td>Han/Nom characters</td>
 			<td class="avim no">No</td>
 			<td class="mudim no">No</td>
@@ -1192,8 +1206,8 @@
             <td class="vietinput buggy"><samp>chơz</samp></td>
         </tr>
         <tr class="cat-input-features">
-            <td>Deletes diacritics with <span class="keystrokes"><kbd class="modifier">Shift</kbd> <kbd class="modifier">Backspace</kbd></span></td>
-            <td class="avim yes">Yes</td>
+            <td>Deletes diacritics</td>
+            <td class="avim yes"><span class="keystrokes"><kbd class="modifier">Shift</kbd> <kbd class="modifier">Backsp</kbd></span></td>
             <td class="mudim no">No</td>
             <td class="typingviet no">No</td>
             <td class="chim no">No</td>
@@ -1237,9 +1251,39 @@
             <td class="vietinput yes">Yes</td>
         </tr>
         <tr class="cat-input-features">
-            <td>Cancels words with <span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span></td>
+            <td>Ignores individual words</td>
             <td class="avim no">No</td>
-            <td class="mudim yes">Yes</td>
+            <td class="mudim yes"><span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span></td>
+            <td class="typingviet no">No</td>
+            <td class="chim no">No</td>
+            <td class="viettyping no">No</td>
+            <td class="vport no">No</td>
+            <td class="myavim no">No</td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome no">No</td>
+            <td class="google no">No</td>
+            <td class="chrominom no">No</td>
+            <td class="vietinput no">No</td>
+        </tr>
+        <tr class="cat-input-features">
+            <td>Inserts syllable breaks inside loanwords</td>
+            <td class="avim yes"><span class="keystrokes"><kbd class="modifier">Shift</kbd><kbd class="modifier">Space</kbd></span></td>
+            <td class="mudim yes"><span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span></td>
+            <td class="typingviet no">No</td>
+            <td class="chim no">No</td>
+            <td class="viettyping no">No</td>
+            <td class="vport no">No</td>
+            <td class="myavim no">No</td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome no">No</td>
+            <td class="google no">No</td>
+            <td class="chrominom no">No</td>
+            <td class="vietinput no">No</td>
+        </tr>
+        <tr class="cat-input-features">
+            <td>Highlights syllables after inserting syllable breaks</td>
+            <td class="avim yes">Yes</td>
+            <td class="mudim no">no</td>
             <td class="typingviet no">No</td>
             <td class="chim no">No</td>
             <td class="viettyping no">No</td>
@@ -1313,6 +1357,21 @@
         </tr>
         <tr class="cat-input-features">
             <td>Respects <a href="https://developer.mozilla.org/En/CSS/Ime-mode" rel="bookmark" title="Mozilla Developer Center: ime-mode"><code>ime-mode</code></a> <acronym title="Cascading Style Sheets">CSS</acronym> property</td>
+            <td class="avim yes">Yes</td>
+            <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
+            <td class="chim no">No</td>
+            <td class="viettyping no">No</td>
+            <td class="vport no">No</td>
+            <td class="myavim no">No</td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome no">No</td>
+            <td class="google no">No</td>
+            <td class="chrominom no">No</td>
+            <td class="vietinput no">No</td>
+        </tr>
+        <tr class="cat-input-features">
+            <td>Replaces <samp>Ðð</samp> with <samp>Đđ</samp></td>
             <td class="avim yes">Yes</td>
             <td class="mudim no">No</td>
             <td class="typingviet no">No</td>
@@ -1493,21 +1552,21 @@
             <td class="chrominom no">Yes</td>
             <td class="vietinput yes">No</td>
         </tr>
-        <!-- <tr class="cat-annoyances">
-            <td>Undo/redo levels per letter following an accented letter</td>
-            <td class="avim yes">1</td>
-            <td class="mudim yes">1</td>
-            <td class="typingviet yes">1</td>
-            <td class="chim yes">1</td>
-            <td class="viettyping yes">1</td>
-            <td class="vport no">2</td>
-            <td class="myavim no">2</td>
-            <td class="instcode yes">1</td>
-            <td class="avim-chrome yes">1</td>
-            <td class="google">Undo is broken</td>
-            <td class="chrominom no">0</td>
-            <td class="vietinput no">0</td>
-        </tr> -->
+        <tr class="cat-annoyances">
+            <td>Multiple undos/redos after adding a diacritic</td>
+            <td class="avim yes">No</td>
+            <td class="mudim yes">No</td>
+            <td class="typingviet no">Unable to undo</td>
+            <td class="chim yes">No</td>
+            <td class="viettyping yes">No</td>
+            <td class="vport no">Yes</td>
+            <td class="myavim no">Yes</td>
+            <td class="instcode yes">No</td>
+            <td class="avim-chrome yes">No</td>
+            <td class="google no">Unable to undo</td>
+            <td class="chrominom no">Unable to undo</td>
+            <td class="vietinput no">Unable to undo</td>
+        </tr>
         <tr class="cat-annoyances">
             <td>Incompatible extensions detected</td>
             <td class="avim yes">Yes</td>
@@ -1688,7 +1747,7 @@
             <td>Keyboard shortcuts (number of fingers required)</td>
             <td class="avim yes">Yes (1)</td>
             <td class="mudim buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
-            <td class="typingviet yes">Yes (2)</td>
+            <td class="typingviet yes">Yes (3)</td>
             <td class="chim buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
             <td class="viettyping buggy">Only in textboxes</td>
             <td class="vport buggy">Broken in Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
@@ -2762,7 +2821,7 @@
             <td class="vietinput no">No</td>
         </tr>
         
-		<tr id="textboxes" class="cat-header cat-textboxes collapsed">
+		<tr id="textboxes" class="cat-header cat-textboxes">
             <th colspan="12">Plain text controls</th>
         </tr>
         <tr class="cat-textboxes">
@@ -2771,7 +2830,7 @@
             <td class="mudim yes">Yes</td>
             <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
-            <td class="viettyping buggy">Except in internal frames</td>
+            <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="instcode yes">Yes</td>
@@ -2836,7 +2895,7 @@
             <td class="mudim yes">Yes</td>
             <td class="typingviet yes">Yes</td>
             <td class="chim yes">Yes</td>
-            <td class="viettyping buggy">Except in internal frames</td>
+            <td class="viettyping yes">Yes</td>
             <td class="vport yes">Yes</td>
             <td class="myavim yes">Yes</td>
             <td class="instcode yes">Yes</td>
@@ -2855,10 +2914,10 @@
             <td class="vport no">No</td>
             <td class="myavim no">No</td>
             <td class="instcode no">No</td>
-            <td class="avim-chrome yes">Yes</td>
-            <td class="google yes">Yes</td>
-            <td class="chrominom no">No</td>
-            <td class="vietinput no">No</td>
+            <td class="avim-chrome">Not supported by Chrome</td>
+            <td class="google">Not supported by Chrome</td>
+            <td class="chrominom">Not supported by Chrome</td>
+            <td class="vietinput">Not supported by Chrome</td>
         </tr>
         <!-- <tr class="cat-textboxes">
             <td>XForms single-line text fields (<code>&lt;input></code>)</td>
@@ -2920,6 +2979,51 @@
             <td class="chrominom no">No</td>
             <td class="vietinput no">No</td>
         </tr> -->
+        <tr class="cat-textboxes">
+            <td>Text controls inside frames (<code>&lt;frame></code>)</td>
+            <td class="avim yes">Yes</td>
+            <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
+            <td class="chim no">No</td>
+            <td class="viettyping no">No</td>
+            <td class="vport no">No</td>
+            <td class="myavim no">No</td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome no">No</td>
+            <td class="google no">No</td>
+            <td class="chrominom no">No</td>
+            <td class="vietinput no">No</td>
+        </tr>
+        <tr class="cat-textboxes">
+            <td>Text controls inside inline frames (<code>&lt;iframe></code>)</td>
+            <td class="avim yes">Yes</td>
+            <td class="mudim yes">Yes</td>
+            <td class="typingviet yes">Yes</td>
+            <td class="chim yes">Yes</td>
+            <td class="viettyping no">No</td>
+            <td class="vport yes">Yes</td>
+            <td class="myavim yes">Yes</td>
+            <td class="instcode yes">Yes</td>
+            <td class="avim-chrome yes">Yes</td>
+            <td class="google yes">Yes</td>
+            <td class="chrominom yes">Yes</td>
+            <td class="vietinput yes">Yes</td>
+        </tr>
+        <tr class="cat-textboxes">
+            <td>Text controls inside embeds (<code>&lt;object></code>)</td>
+            <td class="avim yes">Yes</td>
+            <td class="mudim no">No</td>
+            <td class="typingviet no">No</td>
+            <td class="chim no">No</td>
+            <td class="viettyping no">No</td>
+            <td class="vport no">No</td>
+            <td class="myavim no">No</td>
+            <td class="instcode no">No</td>
+            <td class="avim-chrome no">No</td>
+            <td class="google no">No</td>
+            <td class="chrominom no">No</td>
+            <td class="vietinput no">No</td>
+        </tr>
         
 		<tr id="rich-textboxes" class="cat-header cat-rich-textboxes collapsed">
             <th colspan="12">Rich text controls</th>

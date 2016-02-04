@@ -74,7 +74,6 @@
 		#windows-chrome.collapsed ~ .cat-windows-chrome,
 		#extensions.collapsed ~ .cat-extensions,
 		#web-apps.collapsed ~ .cat-web-apps,
-		#textboxes.collapsed ~ .cat-textboxes,
 		#rich-textboxes.collapsed ~ .cat-rich-textboxes,
 		#plugins.collapsed ~ .cat-plugins,
 		#code-editors.collapsed ~ .cat-code-editors,
@@ -223,7 +222,7 @@
             <th colspan="3" id="chrome-colgroup">Tiện&nbsp;ích mở&nbsp;rộng Chromium</th>
 	</tr>
 	<tr>
-		<th class="avim"><a href="http://avim.1ec5.org/" rel="bookmark" title="AVIM cho Firefox"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> cho Firefox</a> 5.5.0</th>
+		<th class="avim"><a href="http://avim.1ec5.org/" rel="bookmark" title="AVIM cho Firefox"><acronym title="Advanced Vietnamese Input Method">AVIM</acronym> cho Firefox</a> 5.6.0</th>
 		<th class="mudim"><a href="https://addons.mozilla.org/vi/firefox/addon/mudim/?src=external-avim.1ec5.org-compare" rel="bookmark" title="Tiện ích Firefox: Mudim"><acronym title="Mudzot&rsquo;s Input Method">Mudim</acronym></a> 0.9</th>
 		<th class="typingviet"><a href="https://addons.mozilla.org/vi/firefox/addon/typing-vietnamese/?src=external-avim.1ec5.org-compare" rel="bookmark" title="Tiện ích Firefox: Typing Vietnamese">Đánh tiếng Việt</a> 2.0.1.1</th>
 		<th class="chim"><a href="http://xvnkb.sourceforge.net/chim/mozilla/" hreflang="en" rel="bookmark" title="xvnkb&rsquo;s Homepage: CHIM/Mozilla"><acronym title="CHuoi&rsquo;s Input Method">CHIM</acronym></a> 1.0</th>
@@ -240,7 +239,7 @@
 <tbody>
 	<tr class="cat-general">
 		<td>Phát hành cuối cùng</td>
-		<td class="avim"><time datetime="2015-03-30T08:26:19Z">30 tháng 3 năm 2015</time></td>
+		<td class="avim"><time datetime="2016-02-04T06:44:40Z">4 tháng 2 năm 2016</time></td>
 		<td class="mudim"><time datetime="2015-06-07T18:51:22Z">7 tháng 6 năm 2015</time></td>
 		<td class="typingviet"><time datetime="2015-02-23T02:57:24Z">23 tháng 2 năm 2015</time></td>
 		<td class="chim"><time datetime="2006-07-09">9 tháng 7 năm 2006</time></td>
@@ -255,7 +254,7 @@
 	</tr>
 	<tr class="cat-general">
 		<td>Kích cỡ gói tải xuống</td>
-		<td class="avim">67,0&nbsp;<abbr title="kilôbyte">kB</abbr></td>
+		<td class="avim">70,9&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="mudim">26,5&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="typingviet">27,4&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="chim">9,7&nbsp;<abbr title="kilôbyte">kB</abbr></td>
@@ -270,7 +269,7 @@
 	</tr>
 	<tr class="cat-general">
 		<td>Kích cỡ sau khi cài</td>
-		<td class="avim">97,5&nbsp;<abbr title="kilôbyte">kB</abbr></td>
+		<td class="avim">101,9&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="mudim">26,5&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="typingviet">27,4&nbsp;<abbr title="kilôbyte">kB</abbr></td>
 		<td class="chim">10,2&nbsp;<abbr title="kilôbyte">kB</abbr></td>
@@ -1037,6 +1036,21 @@
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-output">
+		<td><a href="http://vny2k.net/vny2k/CaitoCachVietChuViet-Unicode.htm">ChữViệt Năm 2020</a></td>
+		<td class="avim yes">Có</td>
+		<td class="mudim no">Không</td>
+		<td class="typingviet no">Không</td>
+		<td class="chim no">Không</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport no">Không</td>
+		<td class="myavim no">Không</td>
+		<td class="instcode no">Không</td>
+		<td class="avim-chrome no">Không</td>
+		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
+		<td class="vietinput no">Không</td>
+	</tr>
+	<tr class="cat-output">
 		<td>Chữ Hán/Nôm</td>
 		<td class="avim no">Không</td>
 		<td class="mudim no">Không</td>
@@ -1191,8 +1205,8 @@
 		<td class="vietinput buggy"><samp>chơz</samp></td>
 	</tr>
 	<tr class="cat-input-features">
-		<td>Xóa dấu dùng <span class="keystrokes"><kbd class="modifier">Shift</kbd> <kbd class="modifier">Backspace</kbd></span></td>
-		<td class="avim yes">Có</td>
+		<td>Xóa dấu</td>
+		<td class="avim yes"><span class="keystrokes"><kbd class="modifier">Shift</kbd> <kbd class="modifier">Backsp</kbd></span></td>
 		<td class="mudim no">Không</td>
 		<td class="typingviet no">Không</td>
 		<td class="chim no">Không</td>
@@ -1236,9 +1250,39 @@
 		<td class="vietinput yes">Có</td>
 	</tr>
 	<tr class="cat-input-features">
-		<td>Hủy bỏ từ dùng <span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span></td>
+		<td>Bỏ qua từ riêng</td>
 		<td class="avim no">Không</td>
-		<td class="mudim yes">Có</td>
+		<td class="mudim yes"><span class="keystrokes"><kbd class="modifier">Shift</kbd></span></td>
+		<td class="typingviet no">Không</td>
+		<td class="chim no">Không</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport no">Không</td>
+		<td class="myavim no">Không</td>
+		<td class="instcode no">Không</td>
+		<td class="avim-chrome no">Không</td>
+		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
+		<td class="vietinput no">Không</td>
+	</tr>
+	<tr class="cat-input-features">
+		<td>Ngắt âm tiết trong từ mượn</td>
+		<td class="avim yes"><span class="keystrokes"><kbd class="modifier">Shift</kbd><kbd class="modifier">Dấu&nbsp;cách</kbd></span></td>
+		<td class="mudim yes"><span class="keystrokes"><kbd class="modifier">Ctrl</kbd></span></td>
+		<td class="typingviet no">Không</td>
+		<td class="chim no">Không</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport no">Không</td>
+		<td class="myavim no">Không</td>
+		<td class="instcode no">Không</td>
+		<td class="avim-chrome no">Không</td>
+		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
+		<td class="vietinput no">Không</td>
+	</tr>
+	<tr class="cat-input-features">
+		<td>Tô sáng âm tiết khi ngắt âm tiết</td>
+		<td class="avim yes">Có</span></td>
+		<td class="mudim no">Không</td>
 		<td class="typingviet no">Không</td>
 		<td class="chim no">Không</td>
 		<td class="viettyping no">Không</td>
@@ -1312,6 +1356,21 @@
 	</tr>
 	<tr class="cat-input-features">
 		<td>Phản ứng thuộc tính <a href="https://developer.mozilla.org/En/CSS/Ime-mode" hreflang="en-US" rel="bookmark" title="Mozilla Developer Center: ime-mode"><code>ime-mode</code></a> của <acronym title="Cascading Style Sheets">CSS</acronym></td>
+		<td class="avim yes">Có</td>
+		<td class="mudim no">Không</td>
+		<td class="typingviet no">Không</td>
+		<td class="chim no">Không</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport no">Không</td>
+		<td class="myavim no">Không</td>
+		<td class="instcode no">Không</td>
+		<td class="avim-chrome no">Không</td>
+		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
+		<td class="vietinput no">Không</td>
+	</tr>
+	<tr class="cat-input-features">
+		<td>Thay thế <samp>Ðð</samp> bằng <samp>Đđ</samp></td>
 		<td class="avim yes">Có</td>
 		<td class="mudim no">Không</td>
 		<td class="typingviet no">Không</td>
@@ -1492,21 +1551,21 @@
 		<td class="chrominom no">Có</td>
 		<td class="vietinput yes">Không</td>
 	</tr>
-	<!-- <tr class="cat-annoyances">
-		<td>Lần hoàn tác/làm lại mỗi chữ sau chữ có dấu</td>
-		<td class="avim yes">1</td>
-		<td class="mudim yes">1</td>
-		<td class="typingviet yes">1</td>
-		<td class="chim yes">1</td>
-		<td class="avim-chrome yes">1</td>
-		<td class="google">Hoàn&nbsp;tác chí&nbsp;chóe</td>
-		<td class="chrominom no">0</td>
-		<td class="vietinput no">0</td>
-		<td class="viettyipng yes">1</td>
-		<td class="vport no">2</td>
-		<td class="myavim no">2</td>
-		<td class="instcode yes">1</td>
-	</tr> -->
+	<tr class="cat-annoyances">
+		<td>Phải hoàn tác/làm lại nhiều lần sau khi đặt một dấu</td>
+		<td class="avim yes">Không</td>
+		<td class="mudim yes">Không</td>
+		<td class="typingviet no">Không cho&nbsp;phép hoàn&nbsp;tác</td>
+		<td class="chim yes">Không</td>
+		<td class="viettyping yes">Không</td>
+		<td class="vport no">Có</td>
+		<td class="myavim no">Có</td>
+		<td class="instcode yes">Không</td>
+		<td class="avim-chrome yes">Không</td>
+		<td class="google no">Không cho&nbsp;phép hoàn&nbsp;tác</td>
+		<td class="chrominom no">Không cho&nbsp;phép hoàn&nbsp;tác</td>
+		<td class="vietinput no">Không cho&nbsp;phép hoàn&nbsp;tác</td>
+	</tr>
 	<tr class="cat-annoyances">
 		<td>Nhận ra các phần mở rộng không tương thích</td>
 		<td class="avim yes">Có</td>
@@ -1689,7 +1748,7 @@
 		<td>Các phím tắt (số ngón tay)</td>
 		<td class="avim yes">Có (1)</td>
 		<td class="mudim buggy">Gẫy trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
-        <td class="typingviet yes">Có (2)</td>
+        <td class="typingviet yes">Có (3)</td>
 		<td class="chim buggy">Gẫy trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
 		<td class="viettyping buggy">Chỉ trong hộp văn bản</td>
 		<td class="vport buggy">Gẫy trong Mac <acronym title="Operating System" class="initialism">OS</acronym> <acronym title="Ten">X</acronym></td>
@@ -2765,7 +2824,7 @@
 		<td class="vietinput no">Không</td>
 	</tr>
 	
-	<tr id="textboxes" class="cat-header cat-textboxes collapsed">
+	<tr id="textboxes" class="cat-header cat-textboxes">
 		<th colspan="12">Các điều khiển văn bản thuần</th>
 	</tr>
 	<tr class="cat-textboxes">
@@ -2774,7 +2833,7 @@
 		<td class="mudim yes">Có</td>
 		<td class="typingviet yes">Có</td>
 		<td class="chim yes">Có</td>
-		<td class="viettyping buggy">Trừ trong khung nội bộ</td>
+		<td class="viettyping yes">Có</td>
 		<td class="vport yes">Có</td>
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
@@ -2839,7 +2898,7 @@
 		<td class="mudim yes">Có</td>
 		<td class="typingviet yes">Có</td>
 		<td class="chim yes">Có</td>
-		<td class="viettyping buggy">Trừ trong khung nội bộ</td>
+		<td class="viettyping yes">Có</td>
 		<td class="vport yes">Có</td>
 		<td class="myavim yes">Có</td>
 		<td class="instcode yes">Có</td>
@@ -2858,10 +2917,10 @@
 		<td class="vport no">Không</td>
 		<td class="myavim no">Không</td>
 		<td class="instcode no">Không</td>
-		<td class="avim-chrome yes">Có</td>
-		<td class="google yes">Có</td>
-		<td class="chrominom no">Không</td>
-		<td class="vietinput no">Không</td>
+		<td class="avim-chrome">Chrome không hỗ&nbsp;trợ</td>
+		<td class="google">Chrome không hỗ&nbsp;trợ</td>
+		<td class="chrominom">Chrome không hỗ&nbsp;trợ</td>
+		<td class="vietinput">Chrome không hỗ&nbsp;trợ</td>
 	</tr>
 	<!-- <tr class="cat-textboxes">
 		<td>Các trường văn bản XForms một dòng (<code>&lt;input></code>)</td>
@@ -2923,6 +2982,51 @@
 		<td class="chrominom no">Không</td>
 		<td class="vietinput no">Không</td>
 	</tr> -->
+	<tr class="cat-textboxes">
+		<td>Các điều khiển văn bản trong khung (<code>&lt;frame></code>)</td>
+		<td class="avim yes">Có</td>
+		<td class="mudim no">Không</td>
+		<td class="typingviet no">Không</td>
+		<td class="chim no">Không</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport no">Không</td>
+		<td class="myavim no">Không</td>
+		<td class="instcode no">Không</td>
+		<td class="avim-chrome no">Không</td>
+		<td class="google no">Không gõ được</td>
+		<td class="chrominom no">Không</td>
+		<td class="vietinput no">Không</td>
+	</tr>
+	<tr class="cat-textboxes">
+		<td>Các điều khiển văn bản trong khung nội dòng (<code>&lt;iframe></code>)</td>
+		<td class="avim yes">Có</td>
+		<td class="mudim yes">Có</td>
+		<td class="typingviet yes">Có</td>
+		<td class="chim yes">Có</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport yes">Có</td>
+		<td class="myavim yes">Có</td>
+		<td class="instcode yes">Có</td>
+		<td class="avim-chrome yes">Có</td>
+		<td class="google yes">Có</td>
+		<td class="chrominom yes">Có</td>
+		<td class="vietinput yes">Có</td>
+	</tr>
+	<tr class="cat-textboxes">
+		<td>Các điều khiển văn bản trong đối tượng nhúng (<code>&lt;object></code>)</td>
+		<td class="avim yes">Có</td>
+		<td class="mudim no">Không</td>
+		<td class="typingviet no">Không</td>
+		<td class="chim no">Không</td>
+		<td class="viettyping no">Không</td>
+		<td class="vport no">Không</td>
+		<td class="myavim no">Không</td>
+		<td class="instcode no">Không</td>
+		<td class="avim-chrome no">Không</td>
+		<td class="google no">Không</td>
+		<td class="chrominom no">Không</td>
+		<td class="vietinput no">Không</td>
+	</tr>
 	
 	<tr id="rich-textboxes" class="cat-header cat-rich-textboxes collapsed">
 		<th colspan="12">Các điều khiển văn bản có định dạng</th>
