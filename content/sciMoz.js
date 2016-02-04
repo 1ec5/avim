@@ -187,7 +187,7 @@ context.lazyHandlers.sciMoz = function (evt) {
 	let win = evt.originalTarget.ownerDocument.defaultView;
 	let elt = win.ko.views.manager.currentView.scimoz || evt.originalTarget;
 //	dump("AVIM.handleSciMoz -- target: " + elt + "; type: " + elt.type + "; code: " + evt.which + "\n");	// debug
-//	dump("xul:scintilla:\n" + [prop for (prop in elt)] + "\n");					// debug
+//	dump("xul:scintilla:\n" + Object.keys(elt) + "\n");					// debug
 //	elt.setSelectionNStart(0, 8);												// debug
 //	dump(">>> scimoz.getSelectionNStart: " + elt.selections ? elt.getSelectionNStart(0) : "" + "\n");					// debug
 	

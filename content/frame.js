@@ -899,8 +899,13 @@ function disableOthers(doc) {
 	// Create a sandbox to execute the code in.
 //		dump("inner sandbox URL: " + doc.location.href + "\n");				// debug
 	let sandbox = new Sandbox(doc.defaultView);
-	let disabledScriptNames = [AVIMConfig.disabledScripts[name] && name
-							   for (name in AVIMConfig.disabledScripts)];
+	let disabledScriptNames = [];
+	for (let name in AVIMConfig.disabledScripts) {
+		if (name && AVIMConfig.disabledScripts.propertyIsEnumerable(name) &&
+			AVIMConfig.disabledScripts[name]) {
+			disabledScriptNames.push(name);
+		}
+	}
 	sandbox.createObjectAlias("disabledScripts",
 							  quoteJS(disabledScriptNames.join("|")));
 	sandbox.injectScript("chrome://avim/content/disabler.js");
