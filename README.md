@@ -2,16 +2,16 @@
 AVIM for Firefox
 ================
 
-AVIM is an extension for Firefox and similar applications that provides an input method editor for Vietnamese, based on Hiếu Đặng’s [webpage script](http://sourceforge.net/projects/rhos/) of the same name. Hiếu was the original developer of this extension; Minh Nguyễn has been the developer since 2007. (There is also an unaffiliated [Chrome extension](https://github.com/kimkha/avim-chrome) of the same name.)
+AVIM is an extension for Firefox, Thunderbird, Komodo, and similar applications that functions as an input method editor for Vietnamese, allowing you to insert diacritical marks easily everywhere you can type. This extension, along with a basic [Chrome extension](https://github.com/kimkha/avim-chrome) of the same name, are based on the [avim.js script](http://sourceforge.net/projects/rhos/) by Hiếu Đặng. [Read more about AVIM for Firefox](http://avim.1ec5.org/en/).
 
-*AVIM là một phần mở rộng cung cấp bộ gõ tiếng Việt trong Firefox và các chương trình tương tự, dựa trên [kịch bản cùng tên](http://sourceforge.net/projects/rhos/) của Đặng Trần Hiếu. Hiếu là người đầu tiên phát triển phần mở rộng này, còn Nguyễn Xuân Minh là người phát triển phần mở rộng kể từ năm 2007. (Một dự án không có liên quan sản xuất một [tiện ích mở rộng Chrome](https://github.com/kimkha/avim-chrome) cùng tên.)*
+*AVIM là một phần mở rộng cung cấp bộ gõ tiếng Việt trong Firefox, Thunderbird, Komodo, và các chương trình tương tự, cho phép đặt dấu một cách dễ dàng ở bất cứ mọi nơi mà bạn có thể nhập văn bản. Phần mở rộng này, cũng như một tiện ích mở rộng cùng tên [dành cho Chrome](https://github.com/kimkha/avim-chrome), đều dựa trên [kịch bản avim.js](http://sourceforge.net/projects/rhos/) của Đặng Trần Hiếu. [Đọc thêm về AVIM cho Firefox](http://avim.1ec5.org/).*
 
 Installation
 ------------
 
-Visit [AVIM’s homepage](http://avim.1ec5.org/en/) for the latest version or [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/?src=external-github) for the Mozilla-approved version, which may be out of date.
+Visit [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/?src=external-github) for the latest Mozilla-approved version of the extension.
 
-*Hãy truy cập phiên bản mới nhất tại [trang chủ của AVIM](http://avim.1ec5.org/) hoặc phiên bản trên [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/?src=external-github), bản này được Mozilla chấp nhận nhưng có thể lỗi thời.*
+*Hãy truy cập phiên bản mới nhất tại [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/?src=external-github), bản này được Mozilla chấp nhận.*
 
 Building
 --------
