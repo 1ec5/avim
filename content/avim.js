@@ -597,8 +597,8 @@ function AVIM()	{
 		//dump("AVIM.onKeyDown -- code: " + String.fromCharCode(e.which) + " #" + e.which +
 		//	 "; target: " + e.target.nodeName + "." + e.target.className + "#" + e.target.id +
 		//	 "; originalTarget: " + e.originalTarget.nodeName + "." + e.originalTarget.className + "#" + e.originalTarget.id + "\n");			// debug
-		if (e.which === e.DOM_VK_CONTROL && e.ctrlKey && !e.metaKey &&
-			!e.altKey && !e.shiftKey &&
+		if (e.which === e.DOM_VK_CONTROL && !e.metaKey && !e.altKey &&
+			!e.shiftKey &&
 			!(this.numCtrlPresses && this.ctrlStartDate &&
 			  // GetDoubleClickTime() on Windows: ?–5 s, default 500 ms
 			  // +[NSEvent doubleClickInterval] on OS X: 150 ms–5 s, default 500 ms
@@ -637,8 +637,8 @@ function AVIM()	{
 		if (avim && avim.isWaitingForCtrlKeyUp) {
 			avim.isWaitingForCtrlKeyUp = false;
 			if (!avim.ctrlStartDate) avim.ctrlStartDate = new Date();
-			if (e.which === e.DOM_VK_CONTROL && !e.ctrlKey && !e.metaKey &&
-				!e.altKey && !e.shiftKey) {
+			if (e.which === e.DOM_VK_CONTROL && !e.metaKey && !e.altKey &&
+				!e.shiftKey) {
 				if (++avim.numCtrlPresses > 1) {
 					avim.stopListeningForCtrl();
 					avim.toggle(true);
