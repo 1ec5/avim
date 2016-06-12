@@ -1,8 +1,8 @@
-/* global _avim_applyKey, _avim_evtInfo, _avim_textChanged:true, Selection, Op, editor, NODE_TYPE */
+/* global _avim_applyKey, _avim_evtInfo, _avim_textChanged:true, Op, editor, NODE_TYPE */
 (function () {
 "use strict";
 
-let cursor = editor.doc.cursor;
+let cursor = editor.doc.cursor || editor.doc.getSelection();
 if (!cursor || !cursor.isCollapsed()) return;
 
 //* One-based
@@ -23,7 +23,7 @@ let [newWord, changed] = JSON.parse(_avim_applyKey(word, {
 if (newWord && newWord !== word) {
 	//dump(">>> zwrite.js -- Replacing <" + word + "> with <" + newWord + ">\n");	// debug
 	
-	Selection.deleteContents(selectionStart, selectionEnd);
+	cursor.deleteContents(selectionStart, selectionEnd);
 	cursor.insert(editor.doc.createElement(NODE_TYPE.TEXT, newWord), {});
 	Op.sendMsg();
 }
