@@ -36,6 +36,17 @@
 		</menu>
 	</menupopup>
 	
+	<!-- Toolbar button -->
+	<toolbar id="standardToolbar">
+		<toolbaritem>
+			<toolbarbutton id="avim-tb" class="toolbarbutton-1" type="menu-button" label="&AVIM.label;" tooltip="avim-status-tooltip" autocheck="false" command="avim-enabled-cmd" observes="avim-status-bc">
+				<menupopup id="avim-tb-popup" avim-popupsource="avim-status-popup" onpopupshowing="avim.buildPopup(this);">
+					<menuitem id="avim-tb-enabled" type="checkbox" label="&avim-enabled.label;" observes="avim-enabled-bc" default="true" oncommand="" />
+				</menupopup>
+			</toolbarbutton>
+		</toolbaritem>
+	</toolbar>
+	
 	<!-- Status bar menu -->
 	<statusbar id="statusbarviewbox">
 		<statusbarpanel id="avim-status" tooltip="avim-status-tooltip" popup="avim-status-popup" observes="avim-status-bc" ondblclick="avim.toggle();" />
