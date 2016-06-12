@@ -143,7 +143,7 @@
 			<Description>
 				<em:id>bluegriffon@disruptive-innovations.com</em:id>
 				<em:minVersion>0.1</em:minVersion>
-				<em:maxVersion>1.*</em:maxVersion>
+				<em:maxVersion>2.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
