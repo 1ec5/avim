@@ -261,14 +261,25 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	let sel = editor && editor.selection;
 	this.startOffset = sel && sel.anchorOffset;
 	
+	let isReact = node.ownerDocument.documentElement.id === "facebook";
+	let isOwa = node.baseURI.indexOf(".officeapps.live.com/") > 0 &&
+		node.ownerDocument.body.id === "MainApp";
+	
+	/**
+	 * Returns the Selection for the current editor.
+	 */
+	function getSelection() {
+		let editor = getEditor(outer);
+		return editor && editor.selection;
+	}
+	
 	/**
 	 * Shifts the selection to the right by the given number of characters.
 	 *
 	 * @param numChars	{number}	The number of characters to shift.
 	 */
 	this.shiftSelection = function(numChars) {
-		let editor = getEditor(outer);
-		let sel = editor && editor.selection;
+		let sel = getSelection();
 		if (sel) sel.collapse(this.node, this.startOffset + numChars);
 	};
 	
@@ -277,19 +288,38 @@ function SpliceTxn(outer, node, pos, len, repl) {
 	 */
 	this.doTransaction = this.redoTransaction = function() {
 		this.orig = this.node.substringData(this.pos, this.len);
-		// (#105) replaceData() messes up Facebook, so delete then insert.
-		this.node.deleteData(this.pos, this.len);
-		this.node.insertData(this.pos, this.repl);
-		this.shiftSelection(this.repl.length - this.len);
+		
+		// React and OWA overwrite data added through DOM methods, so synthesize
+		// key events instead.
+		if (isReact || isOwa) {
+			let sel = getSelection();
+			if (sel) {
+				sel.collapse(this.node, this.pos);
+				sel.extend(this.node, this.pos + this.len);
+			}
+			
+			let win = this.node.ownerDocument.defaultView;
+			let winUtils = win.QueryInterface(Ci.nsIInterfaceRequestor)
+				.getInterface(Ci.nsIDOMWindowUtils);
+			for (let i = 0; i < this.repl.length; i++) {
+				winUtils.sendKeyEvent("keypress", 0, this.repl.charCodeAt(i), 0);
+			}
+		}
+		else {
+			this.node.replaceData(this.pos, this.len, this.repl);
+			//this.node.deleteData(this.pos, this.len);
+			//this.node.insertData(this.pos, this.repl);
+			this.shiftSelection(this.repl.length - this.len);
+		}
 	};
 	
 	/**
 	 * Replaces the previously inserted substitution with the original string.
 	 */
 	this.undoTransaction = function() {
-		//node.replaceData(pos, repl.length, this.orig);
-		this.node.deleteData(this.pos, this.repl.length);
-		this.node.insertData(this.pos, this.orig);
+		this.node.replaceData(this.pos, this.repl.length, this.orig);
+		//this.node.deleteData(this.pos, this.repl.length);
+		//this.node.insertData(this.pos, this.orig);
 		this.shiftSelection(0);
 	};
 	
