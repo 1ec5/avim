@@ -132,17 +132,22 @@ function buildAnim(animIdx, anim) {
 		setTimeout(deleteAll, 0.5 * 1000);
 	}
 	
+	function codeToText(src) {
+		return src.replace(/['\/{}]/g, "");
+	}
+	
 	function step() {
 		before.removeClass("idle");
 		var text = chord[i++],
 			segments,
 			timeout = 250;
 		if (text) {
-			segments = /([^/]+)(?:\/(.+))?/.exec(text);
+			var hasSyllableBreak = text.match(/\{.+\}/);
+			segments = /([^/{]+(?:\{.+?\})?)(?:\/?(.+))?/.exec(text);
 			if (!segments[1].endsWith(" ")) {
-				segments[3] = /\S+$/.exec(segments[1]);
-				segments[3] = segments[3] && segments[3][0];
-				segments[1] = segments[1].replace(/\S+$/, "");
+				segments[3] = /\{\S+\}|[^\s{}]+$/.exec(segments[1]);
+				segments[3] = segments[3] && segments[3][0].replace(/[{}]/g, "");
+				segments[1] = segments[1].replace(/\{\S+\}|[^\s{}]+$/, "");
 			}
 			if (segments[2] && !segments[2].startsWith(" ")) {
 				segments[4] = /^\S+/.exec(segments[2]);
@@ -158,13 +163,15 @@ function buildAnim(animIdx, anim) {
 			
 			if (i < chord.length) {
 				if (chord[i].startsWith(text)) timeout -= 100;
-				else if (chord[i].replace("/", "") === text.replace("/", "")) {
+				else if (codeToText(chord[i]) === codeToText(text)) {
 					timeout -= 150;
 				}
 				if (!chord[i].endsWith(" ") && text.endsWith(" ")) {
 					timeout += 100;
 				}
 			}
+			if (hasSyllableBreak) timeout += 100;
+			before.toggleClass("syllable", hasSyllableBreak !== null);
 			setTimeout(step, timeout + (Math.random() - 0.5) * 100);
 		}
 		else {

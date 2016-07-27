@@ -725,7 +725,8 @@ Full-Width Styles
   }
 }
 
-.before-caret:not(.selected)::after {
+.before-caret:not(.selected):not(.syllable)::after,
+.syllable + .after-caret::after {
   content: "|";
   position: absolute;
   margin-left: -0.1em;
@@ -738,6 +739,25 @@ Full-Width Styles
   animation-duration: 1.2s;
   animation-name: blink;
   animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes gone {
+  from {
+	outline-color: black;
+  }
+}
+
+@keyframes gone {
+  from {
+	outline-color: black;
+  }
+}
+
+.before-caret.syllable {
+  outline: 1px solid;
+  outline-color: transparent;
+  -webkit-animation: 0.4s ease-in-out gone;
+  animation: 0.4s ease-in-out gone;
 }
 
 #compare-methods caption {
