@@ -15,7 +15,6 @@ script:
   - jshint .
   - python build.py -m
   - addons-linter *.xpi
-  - addons-linter -o json *.xpi | grep '"count":0'
   - cd tests/
   - js -b -s test.js
   - js -b -s corpus.js /tmp/hunspell-vi/dictionaries/vi-DauCu.dic -w /tmp/hunspell-vi/tools/irregulars.txt
