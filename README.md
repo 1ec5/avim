@@ -41,7 +41,7 @@ Tests
 
 The test harness requires [SpiderMonkey](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey), the command line interface to the JavaScript engine in Firefox:
 
-1. Download [last night’s Developer Edition build](https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/): jsshell-_platform_.zip, where _platform_ is your operating system. (The latest [official release of SeaMonkey](http://ftp.mozilla.org/pub/mozilla.org/js/) is ancient but should work also.)
+1. Download [last night’s build](https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-central/): jsshell-_platform_.zip, where _platform_ is your operating system. (The latest [official release of SeaMonkey](http://ftp.mozilla.org/pub/mozilla.org/js/) is ancient but should work also.)
 1. Go to the tests/ directory in your checkout of this project.
 1. Run `/path/to/js -b -s test.js`.
 
