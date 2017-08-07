@@ -50,11 +50,11 @@ The tests/ directory also contains corpus.js, useful for testing AVIM against a 
 Translations
 ------------
 
-AVIM’s user interface is currently available in several languages. Please help translate AVIM into additional languages at [BabelZilla Beta](http://beta.babelzilla.org/projects/p/avim/).
+AVIM’s user interface is currently available in several languages. Please help translate AVIM into additional languages at [BabelZilla Beta](http://adofex.clear.com.ua/projects/p/avim/).
 
-*Giao diện của AVIM hiện có sẵn trong vài ngôn ngữ. Xin hãy giúp biên dịch AVIM ra thêm ngôn ngữ tại [BabelZilla Beta](http://beta.babelzilla.org/projects/p/avim/).*
+*Giao diện của AVIM hiện có sẵn trong vài ngôn ngữ. Xin hãy giúp biên dịch AVIM ra thêm ngôn ngữ tại [BabelZilla Beta](http://adofex.clear.com.ua/projects/p/avim/).*
 
-[![Translation statistics for AVIM](http://beta.babelzilla.org/projects/p/avim/chart/image_png)](http://beta.babelzilla.org/projects/p/avim/)
+[![Translation statistics for AVIM](http://adofex.clear.com.ua/projects/p/avim/chart/image_png)](http://adofex.clear.com.ua/projects/p/avim/)
 
 License
 -------
