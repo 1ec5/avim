@@ -4,7 +4,11 @@ AVIM for Firefox
 
 AVIM is an extension for Firefox, Thunderbird, Komodo, and similar applications that functions as an input method editor for Vietnamese, allowing you to insert diacritical marks easily everywhere you can type. This extension, along with a basic [Chrome extension](https://github.com/kimkha/avim-chrome) of the same name, are based on the [avim.js script](http://sourceforge.net/projects/rhos/) by Hiếu Đặng. [Read more about AVIM for Firefox](http://avim.1ec5.org/en/).
 
+**Important:** Firefox 57 is incompatible with AVIM due to the new [WebExtensions feature](https://support.mozilla.org/kb/firefox-add-technology-modernizing) that is replacing traditional extensions. AVIM cannot be updated to work in Firefox 57 until AVIM’s most basic functionality is possible in WebExtensions. Please subscribe to [this issue](https://github.com/1ec5/avim/issues/141) and vote for any Bugzilla bug reports mentioned there. Thank you for your understanding.
+
 *AVIM là một phần mở rộng cung cấp bộ gõ tiếng Việt trong Firefox, Thunderbird, Komodo, và các chương trình tương tự, cho phép đặt dấu một cách dễ dàng ở bất cứ mọi nơi mà bạn có thể nhập văn bản. Phần mở rộng này, cũng như một tiện ích mở rộng cùng tên [dành cho Chrome](https://github.com/kimkha/avim-chrome), đều dựa trên [kịch bản avim.js](http://sourceforge.net/projects/rhos/) của Đặng Trần Hiếu. [Đọc thêm về AVIM cho Firefox](http://avim.1ec5.org/).*
+
+***Quan trọng:** Firefox 57 không tương thích với AVIM vì [tính năng WebExtensions](https://support.mozilla.org/vi/kb/firefox-add-technology-modernizing) mới thay thế phần mở rộng truyền thống. AVIM không thể được cập nhật để hoạt động trong Firefox 57 cho đến khi có thể thực hiện các chức năng cơ bản của AVIM bằng WebExtensions. Xin vui lòng theo dõi [vấn đề này](https://github.com/1ec5/avim/issues/141) và bỏ phiếu cho các bản báo cáo lỗi tại Bugzilla được nhắc đến trong vấn đề đó. Chân thành cám ơn sự thông cảm của các bạn.*
 
 Installation
 ------------
