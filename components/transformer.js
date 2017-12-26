@@ -15,8 +15,10 @@ const CLASS_ID = Components.ID("{4A373444-8A2A-4641-ADD5-897A88D05185}"),
 let Transformation = (function () {
 
 // Some shortcuts for brevity.
-const fcc = String.fromCharCode,
-	  up = String.toUpperCase;
+const fcc = String.fromCharCode;
+const up = function (str) {
+	return str.toUpperCase();
+};
 
 function nan(w) {
 	return isNaN(w) || w === "e";
