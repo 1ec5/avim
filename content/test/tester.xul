@@ -9,7 +9,7 @@
 <!-- <!DOCTYPE window SYSTEM "chrome://avim/locale/test/tester.dtd"> -->
 
 <window id="avim-tester" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml" class="windowDialog" windowtype="avim:tester" title="AVIM Test Suite" width="600" height="400" screenX="20" screenY="20" persist="screenX screenY width height">
-	<script type="application/x-javascript;version=1.7" src="chrome://avim/content/test/tester.js" />
+	<script type="application/javascript" language="JavaScript1.7" src="chrome://avim/content/test/tester.js" />
 	
 	<stringbundleset id="stringbundleset" />
 	
