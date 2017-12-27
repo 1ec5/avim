@@ -339,7 +339,8 @@ function AVIM()	{
 	this.registerPrefs = function() {
 		if (this.prefsRegistered) return;
 		this.prefsRegistered = true;
-		prefs.QueryInterface(Ci.nsIPrefBranch2);
+		if ("nsIPrefBranch2" in Ci) prefs.QueryInterface(Ci.nsIPrefBranch2);
+		else prefs.QueryInterface(Ci.nsIPrefBranch);
 		prefs.addObserver("", this, false);
 		this.getPrefs();
 	};
@@ -431,8 +432,12 @@ function AVIM()	{
 		// Custom string preferences
 		if (!changedPref || changedPref === "ignoredFieldIds") {
 			let ids = AVIMConfig.exclude.join(" ").toLowerCase();
-			prefs.setComplexValue("ignoredFieldIds", Ci.nsISupportsString,
-								  makeSupportsString(ids));
+			if ("setStringPref" in prefs) {
+				prefs.setStringPref("ignoredFieldIds", ids);
+			} else {
+				prefs.setComplexValue("ignoredFieldIds", Ci.nsISupportsString,
+									  makeSupportsString(ids));
+			}
 		}
 	};
 	
@@ -492,8 +497,13 @@ function AVIM()	{
 				AVIMConfig.passwords = prefs.getBoolPref("passwords");
 				if (specificPref) break;
 			case "ignoredFieldIds":
-				let ids = prefs.getComplexValue("ignoredFieldIds",
+				let ids;
+				if ("getStringPref" in prefs) {
+					ids = prefs.getStringPref("ignoredFieldIds");
+				} else {
+					ids = prefs.getComplexValue("ignoredFieldIds",
 												Ci.nsISupportsString).data;
+				}
 				AVIMConfig.exclude = ids.toLowerCase().split(/\s+/);
 				if (specificPref) break;
 			

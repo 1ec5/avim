@@ -57,9 +57,15 @@ function ExtensionMonitor() {
 	 * enabled.
 	 */
 	this.registerPrefs = function() {
-		avimPrefs.QueryInterface(Ci.nsIPrefBranch2);
-		mudimPrefs.QueryInterface(Ci.nsIPrefBranch2);
-		mudimPrefs2.QueryInterface(Ci.nsIPrefBranch2);
+		if ("nsIPrefBranch2" in Ci) {
+			avimPrefs.QueryInterface(Ci.nsIPrefBranch2);
+			mudimPrefs.QueryInterface(Ci.nsIPrefBranch2);
+			mudimPrefs2.QueryInterface(Ci.nsIPrefBranch2);
+		} else {
+			avimPrefs.QueryInterface(Ci.nsIPrefBranch);
+			mudimPrefs.QueryInterface(Ci.nsIPrefBranch);
+			mudimPrefs2.QueryInterface(Ci.nsIPrefBranch);
+		}
 		avimPrefs.addObserver(avimEnabledId, this, false);
 		mudimPrefs.addObserver(mudimMethodId, this, false);
 		mudimPrefs2.addObserver(mudimMethodId, this, false);
