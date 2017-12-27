@@ -488,6 +488,22 @@ Full-Width Styles
   word-spacing: 0.5em;
 }
 
+.warning {
+  background: #ffd203;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0)), repeating-linear-gradient(-45deg, #ffd203, #ffd203 25px, #f1b802 25px, #f1b802 50px);
+  color: #000;
+  border-radius: 6px;
+  font-size: 90%;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1), 0px -1px 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+.warning > p {
+ background: rgba(255, 255, 255, 0.8);
+ color: #222222;
+ margin: 10px;
+ padding: 1em;
+}
+
 .carousel-footer button:first-of-type::before {
   content: "« ";
 }
