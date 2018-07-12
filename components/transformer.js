@@ -165,10 +165,16 @@ function _Transformation(startValue, context) {
 		ckSpell: context.ckSpell,
 		informal: context.informal,
 		oldAccent: context.oldAccent,
+		key: context.key,
 		keyCode: context.keyCode,
 		which: context.which,
 		shiftKey: context.shiftKey,
 	};
+	
+	if ("nsIDOMKeyEvent" in Ci && "DOM_VK_BACK_SPACE" in Ci.nsIDOMKeyEvent &&
+		context.keyCode === Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE) {
+		this.context.key = "Backspace";
+	}
 /* jshint +W040 */
 }
 
@@ -370,8 +376,7 @@ _Transformation.prototype = {
 		if (!w) return;
 		//dump(">>> start() -- w: <" + w + ">\n");								// debug
 		let key = "";
-		const backspace = Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
-		if (!this.context.keyCode || this.context.keyCode !== backspace ||
+		if (this.context.keyCode === 0 || this.context.key !== "Backspace" ||
 			!this.context.shiftKey) {
 			key = fcc(this.context.which);
 		}

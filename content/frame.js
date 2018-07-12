@@ -361,6 +361,7 @@ function applyKey(word, evt) {
 	let data = {
 		prefix: word,
 		evt: {
+			key: evt.key,
 			keyCode: evt.keyCode,
 			which: evt.which,
 			shiftKey: evt.shiftKey,
@@ -403,12 +404,15 @@ function splice(outer, evt) {
 	if (!node || !sel.anchorOffset || !node.data) return result;
 	
 	let word = lastWordInString(node.substringData(0, sel.anchorOffset));
-	let key = String.fromCharCode(evt.which);
+	let which = evt.which;
 	result = word && applyKey(word, evt);
 	//dump("AVIM.splice -- editor: " + editor +
 	//	 "; old word: " + word + "; key: " + key +
 	//	 "; new word: " + (result && result.value) + "\n");						// debug
-	if (!result || (word && result.value === word + key)) return {};
+	if (!result) return {};
+	if (word && which && result.value === word + String.fromCharCode(which)) {
+		return {};
+	}
 	
 	// Carry out the transaction.
 	// (#123) convertCustomChars() can increase the word length.
@@ -543,8 +547,7 @@ function deleteDiacritic() {
 	let node = getSelectedNode(editor);
 	if (node instanceof Ci.nsIDOMText) {
 		splice(outer, {
-			keyCode: Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE,
-			which: Ci.nsIDOMKeyEvent.DOM_VK_BACK_SPACE,
+			key: "Backspace",
 			shiftKey: true,
 		});
 	}

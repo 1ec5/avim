@@ -680,6 +680,7 @@ function AVIM()	{
 			ckSpell: AVIMConfig.ckSpell,
 			informal: AVIMConfig.informal,
 			oldAccent: AVIMConfig.oldAccent,
+			key: evt.key,
 			keyCode: evt.keyCode,
 			which: evt.which,
 			shiftKey: evt.shiftKey,
