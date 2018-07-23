@@ -364,7 +364,7 @@ Full-Width Styles
 
 #downloads {
   position: absolute;
-  width: 210px;
+  width: 420px;
   z-index: 10;
   bottom: -40px;
   right: 0;
@@ -372,7 +372,8 @@ Full-Width Styles
 }
 
 .amo_link,
-.amo_beta_link {
+.amo_beta_link,
+.atn_link {
   display: block;
   float: right;
   height: 50px;
@@ -392,6 +393,10 @@ Full-Width Styles
   transition: background-color 0.5s 0.2s;
 }
 
+.amo_link {
+  background: #ff9933; 
+}
+
 .amo_beta_link {
   background: #ffd203;
   background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0)), repeating-linear-gradient(-45deg, #ffd203, #ffd203 25px, #f1b802 25px, #f1b802 50px);
@@ -399,8 +404,13 @@ Full-Width Styles
   text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.5);
 }
 
+.atn_link {
+  background: #0090ff;
+}
+
 .amo_link::before,
-.amo_beta_link::before {
+.amo_beta_link::before,
+.atn_link::before {
   content: "+";
   padding-right: 10px;
   font-weight: 900;
@@ -413,9 +423,13 @@ Full-Width Styles
   font-style: italic;
 }
 
-.amo_link:hover, .amo_beta_link:hover,
-.amo_link:focus, .amo_beta_link:focus,
-.amo_link:active, .amo_beta_link:active {
+.atn_link::before {
+  content: "\2709";
+}
+
+.amo_link:hover, .amo_beta_link:hover, .atn_link:hover,
+.amo_link:focus, .amo_beta_link:focus, .atn_link:focus,
+.amo_link:active, .amo_beta_link:active, .atn_link:active {
   text-decoration: none;
   box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.1), 0px -4px 2px rgba(0, 0, 0, 0.1) inset, 0px 0px 100px rgba(255, 255, 255, 0.2) inset;
   -webkit-transition: background-color 0.1s;
