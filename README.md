@@ -13,9 +13,9 @@ AVIM is an extension for Firefox, Thunderbird, Komodo, and similar applications 
 Installation
 ------------
 
-Visit [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/?src=external-github) for the latest Mozilla-approved version of the extension.
+Visit [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/avim/?src=external-github) or [Thunderbird Add-ons](https://addons.thunderbird.net/firefox/addon/avim/?src=external-github) for the latest Mozilla-approved version of the extension.
 
-*Hãy truy cập phiên bản mới nhất tại [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/?src=external-github), bản này được Mozilla chấp nhận.*
+*Hãy truy cập phiên bản mới nhất tại [Tiện ích Firefox](https://addons.mozilla.org/vi/firefox/addon/avim/?src=external-github) hoặc [Tiện ích Thunderbird](https://addons.thunderbird.net/vi/firefox/addon/avim/?src=external-github), các bản này được Mozilla chấp nhận.*
 
 Building
 --------
