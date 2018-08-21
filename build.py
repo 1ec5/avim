@@ -13,7 +13,7 @@ config_build.py in the same directory as itself."""
 __version__ = "2.2"
 __authors__ = ["Minh Nguyen <mxn@1ec5.org>"]
 __license__ = """\
-Copyright (c) 2008-2014 Minh Nguyen.
+Copyright (c) 2008-2018 Minh Nguyen.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -405,20 +405,23 @@ def main():
     default_version = version = "*." + ".".join(str(part) for part in VERSION)
     today = (DATE or date.today()).strftime("%A, %B %e, %Y")
     
-    commit = subprocess.check_output(["git", "show", "--pretty=format:%h_%at"])
-    m = commit and re.match(r"^([\w]+)_([\d]+)", commit)
-    if m:
-        BLOB = m.group(1)
-        today = date.fromtimestamp(float(m.group(2))).strftime("%A, %B %e, %Y")
-    tags = BLOB and subprocess.check_output(["git", "describe", BLOB])
-    tags = tags and tags.strip().split("-")
-    if tags:
-        version = tags[0]
-        if version.startswith("v"):
-            version = "*." + version[1:]
-        if len(tags) > 1:
-            version += "+"
-        TAG = tags[0]
+    try:
+        commit = subprocess.check_output(["git", "show", "--pretty=format:%h_%at"])
+        m = commit and re.match(r"^([\w]+)_([\d]+)", commit)
+        if m:
+            BLOB = m.group(1)
+            today = date.fromtimestamp(float(m.group(2))).strftime("%A, %B %e, %Y")
+        tags = BLOB and subprocess.check_output(["git", "describe", BLOB])
+        tags = tags and tags.strip().split("-")
+        if tags:
+            version = tags[0]
+            if version.startswith("v"):
+                version = "*." + version[1:]
+            if len(tags) > 1:
+                version += "+"
+            TAG = tags[0]
+    except:
+        pass
     
     package_name = PACKAGE_NAME
     year = date.today().year
