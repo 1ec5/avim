@@ -5,7 +5,7 @@ node_js:
   - 11.0
 install:
   - pip install --user -r requirements.txt
-  - npm install -g jshint@">=2.9.1-rc2" addons-linter
+  - npm install -g jshint@">=2.9.1-rc2" addons-linter@1.6.2
 before_script:
   - wget -P /tmp/avim -N https://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-central/jsshell-linux-x86_64.zip
   - unzip -d /tmp/js /tmp/avim/jsshell-linux-x86_64.zip
