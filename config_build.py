@@ -10,7 +10,7 @@ CONFIG = BuildConfig.RELEASE
 
 # Incremented version number.
 # See <https://developer.mozilla.org/en-US/docs/Toolkit_version_format>.
-VERSION = (5, 8, 0)
+VERSION = (5, 8, 2)
 
 # Build date.
 DATE = None
